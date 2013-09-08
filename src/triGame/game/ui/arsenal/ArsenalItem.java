@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import tSquare.imaging.ImageProccess;
+import tSquare.util.Observer;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.ShopManager;
 import triGame.game.shopping.UpgradeManager;
@@ -24,17 +25,20 @@ public class ArsenalItem extends JPanel{
 	private static final Border selectedBorder = BorderFactory.createLineBorder(Color.black, 1, false);
 	private static final Border emptyBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
 	
-	private JLabel lblPrice;
-	private JLabel lblMain;
+	JLabel lblPrice;
+	JLabel lblMain;
+	
 	ArsenalItemInfo info = new ArsenalItemInfo();
-	ShopManager shop;
 	
 	public boolean visibile = true;
 	
 	private void construct(ShopItem item, JLabel main) {
 		this.setSize(ITEM_SIZE, ITEM_SIZE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		lblPrice = new JLabel("$" + item.getCost(), JLabel.CENTER);
+		if (item.getCost() > 0)
+			lblPrice = new JLabel("$" + item.getCost(), JLabel.CENTER);
+		else
+			lblPrice = new JLabel("");
 		this.setAlignmentX(Component.CENTER_ALIGNMENT);
 		this.add(main);
 		this.add(lblPrice);
@@ -64,6 +68,16 @@ public class ArsenalItem extends JPanel{
 		lblMain = new JLabel(text, JLabel.CENTER);
 		construct(item, lblMain);
 	}
+	
+	Observer.Change<ShopManager> observeShopPoints = new Observer.Change<ShopManager>() {
+		@Override
+		public void observeChange(ShopManager t) {
+			if (t.points < info.shopItem.getCost())
+				lblPrice.setForeground(Color.red);
+			else
+				lblPrice.setForeground(Color.black);
+		}
+	};
 
 	private MouseListener lblMainEvent = new MouseListener() {
 		@Override

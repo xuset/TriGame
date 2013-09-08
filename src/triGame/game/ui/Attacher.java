@@ -82,7 +82,7 @@ public class Attacher extends MouseAdapter{
 		if (radius > 0) {
 			Graphics g = gameBoard().getGraphics();
 			g.setColor(Color.green);
-			g.drawOval(x - radius, y - 250, radius * 2, radius * 2);
+			g.drawOval(x - radius, y - radius, radius * 2, radius * 2);
 		}
 	}
 	
@@ -129,7 +129,7 @@ public class Attacher extends MouseAdapter{
 			} else if (attached == false){
 				boolean found = false;
 				for (Building b : buildingManager().getList()) {
-					if (b.hitbox.contains(mouse.x + gameBoard().viewable.getX(), mouse.y + gameBoard().viewable.getY())) {
+					if (b.owned() && b.hitbox.contains(mouse.x + gameBoard().viewable.getX(), mouse.y + gameBoard().viewable.getY())) {
 						ui.upgrades.set(b.getUpgradeManager(), Sprite.get(b.getSpriteId()).getImage());
 						ui.switchTo(ui.upgrades);
 						selected = b;

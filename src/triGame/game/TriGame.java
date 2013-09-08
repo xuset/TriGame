@@ -137,14 +137,15 @@ public class TriGame extends Game{
 		final int ix = 10;
 		final int iy = 13;
 		final int iw = 110;
-		final int ih = 55;
+		final int ih = 70;
 		Graphics2D g = (Graphics2D) drawBoard.getDrawing();
 		g.setColor(statBackGround);
 		g.fillRoundRect(ix -10, iy - 13, iw, ih, 15, 15);
 		g.setColor(Color.LIGHT_GRAY);
 		g.setFont(statFont);
 		g.drawString("$" + shop.points, ix, iy);
-		g.drawString("Killed " + zombieManager.getZombiesKilled() + " zombies", ix, iy + 1 * 15);
-		g.drawString(getCurrentFps() + "FPS", ix, iy + 2 * 15);
+		g.drawString("Round " + roundHandler.getRoundNumber(), ix, iy + 1 * 15);
+		g.drawString("Killed " + zombieManager.getZombiesKilled() + " zombies", ix, iy + 2 * 15);
+		g.drawString(getCurrentFps() + "FPS", ix, iy + 3 * 15);
 	}
 }

@@ -7,11 +7,10 @@ import triGame.game.shopping.UpgradeManager;
 public class ProjectileShotgun extends Projectile {
 	public static final String IDENTIFIER = "shotgun";
 	public static final String SPRITE_ID = ProjectilePistol.SPRITE_ID;
-	private static final int initialBursts = 3, initialSpeed = 700, initialDamage = -20;
-	private static final double initialDeltaTheta = 10;
+	private static final int initialBursts = 3, initialSpeed = 700;
 	
 	private Entity[] bullets;
-	private int x, y, speed, bursts, damage = initialDamage; //deltaTheta = degrees/radians between bullets; bursts = amount of bullets per shot
+	private int x, y, speed, bursts, damage = 0; //bursts = amount of bullets per shot
 	private double theta, deltaTheta;
 	
 	public ProjectileShotgun(int x, int y, double theta, int bursts, double deltaTheta, int speed, ProjectileContainer container, long ownerId) {
@@ -36,10 +35,10 @@ public class ProjectileShotgun extends Projectile {
 			int y = (int) start.getCenterY();
 			double theta = start.getAngle();
 			int bursts = initialBursts;
-			double deltaTheta = initialDeltaTheta - upgrade.getUpgrade(GunShotgun.RANGE_ITEM).upgradeCount * 2;
 			int speed = initialSpeed;
+			double deltaTheta = upgrade.getUpgrade(GunShotgun.RANGE_ITEM).value;
 			ProjectileShotgun ps = new ProjectileShotgun(x, y, theta, bursts, deltaTheta, speed, container, container.getUserId());
-			ps.damage = initialDamage - upgrade.getUpgrade(GunShotgun.DAMAGE_ITEM).upgradeCount * 10;
+			ps.damage = upgrade.getUpgrade(GunShotgun.DAMAGE_ITEM).value;
 			container.getCreator().createOnNetwork(ps);
 			container.add(ps);
 			return ps;

@@ -57,17 +57,20 @@ public class ArsenalPanel{
 	
 	public void addToArsenal(ArsenalGroup group, ArsenalItem aItem) {
 		if (groups.contains(group)) {
-			group.items.add(aItem);
-			aItem.info.arsenalGroup = group;
-			aItem.shop = shop;
+			addArsenalItem(group, aItem);
 		} else {
 			groups.add(group);
-			group.items.add(aItem);
-			aItem.info.arsenalGroup = group;
-			aItem.shop = shop;
+			addArsenalItem(group, aItem);
 		}
 		if (displayingGroup(group))
 			refreshDisplay();
+	}
+	
+	private void addArsenalItem(ArsenalGroup group, ArsenalItem item) {
+		group.items.add(item);
+		item.info.arsenalGroup = group;
+		item.observeShopPoints.observeChange(shop);
+		shop.observer().watch(item.observeShopPoints);
 	}
 	
 	public void refreshDisplay() {

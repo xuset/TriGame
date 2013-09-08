@@ -9,14 +9,14 @@ public class ProjectilePistol extends Projectile{
 	public final static String SPRITE_ID = "projectile";
 	public final static String IDENTIFIER = "pis";
 	private static final int initialSpeed = 800;
-	private static final int initialDamage = -35;
 	
 	private int x, y;
 	private double theta;
 	
 	protected Entity entity;
-	protected int speed = initialSpeed, damage = initialDamage; //speed pixels/sec
-
+	protected int speed = initialSpeed; //speed pixels/sec
+	protected int damage = 0;
+	
 	protected ProjectilePistol(int x, int y, double theta, ProjectileContainer container, long ownerId) {
 		super(container, ownerId);
 		entity = new Entity("projectile", x, y);
@@ -28,7 +28,7 @@ public class ProjectilePistol extends Projectile{
 	
 	public static ProjectilePistol create(Entity start, ProjectileContainer container, UpgradeManager upgrade) {
 		ProjectilePistol p = new ProjectilePistol((int) start.getCenterX(), (int) start.getCenterY(), start.getAngle(), container, container.getUserId());
-		p.damage = initialDamage - upgrade.getUpgrade(GunPistol.DAMAGE_ITEM).upgradeCount * 10;
+		p.damage = upgrade.getUpgrade(GunPistol.DAMAGE_ITEM).value;
 		container.getCreator().createOnNetwork(p);
 		container.add(p);
 		return p;

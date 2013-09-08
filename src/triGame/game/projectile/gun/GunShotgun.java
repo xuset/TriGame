@@ -19,19 +19,20 @@ public class GunShotgun extends AbstractGun {
 	public static final ShopItem DAMAGE_ITEM = new ShopItem("Damage", 100);
 	public static final ShopItem UNLOCK_ITEM = new ShopItem(NAME, 200);
 	private static final int initialShotDelay = 700;
+	private static final int initialDamage = -20;
+	private static final int initialRange = 10; //in degrees
 	
-	private UpgradeItem fireRateUpgrade;
+	private UpgradeItem fireRateUpgrade = new UpgradeItem(FIRE_RATE_ITEM, 3, initialShotDelay, -50);
 	private Sound sound = Sound.get("media/Pistol_Shot.wav");
 	
 	public GunShotgun(GunManager gunManager) {
 		super(gunManager, KEY_CODE, NAME);
-		semiShotDelay = 500;
+		semiShotDelay = initialShotDelay - 200;
 		autoShotDelay = initialShotDelay;
 		UpgradeManager um = new UpgradeManager(gunManager.getShopManager(), NAME);
-		fireRateUpgrade = new UpgradeItem(FIRE_RATE_ITEM);
 		um.addUpgrade(fireRateUpgrade);
-		um.addUpgrade(DAMAGE_ITEM);
-		um.addUpgrade(RANGE_ITEM);
+		um.addUpgrade(new UpgradeItem(DAMAGE_ITEM, 3, initialDamage, -10));
+		um.addUpgrade(new UpgradeItem(RANGE_ITEM, 3, initialRange, -2));
 		setUpgradeManager(um);
 		setLocked(UNLOCK_ITEM);
 		automaticFire = true;

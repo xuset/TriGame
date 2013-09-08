@@ -5,17 +5,17 @@ import triGame.game.entities.building.Tower;
 public class ProjectileTower extends ProjectilePistol {
 	public static final String IDENTIFIER = "tower";
 	private static final int initialSpeed = 800;
-	private static final int initialDamage = -30;
+	private int damage = 0;
 	private ProjectileTower(int x, int y, double theta, ProjectileContainer container, long ownerId) {
 		super(x, y, theta, container, ownerId);
 		this.speed = initialSpeed;
-		this.damage = initialDamage;
 	}
 	
-	public static ProjectileTower create(Tower start, ProjectileContainer container) {
+	public static ProjectileTower create(Tower start, ProjectileContainer container, int damage) {
 		ProjectileTower p = new ProjectileTower((int) start.getCenterX(), (int) start.getCenterY(), start.getAngle(), container, container.getUserId());
 		container.getCreator().createOnNetwork(p);
 		container.add(p);
+		p.damage = damage;
 		return p;
 	}
 	

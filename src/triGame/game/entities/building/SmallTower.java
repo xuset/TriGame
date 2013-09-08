@@ -9,11 +9,10 @@ public class SmallTower extends Tower {
 	public static final int INITIAL_RANGE = 300;
 	
 	private static final int initialShootDelay = 600;
+	private static final int initialDamage = -20;
 	
 	public SmallTower(int x, int y, BuildingManager manager, long ownerId, long entityId) {
 		super(SPRITE_ID, x, y, manager, ownerId, entityId, INITIAL_RANGE);
-		shootDelay = initialShootDelay;
-		range = INITIAL_RANGE;
 	}
 	
 	public static SmallTower create(int x, int y, BuildingManager manager) {
@@ -21,6 +20,9 @@ public class SmallTower extends Tower {
 		t.createOnNetwork(true);
 		manager.add(t);
 		t.addUpgrades();
+		t.rangeUpgrade.value = INITIAL_RANGE;
+		t.damageUpgrade.value = initialDamage;
+		t.fireRateUpgrade.value = initialShootDelay;
 		return t;
 	}
 	

@@ -1,5 +1,6 @@
 package triGame.game.ui.upgrades;
 
+import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -17,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.TitledBorder;
 
+import tSquare.util.Observer;
 import triGame.game.shopping.ShopManager;
 import triGame.game.shopping.UpgradeItem;
 import triGame.game.shopping.UpgradeManager;
@@ -38,6 +40,7 @@ public class UpgradePanel extends JPanel{
 	
 	public UpgradePanel(ShopManager shop) {
 		this.shop = shop;
+		shop.observer().watch(pointChange);
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		pnlAttribute.setBorder(bdrAttribute);
 		pnlAttribute.setLayout(new BoxLayout(pnlAttribute, BoxLayout.X_AXIS));
@@ -80,6 +83,10 @@ public class UpgradePanel extends JPanel{
 	
 	private void setAttribute(UpgradeItem upgrade) {
 		lblPrice.setText("$" + upgrade.shopItem.getCost());
+		if (shop.points < upgrade.shopItem.getCost())
+			lblPrice.setForeground(Color.red);
+		else
+			lblPrice.setForeground(Color.black);
 		int value = (int) (((double) upgrade.upgradeCount) / upgrade.maxUpgrades * 100);
 		pbProgress.setValue(value);
 		bdrAttribute.setTitle(upgrade.shopItem.getName());
@@ -94,11 +101,25 @@ public class UpgradePanel extends JPanel{
 	
 	private void clearAttribute() {
 		lblPrice.setText("$0");
+		lblPrice.setForeground(Color.black);
 		pbProgress.setValue(0);
 		bdrAttribute.setTitle("Upgrade");
 		btnBuy.setEnabled(false);
 		selectedAttribute = null;
 	}
+	
+	private Observer.Change<ShopManager> pointChange = new Observer.Change<ShopManager>() {
+		@Override
+		public void observeChange(ShopManager t) {
+			if (selectedAttribute != null) {
+				if (t.points < selectedAttribute.shopItem.getCost())
+					lblPrice.setForeground(Color.red);
+				else
+					lblPrice.setForeground(Color.black);
+				
+			}
+		}
+	};
 	
 	private ItemListener cmbListener = new ItemListener() {
 		@Override
