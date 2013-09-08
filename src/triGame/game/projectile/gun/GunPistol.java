@@ -15,6 +15,7 @@ public class GunPistol extends AbstractGun {
 	public static final int KEY_CODE = KeyEvent.VK_1;
 	public static final ShopItem FIRE_RATE_ITEM = new ShopItem("Fire rate", 100);
 	public static final ShopItem DAMAGE_ITEM = new ShopItem("Damage", 100);
+	public static final ShopItem UNLOCK = new ShopItem("Pistol", 0, true);
 	private static final int initialShotDelay = 230;
 	private static final String gunName = "Pistol";
 	
@@ -23,6 +24,8 @@ public class GunPistol extends AbstractGun {
 	
 	public GunPistol(GunManager gunManager) {
 		super(gunManager, KEY_CODE, gunName);
+		setLocked(UNLOCK);
+		unlock();
 		semiShotDelay = initialShotDelay;
 		UpgradeManager um = new UpgradeManager(gunManager.getShopManager(), gunName);
 		fireRateUpgrade = new UpgradeItem(FIRE_RATE_ITEM);
@@ -35,7 +38,7 @@ public class GunPistol extends AbstractGun {
 	private int lastFireUpgradeCount = 0;
 	public void shoot(Person player, ProjectileContainer container) {
 		if (fireRateUpgrade.upgradeCount != lastFireUpgradeCount) {
-			semiShotDelay = initialShotDelay - fireRateUpgrade.upgradeCount * 25;
+			semiShotDelay = initialShotDelay - fireRateUpgrade.upgradeCount * 20;
 			lastFireUpgradeCount = fireRateUpgrade.upgradeCount;
 		}
 		ProjectilePistol.create(player, container, getUpgradeManager());

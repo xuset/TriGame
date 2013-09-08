@@ -36,7 +36,7 @@ public class ProjectileShotgun extends Projectile {
 			int y = (int) start.getCenterY();
 			double theta = start.getAngle();
 			int bursts = initialBursts;
-			double deltaTheta = initialDeltaTheta;
+			double deltaTheta = initialDeltaTheta - upgrade.getUpgrade(GunShotgun.RANGE_ITEM).upgradeCount * 2;
 			int speed = initialSpeed;
 			ProjectileShotgun ps = new ProjectileShotgun(x, y, theta, bursts, deltaTheta, speed, container, container.getUserId());
 			ps.damage = initialDamage - upgrade.getUpgrade(GunShotgun.DAMAGE_ITEM).upgradeCount * 10;

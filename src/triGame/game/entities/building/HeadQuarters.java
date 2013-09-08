@@ -6,12 +6,12 @@ public class HeadQuarters extends Building {
 	public static final String IDENTIFIER = "hq";
 	public static final String SPRITE_ID = "hq";
 	public static final ShopItem NEW_HQ = new ShopItem("HQ", 1000);
+	public static final int INITIAL_RADIUS = 500;
 	
 	private static final int spriteLength = 100;
-	private static final int visibilityRadius = 500;
 	
 	public HeadQuarters(int x, int y, BuildingManager manager, long ownerId, long entityId) {
-		super(SPRITE_ID, x, y, manager, ownerId, entityId, visibilityRadius);
+		super(SPRITE_ID, x, y, manager, ownerId, entityId, INITIAL_RADIUS);
 		health = 1500;
 		healthBar.relativeY = 5;
 		healthBar.maxHealth = (int) health;

@@ -8,24 +8,28 @@ import tSquare.system.Sound;
 import triGame.game.entities.zombies.Zombie;
 import triGame.game.projectile.ProjectileTower;
 import triGame.game.shopping.ShopItem;
+import triGame.game.shopping.UpgradeItem;
 
 public class Tower extends Building {
 	public static final String IDENTIFIER = "tower";
 	public static final String SPRITE_ID = "tower";
 	public static final ShopItem NEW_TOWER = new ShopItem("Tower", 500);
+	public static final int INITIAL_RANGE = 500;
+	
+	protected UpgradeItem rangeUpgrade;
+	protected UpgradeItem fireRateUpgrade;
+	protected UpgradeItem damageUpgrade;
 	
 	private static final int initialShootDelay = 500;
-	private static final int initialRange = 500;
 	
-	protected int range = initialRange;
+	protected int range = INITIAL_RANGE;
 	protected int shootDelay = initialShootDelay;
 	
-	//private BuildingManager manager;
 	private Sound shotSound = new Sound("tower", "media/Pistol_Shot.wav");
 	private long lastShot = 0;
 	
 	public Tower(int x, int y, BuildingManager manager, long ownerId, long entityId) {
-		super(SPRITE_ID, x, y, manager, ownerId, entityId, initialRange);
+		super(SPRITE_ID, x, y, manager, ownerId, entityId, INITIAL_RANGE);
 		this.manager = manager;
 	}
 	
@@ -38,11 +42,21 @@ public class Tower extends Building {
 		Tower t = new Tower(x, y, manager, manager.getUserId(), manager.getUniqueId());
 		t.createOnNetwork(true);
 		manager.add(t);
+		t.addUpgrades();
 		return t;
 	}
 	
+	protected void addUpgrades() {
+		rangeUpgrade = new UpgradeItem("Range", 100);
+		fireRateUpgrade = new UpgradeItem("Fire rate", 100);
+		damageUpgrade = new UpgradeItem("Damage", 100);
+		upgrades.addUpgrade(rangeUpgrade);
+		upgrades.addUpgrade(fireRateUpgrade);
+		upgrades.addUpgrade(damageUpgrade);
+	}
+	
 	private void shoot() {
-		if (lastShot + shootDelay < System.currentTimeMillis()) {
+		if (lastShot + shootDelay  < System.currentTimeMillis()) {
 			shotSound.play();
 			ProjectileTower.create(this, manager.getProjectils());
 			lastShot = System.currentTimeMillis();

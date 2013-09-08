@@ -15,8 +15,9 @@ public class GunShotgun extends AbstractGun {
 	public static final int KEY_CODE = KeyEvent.VK_2;
 	public static final String NAME = "Shotgun";
 	public static final ShopItem FIRE_RATE_ITEM = new ShopItem("Fire rate", 100);
+	public static final ShopItem RANGE_ITEM = new ShopItem("Range", 100);
 	public static final ShopItem DAMAGE_ITEM = new ShopItem("Damage", 100);
-	private static final ShopItem unlockItem = new ShopItem(NAME, 200);
+	public static final ShopItem UNLOCK_ITEM = new ShopItem(NAME, 200);
 	private static final int initialShotDelay = 700;
 	
 	private UpgradeItem fireRateUpgrade;
@@ -30,15 +31,17 @@ public class GunShotgun extends AbstractGun {
 		fireRateUpgrade = new UpgradeItem(FIRE_RATE_ITEM);
 		um.addUpgrade(fireRateUpgrade);
 		um.addUpgrade(DAMAGE_ITEM);
+		um.addUpgrade(RANGE_ITEM);
 		setUpgradeManager(um);
-		setLocked(unlockItem);
+		setLocked(UNLOCK_ITEM);
 		automaticFire = true;
 	}
 	
 	private int lastFireUpgradeCount = 0;
 	public void shoot(Person player, ProjectileContainer container) {
 		if (fireRateUpgrade.upgradeCount != lastFireUpgradeCount) {
-			semiShotDelay = initialShotDelay - fireRateUpgrade.upgradeCount * 25;
+			autoShotDelay = initialShotDelay - fireRateUpgrade.upgradeCount * 50;
+			semiShotDelay = 500 - fireRateUpgrade.upgradeCount * 50;
 			lastFireUpgradeCount = fireRateUpgrade.upgradeCount;
 		}
 		ProjectileShotgun.create(player, container, getUpgradeManager());

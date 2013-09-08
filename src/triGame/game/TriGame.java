@@ -2,7 +2,7 @@ package triGame.game;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import tSquare.game.DrawBoard;
 import tSquare.game.Game;
@@ -17,10 +17,10 @@ import triGame.game.entities.building.BuildingManager;
 import triGame.game.entities.building.HeadQuarters;
 import triGame.game.entities.wall.WallManager;
 import triGame.game.entities.zombies.ZombieManager;
-import triGame.game.playerInterface.PlayerInterface;
 import triGame.game.projectile.gun.GunManager;
 import triGame.game.safeArea.SafeAreaBoard;
 import triGame.game.shopping.ShopManager;
+import triGame.game.ui.UserInterface;
 
 
 //TODO create NetFunction to receive request for initial player spawn location and color
@@ -34,7 +34,6 @@ public class TriGame extends Game{
 	private GameBoard gameBoard;
 	private PeripheralInput input = new PeripheralInput();
 	private TiledBackground background;
-	private PlayerInterface playerInterface;
 	private boolean isGameOver = false;
 	
 	public PersonManager personManager;
@@ -48,6 +47,7 @@ public class TriGame extends Game{
 	public Person player;
 	public SafeAreaBoard safeBoard;
 	public GameOver gameOver;
+	public UserInterface ui;
 	
 	public Display getDisplay() { return display; }
 	public DrawBoard getDrawBoard() { return drawBoard; }
@@ -64,12 +64,8 @@ public class TriGame extends Game{
 	}
 	
 	public void load() {
-		display = new Display(500, 500, "Triangle Game - " + (getNetwork().isServer()? "Server" : "Client"));
-		drawBoard = new DrawBoard(display.getWidth() - PlayerInterface.WIDTH, display.getHeight(), display);
+		loadVisual();
 		gameBoard = new GameBoard(5000, 5000, drawBoard);
-		drawBoard.addKeyListener(input.keyboard);
-		drawBoard.addMouseMotionListener(input.mouse);
-		drawBoard.requestFocus();
 		personManager = new PersonManager(managerController, this, gameBoard);
 		buildingManager = new BuildingManager(managerController, this, gameBoard, zombieManager);
 		wallManager = new WallManager(managerController, this, gameBoard);
@@ -77,17 +73,26 @@ public class TriGame extends Game{
 		zombieManager = new ZombieManager(managerController, this, gameBoard);
 		roundHandler = new RoundHandler(zombieManager, input.keyboard, drawBoard, getNetwork().getObjController(), getNetwork().isServer(), personManager);
 		safeBoard = new SafeAreaBoard(gameBoard);
-		Load.sprites();
 		if (getNetwork().isServer()) {
 			HeadQuarters.create(gameBoard.getWidth() / 2 - 50, gameBoard.getHeight() / 2 - 50, buildingManager);
 			Map.createRandomMap(wallManager, buildingManager, spawnHoleManager, safeBoard);
 		}
-		player = Person.create(gameBoard.getWidth() / 2 - 50, gameBoard.getHeight() / 2 -100, personManager);
 		gunManager = new GunManager(this, gameBoard);
+		ui = new UserInterface(this);
+		player = Person.create(gameBoard.getWidth() / 2 - 50, gameBoard.getHeight() / 2 -100, personManager);
 		background = new TiledBackground(gameBoard, drawBoard, player, BLOCK_WIDTH, BLOCK_HEIGHT);
-		playerInterface = new PlayerInterface(this);
-		drawBoard.addMouseListener(playerInterface.getAttacher());
+		drawBoard.addMouseListener(ui.attacher);
 		gameOver = new GameOver(drawBoard);
+	}
+	
+	private void loadVisual() {
+		display = new Display(500, 500, "Triangle Game - " + (getNetwork().isServer()? "Server" : "Client"));
+		drawBoard = new DrawBoard(display.getWidth(), display.getHeight(), display);
+		drawBoard.addKeyListener(input.keyboard);
+		drawBoard.addMouseMotionListener(input.mouse);
+		drawBoard.requestFocus();
+		Load.sprites();
+		
 	}
 
 	protected void logicLoop() {
@@ -99,7 +104,6 @@ public class TriGame extends Game{
 		buildingManager.performLogic();
 		wallManager.performLogic();
 		gunManager.performLogic();
-		playerInterface.displayPointsAndRound();
 		spawnHoleManager.completeListModifications();
 	}
 
@@ -113,7 +117,7 @@ public class TriGame extends Game{
 		zombieManager.draw();
 		safeBoard.draw();
 		personManager.draw();
-		playerInterface.getAttacher().draw();
+		ui.attacher.draw();
 		roundHandler.draw();
 		if (isGameOver)
 			gameOver.draw();
@@ -128,12 +132,19 @@ public class TriGame extends Game{
 	}
 	
 	private static final Font statFont = new Font("Arial", Font.BOLD, 12);
+	private static final Color statBackGround = new Color(30, 30, 30, 150);
 	private void drawStats() {
-		Graphics g = drawBoard.getDrawing();
-		g.setColor(Color.GREEN);
+		final int ix = 10;
+		final int iy = 13;
+		final int iw = 110;
+		final int ih = 55;
+		Graphics2D g = (Graphics2D) drawBoard.getDrawing();
+		g.setColor(statBackGround);
+		g.fillRoundRect(ix -10, iy - 13, iw, ih, 15, 15);
+		g.setColor(Color.LIGHT_GRAY);
 		g.setFont(statFont);
-		g.drawString("points: " + shop.points, 50, 50);
-		g.drawString("FPS: " + getCurrentFps(), 50, 65);
-		g.drawString("Delta: " + getDelta(), 50, 80);
+		g.drawString("$" + shop.points, ix, iy);
+		g.drawString("Killed " + zombieManager.getZombiesKilled() + " zombies", ix, iy + 1 * 15);
+		g.drawString(getCurrentFps() + "FPS", ix, iy + 2 * 15);
 	}
 }

@@ -11,6 +11,9 @@ public class UpgradeItem {
 		this.shopItem = shopItem;
 	}
 	
+	public String toString() {
+		return shopItem.name;
+	}
 	
 	
 }

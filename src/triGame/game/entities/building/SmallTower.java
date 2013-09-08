@@ -5,21 +5,22 @@ import triGame.game.shopping.ShopItem;
 public class SmallTower extends Tower {
 	public static final String IDENTIFIER = "samll tower";
 	public static final String SPRITE_ID = "small tower";
-	public static final ShopItem NEW_TOWER = new ShopItem("Light Attack", 250);
+	public static final ShopItem NEW_TOWER = new ShopItem("Small Tower", 250);
+	public static final int INITIAL_RANGE = 300;
 	
-	private static final int initialRange = 300;
 	private static final int initialShootDelay = 600;
 	
 	public SmallTower(int x, int y, BuildingManager manager, long ownerId, long entityId) {
-		super(SPRITE_ID, x, y, manager, ownerId, entityId, initialRange);
+		super(SPRITE_ID, x, y, manager, ownerId, entityId, INITIAL_RANGE);
 		shootDelay = initialShootDelay;
-		range = initialRange;
+		range = INITIAL_RANGE;
 	}
 	
 	public static SmallTower create(int x, int y, BuildingManager manager) {
 		SmallTower t = new SmallTower(x, y, manager, manager.getUserId(), manager.getUniqueId());
 		t.createOnNetwork(true);
 		manager.add(t);
+		t.addUpgrades();
 		return t;
 	}
 	

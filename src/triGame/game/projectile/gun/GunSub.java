@@ -15,7 +15,7 @@ public class GunSub extends AbstractGun {
 	public static final int KEY_CODE = KeyEvent.VK_3;
 	public static final ShopItem FIRE_RATE_ITEM = new ShopItem("Fire rate", 100);
 	public static final ShopItem DAMAGE_ITEM = new ShopItem("Damage", 100);
-	private static final ShopItem unlockItem = new ShopItem("Sub", 200);
+	public static final ShopItem UNLOCK_ITEM = new ShopItem("Sub", 200);
 	private static final int initialShotDelay = 200;
 	private static final String gunName = "Sub";
 	
@@ -31,13 +31,14 @@ public class GunSub extends AbstractGun {
 		um.addUpgrade(fireRateUpgrade);
 		um.addUpgrade(DAMAGE_ITEM);
 		setUpgradeManager(um);
-		setLocked(unlockItem);
+		setLocked(UNLOCK_ITEM);
 	}
 	
 	private int lastFireUpgradeCount = 0;
 	public void shoot(Person player, ProjectileContainer container) {
 		if (fireRateUpgrade.upgradeCount != lastFireUpgradeCount) {
-			semiShotDelay = initialShotDelay - fireRateUpgrade.upgradeCount * 25;
+			semiShotDelay = initialShotDelay - fireRateUpgrade.upgradeCount * 15;
+			autoShotDelay = initialShotDelay - fireRateUpgrade.upgradeCount * 15;
 			lastFireUpgradeCount = fireRateUpgrade.upgradeCount;
 		}
 		ProjectileSub.create(player, container, getUpgradeManager());
