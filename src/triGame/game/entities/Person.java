@@ -32,9 +32,6 @@ public class Person extends Entity implements GameIntegratable{
 		Person p = new Person(x, y, manager, manager.getUniqueId());
 		p.createOnNetwork(true);
 		manager.add(p);
-		AbstractWall wall = p.collidedWithFirst(manager.getWallManager().getList());
-		if (wall != null) //if player spawns inside wall, remove the wall
-			wall.remove();
 		return p;
 	}
 	

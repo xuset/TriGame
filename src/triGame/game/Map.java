@@ -111,6 +111,8 @@ abstract class Map {
 				p = wallManager.objectGrid.roundToGrid(Math.random() * gameBoard.getWidth(), Math.random() * gameBoard.getHeight());
 				if (wallManager.objectGrid.isBlockOpen(p) == false || buildingManager.objectGrid.isBlockOpen(p) == false || spawnManager.objectGrid.isBlockOpen(p) == false)
 					foundSpot = false;
+				if (p.isEqualTo(gameBoard.getWidth() / 2 - 50, gameBoard.getHeight() / 2 -100)) //location of player spawn
+					foundSpot = false;
 			}
 			Barrier.create(p.intX(),  p.intY(), wallManager);
 		}
