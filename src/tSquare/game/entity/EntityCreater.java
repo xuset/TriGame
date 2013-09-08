@@ -44,6 +44,7 @@ public class EntityCreater {
 					e.createUpdateVars();
 				e.createdOnNetwork = true;
 				e.id = entityId;
+				e.owned = false;
 			}
 			return null;
 		}

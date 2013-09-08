@@ -29,6 +29,7 @@ public class Entity implements GameIntegratable{
 	protected String spriteId;
 	protected double angle = 90;
 	protected Long id;
+	protected boolean owned = true;
 	protected boolean createdOnNetwork = false;
 	protected double health = 100;
 	
