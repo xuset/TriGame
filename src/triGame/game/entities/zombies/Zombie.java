@@ -55,14 +55,16 @@ public class Zombie extends Entity {
 	
 	public void performLogic() {
 		if (manager.getNetwork().isServer()) {
-			if (System.currentTimeMillis() > spawnTime) {
-				if (target.isRemoved())
-					target = manager.determineTargetEntity();
-				boolean playerDidntMoved = Point.isEqualTo(lastTargetBlock.x, lastTargetBlock.y, buildingManager.objectGrid.roundToGridX(target.getCenterX()), buildingManager.objectGrid.roundToGridY(target.getCenterY()));
-				if (buildingManager.objectGrid.modCount + manager.getWallManager().objectGrid.modCount != lastObjectGridModCount || (pathToTargetExists && playerDidntMoved == false))
-					findPath();
-				move();
-				varContainer.update();
+			if (target == null || target.isRemoved())
+				target = manager.determineTargetEntity();
+			if (target != null) {
+				if (System.currentTimeMillis() > spawnTime) {
+					boolean playerDidntMoved = Point.isEqualTo(lastTargetBlock.x, lastTargetBlock.y, buildingManager.objectGrid.roundToGridX(target.getCenterX()), buildingManager.objectGrid.roundToGridY(target.getCenterY()));
+					if (buildingManager.objectGrid.modCount + manager.getWallManager().objectGrid.modCount != lastObjectGridModCount || (pathToTargetExists && playerDidntMoved == false))
+						findPath();
+					move();
+					varContainer.update();
+				}
 			}
 		}
 	}

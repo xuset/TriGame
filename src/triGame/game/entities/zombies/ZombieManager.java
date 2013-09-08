@@ -62,6 +62,8 @@ public class ZombieManager extends Manager<Zombie> {
 	}
 	
 	private Entity determinePerson() {
+		if (game.personManager.getList().isEmpty())
+			return null;
 		int personIndex =(int) (Math.random() * game.personManager.getList().size());
 		return game.personManager.get(personIndex);
 	}

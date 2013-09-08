@@ -99,11 +99,13 @@ public class TriGame extends Game{
 		System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
 		personManager.performLogic();
 		gameBoard.centerViewWindowCordinates(player.getCenterX(), player.getCenterY());
-		roundHandler.performLogic();
 		zombieManager.performLogic();
 		buildingManager.performLogic();
 		wallManager.performLogic();
-		gunManager.performLogic();
+		if (isGameOver == false) {
+			roundHandler.performLogic();
+			gunManager.performLogic();
+		}
 		spawnHoleManager.completeListModifications();
 	}
 
