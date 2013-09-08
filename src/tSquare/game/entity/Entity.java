@@ -147,6 +147,7 @@ public class Entity implements GameIntegratable{
 		varContainer = new VarContainer();
 	}
 	
+	public boolean owned() { return owned; }
 	public Manager<?> getManager() { return manager; }
 	public String getSpriteId() { return sprite.getUrl(); }
 	public double getAngle() { return angle; }
