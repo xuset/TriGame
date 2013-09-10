@@ -1,10 +1,12 @@
 package triGame.game;
 
+import java.io.IOException;
+
 import tSquare.math.IdGenerator;
 import tSquare.system.Network;
 
-public class Startup {
-	public static void main(String[] args) {
+public class CmdStartup {
+	public static void main(String[] args) throws IOException {
 		if (args.length == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "/h")) {
 			displayHelp();
 		} else if (args.length < 3){
