@@ -65,7 +65,7 @@ public class Tower extends Building {
 	
 	public void performLogic() {
 		ArrayList<Zombie> zombies = manager.getGameInstance().zombieManager.getList();
-		if (zombies.size() == 0)
+		if (zombies.size() == 0 || owned == false)
 			return;
 		Zombie shortestZombie = null;
 		int shortestDistance = Integer.MAX_VALUE;
