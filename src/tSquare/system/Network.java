@@ -1,5 +1,6 @@
 package tSquare.system;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 import objectIO.connection.Hub;
@@ -31,19 +32,14 @@ public class Network {
 		this.userId = userId;
 	}
 	
-	public static Network connectToServer(String host, int port, long userId) {
-		try {
-			ClientHub hub = new ClientHub(userId, host, port);
-			Network n = new Network(hub, false, userId);
-			n.client = hub;
-			return n;
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public static Network connectToServer(String host, int port, long userId) throws UnknownHostException {
+		ClientHub hub = new ClientHub(userId, host, port);
+		Network n = new Network(hub, false, userId);
+		n.client = hub;
+		return n;
 	}
 	
-	public static Network startupServer(int port, long userId) {
+	public static Network startupServer(int port, long userId) throws IOException {
 		ServerHub hub = new ServerHub(userId, port);
 		hub.startServer();
 		Network n = new Network(hub, true, userId);

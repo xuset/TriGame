@@ -1,5 +1,7 @@
 package tSquare.game;
 
+import java.io.IOException;
+
 import tSquare.events.EventHandler;
 import tSquare.game.entity.EntityCreater;
 import tSquare.math.IdGenerator;
@@ -37,7 +39,11 @@ public abstract class Game implements Runnable {
 	public boolean isStopped() { return stopGame; }
 	
 	public Game() {
-		network = Network.startupServer(3000, 3l);
+		try {
+			network = Network.startupServer(3000, 3l);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		construct();
 	}
 	
