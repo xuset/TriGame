@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 import objectIO.netObject.NetObjectController;
 import objectIO.netObject.NetVar;
 import objectIO.netObject.NetVarChange;
-import objectIO.connection.Connection;
+import objectIO.connections.Connection;
 
 import tSquare.game.DrawBoard;
 import tSquare.game.GameIntegratable;

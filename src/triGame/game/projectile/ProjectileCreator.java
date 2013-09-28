@@ -1,7 +1,6 @@
 package triGame.game.projectile;
 
-import objectIO.connection.AbstractConnection;
-import objectIO.connection.Connection;
+import objectIO.connections.Connection;
 import objectIO.markupMsg.MarkupMsg;
 import objectIO.netObject.NetFunction;
 import objectIO.netObject.NetFunctionEvent;
@@ -21,18 +20,18 @@ public class ProjectileCreator {
 		MarkupMsg msg = new MarkupMsg();
 		msg.setAttribute("proj", p.getIdentifier());
 		msg.content = p.createToString();
-		createFunc.sendCall(msg, AbstractConnection.BROADCAST_CONNECTION);
+		createFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
 	}
 	
 	private NetFunctionEvent createEvent = new NetFunctionEvent() {
 		public MarkupMsg calledFunc(MarkupMsg msg, Connection c) {
 			String projectile = msg.getAttribute("proj").value;
 			if (projectile.equals(ProjectilePistol.IDENTIFIER))
-				ProjectilePistol.createFromString(msg.content, container, c.getEndPointId());
+				ProjectilePistol.createFromString(msg.content, container, c.getEndId());
 			if (projectile.equals(ProjectileTower.IDENTIFIER))
-				ProjectileTower.createFromString(msg.content, container, c.getEndPointId());
+				ProjectileTower.createFromString(msg.content, container, c.getEndId());
 			if (projectile.equals(ProjectileShotgun.IDENTIFIER))
-				ProjectileShotgun.createFromString(msg.content, container, c.getEndPointId());
+				ProjectileShotgun.createFromString(msg.content, container, c.getEndId());
 			return null;
 		}
 		

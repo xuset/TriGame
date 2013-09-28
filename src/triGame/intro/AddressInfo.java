@@ -79,7 +79,7 @@ public class AddressInfo extends JPanel{
 			if (hosting) {
 				try {
 					int port = Integer.parseInt(txtAddress.getText());
-					network = Network.startupServer(port, 3l);
+					network = Network.startupServer(port);
 				} catch (NumberFormatException ex) {
 					printError("Invalid format!");
 				} catch (IOException ex) {

@@ -8,11 +8,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import objectIO.connection.AbstractConnection;
-import objectIO.connection.Connection;
-import objectIO.connection.p2pServer.ConnectionEvent;
-import objectIO.connection.p2pServer.P2PConnection;
-import objectIO.connection.p2pServer.P2PHub;
+import objectIO.connections.Connection;
+import objectIO.connections.p2pServer.server.ConnectionEvent;
+import objectIO.connections.p2pServer.server.P2PServer;
+import objectIO.connections.p2pServer.server.ServerConnection;
 import objectIO.markupMsg.MarkupMsg;
 import objectIO.netObject.NetFunction;
 import objectIO.netObject.NetFunctionEvent;
@@ -34,7 +33,7 @@ public class Lobby extends JPanel{
 		new Thread(netController).start();
 		startFunc = new NetFunction(netController, "start", startEvent);
 		
-		displaySize(net.getHub().getAllConnections().size() + 1);
+		displaySize(net.getHub().getAllConnections().size());
 		add(lblSize);
 		add(Box.createHorizontalStrut(20));
 		if (net.isServer())
@@ -44,13 +43,13 @@ public class Lobby extends JPanel{
 	}
 	
 	private void hosting(Network net) {
-		net.getServerInstance().connectionEvent = connectionEvent;
+		net.getServerInstance().event = connectionEvent;
 		btnStart.addMouseListener(startListener);
 		add(btnStart);
 	}
 	
 	private void joining() {
-		add(new JLabel("Waiting on host to start"));
+		lblSize.setText("Waiting on host to start");
 	}
 	
 	void waitForPlayers() {
@@ -83,7 +82,7 @@ public class Lobby extends JPanel{
 	private MouseListener startListener = new MouseListener() {
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
-			startFunc.sendCall(new MarkupMsg(), AbstractConnection.BROADCAST_CONNECTION);
+			startFunc.sendCall(new MarkupMsg(), Connection.BROADCAST_CONNECTION);
 			shutdown();
 		}
 		public void mouseEntered(MouseEvent arg0) { }
@@ -94,13 +93,15 @@ public class Lobby extends JPanel{
 	
 	private ConnectionEvent connectionEvent = new ConnectionEvent() {
 		@Override
-		public void onNewConnection(P2PHub<?> hub, P2PConnection connection) {
-			displaySize(hub.getAllConnections().size() + 1);
+		public void onConnect(P2PServer s, ServerConnection c) {
+			displaySize(s.connections.size());
 		}
 
 		@Override
-		public void onDisconnection(P2PHub<?> hub, P2PConnection connection) {
-			displaySize(hub.getAllConnections().size() + 1);
+		public void onDisconnect(P2PServer s, ServerConnection c) {
+			displaySize(s.connections.size());
 		}
+		
+		public void onLastDisconnect(P2PServer s) { }
 	};
 }

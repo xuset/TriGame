@@ -18,7 +18,7 @@ public class GuiStartup {
 		if (args.length != 0)
 			CmdStartup.main(args);
 		else {
-			TriGame game = new TriGame(gatherPlayers(), false);
+			TriGame game = new TriGame(gatherPlayers());
 			game.load();
 			game.startGame();
 		}
@@ -26,7 +26,7 @@ public class GuiStartup {
 	
 	private static Network gatherPlayers() {
 
-		JFrame frame = new JFrame();
+		JFrame frame = new JFrame(); //start display where all panels are displayed
 		frame.setPreferredSize(new Dimension(400, 100));
 		frame.setTitle("TriGame");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,27 +36,28 @@ public class GuiStartup {
 		frame.add(panel);
 		frame.pack();
 		
-		GameMode gm = new GameMode();
+		GameMode gm = new GameMode(); //show game mode panel
 		panel.add(gm);
-		MODES mode = gm.getGameMode();
+		panel.updateUI();
+		MODES mode = gm.getGameMode(); //get chosen game mode
 		
-		AddressInfo ai = new AddressInfo(mode);
+		AddressInfo ai = new AddressInfo(mode); //show address/port port
 		panel.removeAll();
 		panel.add(ai);
 		panel.updateUI();
-		Network net = ai.getNetwork();
+		Network net = ai.getNetwork(); //get connected network
 		
-		if (mode == MODES.HOST || mode == MODES.JOIN) {
-			Lobby lb = new Lobby(net);
+		if (mode == MODES.HOST || mode == MODES.JOIN) { //if multiplayer
+			Lobby lb = new Lobby(net); //display lobby so all players can join
 			panel.removeAll();
 			panel.add(lb);
 			panel.updateUI();
-			lb.waitForPlayers();
+			lb.waitForPlayers(); //wait for all players to join
 		}
 		
 		frame.dispose();
 		
-		return net;
+		return net; //all players joined and connected
 	}
 
 }

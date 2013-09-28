@@ -54,13 +54,8 @@ public class TriGame extends Game{
 	public GameBoard getGameBoard() { return gameBoard; }
 	public PeripheralInput getInput() { return input; }
 	
-	public TriGame() {
-	}
-	public TriGame(Network network, boolean wait) {
+	public TriGame(Network network) {
 		super(network);
-		if (wait && network.isServer()) {
-			while (network.getHub().getAllConnections().size() == 0) { try { Thread.sleep(10); } catch (Exception ex) { } }
-		}
 	}
 	
 	public void load() {
