@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import objectIO.connection.Connection;
+import objectIO.connections.Connection;
 import objectIO.netObject.NetClass;
 import objectIO.netObject.NetVar;
 import tSquare.game.GameBoard;

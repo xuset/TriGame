@@ -2,8 +2,7 @@ package tSquare.game.entity;
 
 import java.util.HashMap;
 
-import objectIO.connection.AbstractConnection;
-import objectIO.connection.Connection;
+import objectIO.connections.Connection;
 import objectIO.markupMsg.MarkupMsg;
 import objectIO.markupMsg.MsgAttribute;
 import objectIO.netObject.NetFunction;
@@ -30,7 +29,7 @@ public class EntityCreater {
 		msg.addAttribute(new MsgAttribute("manager", e.manager.getHashMapKey()));
 		msg.addAttribute(new MsgAttribute("update", String.valueOf(e.allowUpdates)));
 		msg.content = e.createToString();
-		createFunc.sendCall(msg, AbstractConnection.BROADCAST_CONNECTION);
+		createFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
 	}
 	
 	private NetFunctionEvent createEvent = new NetFunctionEvent() {
@@ -58,7 +57,7 @@ public class EntityCreater {
 		MarkupMsg msg = new MarkupMsg();
 		msg.addAttribute(new MsgAttribute("manager", e.manager.getHashMapKey()));
 		msg.addAttribute(new MsgAttribute("id", String.valueOf(e.id)));
-		removeFunc.sendCall(msg, AbstractConnection.BROADCAST_CONNECTION);
+		removeFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
 	}
 	
 	private NetFunctionEvent removeEvent = new NetFunctionEvent() {

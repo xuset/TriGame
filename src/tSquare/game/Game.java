@@ -40,7 +40,7 @@ public abstract class Game implements Runnable {
 	
 	public Game() {
 		try {
-			network = Network.startupServer(3000, 3l);
+			network = Network.startupServer(3000);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
