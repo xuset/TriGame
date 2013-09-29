@@ -31,7 +31,8 @@ public class UpgradePanel extends JPanel{
 	private JProgressBar pbProgress = new JProgressBar();
 	private JPanel pnlAttribute = new JPanel();
 	private TitledBorder bdrAttribute = BorderFactory.createTitledBorder("");
-	private JComboBox<UpgradeItem> cmbList = new JComboBox<UpgradeItem>();
+	//private JComboBox<String> cmbList = new JComboBox<String>(); 	//for Java 7
+	private JComboBox cmbList = new JComboBox(); 					//for java 6
 	private JLabel lblImage = new JLabel();
 	
 	private UpgradeItem selectedAttribute = null;
@@ -136,7 +137,6 @@ public class UpgradePanel extends JPanel{
 				upgradeManager.upgrade(selectedAttribute);
 				setAttribute(selectedAttribute);
 			}
-				
 		}
 		public void mouseEntered(MouseEvent arg0) { }
 		public void mouseExited(MouseEvent arg0) { }

@@ -22,7 +22,7 @@ import triGame.game.shopping.UpgradeManager;
 public class ArsenalItem extends JPanel{
 	public static final int ITEM_SIZE = 50;
 	private static final long serialVersionUID = 8955177654417376268L;
-	private static final Border selectedBorder = BorderFactory.createLineBorder(Color.black, 1, false);
+	private static final Border selectedBorder = BorderFactory.createLineBorder(Color.black, 1);
 	private static final Border emptyBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
 	
 	JLabel lblPrice;
