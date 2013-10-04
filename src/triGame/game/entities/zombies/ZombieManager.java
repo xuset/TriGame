@@ -2,10 +2,11 @@ package triGame.game.entities.zombies;
 
 import java.util.ArrayList;
 
+import objectIO.markupMsg.MarkupMsg;
 import tSquare.game.GameBoard;
-import tSquare.game.Manager;
-import tSquare.game.ManagerController;
 import tSquare.game.entity.Entity;
+import tSquare.game.entity.Manager;
+import tSquare.game.entity.ManagerController;
 import tSquare.math.Point;
 import triGame.game.TriGame;
 import triGame.game.entities.PersonManager;
@@ -22,9 +23,11 @@ public class ZombieManager extends Manager<Zombie> {
 	
 	ZombiePathFinder pathFinder;
 	
-	public BuildingManager getBuildingManager() { return game.buildingManager; }
-	public WallManager getWallManager() { return game.wallManager; }
-	public PersonManager getPersonManager() { return game.personManager; }
+	BuildingManager getBuildingManager() { return game.buildingManager; }
+	WallManager getWallManager() { return game.wallManager; }
+	PersonManager getPersonManager() { return game.personManager; }
+	boolean isServer() { return game.getNetwork().isServer(); }
+	
 	public int getZombiesKilled() { return zombiesKilled; }
 	public int getZombiesAlive() { return list.size(); }
 	
@@ -37,16 +40,8 @@ public class ZombieManager extends Manager<Zombie> {
 	public Zombie create() {
 		return Zombie.create(this);
 	}
-
-	public Zombie createFromString(String parameters, long id) {
-		String[] parameter = parameters.split(":");
-		int x = Integer.parseInt(parameter[0]);
-		int y = Integer.parseInt(parameter[1]);
-		Zombie z = new Zombie(x, y, null, this, id);
-		add(z);
-		return z;
-	}
 	
+	@Override
 	public boolean remove(Zombie z) {
 		zombiesKilled++;
 		return super.remove(z);
@@ -109,6 +104,14 @@ public class ZombieManager extends Manager<Zombie> {
 			sh = spawnHoleDistance[(int) index];
 			return new Point(sh.getCenterX(), sh.getCenterY());
 		}
+	}
+	
+	@Override
+	public Zombie createFromMsg(MarkupMsg msg, long entityId) {
+		int x = (int) msg.getAttribute("x").getDouble();
+		int y = (int) msg.getAttribute("y").getDouble();
+		Zombie z = new Zombie(x, y, null, this, entityId);
+		return z;
 	}
 
 }

@@ -4,13 +4,13 @@ import objectIO.connections.Connection;
 import objectIO.markupMsg.MarkupMsg;
 import objectIO.netObject.NetFunction;
 import objectIO.netObject.NetFunctionEvent;
-import objectIO.netObject.NetObjectController;
+import objectIO.netObject.ObjController;
 
 public class ProjectileCreator {
 	private NetFunction createFunc;
 	private ProjectileContainer container;
 	
-	public ProjectileCreator(ProjectileContainer container, NetObjectController controller) {
+	public ProjectileCreator(ProjectileContainer container, ObjController controller) {
 		this.container = container;
 		createFunc = new NetFunction(controller, "createPro");
 		createFunc.function = createEvent;

@@ -1,6 +1,7 @@
 package triGame.game.entities;
 
 import tSquare.game.entity.Entity;
+import tSquare.math.IdGenerator;
 
 public class SpawnHole extends Entity{
 	public static final String SPRITE_ID = "hole";
@@ -10,13 +11,9 @@ public class SpawnHole extends Entity{
 	}
 	
 	public static SpawnHole create(int x, int y, SpawnHoleManager manager) {
-		SpawnHole s = new SpawnHole(x, y, manager, manager.getUniqueId());
+		SpawnHole s = new SpawnHole(x, y, manager, IdGenerator.getInstance().getId());
 		s.createOnNetwork(false);
 		manager.add(s);
 		return s;
-	}
-	
-	public String createToString() {
-		return (int) x + ":" + (int) y;
 	}
 }

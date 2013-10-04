@@ -1,8 +1,9 @@
 package triGame.game.entities.building;
 
+import objectIO.markupMsg.MarkupMsg;
 import tSquare.game.GameBoard;
-import tSquare.game.Manager;
-import tSquare.game.ManagerController;
+import tSquare.game.entity.Manager;
+import tSquare.game.entity.ManagerController;
 import tSquare.paths.ObjectGrid;
 import triGame.game.TriGame;
 import triGame.game.entities.PersonManager;
@@ -50,17 +51,21 @@ public class BuildingManager extends Manager<Building> {
 		return null;
 	}
 	
-	public Building createFromString(String parameters, long id) { //TODO use the given ID
-		String[] parameter = parameters.split(":", 4);
-		long ownerId = Long.parseLong(parameter[1]);
-		long entityId = Long.parseLong(parameter[2]);
-		Building b = null;
-		if (parameter[0].equals(Tower.IDENTIFIER))
-			b = Tower.createFromString(parameter[3], this, ownerId, entityId);
-		if (parameter[0].equals(HeadQuarters.IDENTIFIER))
-			b = HeadQuarters.createFromString(parameter[3], this, ownerId, entityId);
-		if (parameter[0].equals(SmallTower.IDENTIFIER))
-			b = SmallTower.createFromString(parameter[3], this, ownerId, entityId);
+	@Override
+	public Building createFromMsg(MarkupMsg msg, long entityId) {
+		int x = (int) msg.getAttribute("x").getDouble();
+		int y = (int) msg.getAttribute("y").getDouble();
+		long ownerId = msg.getAttribute("owner").getLong();
+		String type = msg.getAttribute("type").getString();
+		
+		Building b =  null;
+		if (type.equals(Tower.IDENTIFIER))
+			b = new Tower(x, y, this, ownerId, entityId);
+		if (type.equals(HeadQuarters.IDENTIFIER))
+			b = new HeadQuarters(x, y, this, ownerId, entityId);
+		if (type.equals(SmallTower.IDENTIFIER))
+			b = new SmallTower(x, y, this, ownerId, entityId);
+		
 		if (b != null)
 			add(b);
 		return b;

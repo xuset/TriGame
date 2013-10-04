@@ -3,9 +3,9 @@ package triGame.game.entities;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-
 import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
+import tSquare.math.IdGenerator;
 import tSquare.system.PeripheralInput;
 import triGame.game.entities.building.Building;
 import triGame.game.entities.wall.AbstractWall;
@@ -25,19 +25,20 @@ public class Person extends Entity implements GameIntegratable{
 		this.manager = manager;
 		this.input = manager.getInput();
 		healthBar = new HealthBar(manager.gameBoard, this);
-		super.setHitboxDimensions((getWidth()<=getHeight())? getWidth() : getHeight(), (getWidth()<=getHeight())? getWidth() : getHeight());
+		//super.setHitboxDimensions((getWidth()<=getHeight())? getWidth() : getHeight(), (getWidth()<=getHeight())? getWidth() : getHeight());
 	}
 	
 	public static Person create(int x, int y, PersonManager manager) {
-		Person p = new Person(x, y, manager, manager.getUniqueId());
+		Person p = new Person(x, y, manager, IdGenerator.getInstance().getId());
 		p.createOnNetwork(true);
 		manager.add(p);
 		return p;
 	}
-	
+
+	@Override
 	public double modifyHealth(double delta) {
 		double r = super.modifyHealth(delta);
-		if (health <=0) {
+		if (getHealth() <=0) {
 			manager.setGameOver();
 			remove();
 		}
@@ -48,6 +49,7 @@ public class Person extends Entity implements GameIntegratable{
 	private boolean down;
 	private boolean left;
 	private boolean right;
+	@Override
 	public void performLogic() {
 		if (this.equals(manager.getPlayer())) {
 			move();
@@ -55,10 +57,11 @@ public class Person extends Entity implements GameIntegratable{
 			 * All collisions between zombies and persons are handled by the server (in the entities.zombies.Zombie class).
 			 * This is fine except for when there is a high network latency.
 			 */
-			varContainer.update();
+			updateOnNetwork();
 		}
 	}
-	
+
+	@Override
 	public void draw() {
 		super.draw();
 		healthBar.drawHealthBar();
@@ -96,48 +99,46 @@ public class Person extends Entity implements GameIntegratable{
 	private int numOfCollisions;
 	public void moveForward(double distance) {
 		SafeAreaBoard safeBoard = manager.getSafeAreaBoard();
-		x += (Math.cos(Math.toRadians(-angle)) * distance);
+		setX(getX() + Math.cos(Math.toRadians(-getAngle())) * distance);
 		if (this.getCenterX() > manager.gameBoard.getWidth() || this.getCenterX() < 0 || safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY()) == false)
-			x += (Math.cos(Math.toRadians(-angle)) * distance * -1);
+			setX(getX() + Math.cos(Math.toRadians(-getAngle())) * distance * -1);
 		else {
 			wallCollisions();
 			if (numOfCollisions > 0 && (collidedBuilding.getSpriteId() != TrapDoor.SPRITE_ID || numOfCollisions > 1)) {
-				x += (Math.cos(Math.toRadians(-angle)) * distance * -1);
+				setX(getX() + Math.cos(Math.toRadians(-getAngle())) * distance * -1);
 				if (numOfCollisions == 1 && up == false && down == false && collidedBuilding.getSpriteId() != TrapDoor.SPRITE_ID) {
 					int direction = 1;
 					if (getCenterY() >= collidedBuilding.getCenterY())
 						direction = 1;
 					else
 						direction = -1;
-					y += 2 * direction;
-					centerHitbox();
+					setY(getY() + 2 * direction);
+					//centerHitbox();
 					if (this.numberOfCollisions(manager.getWallManager().getList(), 1) > 0 || this.getCenterY() > manager.gameBoard.getHeight() || this.getCenterY() < 0 || safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY()) == false)
-						y += 2 * -direction;
+						setY(getY() + 2 * -direction);
 				}
 			}
 		}
-		y += (Math.sin(Math.toRadians(-angle)) * distance);
+		setY(getY() + Math.sin(Math.toRadians(-getAngle())) * distance);
 		if (this.getCenterY() > manager.gameBoard.getHeight() || this.getY() + this.getHeight()/2 < 0 || safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY()) == false)
-			y += (Math.sin(Math.toRadians(-angle)) * distance * -1);
+			setY(getY() + Math.sin(Math.toRadians(-getAngle())) * distance * -1);
 		else {
 			wallCollisions();
 			if (numOfCollisions > 0 && (collidedBuilding.getSpriteId() != TrapDoor.SPRITE_ID || numOfCollisions > 1)) {
-				y += (Math.sin(Math.toRadians(-angle)) * distance * -1);
+				setY(getY() + Math.sin(Math.toRadians(-getAngle())) * distance * -1);
 				if (numOfCollisions == 1 && left == false && right == false && collidedBuilding.getSpriteId() != TrapDoor.SPRITE_ID) {
 					int direction = 1;
 					if (getCenterX() >= collidedBuilding.getCenterX())
 						direction = 1;
 					else
 						direction = -1;
-					x += 2 * direction;
-					centerHitbox();
+					setX(getX() + 2 * direction);
+					//centerHitbox();
 					if (this.numberOfCollisions(manager.getWallManager().getList(), 1) > 0 || this.getCenterX() > manager.gameBoard.getWidth() || this.getCenterX() < 0 || safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY()) == false)
-						x += 2 * -direction;
+						setX(getX() + 2 * -direction);
 				}
 			}
 		}
-		setX(x);
-		setY(y);
 	}
 	
 	/*private void wallCollisions() {
@@ -158,7 +159,7 @@ public class Person extends Entity implements GameIntegratable{
 	}*/
 	
 	private void wallCollisions() {
-		centerHitbox();
+		//centerHitbox();
 		collidedBuilding = null;
 		ArrayList<Building> bList = this.collidedWith(manager.getBuildingManager().getList(), 2);
 		int hits = bList.size();
@@ -173,9 +174,5 @@ public class Person extends Entity implements GameIntegratable{
 			collidedBuilding = bList.get(0);
 		}
 		numOfCollisions = hits;
-	}
-	
-	public String createToString() {
-		return (int) x + ":" + (int) y;
 	}
 }

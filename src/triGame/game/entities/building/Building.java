@@ -1,5 +1,7 @@
 package triGame.game.entities.building;
 
+import objectIO.markupMsg.MarkupMsg;
+import objectIO.markupMsg.MsgAttribute;
 import tSquare.game.entity.Entity;
 import triGame.game.entities.HealthBar;
 import triGame.game.shopping.Upgradable;
@@ -26,35 +28,38 @@ public abstract class Building extends Entity implements Upgradable{
 		manager.getSafeBoard().addVisibilityForEntity(this, visibilityRadius);
 		manager.objectGrid.turnOnRectangle(x, y, getWidth(), getHeight());
 	}
-	
+
+	@Override
 	public double modifyHealth(double delta) {
 		super.modifyHealth(delta);
-		if (health <= 0) {
+		if (getHealth() <= 0) {
 			remove();
 		}
-		return health;
+		return getHealth();
 	}
-	
+
+	@Override
 	public void draw() {
 		super.draw();
 		healthBar.drawHealthBar();
 	}
-	
+
+	@Override
 	public void remove() {
 		super.remove();
 		manager.getSafeBoard().removeVisibility(this);
-		manager.objectGrid.turnOffRectangle(x, y, getWidth(), getHeight());
+		manager.objectGrid.turnOffRectangle(getX(), getY(), getWidth(), getHeight());
 	}
 	
 	public UpgradeManager getUpgradeManager() {
 		return upgrades;
 	}
-	
-	public String createToString() {
-		return createToStringHeader();
-	}
-	
-	public String createToStringHeader() {
-		return getIdentifier() + ":" + ownerId + ":" + id + ":";
+
+	@Override
+	public  MarkupMsg createToMsg() {
+		MarkupMsg msg = super.createToMsg();
+		msg.addAttribute(new MsgAttribute("type").set(getIdentifier()));
+		msg.addAttribute(new MsgAttribute("owner").set(ownerId));
+		return msg;
 	}
 }

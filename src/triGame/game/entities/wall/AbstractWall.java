@@ -1,5 +1,7 @@
 package triGame.game.entities.wall;
 
+import objectIO.markupMsg.MarkupMsg;
+import objectIO.markupMsg.MsgAttribute;
 import tSquare.game.entity.Entity;
 
 public abstract class AbstractWall extends Entity{
@@ -17,21 +19,26 @@ public abstract class AbstractWall extends Entity{
 		manager.objectGrid.turnOnRectangle(x, y, getWidth(), getHeight());
 		this.identifier = identifier;
 	}
-	
+
+	@Override
 	public double modifyHealth(double delta) {
 		super.modifyHealth(delta);
-		if (health <= 0) {
+		if (getHealth() <= 0) {
 			remove();
 		}
-		return health;
+		return getHealth();
 	}
-	
+
+	@Override
 	public void remove() {
 		super.remove();
-		manager.objectGrid.turnOffRectangle(x, y, getWidth(), getHeight());
+		manager.objectGrid.turnOffRectangle(getX(), getY(), getWidth(), getHeight());
 	}
-	
-	public String createToString() {
-		return identifier + ":" + spriteId + ":" + (int) x + ":" + (int) y;
+
+	@Override
+	public MarkupMsg createToMsg() {
+		MarkupMsg msg = super.createToMsg();
+		msg.addAttribute(new MsgAttribute("type").set(getIdentifier()));
+		return msg;
 	}
 }

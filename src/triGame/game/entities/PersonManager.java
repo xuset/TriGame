@@ -1,8 +1,9 @@
 package triGame.game.entities;
 
+import objectIO.markupMsg.MarkupMsg;
 import tSquare.game.GameBoard;
-import tSquare.game.Manager;
-import tSquare.game.ManagerController;
+import tSquare.game.entity.Manager;
+import tSquare.game.entity.ManagerController;
 import tSquare.system.PeripheralInput;
 import triGame.game.TriGame;
 import triGame.game.entities.building.BuildingManager;
@@ -31,18 +32,17 @@ public class PersonManager extends Manager<Person>{
 	void setGameOver() {
 		game.setGameOver();
 	}
-
-	public Person createFromString(String parameters, long id) {
-		String[] parameter = parameters.split(":");
-		int x = Integer.parseInt(parameter[0]);
-		int y = Integer.parseInt(parameter[1]);
-		Person p = new Person(x, y, this, id);
-		add(p);
-		return p;
-	}
 	
 	public Person create(int x, int y) {
 		Person p = Person.create(x, y, this);
+		return p;
+	}
+	@Override
+	public Person createFromMsg(MarkupMsg msg, long entityId) {
+		int x = (int) msg.getAttribute("x").getDouble();
+		int y = (int) msg.getAttribute("y").getDouble();
+		Person p = new Person(x, y, this, entityId);
+		add(p);
 		return p;
 	}
 }

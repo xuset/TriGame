@@ -6,11 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 
-import objectIO.netObject.NetObjectController;
 import objectIO.netObject.NetVar;
-import objectIO.netObject.NetVarChange;
+import objectIO.netObject.ObjController;
 import objectIO.connections.Connection;
-
 import tSquare.game.DrawBoard;
 import tSquare.game.GameIntegratable;
 import tSquare.system.PeripheralInput;
@@ -24,7 +22,7 @@ public class RoundHandler implements GameIntegratable{
 	private ZombieManager zombieManager;
 	private PeripheralInput.Keyboard keyboard;
 	private DrawBoard drawBoard;
-	private NetVar roundVar;
+	private NetVar.nInt roundVar;
 	private boolean isServer;
 	private int roundNumber = 0;
 	private boolean roundOnGoing = false;
@@ -36,16 +34,16 @@ public class RoundHandler implements GameIntegratable{
 	public int getRoundNumber() { return roundNumber; }
 	public boolean isRoundOnGoing() { return roundOnGoing; }
 	
-	public RoundHandler(ZombieManager manager, PeripheralInput.Keyboard keyboard, DrawBoard drawBoard, NetObjectController netCon,  boolean isServer, PersonManager personManager) {
+	public RoundHandler(ZombieManager manager, PeripheralInput.Keyboard keyboard, DrawBoard drawBoard, ObjController netCon,  boolean isServer, PersonManager personManager) {
 		zombieManager = manager;
 		this.keyboard = keyboard;
 		this.drawBoard = drawBoard;
 		this.isServer = isServer;
 		this.personManager = personManager;
-		roundVar = new NetVar(netCon, "round");
-		roundVar.onChangeEvent = new NetVarChange() {
-			public void onChange(NetVar v, Connection c) {
-				setRound(v.getToInt());
+		roundVar = new NetVar.nInt(0, "round", netCon);
+		roundVar.event = new NetVar.OnChange<Integer>() {
+			@Override public void onChange(NetVar<Integer> var, Connection c) {
+				setRound(var.get());
 			}
 		};
 		

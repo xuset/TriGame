@@ -22,9 +22,8 @@ public abstract class Projectile implements GameIntegratable{
 	protected Entity checkBuildingCollision(Entity entity) {
 		ObjectGrid bgrid = container.buildingManager.objectGrid;
 		ObjectGrid wgrid = container.wallManager.objectGrid;
-		if (!bgrid.isBlockOpen(bgrid.roundToGrid(entity.getCenter()))) {
+		if (!bgrid.isBlockOpen(bgrid.roundToGrid(entity.getCenter())))
 			return entity.collidedWithFirst(container.buildingManager.getList());
-		}
 		if (!wgrid.isBlockOpen(wgrid.roundToGrid(entity.getCenter())))
 			return entity.collidedWithFirst(container.wallManager.getList());
 		return null;

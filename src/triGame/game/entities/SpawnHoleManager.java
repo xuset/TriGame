@@ -1,8 +1,9 @@
 package triGame.game.entities;
 
+import objectIO.markupMsg.MarkupMsg;
 import tSquare.game.GameBoard;
-import tSquare.game.Manager;
-import tSquare.game.ManagerController;
+import tSquare.game.entity.Manager;
+import tSquare.game.entity.ManagerController;
 import tSquare.paths.ObjectGrid;
 
 public class SpawnHoleManager extends Manager<SpawnHole>{
@@ -19,22 +20,24 @@ public class SpawnHoleManager extends Manager<SpawnHole>{
 	public SpawnHole create(int x, int y) {
 		return SpawnHole.create(x, y, this);
 	}
-	
+
+	@Override
 	public boolean add(SpawnHole spawnHole) {
 		objectGrid.turnOnBlock(spawnHole.getX(), spawnHole.getY());
 		return super.add(spawnHole);
 	}
 	
+	@Override
 	public boolean remove(SpawnHole spawnHole) {
 		objectGrid.turnOffBlock(spawnHole.getX(), spawnHole.getY());
 		return super.remove(spawnHole);
 	}
 
-	public SpawnHole createFromString(String parameters, long id) {
-		String[] parameter = parameters.split(":");
-		int x = Integer.parseInt(parameter[0]);
-		int y = Integer.parseInt(parameter[1]);
-		SpawnHole s = new SpawnHole(x, y, this, id);
+	@Override
+	public SpawnHole createFromMsg(MarkupMsg msg, long entityId) {
+		int x = (int) msg.getAttribute("x").getDouble();
+		int y = (int) msg.getAttribute("y").getDouble();
+		SpawnHole s= new SpawnHole(x, y, this, entityId);
 		add(s);
 		return s;
 	}

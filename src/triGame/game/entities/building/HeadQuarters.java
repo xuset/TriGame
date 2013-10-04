@@ -1,5 +1,6 @@
 package triGame.game.entities.building;
 
+import tSquare.math.IdGenerator;
 import triGame.game.shopping.ShopItem;
 
 public class HeadQuarters extends Building {
@@ -12,41 +13,33 @@ public class HeadQuarters extends Building {
 	
 	public HeadQuarters(int x, int y, BuildingManager manager, long ownerId, long entityId) {
 		super(SPRITE_ID, x, y, manager, ownerId, entityId, INITIAL_RADIUS);
-		health = 1500;
+		health.set(1500.0);
 		healthBar.relativeY = 5;
-		healthBar.maxHealth = (int) health;
+		healthBar.maxHealth = health.get().intValue();
+		updateOnNetwork();
 	}
 	
 	public static HeadQuarters create(int x, int y, BuildingManager manager) {
 		if (manager.objectGrid.isRectangleOpen(x, y, spriteLength, spriteLength)) {
-			HeadQuarters hq = new HeadQuarters(x, y, manager, manager.getUserId(), manager.getUniqueId());
+			HeadQuarters hq = new HeadQuarters(x, y, manager, manager.getUserId(), IdGenerator.getInstance().getId());
 			hq.createOnNetwork(true);
 			manager.add(hq);
 			return hq;
 		}
 		return null;
 	}
-	
-	public static HeadQuarters createFromString(String parameters, BuildingManager manager, long ownerId, long entityId) {
-		String[] split = parameters.split(":", 2);
-		int x = Integer.parseInt(split[0]);
-		int y = Integer.parseInt(split[1]);
-		HeadQuarters hq = new HeadQuarters(x, y, manager, ownerId, entityId);
-		return hq;
-	}
-	
+
+	@Override
 	public void performLogic() {
-		varContainer.update();
+		updateOnNetwork();
 	}
 
+	@Override
 	public String getIdentifier() {
 		return IDENTIFIER;
 	}
-	
-	public String createToString() {
-		return createToStringHeader() + ((int) x) + ":" + ((int) y);
-	}
-	
+
+	@Override
 	public void remove() {
 		super.remove();
 		manager.setGameOver();

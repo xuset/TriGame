@@ -3,6 +3,7 @@ package triGame.game.entities.building;
 
 import java.util.ArrayList;
 
+import tSquare.math.IdGenerator;
 import tSquare.math.Point;
 import tSquare.system.Sound;
 import triGame.game.entities.zombies.Zombie;
@@ -39,7 +40,7 @@ public class Tower extends Building {
 	}
 	
 	public static Tower create(int x, int y, BuildingManager manager) {
-		Tower t = new Tower(x, y, manager, manager.getUserId(), manager.getUniqueId());
+		Tower t = new Tower(x, y, manager, manager.getUserId(), IdGenerator.getInstance().getId());
 		t.createOnNetwork(true);
 		manager.add(t);
 		t.addUpgrades();
@@ -62,15 +63,16 @@ public class Tower extends Building {
 			lastShot = System.currentTimeMillis();
 		}
 	}
-	
+
+	@Override
 	public void performLogic() {
 		ArrayList<Zombie> zombies = manager.getGameInstance().zombieManager.getList();
-		if (zombies.size() == 0 || owned == false)
+		if (zombies.size() == 0 || owned() == false)
 			return;
 		Zombie shortestZombie = null;
 		int shortestDistance = Integer.MAX_VALUE;
 		for (Zombie z : zombies) {
-			int dist = (int) Point.distance(x, y, z.getX(), z.getY());
+			int dist = (int) Point.distance(getX(), getY(), z.getX(), z.getY());
 			if (dist < shortestDistance) {
 				shortestDistance = dist;
 				shortestZombie = z;
@@ -80,21 +82,10 @@ public class Tower extends Building {
 			this.setAngle(Point.degrees(this.getCenterX(), this.getCenterY(),shortestZombie.getCenterX(), shortestZombie.getCenterY()));
 			this.shoot();
 		}
-		varContainer.update();
+		updateOnNetwork();
 	}
-	
-	public static Tower createFromString(String parameters, BuildingManager manager, long ownerId, long id) {
-		String[] parameter = parameters.split(":");
-		int x = Integer.parseInt(parameter[0]);
-		int y = Integer.parseInt(parameter[1]);
-		Tower t = new Tower(x, y, manager, ownerId, id);
-		return t;
-	}
-	
-	public String createToString() {
-		return createToStringHeader() + (int) x + ":" + (int) y;
-	}
-	
+
+	@Override
 	public String getIdentifier() {
 		return IDENTIFIER;
 	}

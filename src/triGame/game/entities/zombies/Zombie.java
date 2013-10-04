@@ -1,7 +1,9 @@
 package triGame.game.entities.zombies;
 
-import tSquare.game.Manager;
 import tSquare.game.entity.Entity;
+import tSquare.game.entity.Manager;
+import tSquare.imaging.Sprite;
+import tSquare.math.IdGenerator;
 import tSquare.math.Point;
 import tSquare.paths.Node;
 import tSquare.paths.Path;
@@ -44,17 +46,20 @@ public class Zombie extends Entity {
 		Point loc = manager.determineSpawnLocation(target);
 		if (loc == null)
 			return null;
-		Zombie z = new Zombie(0, 0, target, manager, manager.getUniqueId());
-		z.x = loc.x - z.getWidth() / 2;
-		z.y = loc.y - z.getHeight() / 2;
+		int width = Sprite.get(SPRITE_ID).width;
+		int height = Sprite.get(SPRITE_ID).height;
+		double x = loc.x - width / 2;
+		double y = loc.y - height / 2;
+		Zombie z = new Zombie((int) x, (int) y, target, manager, IdGenerator.getInstance().getId());
 		z.createOnNetwork(true);
 		z.spawnTime = System.currentTimeMillis() + spawnWaitTime;
 		manager.add(z);
 		return z;
 	}
-	
+
+	@Override
 	public void performLogic() {
-		if (manager.getNetwork().isServer()) {
+		if (manager.isServer()) {
 			if (target == null || target.isRemoved())
 				target = manager.determineTargetEntity();
 			if (target != null) {
@@ -63,7 +68,7 @@ public class Zombie extends Entity {
 					if (buildingManager.objectGrid.modCount + manager.getWallManager().objectGrid.modCount != lastObjectGridModCount || (pathToTargetExists && playerDidntMoved == false))
 						findPath();
 					move();
-					varContainer.update();
+					updateOnNetwork();
 				}
 			}
 		}
@@ -124,17 +129,14 @@ public class Zombie extends Entity {
 			moveForward(-distance);
 		}
 	}
-	
-	public double modifyHealth(int delta) {
+
+	@Override
+	public double modifyHealth(double delta) {
 		super.modifyHealth(delta);
-		if (health <= 0) {
+		if (getHealth() <= 0) {
 			remove();
 		}
-		return health;
-	}
-	
-	public String createToString() {
-		return (int)x + ":" + (int)y;
+		return getHealth();
 	}
 
 }

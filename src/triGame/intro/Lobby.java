@@ -15,7 +15,7 @@ import objectIO.connections.p2pServer.server.ServerConnection;
 import objectIO.markupMsg.MarkupMsg;
 import objectIO.netObject.NetFunction;
 import objectIO.netObject.NetFunctionEvent;
-import objectIO.netObject.NetObjectController;
+import objectIO.netObject.ObjController;
 
 import tSquare.system.Network;
 
@@ -24,12 +24,12 @@ public class Lobby extends JPanel{
 	
 	private JLabel lblSize = new JLabel();
 	private JButton btnStart = new JButton("Start game");
-	private NetObjectController netController;
+	private ObjController netController;
 	private NetFunction startFunc;
 	private boolean started = false;
 	
 	Lobby(Network net) {
-		netController = new NetObjectController(net.getHub());
+		netController = new ObjController(net.getHub());
 		new Thread(netController).start();
 		startFunc = new NetFunction(netController, "start", startEvent);
 		

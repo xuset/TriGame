@@ -1,5 +1,6 @@
 package triGame.game.entities.building;
 
+import tSquare.math.IdGenerator;
 import triGame.game.shopping.ShopItem;
 
 public class SmallTower extends Tower {
@@ -16,7 +17,7 @@ public class SmallTower extends Tower {
 	}
 	
 	public static SmallTower create(int x, int y, BuildingManager manager) {
-		SmallTower t = new SmallTower(x, y, manager, manager.getUserId(), manager.getUniqueId());
+		SmallTower t = new SmallTower(x, y, manager, manager.getUserId(), IdGenerator.getInstance().getId());
 		t.createOnNetwork(true);
 		manager.add(t);
 		t.addUpgrades();
@@ -25,15 +26,8 @@ public class SmallTower extends Tower {
 		t.fireRateUpgrade.value = initialShootDelay;
 		return t;
 	}
-	
-	public static Tower createFromString(String parameters, BuildingManager manager, long ownerId, long id) {
-		String[] parameter = parameters.split(":");
-		int x = Integer.parseInt(parameter[0]);
-		int y = Integer.parseInt(parameter[1]);
-		SmallTower t = new SmallTower(x, y, manager, ownerId, id);
-		return t;
-	}
 
+	@Override
 	public String getIdentifier() {
 		return IDENTIFIER;
 	}
