@@ -219,8 +219,6 @@ public class Entity implements GameIntegratable{
 	}
 	
 	protected void remove_localOnly() {
-		hitbox.finalize();
-		attackbox.finalize();
 		manager.remove(this);
 		removed = true;
 	}

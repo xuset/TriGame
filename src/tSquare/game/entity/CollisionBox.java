@@ -29,10 +29,6 @@ public final class CollisionBox extends Rectangle2D {
 		height = new NetVar.nInt(e.getHeight(), name + "h", e.objClass);
 	}
 	
-	public final void finalize() {
-		entity = null;
-	}
-	
 	public void update() {
 		offsetX.update();
 		offsetY.update();
