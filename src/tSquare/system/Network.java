@@ -6,16 +6,16 @@ import java.net.UnknownHostException;
 import objectIO.connections.Hub;
 import objectIO.connections.p2pServer.client.ClientHub;
 import objectIO.connections.p2pServer.server.P2PServer;
-import objectIO.netObject.NetObjectController;
+import objectIO.netObject.ObjController;
 
 public class Network {
 	private Hub<?> hub;
-	private NetObjectController netController;
+	private ObjController netController;
 	private long userId;
 	private boolean isServer = false;
 	
 	public Hub<?> getHub() { return hub; }
-	public NetObjectController getObjController() { return netController; }
+	public ObjController getObjController() { return netController; }
 	public long getUserId() { return userId; }
 	public boolean isServer() { return isServer; }
 	
@@ -27,7 +27,7 @@ public class Network {
 	
 	private Network(Hub<?> hub, long userId) {
 		this.hub = hub;
-		netController = new NetObjectController(hub);
+		netController = new ObjController(hub);
 		this.userId = userId;
 	}
 	

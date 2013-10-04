@@ -1,110 +1,68 @@
 package tSquare.game.entity;
 
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import objectIO.connections.Connection;
+import objectIO.markupMsg.MarkupMsg;
 import objectIO.netObject.NetClass;
 import objectIO.netObject.NetVar;
+import objectIO.netObject.OfflineClass;
 import tSquare.game.GameBoard;
 import tSquare.game.GameIntegratable;
-import tSquare.game.Manager;
 import tSquare.imaging.Sprite;
+import tSquare.math.IdGenerator;
 import tSquare.math.Point;
 
 
 public class Entity implements GameIntegratable{
 	private boolean removed = false;
 	
-	protected NetClass netClass;
-	protected VarContainer varContainer;
-	protected Manager<? extends Entity> manager;
-	protected Sprite sprite;
-	protected double x = 0;
-	protected double y = 0;
-	protected int width = 0;
-	protected int height = 0;
-	protected String spriteId;
-	protected double angle = 90;
-	protected Long id;
-	protected boolean owned = true;
-	protected boolean createdOnNetwork = false;
-	protected double health = 100;
+	boolean createdOnNetwork = false;
+	long id;
+	boolean owned = true;
 	
-	public Rectangle hitbox = new Rectangle();
+	protected Manager<? extends tSquare.game.entity.Entity> manager;
+	protected Sprite sprite;
+	protected NetClass objClass;
+	protected NetVar.nDouble x;
+	protected NetVar.nDouble y;
+	protected NetVar.nDouble angle;
+	protected NetVar.nInt width;
+	protected NetVar.nInt height;
+	protected NetVar.nString spriteId;
+	protected NetVar.nDouble health;
+	
+	public CollisionBox hitbox;
+	public CollisionBox attackbox;
 	public boolean visible = true;
 	public boolean collidable = true;
 	
-	protected Entity(String spriteId, int startX, int startY, Manager<?> manager, long id) {
-		this.spriteId = spriteId;
-		this.x = startX;
-		this.y = startY;
-		this.lastX = (int) startX;
-		this.lastY = (int) startY;
+	protected Entity(String sSpriteId, double startX, double startY, Manager<?> manager, long id) {
+		sprite = Sprite.add(sSpriteId);
+		
+		if (manager != null)
+			objClass = new NetClass(manager.game.getNetwork().getObjController(), "" + id, 7);
+		else
+			objClass = new OfflineClass();
+		
+		x = new NetVar.nDouble(startX, "x", objClass);
+		y = new NetVar.nDouble(startY, "y", objClass);
+		angle = new NetVar.nDouble(90.0, "a", objClass);
+		width = new NetVar.nInt(sprite.width, "w", objClass);
+		height = new NetVar.nInt(sprite.height, "h", objClass);
+		spriteId = new NetVar.nString(sSpriteId, "spriteId", objClass);
+		health = new NetVar.nDouble(100.0, "hlth", objClass);
+		hitbox = new CollisionBox(CollisionBox.Type.Hitbox, this);
+		attackbox = new CollisionBox(CollisionBox.Type.AttackBox, this);
+		x.autoUpdate = y.autoUpdate = angle.autoUpdate = objClass.autoUpdate = true;
+		
 		this.manager = manager;
 		this.id = id;
-		this.sprite = Sprite.add(spriteId);
-		this.width = this.sprite.width;
-		this.height = this.sprite.height;
-		this.setHitboxDimensions(this.width, this.height);
 	}
 	
-	protected class VarContainer {
-		public static final String X_ID = "x";
-		public static final String Y_ID = "y";
-		public static final String ANGLE_ID = "a";
-		public static final String HEALTH_ID = "h";
-		
-		public NetVar x = new NetVar(netClass, X_ID);
-		public NetVar y = new NetVar(netClass, Y_ID);
-		public NetVar angle = new NetVar(netClass, ANGLE_ID);
-		public NetVar health = new NetVar(netClass, HEALTH_ID);
-		
-		public void remove() {
-			netClass.remove();
-		}
-		
-		public void update() {
-			x.update();
-			y.update();
-			angle.update();
-			health.update();
-			netClass.update();
-		}
-		
-		public VarContainer() {
-			x.onChangeEvent = new EntityOnChange() {
-				public void onChange(NetVar v, Connection c) {
-					Entity.this.x = v.getToDouble();
-					centerHitbox();
-				}
-			};
-			
-			y.onChangeEvent = new EntityOnChange() {
-				public void onChange(NetVar v, Connection c) {
-					Entity.this.y = v.getToDouble();
-					centerHitbox();
-				}
-			};
-			
-			angle.onChangeEvent = new EntityOnChange() {
-				public void onChange(NetVar v, Connection c) {
-					Entity.this.angle = v.getToDouble();
-				}
-			};
-			
-			health.onChangeEvent = new EntityOnChange() {
-				public void onChange(NetVar v, Connection c) {
-					Entity.this.health = v.getToDouble();
-				}
-			};
-		}
-	}
-	
-	protected Entity(String spriteId, int x, int y, Manager<?> manager) {
-		this(spriteId, x, y, manager, manager.getUniqueId());
+	protected Entity(String spriteId, double startX, double startY, Manager<?> manager) {
+		this(spriteId, startX, startY, manager, IdGenerator.getInstance().getId());
 	}
 	
 	public Entity(String spriteId, int x, int y) {
@@ -112,115 +70,80 @@ public class Entity implements GameIntegratable{
 	}
 	
 	public static Entity create(String spriteId, int x, int y, Manager<Entity> manager) {
-		Entity e = new Entity(spriteId, x, y, manager);
+		Entity e = new Entity(spriteId, x, y, manager, IdGenerator.getInstance().getId());
 		e.createOnNetwork(true);
 		manager.add(e);
 		return e;
 	}
 	
-	public void reload() {
-		this.sprite = Sprite.add(spriteId);
-		this.width = this.sprite.width;
-		this.height = this.sprite.height;
-		this.setHitboxDimensions(this.width, this.height);
-	}
-	
 	public void updateOnNetwork() {
-		varContainer.update();
+		/*x.update();
+		y.update();
+		angle.update();
+		width.update();
+		height.update();
+		spriteId.update();
+		hitbox.update();
+		attackbox.update();
+		objClass.update();*/
 	}
 	
 	boolean allowUpdates = false;
 	protected void createOnNetwork(boolean allowUpdates) {
 		if (!createdOnNetwork && manager != null) {
-			this.allowUpdates = allowUpdates;
-			if (allowUpdates) {
-				netClass = new NetClass(manager.getNetwork().getObjController(), String.valueOf(id), 4);
-				varContainer = new VarContainer();
-			}
-			manager.getEntityCreater().createOnNetwork(this);
+			manager.getCreator().createOnNetwork(this);
 			createdOnNetwork = true;
 		}
 	}
 	
-	void createUpdateVars() {
-		netClass = new NetClass(manager.getNetwork().getObjController(), String.valueOf(id), 4);
-		varContainer = new VarContainer();
-	}
+	public final Manager<?> getManager() { return manager; }
+	public final String getSpriteId() { return spriteId.get(); }
+	public final double getAngle() { return angle.get(); }
+	public final double getX() { return x.get(); }
+	public final double getY() { return y.get(); }
+	public final int getIntX() { return x.get().intValue(); }
+	public final int getIntY() { return y.get().intValue(); }
+	public final Point getLocation() { return new Point(x.get(), y.get()); }
+	public final int getWidth() { return width.get(); }
+	public final int getHeight() { return height.get(); }
+	public final double getCenterX() { return x.get() + width.get()/2; }
+	public final double getCenterY() { return y.get() + height.get()/2; }
+	public final Point getCenter() { return new Point(x.get() + width.get()/2, y.get() + height.get()/2); }
+	public final double getHealth() { return health.get(); }
+	public final long getId() { return id; }
+	public final boolean isRemoved() { return removed; }
+	public final boolean owned() { return owned; }
 	
-	public boolean owned() { return owned; }
-	public Manager<?> getManager() { return manager; }
-	public String getSpriteId() { return sprite.getUrl(); }
-	public double getAngle() { return angle; }
-	public double getX() { return x; }
-	public double getY() { return y; }
-	public int getIntX() { return (int) x; }
-	public int getIntY() { return (int) y; }
-	public Point getLocation() { return new Point(x, y); }
-	public int getWidth() { return sprite.width; }
-	public int getHeight() { return sprite.height; }
-	public double getCenterX() { return x + width/2; }
-	public double getCenterY() { return y + height/2; }
-	public Point getCenter() { return new Point(x + width/2, y + height/2); }
-	public long getId() { return id; }
-	public double getHealth() { return health; }
-	public boolean isRemoved() { return removed; }
-	
-	public void setAngle(double degrees) {
-		this.angle = degrees;
-		if (varContainer != null)
-			varContainer.angle.set(degrees);
+	public void setAngle(double degrees) 	{ this.angle.set(degrees); }
+	public void setX(double x) 				{ this.x.set(x);}
+	public void setY(double y) 				{ this.y.set(y);}
+	public void setLocation(Point p) { setLocation(p.x, p.y); }
+	public void moveForward(double distance) {
+		double newX = x.get() + (Math.cos(Math.toRadians(-angle.get())) * distance);
+		double newY = y.get() +  (Math.sin(Math.toRadians(-angle.get())) * distance);
+		setLocation(newX, newY);
 	}
-	
-	public void setX(double x) {
-		setLocation(x, this.y);
-	}
-	public void setY(double y) {
-		setLocation(this.x, y);
-	}
-	public void setLocation(Point p) {
-		setLocation(p.x, p.y);
+	public void setCenter(double x, double y) {
+		setLocation(x - width.get()/2, y - height.get()/2);
 	}
 	public void setCenter(Point p) {
 		setCenter(p.x, p.y);
 	}
-	public void setCenter(double x, double y) {
-		setLocation(x - width/2, y - height/2);
-	}
-	public void moveForward(double distance) {
-		double newX = x + (Math.cos(Math.toRadians(-angle)) * distance);
-		double newY = y +  (Math.sin(Math.toRadians(-angle)) * distance);
-		setLocation(newX, newY);
-	}
-	private int lastX;
-	private int lastY;
 	public void setLocation(double x, double y) {
-		this.x = x;
-		this.y = y;
-		centerHitbox();
-		if ((lastX != (int) x || lastY != (int) y) && varContainer != null) {
-			lastX = (int) x;
-			lastY = (int) y;
-			varContainer.x.set(lastX);
-			varContainer.y.set(lastY);
-		}
+		this.x.set(x);
+		this.y.set(y);
 	}
 	
-	public void moveForward(double speed, int time) {
-		
-	}
-	
-	public void turn(Point p) {
-		setAngle(Point.degrees(this.x + this.width/2, this.y + this.height/2, p.x, p.y));
-	}
 	public void turn(double x, double y) {
-		setAngle(Point.degrees(this.x + this.width/2, this.y + this.height/2, x, y));
+		setAngle(Point.degrees(this.x.get() + width.get()/2.0, this.y.get() + height.get()/2.0, x, y));
+	}
+	public void turn(Point p) {
+		turn(p.x, p.y);
 	}
 	
 	public double modifyHealth(double delta) {
-		health += delta;
-		if (varContainer != null)
-			varContainer.health.set(health);
-		return health;
+		health.set(health.get() + delta);
+		return health.get();
 	}
 	
 	public void draw() {
@@ -229,23 +152,23 @@ public class Entity implements GameIntegratable{
 	
 	public void draw(GameBoard gameBoard) {
 		if (visible) {
-			if (((int) this.angle - 90) % 360 == 0)
-				this.sprite.draw((int) x, (int) y, gameBoard);
+			if ((angle.get().intValue() - 90) % 360 == 0)
+				this.sprite.draw(x.get().intValue(), y.get().intValue(), gameBoard);
 			else
-				this.sprite.draw((int) x, (int) y, angle, gameBoard);
+				this.sprite.draw(x.get().intValue(), y.get().intValue(), angle.get(), gameBoard);
 		}
 	}
 	
-	public ArrayList<? extends Entity> collided() {
+	public ArrayList<? extends tSquare.game.entity.Entity> collided() {
 		return collided(manager.getList().size());
 	}
-	public ArrayList<? extends Entity> collided(int maxReturns) {
+	public ArrayList<? extends tSquare.game.entity.Entity> collided(int maxReturns) {
 		return collidedWith(manager.getList(), maxReturns);
 	}
-	public <T extends Entity> ArrayList<T> collidedWith(Collection<T> searchList) {
+	public <T extends tSquare.game.entity.Entity> ArrayList<T> collidedWith(Collection<T> searchList) {
 		return collidedWith(searchList, searchList.size());
 	}
-	public <T extends Entity> ArrayList<T> collidedWith(Collection<T> searchList, int maxReturns) {
+	public <T extends tSquare.game.entity.Entity> ArrayList<T> collidedWith(Collection<T> searchList, int maxReturns) {
 		ArrayList<T> hitlist = new ArrayList<T>();
 		int hits = 0;
 		for (T type : searchList) {
@@ -296,6 +219,8 @@ public class Entity implements GameIntegratable{
 	}
 	
 	protected void remove_localOnly() {
+		hitbox.finalize();
+		attackbox.finalize();
 		manager.remove(this);
 		removed = true;
 	}
@@ -303,33 +228,16 @@ public class Entity implements GameIntegratable{
 	public void remove() {
 		remove_localOnly();
 		if (createdOnNetwork) {
-			manager.getEntityCreater().removeOnNetwork(this);
-			if (varContainer != null)
-				varContainer.remove();
+			manager.getCreator().removeOnNetwork(this);
 		}
 	}
 	
-	protected void centerHitbox() {
-		hitbox.x = (int) x + width/2 - hitbox.width/2;
-		hitbox.y = (int) y + height/2 - hitbox.height/2;
-	}
-	
-	public void setHitboxDimensions(int width, int height) {
-		hitbox.width = width;
-		hitbox.height = height;
-		centerHitbox();
-	}
-	
-	public boolean setManager(Manager<? extends Entity> manager) {
-		if (this.manager == null) {
-			this.manager = manager;
-			return true;
-		}
-		return false;
-	}
-	
-	public String createToString() {
-		return spriteId + ":" + (int) x + ":" + (int) y;
+	public MarkupMsg createToMsg() {
+		MarkupMsg m = new MarkupMsg();
+		m.addAttribute(x);
+		m.addAttribute(y);
+		m.addAttribute(spriteId);
+		return m;
 	}
 	
 	public void performLogic() { }

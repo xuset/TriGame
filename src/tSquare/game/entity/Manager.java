@@ -1,8 +1,10 @@
-package tSquare.game;
+package tSquare.game.entity;
 
+import objectIO.markupMsg.MarkupMsg;
+import tSquare.game.Game;
+import tSquare.game.GameBoard;
+import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
-import tSquare.game.entity.EntityCreater;
-import tSquare.system.Network;
 import tSquare.util.SafeArrayList;
 import tSquare.util.SafeContainer;
 
@@ -10,16 +12,15 @@ import tSquare.util.SafeContainer;
 public abstract class Manager<T extends Entity> extends SafeContainer<T> implements GameIntegratable{
 	
 	private ManagerController controller;
-	private Game game;
 	private String hashMapKey;
+
+	Game game;
+	final EntityCreater getCreator() { return controller.creator; }
 	
 	public GameBoard gameBoard;
 
-	public abstract T createFromString(String parameters, long id);
+	public abstract T createFromMsg(MarkupMsg msg, long entityId);
 	
-	public Game getGameInstance() { return game; }
-	public Network getNetwork() { return game.network; }
-	public EntityCreater getEntityCreater() { return game.entityCreater; }
 	public int getDelta() { return game.getDelta(); }
 	public long getUserId() { return game.getUserId(); }
 	
@@ -55,10 +56,6 @@ public abstract class Manager<T extends Entity> extends SafeContainer<T> impleme
 	
 	public String getHashMapKey() {
 		return hashMapKey;
-	}
-	
-	public long getUniqueId() {
-		return game.idGenerator.getId();
 	}
 	
 	public boolean remove(Entity e) {

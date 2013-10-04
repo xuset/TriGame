@@ -7,15 +7,14 @@ import objectIO.markupMsg.MarkupMsg;
 import objectIO.markupMsg.MsgAttribute;
 import objectIO.netObject.NetFunction;
 import objectIO.netObject.NetFunctionEvent;
-import objectIO.netObject.NetObjectController;
-import tSquare.game.Manager;
+import objectIO.netObject.ObjController;
 
 public class EntityCreater {
 	private NetFunction createFunc;
 	private NetFunction removeFunc;
 	private HashMap<String, Manager<?>> managers;
 	
-	public EntityCreater(HashMap<String, Manager<?>> managers, NetObjectController controller) {
+	public EntityCreater(HashMap<String, Manager<?>> managers, ObjController controller) {
 		this.managers = managers;
 		createFunc = new NetFunction(controller, "create");
 		createFunc.function = createEvent;
@@ -25,22 +24,18 @@ public class EntityCreater {
 	
 	public void createOnNetwork(Entity e) {
 		MarkupMsg msg = new MarkupMsg();
-		msg.addAttribute(new MsgAttribute("id", String.valueOf(e.getId())));
-		msg.addAttribute(new MsgAttribute("manager", e.manager.getHashMapKey()));
-		msg.addAttribute(new MsgAttribute("update", String.valueOf(e.allowUpdates)));
-		msg.content = e.createToString();
+		msg.addAttribute(new MsgAttribute("id").set(e.id));
+		msg.addAttribute(new MsgAttribute("manager").set(e.manager.getHashMapKey()));
+		msg.child.add(e.createToMsg());
 		createFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
 	}
 	
 	private NetFunctionEvent createEvent = new NetFunctionEvent() {
 		public MarkupMsg calledFunc(MarkupMsg msg, Connection c) {
-			long entityId = Long.parseLong(msg.getAttribute("id").value);
-			boolean allowUpdates = Boolean.parseBoolean(msg.getAttribute("update").value);
-			Manager<?> m = managers.get(msg.getAttribute("manager").value);
+			long entityId = msg.getAttribute("id").getLong();
+			Manager<?> m = managers.get(msg.getAttribute("manager").getString());
 			if (m != null) {
-				Entity e = m.createFromString(msg.content, entityId);
-				if (allowUpdates)
-					e.createUpdateVars();
+				Entity e = m.createFromMsg(msg.child.get(0), entityId);
 				e.createdOnNetwork = true;
 				e.id = entityId;
 				e.owned = false;
@@ -55,15 +50,15 @@ public class EntityCreater {
 	
 	public void removeOnNetwork(Entity e) {
 		MarkupMsg msg = new MarkupMsg();
-		msg.addAttribute(new MsgAttribute("manager", e.manager.getHashMapKey()));
-		msg.addAttribute(new MsgAttribute("id", String.valueOf(e.id)));
+		msg.addAttribute(new MsgAttribute("manager").set(e.manager.getHashMapKey()));
+		msg.addAttribute(new MsgAttribute("id").set(e.id));
 		removeFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
 	}
 	
 	private NetFunctionEvent removeEvent = new NetFunctionEvent() {
 		public MarkupMsg calledFunc(MarkupMsg msg, Connection c) {
-			long entityId = Long.parseLong(msg.getAttribute("id").value);
-			Manager<?> m = managers.get(msg.getAttribute("manager").value);
+			long entityId = msg.getAttribute("id").getLong();
+			Manager<?> m = managers.get(msg.getAttribute("manager").getString());
 			if (m != null) {
 				Entity e = m.getById(entityId);
 				if (e != null)

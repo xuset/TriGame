@@ -3,7 +3,7 @@ package tSquare.game;
 import java.io.IOException;
 
 import tSquare.events.EventHandler;
-import tSquare.game.entity.EntityCreater;
+import tSquare.game.entity.ManagerController;
 import tSquare.math.IdGenerator;
 import tSquare.system.Network;
 
@@ -17,8 +17,6 @@ public abstract class Game implements Runnable {
 	private int delta = 0;
 	private int currentFps = 0;
 	private long userId;
-	
-	EntityCreater entityCreater;
 	
 	protected IdGenerator idGenerator = new IdGenerator();
 	protected Network network;
@@ -56,7 +54,6 @@ public abstract class Game implements Runnable {
 		userId = network.getUserId();
 		managerController = new ManagerController(this);
 		eventHandler = new EventHandler();
-		entityCreater = new EntityCreater(managerController, network.getObjController());
 	}
 	
 	public void startGame() {

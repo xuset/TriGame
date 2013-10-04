@@ -1,8 +1,7 @@
 package tSquare.game.entity;
 
+import objectIO.markupMsg.MarkupMsg;
 import tSquare.game.GameBoard;
-import tSquare.game.Manager;
-import tSquare.game.ManagerController;
 
 
 public class EntityManager extends Manager<Entity>{
@@ -12,18 +11,17 @@ public class EntityManager extends Manager<Entity>{
 		super(controller, gameBoard, HASHMAP_KEY);
 	}
 	
-	public Entity createFromString(String parameters, long id) {
-		String[] split = parameters.split(":");
-		String spriteUrl = split[0];
-		int x = Integer.parseInt(split[1]);
-		int y = Integer.parseInt(split[2]);
-		Entity e = new Entity(spriteUrl, x, y, this, id);
-		add(e);
-		return e;
-	}
-	
 	public Entity create(String spriteId, int x, int y) {
 		return Entity.create(spriteId, x, y, this);
+	}
+
+	@Override
+	public Entity createFromMsg(MarkupMsg msg, long entityId) {
+		double x = msg.getAttribute("x").getDouble();
+		double y = msg.getAttribute("y").getDouble();
+		String spriteId = msg.getAttribute("spriteId").getString();
+		Entity e = new Entity(spriteId, x, y, this, entityId);
+		return e;
 	}
 	
 	
