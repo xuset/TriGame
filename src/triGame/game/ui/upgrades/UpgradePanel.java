@@ -32,6 +32,7 @@ public class UpgradePanel extends JPanel{
 	private JPanel pnlAttribute = new JPanel();
 	private TitledBorder bdrAttribute = BorderFactory.createTitledBorder("");
 	//private JComboBox<String> cmbList = new JComboBox<String>(); 	//for Java 7
+	@SuppressWarnings("rawtypes")
 	private JComboBox cmbList = new JComboBox(); 					//for java 6
 	private JLabel lblImage = new JLabel();
 	
@@ -71,6 +72,7 @@ public class UpgradePanel extends JPanel{
 		set(manager);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void set(UpgradeManager manager) {
 		upgradeManager = manager;
 		cmbList.removeAllItems();
