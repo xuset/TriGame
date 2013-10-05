@@ -41,16 +41,16 @@ public class GameBoard{
 		draw(image, p.intX(), p.intY());
 	}
 	public void draw(Image image, int x, int y) {
-		int width = image.getWidth(null);
-		int height = image.getHeight(null);
 		int topLeftX = (int) (x - viewable.getX());
 		int topLeftY = (int) (y - viewable.getY());
-		draw(image, topLeftX, topLeftY, topLeftX + width, topLeftY + height, 0, 0, width, height);
+		if (isInsideViewable(topLeftX, topLeftY, image.getWidth(null), image.getHeight(null)))
+			drawBoard.getDrawing().drawImage(image, topLeftX, topLeftY, null);
 	}
 	public void draw(Image image, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2) {
 		if (isInsideViewable(dx1, dy1, dx2 - dx1, dy2 - dy1))
 			drawBoard.getDrawing().drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
 	}
+	
 	
 	public void centerViewWindowCordinates(double centerX, double centerY) {
 		double x = (int) centerX - viewable.getWidth()/2.0;
