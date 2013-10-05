@@ -3,6 +3,7 @@ package tSquare.imaging;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
@@ -24,17 +25,17 @@ public class ImageProccess {
 		return crop(image, x, y, width, height, createCompatiableImage(width, height));
 	}
 	
-	public static BufferedImage scale(BufferedImage image, double scaleX, double scaleY) {
-		int newWidth = (int) (image.getWidth() * scaleX);
-		int newHeight = (int) (image.getHeight() * scaleY);
+	public static BufferedImage scale(Image image, double scaleX, double scaleY) {
+		int newWidth = (int) (image.getWidth(null) * scaleX);
+		int newHeight = (int) (image.getHeight(null) * scaleY);
 		BufferedImage bi = createCompatiableImage(newWidth, newHeight);
-		bi.getGraphics().drawImage(image, 0, 0, newWidth, newHeight, 0, 0, image.getWidth(), image.getHeight(), null);
+		bi.getGraphics().drawImage(image, 0, 0, newWidth, newHeight, 0, 0, image.getWidth(null), image.getHeight(null), null);
 		return bi;
 	}
 	
-	public static BufferedImage createCompatiableImage(BufferedImage bi) {
-		BufferedImage new_image = gc.createCompatibleImage(bi.getWidth(),bi.getHeight(), Transparency.BITMASK);
-		new_image.getGraphics().drawImage(bi,0,0,null);
+	public static BufferedImage createCompatiableImage(Image i) {
+		BufferedImage new_image = gc.createCompatibleImage(i.getWidth(null),i.getHeight(null), Transparency.BITMASK);
+		new_image.getGraphics().drawImage(i,0,0,null);
 		return new_image;
 	}
 	

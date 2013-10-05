@@ -22,7 +22,7 @@ public class Entity implements GameIntegratable{
 	long id;
 	boolean owned = true;
 	
-	protected Manager<? extends tSquare.game.entity.Entity> manager;
+	protected Manager<? extends Entity> manager;
 	protected Sprite sprite;
 	protected NetClass objClass;
 	protected NetVar.nDouble x;
@@ -49,8 +49,8 @@ public class Entity implements GameIntegratable{
 		x = new NetVar.nDouble(startX, "x", objClass);
 		y = new NetVar.nDouble(startY, "y", objClass);
 		angle = new NetVar.nDouble(90.0, "a", objClass);
-		width = new NetVar.nInt(sprite.width, "w", objClass);
-		height = new NetVar.nInt(sprite.height, "h", objClass);
+		width = new NetVar.nInt(sprite.getWidth(), "w", objClass);
+		height = new NetVar.nInt(sprite.getHeight(), "h", objClass);
 		spriteId = new NetVar.nString(sSpriteId, "spriteId", objClass);
 		health = new NetVar.nDouble(100.0, "hlth", objClass);
 		hitbox = new CollisionBox(CollisionBox.Type.Hitbox, this);
@@ -159,16 +159,16 @@ public class Entity implements GameIntegratable{
 		}
 	}
 	
-	public ArrayList<? extends tSquare.game.entity.Entity> collided() {
+	public ArrayList<? extends Entity> collided() {
 		return collided(manager.getList().size());
 	}
-	public ArrayList<? extends tSquare.game.entity.Entity> collided(int maxReturns) {
+	public ArrayList<? extends Entity> collided(int maxReturns) {
 		return collidedWith(manager.getList(), maxReturns);
 	}
-	public <T extends tSquare.game.entity.Entity> ArrayList<T> collidedWith(Collection<T> searchList) {
+	public <T extends Entity> ArrayList<T> collidedWith(Collection<T> searchList) {
 		return collidedWith(searchList, searchList.size());
 	}
-	public <T extends tSquare.game.entity.Entity> ArrayList<T> collidedWith(Collection<T> searchList, int maxReturns) {
+	public <T extends Entity> ArrayList<T> collidedWith(Collection<T> searchList, int maxReturns) {
 		ArrayList<T> hitlist = new ArrayList<T>();
 		int hits = 0;
 		for (T type : searchList) {
