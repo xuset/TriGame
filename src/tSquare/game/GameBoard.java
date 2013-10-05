@@ -41,12 +41,15 @@ public class GameBoard{
 		draw(image, p.intX(), p.intY());
 	}
 	public void draw(Image image, int x, int y) {
-		if (isInsideViewable(x, y, image.getWidth(null), image.getHeight(null)))
-			drawImage(image, x, y);
+		int width = image.getWidth(null);
+		int height = image.getHeight(null);
+		int topLeftX = (int) (x - viewable.getX());
+		int topLeftY = (int) (y - viewable.getY());
+		draw(image, topLeftX, topLeftY, topLeftX + width, topLeftY + height, 0, 0, width, height);
 	}
-	
-	protected void drawImage(Image image, int x, int y) {
-		drawBoard.getDrawing().drawImage(image,  (int) (x - viewable.getX()), (int) (y - viewable.getY()), null);
+	public void draw(Image image, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2) {
+		if (isInsideViewable(dx1, dy1, dx2 - dx1, dy2 - dy1))
+			drawBoard.getDrawing().drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
 	}
 	
 	public void centerViewWindowCordinates(double centerX, double centerY) {
@@ -75,7 +78,8 @@ public class GameBoard{
 	}
 	
 	public boolean isInsideViewable(int x, int y, int width, int height) {
-		if (x + width > viewable.getX() && x < viewable.getX() + viewable.getWidth() && y + height > viewable.getY() && y < viewable.getY() + viewable.getHeight())
+		//if (x + width > viewable.getX() && x < viewable.getX() + viewable.getWidth() && y + height > viewable.getY() && y < viewable.getY() + viewable.getHeight())
+		if (x + width >= 0 && y + height >= 0 && x < viewable.getWidth() && y < viewable.getHeight())	
 			return true;
 		return false;
 	}
