@@ -1,11 +1,11 @@
 package triGame.game.ui.upgrades;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -66,7 +66,7 @@ public class UpgradePanel extends JPanel{
 		set(manager);
 	}
 	
-	public void set(UpgradeManager manager, BufferedImage image) {
+	public void set(UpgradeManager manager, Image image) {
 		lblImage.setIcon(new ImageIcon(image));
 		lblImage.setText("");
 		set(manager);

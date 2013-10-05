@@ -56,10 +56,10 @@ public class Arsenal implements JPanelGetter{
 		gunGroup = new ArsenalGroup("Guns", gunEvent);
 		towerGroup = new ArsenalGroup("Towers", towerEvent);
 		
-		ArsenalItem barrier = new ArsenalItem(Barrier.NEW_BARRIER, Sprite.get(Barrier.SPRITE_ID).getImage());
-		ArsenalItem trapDoor = new ArsenalItem(TrapDoor.NEW_TRAP_DOOR, Sprite.get(TrapDoor.SPRITE_ID).getImage());
-		ArsenalItem tower = new ArsenalItem(Tower.NEW_TOWER, Sprite.get(Tower.SPRITE_ID).getImage(), Tower.INITIAL_RANGE);
-		ArsenalItem sTower = new ArsenalItem(SmallTower.NEW_TOWER, Sprite.get(SmallTower.SPRITE_ID).getImage(), SmallTower.INITIAL_RANGE);
+		ArsenalItem barrier = new ArsenalItem(Barrier.NEW_BARRIER, Sprite.get(Barrier.SPRITE_ID).getBuffered());
+		ArsenalItem trapDoor = new ArsenalItem(TrapDoor.NEW_TRAP_DOOR, Sprite.get(TrapDoor.SPRITE_ID).getBuffered());
+		ArsenalItem tower = new ArsenalItem(Tower.NEW_TOWER, Sprite.get(Tower.SPRITE_ID).getBuffered(), Tower.INITIAL_RANGE);
+		ArsenalItem sTower = new ArsenalItem(SmallTower.NEW_TOWER, Sprite.get(SmallTower.SPRITE_ID).getBuffered(), SmallTower.INITIAL_RANGE);
 		
 		for (AbstractGun gun : gunManager.getShopableGuns()) {
 			ArsenalItem gunItem = new ArsenalItem(gun.getUnlockItem(), gun.name, gun.getUpgradeManager());

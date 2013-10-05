@@ -61,11 +61,8 @@ abstract class Load {
 		//g.setColor(new Color((int) (120 * Math.random()), (int) (255 * Math.random()), (int) (255 * Math.random())));
 		g.fillPolygon(p);
 		g.dispose();
-		Sprite s = new Sprite(Person.SPRITE_ID, image);
-		s.useAntiAlias = true;
-		s.createCachedRotationImages(8);
-		s.useCachedRotationImages = true;
-		s.scale(0.5, 0.5);
+		
+		new Sprite(Person.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5));
 	}
 	
 	private static void spriteZombie() {
@@ -81,10 +78,7 @@ abstract class Load {
 		g.setColor(Color.red);
 		g.fillPolygon(p);
 		g.dispose();
-		Sprite s = new Sprite(Zombie.SPRITE_ID, image);
-		s.createCachedRotationImages(8);
-		s.useCachedRotationImages = true;
-		s.scale(0.5, 0.5);
+		new Sprite(Zombie.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5));
 	}
 	
 	private static void spriteBarrier() {
@@ -98,9 +92,7 @@ abstract class Load {
 		g.fillRect(5, 5, 40, 40);
 		g.dispose();
 		image = ImageProccess.createCompatiableImage(image);
-		new Sprite(Barrier.SPRITE_ID, image);
-		//s.createVolatileImage();
-		//s.useVolatileImage = true;
+		new Sprite(Barrier.SPRITE_ID, image, true);
 	}
 	
 	private static void spriteTower() {
@@ -113,10 +105,7 @@ abstract class Load {
 		g.setColor(Color.black);
 		g.fillRect(46, 0, 8, 50);
 		g.dispose();
-		Sprite s = new Sprite(Tower.SPRITE_ID, image);
-		s.createCachedRotationImages(360);
-		s.useCachedRotationImages = true;
-		s.scale(0.5, 0.5);
+		new Sprite(Tower.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5));
 	}
 	
 	private static void spriteSmallTower() {
@@ -129,10 +118,7 @@ abstract class Load {
 		g.setColor(Color.yellow);
 		g.fillRect(46, 0, 8, 75);
 		g.dispose();
-		Sprite s = new Sprite(SmallTower.SPRITE_ID, image);
-		s.createCachedRotationImages(360);
-		s.useCachedRotationImages = true;
-		s.scale(0.5, 0.5);
+		new Sprite(SmallTower.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5));
 		
 	}
 	
@@ -171,9 +157,7 @@ abstract class Load {
 		g.setColor(new Color(255, 80, 0));
 		g.fillRect(0, 0, 2, 10);
 		g.dispose();
-		Sprite s = new Sprite(ProjectilePistol.SPRITE_ID, image);
-		s.createCachedRotationImages(32);
-		s.useCachedRotationImages = true;
+		new Sprite(ProjectilePistol.SPRITE_ID, image);
 	}
 	
 	private static void spriteHQ() {
@@ -197,8 +181,6 @@ abstract class Load {
 		int hqWidth = g.getFontMetrics().stringWidth(hq);
 		g.drawString(hq, 50 - hqWidth / 2, 58);
 		g.dispose();
-		Sprite s = new Sprite(HeadQuarters.SPRITE_ID, image);
-		s.createCachedRotationImages(32);
-		s.useCachedRotationImages = true;
+		new Sprite(HeadQuarters.SPRITE_ID, image);
 	}
 }

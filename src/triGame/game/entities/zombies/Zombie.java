@@ -46,8 +46,8 @@ public class Zombie extends Entity {
 		Point loc = manager.determineSpawnLocation(target);
 		if (loc == null)
 			return null;
-		int width = Sprite.get(SPRITE_ID).width;
-		int height = Sprite.get(SPRITE_ID).height;
+		int width = Sprite.get(SPRITE_ID).getWidth();
+		int height = Sprite.get(SPRITE_ID).getHeight();
 		double x = loc.x - width / 2;
 		double y = loc.y - height / 2;
 		Zombie z = new Zombie((int) x, (int) y, target, manager, IdGenerator.getInstance().getId());

@@ -1,6 +1,6 @@
 package triGame.game.ui.upgrades;
 
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 
 import javax.swing.JPanel;
 
@@ -17,7 +17,7 @@ public class Upgrades implements JPanelGetter{
 		panel = new UpgradePanel(shop);
 	}
 	
-	public void set(UpgradeManager manager, BufferedImage image) {
+	public void set(UpgradeManager manager, Image image) {
 		panel.set(manager, image);
 	}
 	
