@@ -21,6 +21,7 @@ public class EntityManager extends Manager<Entity>{
 		double y = msg.getAttribute("y").getDouble();
 		String spriteId = msg.getAttribute("spriteId").getString();
 		Entity e = new Entity(spriteId, x, y, this, entityId);
+		add(e);
 		return e;
 	}
 	
