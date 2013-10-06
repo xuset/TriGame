@@ -83,8 +83,8 @@ public class Sprite {
 	public void draw(int x, int y, GameBoard gameBoard) {
 		gameBoard.draw(image, x, y);
 	}
-	public void draw(int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, GameBoard gameBoard) {
-		gameBoard.draw(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2);
+	public void draw(int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh, GameBoard gameBoard) {
+		gameBoard.draw(image, dx, dy, dw, dh, sx, sy, sw, sh);
 	}
 	public void draw(int x, int y, double degrees, GameBoard gameBoard) {
 		int screenX = (int) (x - gameBoard.viewable.getX());

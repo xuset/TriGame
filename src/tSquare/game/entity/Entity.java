@@ -1,6 +1,7 @@
 package tSquare.game.entity;
 
 
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -28,8 +29,8 @@ public class Entity implements GameIntegratable{
 	protected NetVar.nDouble x;
 	protected NetVar.nDouble y;
 	protected NetVar.nDouble angle;
-	protected NetVar.nInt width;
-	protected NetVar.nInt height;
+	protected NetVar.nDouble scaleX;
+	protected NetVar.nDouble scaleY;
 	protected NetVar.nString spriteId;
 	protected NetVar.nDouble health;
 	
@@ -49,13 +50,13 @@ public class Entity implements GameIntegratable{
 		x = new NetVar.nDouble(startX, "x", objClass);
 		y = new NetVar.nDouble(startY, "y", objClass);
 		angle = new NetVar.nDouble(90.0, "a", objClass);
-		width = new NetVar.nInt(sprite.getWidth(), "w", objClass);
-		height = new NetVar.nInt(sprite.getHeight(), "h", objClass);
+		scaleX = new NetVar.nDouble(1.0, "scaleX", objClass);
+		scaleY = new NetVar.nDouble(1.0, "scaleY", objClass);
 		spriteId = new NetVar.nString(sSpriteId, "spriteId", objClass);
 		health = new NetVar.nDouble(100.0, "hlth", objClass);
 		hitbox = new CollisionBox(CollisionBox.Type.Hitbox, this);
 		attackbox = new CollisionBox(CollisionBox.Type.AttackBox, this);
-		x.autoUpdate = y.autoUpdate = angle.autoUpdate = objClass.autoUpdate = true;
+		x.autoUpdate = y.autoUpdate = angle.autoUpdate = scaleX.autoUpdate = scaleY.autoUpdate = objClass.autoUpdate = true;
 		
 		this.manager = manager;
 		this.id = id;
@@ -98,17 +99,19 @@ public class Entity implements GameIntegratable{
 	
 	public final Manager<?> getManager() { return manager; }
 	public final String getSpriteId() { return spriteId.get(); }
-	public final double getAngle() { return angle.get(); }
 	public final double getX() { return x.get(); }
 	public final double getY() { return y.get(); }
 	public final int getIntX() { return x.get().intValue(); }
 	public final int getIntY() { return y.get().intValue(); }
 	public final Point getLocation() { return new Point(x.get(), y.get()); }
-	public final int getWidth() { return width.get(); }
-	public final int getHeight() { return height.get(); }
-	public final double getCenterX() { return x.get() + width.get()/2; }
-	public final double getCenterY() { return y.get() + height.get()/2; }
-	public final Point getCenter() { return new Point(x.get() + width.get()/2, y.get() + height.get()/2); }
+	public final int getWidth() { return (int) (sprite.getWidth() * scaleX.get()); }
+	public final int getHeight() { return (int) (sprite.getHeight() * scaleX.get()); }
+	public final double getCenterX() { return x.get() + getWidth()/2; }
+	public final double getCenterY() { return y.get() + getHeight()/2; }
+	public final Point getCenter() { return new Point(getCenterX(), getCenterY()); }
+	public final double getAngle() { return angle.get(); }
+	public final double getScaleX() { return scaleX.get(); }
+	public final double getScaleY() { return scaleY.get(); }
 	public final double getHealth() { return health.get(); }
 	public final long getId() { return id; }
 	public final boolean isRemoved() { return removed; }
@@ -124,7 +127,7 @@ public class Entity implements GameIntegratable{
 		setLocation(newX, newY);
 	}
 	public void setCenter(double x, double y) {
-		setLocation(x - width.get()/2, y - height.get()/2);
+		setLocation(x - getWidth()/2, y - getHeight()/2);
 	}
 	public void setCenter(Point p) {
 		setCenter(p.x, p.y);
@@ -135,10 +138,17 @@ public class Entity implements GameIntegratable{
 	}
 	
 	public void turn(double x, double y) {
-		setAngle(Point.degrees(this.x.get() + width.get()/2.0, this.y.get() + height.get()/2.0, x, y));
+		setAngle(Point.degrees(this.x.get() + getWidth()/2.0, this.y.get() + getHeight()/2.0, x, y));
 	}
 	public void turn(Point p) {
 		turn(p.x, p.y);
+	}
+	
+	public void setScaleX(double scale) { scaleX.set(scale); }
+	public void setScaleY(double scale) { scaleY.set(scale); }
+	public void setScale(double x, double y) {
+		scaleX.set(x);
+		scaleY.set(y);
 	}
 	
 	public double modifyHealth(double delta) {
@@ -151,11 +161,29 @@ public class Entity implements GameIntegratable{
 	}
 	
 	public void draw(GameBoard gameBoard) {
-		if (visible) {
-			if ((angle.get().intValue() - 90) % 360 == 0)
-				this.sprite.draw(x.get().intValue(), y.get().intValue(), gameBoard);
-			else
-				this.sprite.draw(x.get().intValue(), y.get().intValue(), angle.get(), gameBoard);
+		if (!visible)
+			return;
+		
+		if ((angle.get().intValue() - 90) % 360 == 0) {
+			int w = (int) (sprite.getWidth() * scaleX.get());
+			int h = (int) (sprite.getHeight() * scaleY.get());
+			int x = this.x.get().intValue();
+			int y = this.y.get().intValue();
+			sprite.draw(x, y, w, h, 0, 0, sprite.getWidth(), sprite.getHeight(), gameBoard);
+		} else {
+			int w = (int) (sprite.getWidth() * scaleX.get());
+			int h = (int) (sprite.getHeight() * scaleY.get());
+			int x = this.x.get().intValue();
+			int y = this.y.get().intValue();
+			int screenX = (int) (x - gameBoard.viewable.getX());
+			int screenY = (int) (y - gameBoard.viewable.getY());
+			AffineTransform t = new AffineTransform();
+			if (scaleX.get() != 1 || scaleY.get() != 1) {
+				t.translate(-screenX - w/2, -screenY - h/2);
+				t.scale(scaleX.get(), scaleY.get());
+			}
+			t.rotate(Math.toRadians(-angle.get() + 90), screenX + (w / 2), screenY + (h / 2));
+			sprite.draw(x, y, t, gameBoard);
 		}
 	}
 	
