@@ -1,7 +1,6 @@
 package tSquare.game.entity;
 
 
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -105,7 +104,7 @@ public class Entity implements GameIntegratable{
 	public final int getIntY() { return y.get().intValue(); }
 	public final Point getLocation() { return new Point(x.get(), y.get()); }
 	public final int getWidth() { return (int) (sprite.getWidth() * scaleX.get()); }
-	public final int getHeight() { return (int) (sprite.getHeight() * scaleX.get()); }
+	public final int getHeight() { return (int) (sprite.getHeight() * scaleY.get()); }
 	public final double getCenterX() { return x.get() + getWidth()/2; }
 	public final double getCenterY() { return y.get() + getHeight()/2; }
 	public final Point getCenter() { return new Point(getCenterX(), getCenterY()); }
@@ -163,27 +162,18 @@ public class Entity implements GameIntegratable{
 	public void draw(GameBoard gameBoard) {
 		if (!visible)
 			return;
-		
+
+		int x = this.x.get().intValue();
+		int y = this.y.get().intValue();
 		if ((angle.get().intValue() - 90) % 360 == 0) {
 			int w = (int) (sprite.getWidth() * scaleX.get());
 			int h = (int) (sprite.getHeight() * scaleY.get());
-			int x = this.x.get().intValue();
-			int y = this.y.get().intValue();
 			sprite.draw(x, y, w, h, 0, 0, sprite.getWidth(), sprite.getHeight(), gameBoard);
 		} else {
-			int w = (int) (sprite.getWidth() * scaleX.get());
-			int h = (int) (sprite.getHeight() * scaleY.get());
-			int x = this.x.get().intValue();
-			int y = this.y.get().intValue();
-			int screenX = (int) (x - gameBoard.viewable.getX());
-			int screenY = (int) (y - gameBoard.viewable.getY());
-			AffineTransform t = new AffineTransform();
-			if (scaleX.get() != 1 || scaleY.get() != 1) {
-				t.translate(-screenX - w/2, -screenY - h/2);
-				t.scale(scaleX.get(), scaleY.get());
-			}
-			t.rotate(Math.toRadians(-angle.get() + 90), screenX + (w / 2), screenY + (h / 2));
-			sprite.draw(x, y, t, gameBoard);
+			if (scaleX.get() != 1 || scaleY.get() != 1)
+				sprite.draw(x, y, angle.get(), scaleX.get(), scaleY.get(), gameBoard);
+			else
+				sprite.draw(x, y, angle.get(), gameBoard);
 		}
 	}
 	

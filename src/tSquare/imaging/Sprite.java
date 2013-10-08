@@ -93,6 +93,15 @@ public class Sprite {
 		t.setToRotation(Math.toRadians(-degrees + 90), screenX + (getWidth() / 2), screenY + (getHeight() / 2));
 		draw(x, y, t, gameBoard);
 	}
+	public void draw(int x, int y, double degrees, double scaleX, double scaleY, GameBoard gameBoard) {
+		int screenX = (int) (x - gameBoard.viewable.getX());
+		int screenY = (int) (y - gameBoard.viewable.getY());
+		AffineTransform t = new AffineTransform();
+		t.translate(-screenX * scaleX + screenX, -screenY * scaleY + screenY);
+		t.scale(scaleX, scaleY);
+		t.rotate(Math.toRadians(-degrees + 90), screenX + (getWidth()/2), screenY + (getHeight()/2));
+		draw(x, y, t, gameBoard);
+	}
 	public void draw(int x, int y, AffineTransform trans, GameBoard gameBoard) {
 		Graphics2D g2d = (Graphics2D) gameBoard.getGraphics();
 		AffineTransform saveAT = g2d.getTransform();
