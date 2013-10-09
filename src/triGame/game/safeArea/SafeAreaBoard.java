@@ -91,7 +91,9 @@ public class SafeAreaBoard{
 	}
 	
 	public void draw() {
-		gameBoard.draw(areaImage, drawPointX, drawPointY);
+		int screenX = (int) (drawPointX - gameBoard.viewable.getX());
+		int screenY = (int) (drawPointY - gameBoard.viewable.getY());
+		gameBoard.getGraphics().drawImage(areaImage, screenX, screenY, null);
 		Graphics g = gameBoard.getGraphics();
 		g.setColor(fillColor);
 		int viewX = (int) gameBoard.viewable.getX();

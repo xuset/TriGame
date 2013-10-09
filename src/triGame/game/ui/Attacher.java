@@ -68,8 +68,8 @@ public class Attacher extends MouseAdapter{
 			int boardY = roundY(mouse.y + gameBoard().viewable.getY());
 			int graphicX = boardX - (int) gameBoard().viewable.getX();
 			int graphicY = boardY - (int) gameBoard().viewable.getY();
-			gameBoard().draw(image, boardX, boardY);
 			Graphics g = gameBoard().getGraphics();
+			gameBoard().getGraphics().drawImage(image, graphicX, graphicY, null);
 			g.setColor(Color.white);
 			g.drawRect(graphicX, graphicY, image.getWidth(), image.getHeight());
 			drawRadius(graphicX, graphicY, radius);
