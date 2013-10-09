@@ -78,18 +78,6 @@ public class Entity implements GameIntegratable{
 		return e;
 	}
 	
-	public void updateOnNetwork() {
-		/*x.update();
-		y.update();
-		angle.update();
-		width.update();
-		height.update();
-		spriteId.update();
-		hitbox.update();
-		attackbox.update();
-		objClass.update();*/
-	}
-	
 	boolean allowUpdates = false;
 	protected void createOnNetwork(boolean allowUpdates) {
 		if (!createdOnNetwork && manager != null) {
