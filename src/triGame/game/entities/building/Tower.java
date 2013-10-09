@@ -82,7 +82,6 @@ public class Tower extends Building {
 			this.setAngle(Point.degrees(this.getCenterX(), this.getCenterY(),shortestZombie.getCenterX(), shortestZombie.getCenterY()));
 			this.shoot();
 		}
-		updateOnNetwork();
 	}
 
 	@Override

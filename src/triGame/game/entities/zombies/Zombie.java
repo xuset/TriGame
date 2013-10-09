@@ -68,7 +68,6 @@ public class Zombie extends Entity {
 					if (buildingManager.objectGrid.modCount + manager.getWallManager().objectGrid.modCount != lastObjectGridModCount || (pathToTargetExists && playerDidntMoved == false))
 						findPath();
 					move();
-					updateOnNetwork();
 				}
 			}
 		}

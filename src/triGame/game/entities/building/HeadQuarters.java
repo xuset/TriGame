@@ -16,7 +16,6 @@ public class HeadQuarters extends Building {
 		health.set(1500.0);
 		healthBar.relativeY = 5;
 		healthBar.maxHealth = health.get().intValue();
-		updateOnNetwork();
 	}
 	
 	public static HeadQuarters create(int x, int y, BuildingManager manager) {
@@ -31,7 +30,6 @@ public class HeadQuarters extends Building {
 
 	@Override
 	public void performLogic() {
-		updateOnNetwork();
 	}
 
 	@Override

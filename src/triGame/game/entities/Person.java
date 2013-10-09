@@ -57,7 +57,6 @@ public class Person extends Entity implements GameIntegratable{
 			 * All collisions between zombies and persons are handled by the server (in the entities.zombies.Zombie class).
 			 * This is fine except for when there is a high network latency.
 			 */
-			updateOnNetwork();
 		}
 	}
 
