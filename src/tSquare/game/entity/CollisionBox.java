@@ -1,21 +1,18 @@
 package tSquare.game.entity;
 
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
 import objectIO.netObject.NetVar;
 
 public final class CollisionBox extends Rectangle2D {
-	
-	private Rectangle box = new Rectangle();
 	private Entity entity;
 	
 	public enum Type { Hitbox, AttackBox }
 
-	public NetVar.nDouble offsetX;
-	public NetVar.nDouble offsetY;
-	public NetVar.nInt width;
-	public NetVar.nInt height;
+	public NetVar.nDouble offsetX1;
+	public NetVar.nDouble offsetY1;
+	public NetVar.nDouble offsetX2;
+	public NetVar.nDouble offsetY2;
 	
 	CollisionBox(Type type, Entity e) {
 		this(type.name(), e);
@@ -23,71 +20,71 @@ public final class CollisionBox extends Rectangle2D {
 	
 	private CollisionBox(String name, Entity e) {
 		entity = e;
-		offsetX = new NetVar.nDouble(0.0, name + "x", e.objClass);
-		offsetY = new NetVar.nDouble(0.0, name + "y", e.objClass);
-		width = new NetVar.nInt(e.getWidth(), name + "w", e.objClass);
-		height = new NetVar.nInt(e.getHeight(), name + "h", e.objClass);
+		offsetX1 = new NetVar.nDouble(0.0, name + "x1", e.objClass);
+		offsetY1 = new NetVar.nDouble(0.0, name + "y1", e.objClass);
+		offsetX2 = new NetVar.nDouble(0.0, name + "x2", e.objClass);
+		offsetY2 = new NetVar.nDouble(0.0, name + "y2", e.objClass);
+		offsetX1.autoUpdate = offsetY1.autoUpdate = offsetX2.autoUpdate = offsetY2.autoUpdate = true;
 	}
 	
-	public void update() {
-		offsetX.update();
-		offsetY.update();
-		width.update();
-		height.update();
+	public final void setOffsetCorners(double x1, double y1, double x2, double y2) {
+		setOffsetTopLeft(x1, y1);
+		setOffsetBottomRight(x2, y2);
 	}
 	
-	public final void setOffsetX(double x) {
-		offsetX.set(x);
+	public final void setOffsetTopLeft(double x, double y) {
+		offsetX1.set(x);
+		offsetY1.set(y);
 	}
 	
-	public final void setOffsetY(double y) {
-		offsetY.set(y);
-	}
-
-	@Override
-	public final Rectangle2D createIntersection(Rectangle2D arg0) {
-		return box.createIntersection(arg0);
-	}
-
-	@Override
-	public final Rectangle2D createUnion(Rectangle2D arg0) {
-		return box.createUnion(arg0);
-	}
-
-	@Override
-	public final int outcode(double x, double y) {
-		return box.outcode(x, y);
-	}
-
-	@Override
-	public final void setRect(double x, double y, double w, double h) {
-		width.set((int) w);
-		height.set((int) h);
+	public final void setOffsetBottomRight(double x, double y) {
+		offsetX2.set(x);
+		offsetY2.set(y);
 	}
 
 	@Override
 	public final double getHeight() {
-		return height.get();
+		return entity.getHeight() + offsetY1.get() + offsetY2.get();
 	}
 
 	@Override
 	public final double getWidth() {
-		return width.get();
+		return entity.getWidth() + offsetX1.get() + offsetX2.get();
 	}
 
 	@Override
 	public final double getX() {
-		return offsetX.get() + entity.getX();
+		return entity.getX() + offsetX1.get();
 	}
 
 	@Override
 	public final double getY() {
-		return offsetY.get() + entity.getY();
+		return entity.getY() + offsetY1.get();
 	}
 
 	@Override
 	public final boolean isEmpty() {
 		return false;
+	}
+
+	@Override
+	public final Rectangle2D createIntersection(Rectangle2D arg0) {
+		return null;
+	}
+
+	@Override
+	public final Rectangle2D createUnion(Rectangle2D arg0) {
+		return null;
+	}
+
+	@Override
+	public final int outcode(double x, double y) {
+		return -1;
+	}
+
+	@Override
+	public final void setRect(double x, double y, double w, double h) {
+		return;
 	}
 	
 }
