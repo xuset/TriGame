@@ -1,6 +1,7 @@
 package tSquare.imaging;
 
 
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
@@ -9,8 +10,6 @@ import java.io.File;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
-
-import tSquare.game.GameBoard;
 
 //TODO check Vimage if contents are available
 
@@ -80,33 +79,28 @@ public class Sprite {
 		return true;
 	}
 	
-	public void draw(int x, int y, GameBoard gameBoard) {
-		gameBoard.draw(image, x, y);
+	public void draw(int x, int y, Graphics g) {
+		g.drawImage(image, x, y, null);
 	}
-	public void draw(int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh, GameBoard gameBoard) {
-		gameBoard.draw(image, dx, dy, dw, dh, sx, sy, sw, sh);
+	public void draw(int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh, Graphics g) {
+		g.drawImage(image, dx, dy, dx + dw, dy + dh, sx, sy, sx + sw, sy + sh, null);
 	}
-	public void draw(int x, int y, double degrees, GameBoard gameBoard) {
-		int screenX = (int) (x - gameBoard.viewable.getX());
-		int screenY = (int) (y - gameBoard.viewable.getY());
+	public void draw(int x, int y, double degrees, Graphics2D g2d) {
 		AffineTransform t = new AffineTransform();
-		t.setToRotation(Math.toRadians(-degrees + 90), screenX + (getWidth() / 2), screenY + (getHeight() / 2));
-		draw(x, y, t, gameBoard);
+		t.setToRotation(Math.toRadians(-degrees + 90), x + (getWidth() / 2), y + (getHeight() / 2));
+		draw(x, y, t, g2d);
 	}
-	public void draw(int x, int y, double degrees, double scaleX, double scaleY, GameBoard gameBoard) {
-		int screenX = (int) (x - gameBoard.viewable.getX());
-		int screenY = (int) (y - gameBoard.viewable.getY());
+	public void draw(int x, int y, double degrees, double scaleX, double scaleY, Graphics2D g2d) {
 		AffineTransform t = new AffineTransform();
-		t.translate(-screenX * scaleX + screenX, -screenY * scaleY + screenY);
+		t.translate(-x * scaleX + x, -y * scaleY + y);
 		t.scale(scaleX, scaleY);
-		t.rotate(Math.toRadians(-degrees + 90), screenX + (getWidth()/2), screenY + (getHeight()/2));
-		draw(x, y, t, gameBoard);
+		t.rotate(Math.toRadians(-degrees + 90), x + (getWidth()/2), y + (getHeight()/2));
+		draw(x, y, t, g2d);
 	}
-	public void draw(int x, int y, AffineTransform trans, GameBoard gameBoard) {
-		Graphics2D g2d = (Graphics2D) gameBoard.getGraphics();
+	public void draw(int x, int y, AffineTransform trans, Graphics2D g2d) {
 		AffineTransform saveAT = g2d.getTransform();
 		g2d.transform(trans);
-        gameBoard.draw(image, x, y);
+		g2d.drawImage(image, x, y, null);
         g2d.setTransform(saveAT);
 	}
 }

@@ -1,6 +1,7 @@
 package tSquare.game.entity;
 
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -173,20 +174,23 @@ public class Entity implements GameIntegratable{
 	}
 	
 	public void draw(GameBoard gameBoard) {
-		if (!visible)
+		if (!visible) return;
+		
+		int x = (int) (this.x.get() - gameBoard.viewable.getX());
+		int y = (int) (this.y.get() - gameBoard.viewable.getY());
+		int w = (int) (sprite.getWidth() * scaleX.get());
+		int h = (int) (sprite.getHeight() * scaleY.get());
+	
+		if (!gameBoard.isInsideViewable(this.x.get().intValue(), this.y.get().intValue(), w, h))
 			return;
-
-		int x = this.x.get().intValue();
-		int y = this.y.get().intValue();
+		
 		if ((angle.get().intValue() - 90) % 360 == 0) {
-			int w = (int) (sprite.getWidth() * scaleX.get());
-			int h = (int) (sprite.getHeight() * scaleY.get());
-			sprite.draw(x, y, w, h, 0, 0, sprite.getWidth(), sprite.getHeight(), gameBoard);
+			sprite.draw(x, y, w, h, 0, 0, sprite.getWidth(), sprite.getHeight(), gameBoard.getGraphics());
 		} else {
 			if (scaleX.get() != 1 || scaleY.get() != 1)
-				sprite.draw(x, y, angle.get(), scaleX.get(), scaleY.get(), gameBoard);
+				sprite.draw(x, y, angle.get(), scaleX.get(), scaleY.get(), (Graphics2D) gameBoard.getGraphics());
 			else
-				sprite.draw(x, y, angle.get(), gameBoard);
+				sprite.draw(x, y, angle.get(), (Graphics2D) gameBoard.getGraphics());
 		}
 	}
 	

@@ -2,9 +2,7 @@ package tSquare.game;
 
 
 import java.awt.Graphics;
-import java.awt.Image;
 
-import tSquare.math.Point;
 import tSquare.math.Rectangle;
 
 
@@ -37,24 +35,6 @@ public class GameBoard{
 		viewable = new CustomRectangle();
 	}
 	
-	public void draw(Image image, Point p) {
-		draw(image, p.intX(), p.intY());
-	}
-	public void draw(Image image, int x, int y) {
-		int topLeftX = (int) (x - viewable.getX());
-		int topLeftY = (int) (y - viewable.getY());
-		if (isInsideViewable(topLeftX, topLeftY, image.getWidth(null), image.getHeight(null)))
-			drawBoard.getDrawing().drawImage(image, topLeftX, topLeftY, null);
-	}
-	public void draw(Image image, int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh) {
-		if (isInsideViewable(dx, dy, dw, dh)) {
-			int x = (int) (dx - viewable.getX());
-			int y = (int) (dy - viewable.getY());
-			drawBoard.getDrawing().drawImage(image, x, y, x + dw, y + dh, sx, sy, sx + sw, sy + sh, null);
-		}
-	}
-	
-	
 	public void centerViewWindowCordinates(double centerX, double centerY) {
 		double x = (int) centerX - viewable.getWidth()/2.0;
 		double y = (int) centerY - viewable.getHeight()/2.0;
@@ -82,6 +62,12 @@ public class GameBoard{
 	
 	public boolean isInsideViewable(int x, int y, int width, int height) {
 		if (x + width > 0 && y + height > 0 && x < viewable.getX() + viewable.getWidth() && y < viewable.getY() + viewable.getHeight())	
+			return true;
+		return false;
+	}
+	
+	public boolean isInsideViewable(int x, int y) {
+		if (x > 0 && y > 0 && x < viewable.getX() + viewable.getWidth() && y < viewable.getY() + viewable.getHeight())
 			return true;
 		return false;
 	}
