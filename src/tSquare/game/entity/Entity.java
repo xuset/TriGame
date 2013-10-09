@@ -4,6 +4,7 @@ package tSquare.game.entity;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import objectIO.connections.Connection;
 import objectIO.markupMsg.MarkupMsg;
 import objectIO.netObject.NetClass;
 import objectIO.netObject.NetVar;
@@ -55,7 +56,8 @@ public class Entity implements GameIntegratable{
 		health = new NetVar.nDouble(100.0, "hlth", objClass);
 		hitbox = new CollisionBox(CollisionBox.Type.Hitbox, this);
 		attackbox = new CollisionBox(CollisionBox.Type.AttackBox, this);
-		x.autoUpdate = y.autoUpdate = angle.autoUpdate = scaleX.autoUpdate = scaleY.autoUpdate = objClass.autoUpdate = true;
+		spriteId.event = spriteIdEvent;
+		x.autoUpdate = y.autoUpdate = angle.autoUpdate = scaleX.autoUpdate = scaleY.autoUpdate = objClass.autoUpdate = spriteId.autoUpdate = true;
 		
 		this.manager = manager;
 		this.id = id;
@@ -115,6 +117,18 @@ public class Entity implements GameIntegratable{
 	public final long getId() { return id; }
 	public final boolean isRemoved() { return removed; }
 	public final boolean owned() { return owned; }
+	
+	public void setSprite(String spriteId) {
+		sprite = Sprite.add(spriteId);
+		this.spriteId.set(spriteId);
+	}
+	
+	private NetVar.OnChange<String> spriteIdEvent = new NetVar.OnChange<String>() {
+		@Override
+		public void onChange(NetVar<String> var, Connection c) {
+			sprite = Sprite.add(var.get());
+		}
+	};
 	
 	public void setAngle(double degrees) 	{ this.angle.set(degrees); }
 	public void setX(double x) 				{ this.x.set(x);}
