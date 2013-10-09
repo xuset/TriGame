@@ -28,7 +28,7 @@ public class HealthBar {
 	}
 	
 	public void recenter() {
-		relativeX = width / 2;
+		relativeX = entity.getWidth() / 2 - barWidth / 2;
 	}
 	
 	public void drawHealthBar() {
