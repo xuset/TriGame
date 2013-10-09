@@ -24,7 +24,6 @@ public final class CollisionBox extends Rectangle2D {
 		offsetY1 = new NetVar.nDouble(0.0, name + "y1", e.objClass);
 		offsetX2 = new NetVar.nDouble(0.0, name + "x2", e.objClass);
 		offsetY2 = new NetVar.nDouble(0.0, name + "y2", e.objClass);
-		offsetX1.autoUpdate = offsetY1.autoUpdate = offsetX2.autoUpdate = offsetY2.autoUpdate = true;
 	}
 	
 	public final void setOffsetCorners(double x1, double y1, double x2, double y2) {

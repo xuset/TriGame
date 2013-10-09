@@ -57,7 +57,6 @@ public class Entity implements GameIntegratable{
 		hitbox = new CollisionBox(CollisionBox.Type.Hitbox, this);
 		attackbox = new CollisionBox(CollisionBox.Type.AttackBox, this);
 		spriteId.event = spriteIdEvent;
-		x.autoUpdate = y.autoUpdate = angle.autoUpdate = scaleX.autoUpdate = scaleY.autoUpdate = objClass.autoUpdate = spriteId.autoUpdate = true;
 		
 		this.manager = manager;
 		this.id = id;
