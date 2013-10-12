@@ -64,7 +64,7 @@ public class Entity implements GameIntegratable{
 	}
 	
 	protected Entity(String spriteId, double startX, double startY, Manager<?> manager) {
-		this(spriteId, startX, startY, manager, IdGenerator.getInstance().getId());
+		this(spriteId, startX, startY, manager, IdGenerator.getNext());
 	}
 	
 	public Entity(String spriteId, int x, int y) {
@@ -72,7 +72,7 @@ public class Entity implements GameIntegratable{
 	}
 	
 	public static Entity create(String spriteId, int x, int y, Manager<Entity> manager) {
-		Entity e = new Entity(spriteId, x, y, manager, IdGenerator.getInstance().getId());
+		Entity e = new Entity(spriteId, x, y, manager, IdGenerator.getNext());
 		e.createOnNetwork(true);
 		manager.add(e);
 		return e;

@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class IdGenerator {
 	private static IdGenerator instance = new IdGenerator();
-	public static IdGenerator getInstance() { return instance; }
+	public static long getNext() { return instance.getId(); }
 	
 	Random random = new Random();
 	public long getId() {
