@@ -15,7 +15,7 @@ public class Barrier extends AbstractWall {
 	
 	public static Barrier create(int x, int y, WallManager manager) {
 		if (manager.objectGrid.isBlockOpen(x, y)) {
-			Barrier barrier = new Barrier(x, y, manager, IdGenerator.getInstance().getId());
+			Barrier barrier = new Barrier(x, y, manager, IdGenerator.getNext());
 			barrier.createOnNetwork(false);
 			manager.add(barrier);
 			return barrier;

@@ -20,7 +20,7 @@ public class HeadQuarters extends Building {
 	
 	public static HeadQuarters create(int x, int y, BuildingManager manager) {
 		if (manager.objectGrid.isRectangleOpen(x, y, spriteLength, spriteLength)) {
-			HeadQuarters hq = new HeadQuarters(x, y, manager, manager.getUserId(), IdGenerator.getInstance().getId());
+			HeadQuarters hq = new HeadQuarters(x, y, manager, manager.getUserId(), IdGenerator.getNext());
 			hq.createOnNetwork(true);
 			manager.add(hq);
 			return hq;

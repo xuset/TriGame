@@ -50,7 +50,7 @@ public class Zombie extends Entity {
 		int height = Sprite.get(SPRITE_ID).getHeight();
 		double x = loc.x - width / 2;
 		double y = loc.y - height / 2;
-		Zombie z = new Zombie((int) x, (int) y, target, manager, IdGenerator.getInstance().getId());
+		Zombie z = new Zombie((int) x, (int) y, target, manager, IdGenerator.getNext());
 		z.createOnNetwork(true);
 		z.spawnTime = System.currentTimeMillis() + spawnWaitTime;
 		manager.add(z);

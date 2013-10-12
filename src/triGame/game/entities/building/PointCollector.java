@@ -21,7 +21,7 @@ public class PointCollector extends Building {
 	}
 	
 	public static PointCollector create(int x, int y, BuildingManager manager) {
-		PointCollector p = new PointCollector(x, y, manager, manager.getUserId(), IdGenerator.getInstance().getId());
+		PointCollector p = new PointCollector(x, y, manager, manager.getUserId(), IdGenerator.getNext());
 		p.createOnNetwork(true);
 		manager.add(p);
 		return p;

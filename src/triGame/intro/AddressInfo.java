@@ -90,7 +90,7 @@ public class AddressInfo extends JPanel{
 					String[] split = txtAddress.getText().split(":");
 					String address = split[0];
 					int port = Integer.parseInt(split[1]);
-					network = Network.connectToServer(address, port, IdGenerator.getInstance().getId());
+					network = Network.connectToServer(address, port, IdGenerator.getNext());
 				} catch (UnknownHostException ex) {
 					printError(ex.getMessage());
 				} catch (Exception ex) {

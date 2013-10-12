@@ -20,7 +20,7 @@ public class PointWell extends Entity {
 	}
 	
 	public static PointWell create(int x, int y, PointWellManager manager) {
-		PointWell p = new PointWell(x, y, manager, IdGenerator.getInstance().getId());
+		PointWell p = new PointWell(x, y, manager, IdGenerator.getNext());
 		p.createOnNetwork(true);
 		manager.add(p);
 		return p;

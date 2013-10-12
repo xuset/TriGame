@@ -17,7 +17,7 @@ public class SmallTower extends Tower {
 	}
 	
 	public static SmallTower create(int x, int y, BuildingManager manager) {
-		SmallTower t = new SmallTower(x, y, manager, manager.getUserId(), IdGenerator.getInstance().getId());
+		SmallTower t = new SmallTower(x, y, manager, manager.getUserId(), IdGenerator.getNext());
 		t.createOnNetwork(true);
 		manager.add(t);
 		t.addUpgrades();

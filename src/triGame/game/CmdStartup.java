@@ -21,7 +21,7 @@ public class CmdStartup {
 				network.waitForClientsToConnect(numOfPlayers, Integer.MAX_VALUE);
 			} else if (args[0].equals("-join")) {
 				int port = Integer.parseInt(args[1]);
-				network = Network.connectToServer(args[2], port, IdGenerator.getInstance().getId());
+				network = Network.connectToServer(args[2], port, IdGenerator.getNext());
 			}
 			if (network != null) {
 				TriGame g = new TriGame(network);

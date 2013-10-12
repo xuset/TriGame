@@ -14,7 +14,7 @@ public class LightTower extends Building {
 	}
 	
 	public static LightTower create(int x, int y, BuildingManager manager) {
-		LightTower l = new LightTower(x, y, manager, manager.getUserId(), IdGenerator.getInstance().getId());
+		LightTower l = new LightTower(x, y, manager, manager.getUserId(), IdGenerator.getNext());
 		l.createOnNetwork(true);
 		manager.add(l);
 		return l;

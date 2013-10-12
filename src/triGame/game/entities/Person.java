@@ -29,7 +29,7 @@ public class Person extends Entity implements GameIntegratable{
 	}
 	
 	public static Person create(int x, int y, PersonManager manager) {
-		Person p = new Person(x, y, manager, IdGenerator.getInstance().getId());
+		Person p = new Person(x, y, manager, IdGenerator.getNext());
 		p.createOnNetwork(true);
 		manager.add(p);
 		return p;

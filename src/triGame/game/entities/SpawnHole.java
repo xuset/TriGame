@@ -11,7 +11,7 @@ public class SpawnHole extends Entity{
 	}
 	
 	public static SpawnHole create(int x, int y, SpawnHoleManager manager) {
-		SpawnHole s = new SpawnHole(x, y, manager, IdGenerator.getInstance().getId());
+		SpawnHole s = new SpawnHole(x, y, manager, IdGenerator.getNext());
 		s.createOnNetwork(false);
 		manager.add(s);
 		return s;

@@ -34,7 +34,7 @@ public class TrapDoor extends AbstractWall {
 	
 	public static TrapDoor create(int x, int y, WallManager manager) {
 		if (manager.objectGrid.isBlockOpen(x, y)) {
-			TrapDoor td = new TrapDoor(x, y, manager, IdGenerator.getInstance().getId());
+			TrapDoor td = new TrapDoor(x, y, manager, IdGenerator.getNext());
 			td.createOnNetwork(false);
 			manager.add(td);
 			return td;

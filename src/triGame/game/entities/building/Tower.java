@@ -40,7 +40,7 @@ public class Tower extends Building {
 	}
 	
 	public static Tower create(int x, int y, BuildingManager manager) {
-		Tower t = new Tower(x, y, manager, manager.getUserId(), IdGenerator.getInstance().getId());
+		Tower t = new Tower(x, y, manager, manager.getUserId(), IdGenerator.getNext());
 		t.createOnNetwork(true);
 		manager.add(t);
 		t.addUpgrades();
