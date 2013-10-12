@@ -17,6 +17,7 @@ public abstract class AbstractGun implements Upgradable{
 	public int semiShotDelay = 0;
 	public int keyCode;
 	public String name = "";
+	public String description = "-";
 	
 	public abstract void shoot(Person player, ProjectileContainer container);
 	

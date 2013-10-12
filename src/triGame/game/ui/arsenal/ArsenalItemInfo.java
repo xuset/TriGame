@@ -15,4 +15,5 @@ public class ArsenalItemInfo {
 	public ArsenalItem arsenalItem;
 	public ArsenalGroup arsenalGroup;
 	public UpgradeManager upgradeManager;
+	public String description = "-";
 }

@@ -36,6 +36,7 @@ public class GunShotgun extends AbstractGun {
 		setUpgradeManager(um);
 		setLocked(UNLOCK_ITEM);
 		automaticFire = true;
+		description = "A 3-round burst should it";
 	}
 	
 	private int lastFireUpgradeCount = 0;

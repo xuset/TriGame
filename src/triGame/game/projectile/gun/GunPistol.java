@@ -35,6 +35,7 @@ public class GunPistol extends AbstractGun {
 		um.observer().watch(fireRateObserve);
 		setUpgradeManager(um);
 		automaticFire = false;
+		description = "Click to choose upgrades";
 	}
 	
 	public void shoot(Person player, ProjectileContainer container) {

@@ -25,7 +25,7 @@ public class Arsenal implements JPanelGetter{
 	private Attacher attacher;
 	private UserInterface ui;
 	
-	public JPanel getJPanel() { return panel.panel; }
+	public JPanel getJPanel() { return panel.pnlSplit; }
 	
 	public Arsenal(UserInterface ui, ShopManager shop, Attacher attacher, GunManager gunManager) {
 		this.ui = ui;
@@ -41,6 +41,7 @@ public class Arsenal implements JPanelGetter{
 					Arsenal.this.ui.upgrades.set(info.upgradeManager, info.text);
 				} else if (Arsenal.this.shop.purchase(info.shopItem)){
 					info.arsenalItem.lblPrice.setText("");
+					info.description = "Click to choose upgrades";
 				}
 			}
 		};
@@ -65,8 +66,16 @@ public class Arsenal implements JPanelGetter{
 		ArsenalItem pCollector = new ArsenalItem(PointCollector.NEW_POINT_COLLECTOR, Sprite.get(PointCollector.SPRITE_ID).getBuffered(), PointCollector.VISIBILITY_RADIUS);
 		ArsenalItem lightTower = new ArsenalItem(LightTower.NEW_LIGHT_TOWER, Sprite.get(LightTower.SPRITE_ID).getBuffered(), LightTower.VISIBILITY_RADIUS);
 		
+		barrier.info.description = "Just a general wall to block and redirect the hoards of evil triangles.";
+		trapDoor.info.description = "Not an ordinary wall. It has a special one-way function";
+		tower.info.description = "Need help defending yourself from waves of undead triangles?";
+		sTower.info.description = "Just a little bit smaller than its predecessor";
+		pCollector.info.description = "Want to collect more points? Than place this over a Point Well";
+		lightTower.info.description = "Just extends the playable area so you can easily expand your empire";
+		
 		for (AbstractGun gun : gunManager.getShopableGuns()) {
 			ArsenalItem gunItem = new ArsenalItem(gun.getUnlockItem(), gun.name, gun.getUpgradeManager());
+			gunItem.info.description = gun.description;
 			panel.addToArsenal(gunGroup, gunItem);
 		}
 		

@@ -34,6 +34,7 @@ public class GunSub extends AbstractGun {
 		um.observer().watch(fireRateObserve);
 		setUpgradeManager(um);
 		setLocked(UNLOCK_ITEM);
+		description = "A rapid fire sub-machine gun to defend against evil red triangles";
 	}
 	
 	public void shoot(Person player, ProjectileContainer container) {

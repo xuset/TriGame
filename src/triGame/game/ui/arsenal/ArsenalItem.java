@@ -27,6 +27,7 @@ public class ArsenalItem extends JPanel{
 	
 	JLabel lblPrice;
 	JLabel lblMain;
+	ArsenalPanel arsenalPanel = null;
 	
 	ArsenalItemInfo info = new ArsenalItemInfo();
 	
@@ -88,11 +89,13 @@ public class ArsenalItem extends JPanel{
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			lblMain.setBorder(selectedBorder);
+			arsenalPanel.displayDescription(info.description);
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
 			lblMain.setBorder(emptyBorder);
+			arsenalPanel.displayDescription("-");
 		}
 		public void mousePressed(MouseEvent e) { }
 		public void mouseReleased(MouseEvent e) { }

@@ -9,6 +9,7 @@ import java.util.Iterator;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import triGame.game.shopping.ShopManager;
@@ -17,21 +18,33 @@ public class ArsenalPanel{
 	
 	private ArsenalGroup displayedGroup;
 	private JButton btnSwitch = new JButton();
+	private JLabel lblDescription = new JLabel("-", JLabel.CENTER);
+	private JPanel panel;
 	private ShopManager shop;
 
-	JPanel panel;
+	JPanel pnlSplit;
 	
 	public ArrayList<ArsenalGroup> groups = new ArrayList<ArsenalGroup>();
 	
 	public ArsenalPanel(ShopManager shop) {
 		this.shop = shop;
+		
+		pnlSplit = new JPanel();
+		pnlSplit.setLayout(new BoxLayout(pnlSplit, BoxLayout.Y_AXIS));
+		
 		panel = new JPanel();
-		//panel.setBorder(BorderFactory.createLineBorder(Color.black, 2, true));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		panel.setAlignmentY(Component.CENTER_ALIGNMENT);
-		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		//panel.setAlignmentY(Component.CENTER_ALIGNMENT);
+		//panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
 		btnSwitch.addMouseListener(lblSwitchEvent);
 		btnSwitch.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		
+		JPanel pnlDescription = new JPanel();
+		pnlDescription.add(lblDescription);
+		
+		pnlSplit.add(pnlDescription);
+		pnlSplit.add(panel);
 	}
 	
 	private MouseListener lblSwitchEvent = new MouseListener() {
@@ -74,9 +87,11 @@ public class ArsenalPanel{
 	}
 	
 	public void refreshDisplay() {
+		lblDescription.setText("-");
 		panel.removeAll();
 		panel.add(btnSwitch);
 		for (ArsenalItem aItem : displayedGroup.items) {
+			aItem.arsenalPanel = this;
 			if (aItem.visibile) {
 				panel.add(Box.createHorizontalStrut(20));
 				panel.add(aItem);
@@ -94,5 +109,9 @@ public class ArsenalPanel{
 		if (displayedGroup == g)
 			return true;
 		return false;
+	}
+	
+	void displayDescription(String text) {
+		lblDescription.setText(text);
 	}
 }
