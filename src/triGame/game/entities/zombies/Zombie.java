@@ -7,6 +7,7 @@ import tSquare.math.IdGenerator;
 import tSquare.math.Point;
 import tSquare.paths.Node;
 import tSquare.paths.Path;
+import triGame.game.entities.PointParticle;
 import triGame.game.entities.building.BuildingManager;
 
 //TODO prevent zombies humping persons upon collision
@@ -134,6 +135,8 @@ public class Zombie extends Entity {
 		super.modifyHealth(delta);
 		if (getHealth() <= 0) {
 			remove();
+			PointParticle p = new PointParticle.Floating((int) getCenterX(),(int)  getCenterY(), manager.gameBoard);
+			manager.getGame().particleController.addParticle(p);
 		}
 		return getHealth();
 	}

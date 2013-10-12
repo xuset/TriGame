@@ -23,6 +23,7 @@ public class ZombieManager extends Manager<Zombie> {
 	
 	ZombiePathFinder pathFinder;
 	
+	TriGame getGame() { return game; }
 	BuildingManager getBuildingManager() { return game.buildingManager; }
 	WallManager getWallManager() { return game.wallManager; }
 	PersonManager getPersonManager() { return game.personManager; }
