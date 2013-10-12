@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import tSquare.events.EventHandler;
 import tSquare.game.entity.ManagerController;
+import tSquare.game.particles.ParticleController;
 import tSquare.math.IdGenerator;
 import tSquare.system.Network;
 
@@ -22,6 +23,7 @@ public abstract class Game implements Runnable {
 	protected Network network;
 
 	public ManagerController managerController;
+	public ParticleController particleController;
 	public EventHandler eventHandler;
 	public int targetFps = 100;
 	
@@ -53,6 +55,7 @@ public abstract class Game implements Runnable {
 	private void construct() {
 		userId = network.getUserId();
 		managerController = new ManagerController(this);
+		particleController = new ParticleController(this);
 		eventHandler = new EventHandler();
 	}
 	
