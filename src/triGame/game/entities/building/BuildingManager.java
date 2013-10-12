@@ -51,6 +51,18 @@ public class BuildingManager extends Manager<Building> {
 		return null;
 	}
 	
+	public PointCollector purchasePointCollector(int x, int y) {
+		if (game.shop.purchase(PointCollector.NEW_POINT_COLLECTOR))
+			return PointCollector.create(x, y, this);
+		return null;
+	}
+	
+	public LightTower purchaseLightTower(int x, int y) {
+		if (game.shop.purchase(LightTower.NEW_LIGHT_TOWER))
+			return LightTower.create(x, y, this);
+		return null;
+	}
+	
 	@Override
 	public Building createFromMsg(MarkupMsg msg, long entityId) {
 		int x = (int) msg.getAttribute("x").getDouble();
@@ -65,6 +77,10 @@ public class BuildingManager extends Manager<Building> {
 			b = new HeadQuarters(x, y, this, ownerId, entityId);
 		if (type.equals(SmallTower.IDENTIFIER))
 			b = new SmallTower(x, y, this, ownerId, entityId);
+		if (type.equals(PointCollector.IDENTIFIER))
+			b = new PointCollector(x, y, this, ownerId, entityId);
+		if (type.equals(LightTower.IDENTIFIER))
+			b = new LightTower(x, y, this, ownerId, entityId);
 		
 		if (b != null)
 			add(b);

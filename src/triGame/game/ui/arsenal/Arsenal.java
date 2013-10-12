@@ -3,6 +3,8 @@ package triGame.game.ui.arsenal;
 import javax.swing.JPanel;
 
 import tSquare.imaging.Sprite;
+import triGame.game.entities.building.LightTower;
+import triGame.game.entities.building.PointCollector;
 import triGame.game.entities.building.SmallTower;
 import triGame.game.entities.building.Tower;
 import triGame.game.entities.wall.Barrier;
@@ -60,6 +62,8 @@ public class Arsenal implements JPanelGetter{
 		ArsenalItem trapDoor = new ArsenalItem(TrapDoor.NEW_TRAP_DOOR, Sprite.get(TrapDoor.SPRITE_ID).getBuffered());
 		ArsenalItem tower = new ArsenalItem(Tower.NEW_TOWER, Sprite.get(Tower.SPRITE_ID).getBuffered(), Tower.INITIAL_RANGE);
 		ArsenalItem sTower = new ArsenalItem(SmallTower.NEW_TOWER, Sprite.get(SmallTower.SPRITE_ID).getBuffered(), SmallTower.INITIAL_RANGE);
+		ArsenalItem pCollector = new ArsenalItem(PointCollector.NEW_POINT_COLLECTOR, Sprite.get(PointCollector.SPRITE_ID).getBuffered(), PointCollector.VISIBILITY_RADIUS);
+		ArsenalItem lightTower = new ArsenalItem(LightTower.NEW_LIGHT_TOWER, Sprite.get(LightTower.SPRITE_ID).getBuffered(), LightTower.VISIBILITY_RADIUS);
 		
 		for (AbstractGun gun : gunManager.getShopableGuns()) {
 			ArsenalItem gunItem = new ArsenalItem(gun.getUnlockItem(), gun.name, gun.getUpgradeManager());
@@ -70,6 +74,8 @@ public class Arsenal implements JPanelGetter{
 		panel.addToArsenal(towerGroup, trapDoor);
 		panel.addToArsenal(towerGroup, tower);
 		panel.addToArsenal(towerGroup, sTower);
+		panel.addToArsenal(towerGroup, pCollector);
+		panel.addToArsenal(towerGroup, lightTower);
 		panel.switchGroup(towerGroup);
 	}
 }

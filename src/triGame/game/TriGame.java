@@ -12,6 +12,7 @@ import tSquare.system.Network;
 import tSquare.system.PeripheralInput;
 import triGame.game.entities.Person;
 import triGame.game.entities.PersonManager;
+import triGame.game.entities.PointWellManager;
 import triGame.game.entities.SpawnHoleManager;
 import triGame.game.entities.building.BuildingManager;
 import triGame.game.entities.building.HeadQuarters;
@@ -41,6 +42,7 @@ public class TriGame extends Game{
 	public WallManager wallManager;
 	public ZombieManager zombieManager;
 	public SpawnHoleManager spawnHoleManager;
+	public PointWellManager pointWellManager;
 	public GunManager gunManager;
 	public ShopManager shop = new ShopManager(500);
 	public RoundHandler roundHandler;
@@ -57,7 +59,6 @@ public class TriGame extends Game{
 	public TriGame(Network network) {
 		super(network);
 	}
-	
 	public void load() {
 		loadVisual();
 		gameBoard = new GameBoard(5000, 5000, drawBoard);
@@ -65,12 +66,13 @@ public class TriGame extends Game{
 		buildingManager = new BuildingManager(managerController, this, gameBoard, zombieManager);
 		wallManager = new WallManager(managerController, this, gameBoard);
 		spawnHoleManager = new SpawnHoleManager(managerController, gameBoard);
+		pointWellManager = new PointWellManager(managerController, this);
 		zombieManager = new ZombieManager(managerController, this, gameBoard);
 		roundHandler = new RoundHandler(zombieManager, input.keyboard, drawBoard, getNetwork().getObjController(), getNetwork().isServer(), personManager);
 		safeBoard = new SafeAreaBoard(gameBoard);
 		if (getNetwork().isServer()) {
 			HeadQuarters.create(gameBoard.getWidth() / 2 - 50, gameBoard.getHeight() / 2 - 50, buildingManager);
-			Map.createRandomMap(wallManager, buildingManager, spawnHoleManager, safeBoard);
+			Map.createRandomMap(this);
 		}
 		gunManager = new GunManager(this, gameBoard);
 		ui = new UserInterface(this);
@@ -91,7 +93,7 @@ public class TriGame extends Game{
 	}
 
 	protected void logicLoop() {
-		System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
+		//System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
 		personManager.performLogic();
 		gameBoard.centerViewWindowCordinates(player.getCenterX(), player.getCenterY());
 		zombieManager.performLogic();
@@ -110,12 +112,15 @@ public class TriGame extends Game{
 		wallManager.draw();
 		buildingManager.draw();
 		spawnHoleManager.draw();
+		pointWellManager.draw();
 		gunManager.draw();
 		zombieManager.draw();
 		safeBoard.draw();
 		personManager.draw();
+		particleController.draw();
 		ui.attacher.draw();
 		roundHandler.draw();
+		
 		if (isGameOver)
 			gameOver.draw();
 		drawStats();

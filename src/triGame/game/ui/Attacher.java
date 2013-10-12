@@ -13,6 +13,8 @@ import tSquare.system.PeripheralInput;
 import triGame.game.TriGame;
 import triGame.game.entities.building.Building;
 import triGame.game.entities.building.BuildingManager;
+import triGame.game.entities.building.LightTower;
+import triGame.game.entities.building.PointCollector;
 import triGame.game.entities.building.SmallTower;
 import triGame.game.entities.building.Tower;
 import triGame.game.entities.wall.Barrier;
@@ -103,7 +105,8 @@ public class Attacher extends MouseAdapter{
 				int width = image.getWidth();
 				int height = image.getHeight();
 				if (buildingManager().objectGrid.isRectangleOpen(x, y, width, height) &&
-						wallManager().objectGrid.isRectangleOpen(x, y, width, height)) {
+						wallManager().objectGrid.isRectangleOpen(x, y, width, height) &&
+						game.spawnHoleManager.objectGrid.isRectangleOpen(x, y, width, height)) {
 					if (shopItem == Barrier.NEW_BARRIER) {
 						if (wallManager().purchaseBarrier(x, y) == null)
 							unsetAttached();
@@ -118,6 +121,14 @@ public class Attacher extends MouseAdapter{
 					}
 					if (shopItem == SmallTower.NEW_TOWER) {
 						if (buildingManager().purchaseSmallTower(x, y) == null)
+							unsetAttached();
+					}
+					if (shopItem == PointCollector.NEW_POINT_COLLECTOR) {
+						if (buildingManager().purchasePointCollector(x, y) == null)
+							unsetAttached();
+					}
+					if (shopItem == LightTower.NEW_LIGHT_TOWER) {
+						if (buildingManager().purchaseLightTower(x, y) == null)
 							unsetAttached();
 					}
 					if (dragged)

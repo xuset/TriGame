@@ -12,8 +12,12 @@ import java.awt.image.BufferedImage;
 import tSquare.imaging.ImageProccess;
 import tSquare.imaging.Sprite;
 import triGame.game.entities.Person;
+import triGame.game.entities.PointParticle;
+import triGame.game.entities.PointWell;
 import triGame.game.entities.SpawnHole;
 import triGame.game.entities.building.HeadQuarters;
+import triGame.game.entities.building.LightTower;
+import triGame.game.entities.building.PointCollector;
 import triGame.game.entities.building.SmallTower;
 import triGame.game.entities.building.Tower;
 import triGame.game.entities.wall.Barrier;
@@ -34,6 +38,10 @@ abstract class Load {
 		spriteTrapDoor();
 		spriteProjectile();
 		spriteHQ();
+		spritePointParticle();
+		spritePointCollector();
+		spriteLightTower();
+		spritePointWell();
 	}
 	
 	private static void spriteSpawnHole() {
@@ -182,5 +190,29 @@ abstract class Load {
 		g.drawString(hq, 50 - hqWidth / 2, 58);
 		g.dispose();
 		new Sprite(HeadQuarters.SPRITE_ID, image);
+	}
+	
+	private static void spritePointParticle() {
+		if (Sprite.exists(PointParticle.SPRITE_ID))
+			return;
+		BufferedImage image = new BufferedImage(6, 6, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.setColor(Color.yellow);
+		g.fillRect(0, 2, 6, 2);
+		g.fillRect(2, 0, 2, 6);
+		g.dispose();
+		new Sprite(PointParticle.SPRITE_ID, image);
+	}
+	
+	private static void spritePointCollector() {
+		Sprite.add(PointCollector.SPRITE_ID);
+	}
+	
+	private static void spriteLightTower() {
+		Sprite.add(LightTower.SPRITE_ID);
+	}
+	
+	private static void spritePointWell() {
+		Sprite.add(PointWell.SPRITE_ID);
 	}
 }
