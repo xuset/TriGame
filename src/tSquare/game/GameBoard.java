@@ -66,13 +66,13 @@ public class GameBoard{
 	}
 	
 	public boolean isInsideViewable(int x, int y, int width, int height) {
-		if (x + width > 0 && y + height > 0 && x < viewable.getX() + viewable.getWidth() && y < viewable.getY() + viewable.getHeight())	
+		if (x + width > viewable.getX() && y + height > viewable.getY() && x < viewable.getX() + viewable.getWidth() && y < viewable.getY() + viewable.getHeight())	
 			return true;
 		return false;
 	}
 	
 	public boolean isInsideViewable(int x, int y) {
-		if (x > 0 && y > 0 && x < viewable.getX() + viewable.getWidth() && y < viewable.getY() + viewable.getHeight())
+		if (x > viewable.getX() && y > viewable.getY() && x < viewable.getX() + viewable.getWidth() && y < viewable.getY() + viewable.getHeight())
 			return true;
 		return false;
 	}
