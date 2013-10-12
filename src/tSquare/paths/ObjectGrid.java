@@ -139,6 +139,8 @@ public class ObjectGrid {
 		return new Point(((int) x / blockWidth) * blockWidth, ((int) y / blockHeight) * blockHeight);
 	}
 	public Point roundToGrid(Point p) {
-		return new Point(((int) p.x/blockWidth) * blockWidth, ((int) p.y/blockHeight) * blockHeight);
+		p.x = roundToGridX(p.x);
+		p.y = roundToGridY(p.y);
+		return p;
 	}
 }
