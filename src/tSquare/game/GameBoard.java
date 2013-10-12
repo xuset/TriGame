@@ -2,6 +2,7 @@ package tSquare.game;
 
 
 import java.awt.Graphics;
+import java.awt.Point;
 
 import tSquare.math.Rectangle;
 
@@ -51,6 +52,10 @@ public class GameBoard{
 		if (viewable.getHeight() > getHeight())
 			y = 0;
 		viewable.set(x, y);
+	}
+	
+	public void translateToScreen(Point p) {
+		p.setLocation(p.getX() - viewable.getX(), p.getY() - viewable.getY());
 	}
 	
 	public boolean isInsideBoard(double x, double y) {

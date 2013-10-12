@@ -157,6 +157,11 @@ public class Entity implements GameIntegratable{
 		return health.get();
 	}
 	
+	public boolean isViewable() {
+		return manager.gameBoard.isInsideViewable(x.get().intValue(), y.get().intValue(),
+				(int) (scaleX.get() * sprite.getWidth()), (int) (scaleY.get() * sprite.getHeight()));
+	}
+	
 	public void draw() {
 		draw(manager.gameBoard);
 	}
