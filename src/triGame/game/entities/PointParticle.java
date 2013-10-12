@@ -35,6 +35,11 @@ public abstract class PointParticle extends SpriteParticle{
 		public Floating(int x, int y, GameBoard g) {
 			super(x, y, g);
 		}
+		
+		public void reset() {
+			progress = 0;
+			draw = true;
+		}
 
 		@Override public boolean isExpired() { return progress > finishTime; }
 
@@ -45,6 +50,8 @@ public abstract class PointParticle extends SpriteParticle{
 			x = (int) (startX + 8 * Math.sin(ratio * 4 * Math.PI));
 			y = (int) (startY - ratio * 35);
 			
+			if (isExpired())
+				draw = false;
 		}
 		
 	}
