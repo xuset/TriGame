@@ -11,6 +11,7 @@ import objectIO.netObject.ObjController;
 import objectIO.connections.Connection;
 import tSquare.game.DrawBoard;
 import tSquare.game.GameIntegratable;
+import tSquare.game.GameBoard.ViewRect;
 import tSquare.system.PeripheralInput;
 import triGame.game.entities.PersonManager;
 import triGame.game.entities.zombies.Zombie;
@@ -19,27 +20,27 @@ import triGame.game.entities.zombies.ZombieManager;
 public class RoundHandler implements GameIntegratable{
 	private static final Font roundNumberFont = new java.awt.Font("Arial", Font.BOLD, 30);
 	private static final Font roundStartFont = new java.awt.Font("Arial", Font.BOLD, 25);
-	private ZombieManager zombieManager;
-	private PeripheralInput.Keyboard keyboard;
-	private DrawBoard drawBoard;
-	private NetVar.nInt roundVar;
-	private boolean isServer;
+	
+	private final ManagerService managerService;
+	private final PeripheralInput.Keyboard keyboard;
+	private final DrawBoard drawBoard;
+	private final NetVar.nInt roundVar;
+	private final boolean isServer;
+	
 	private int roundNumber = 0;
 	private boolean roundOnGoing = false;
 	private int zombiesToSpawn = 0;
 	private boolean drawingFadingRoundNumber = false;
-	private PersonManager personManager;
 	private int maxPlayers = 0;
 	
 	public int getRoundNumber() { return roundNumber; }
 	public boolean isRoundOnGoing() { return roundOnGoing; }
 	
-	public RoundHandler(ZombieManager manager, PeripheralInput.Keyboard keyboard, DrawBoard drawBoard, ObjController netCon,  boolean isServer, PersonManager personManager) {
-		zombieManager = manager;
+	public RoundHandler(ManagerService service, PeripheralInput.Keyboard keyboard, DrawBoard drawBoard, ObjController netCon,  boolean isServer) {
+		this.managerService = service;
 		this.keyboard = keyboard;
 		this.drawBoard = drawBoard;
 		this.isServer = isServer;
-		this.personManager = personManager;
 		roundVar = new NetVar.nInt(0, "round", netCon);
 		roundVar.event = new NetVar.OnChange<Integer>() {
 			@Override public void onChange(NetVar<Integer> var, Connection c) {
@@ -59,17 +60,19 @@ public class RoundHandler implements GameIntegratable{
 	}
 	
 	private void setRound(int round) {
+		PersonManager manager = managerService.person;
 		roundNumber = round;
 		roundOnGoing = true;
-		if (personManager.getList().size() > maxPlayers) maxPlayers = personManager.getList().size();
+		if (manager.list.size() > maxPlayers) maxPlayers = manager.list.size();
 		zombiesToSpawn = ((roundNumber * roundNumber) / 10 + roundNumber) * maxPlayers;
 		drawingFadingRoundNumber = true;
 	}
 	
-	public void performLogic() {
+	@Override
+	public void performLogic(int frameDelta) {
 		if (isServer) {
 			if (roundOnGoing) {
-				if (zombiesToSpawn == 0 && zombieManager.getZombiesAlive() == 0) {
+				if (zombiesToSpawn == 0 && managerService.zombie.getZombiesAlive() == 0) {
 					roundOnGoing = false;
 				} else if (zombiesToSpawn > 0) {
 					spawnIn();
@@ -83,17 +86,19 @@ public class RoundHandler implements GameIntegratable{
 	private static final int initialWaitDelay = 500;
 	private long nextSpawnTime = 0;
 	private void spawnIn() {
-		if (zombieManager.getZombiesAlive() < Zombie.MAX_ZOMBIES && System.currentTimeMillis() > nextSpawnTime) {
-			zombieManager.create();
+		ZombieManager manager = managerService.zombie;
+		if (manager.getZombiesAlive() < Zombie.MAX_ZOMBIES && System.currentTimeMillis() > nextSpawnTime) {
+			manager.create();
 			zombiesToSpawn--;
 			nextSpawnTime = System.currentTimeMillis() + initialWaitDelay;
 		}
 	}
 
 	
-	public void draw() {
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
 		if (roundOnGoing == false && isServer) {
-			Graphics2D g = (Graphics2D) drawBoard.getDrawing();
+			//Graphics2D g = (Graphics2D) drawBoard.getDrawing();
 			g.setFont(roundStartFont);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(Color.BLACK);

@@ -17,14 +17,14 @@ import triGame.game.shopping.ShopManager;
 public class ArsenalPanel{
 	
 	private ArsenalGroup displayedGroup;
-	private JButton btnSwitch = new JButton();
-	private JLabel lblDescription = new JLabel("-", JLabel.CENTER);
-	private JPanel panel;
-	private ShopManager shop;
+	private final JButton btnSwitch = new JButton();
+	private final JLabel lblDescription = new JLabel("-", JLabel.CENTER);
+	private final JPanel panel;
+	private final ShopManager shop;
 
-	JPanel pnlSplit;
+	final JPanel pnlSplit;
 	
-	public ArrayList<ArsenalGroup> groups = new ArrayList<ArsenalGroup>();
+	public final ArrayList<ArsenalGroup> groups = new ArrayList<ArsenalGroup>();
 	
 	public ArsenalPanel(ShopManager shop) {
 		this.shop = shop;

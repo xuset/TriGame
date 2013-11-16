@@ -2,21 +2,21 @@ package triGame.game.safeArea;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import tSquare.game.GameBoard;
+import tSquare.game.GameBoard.ViewRect;
+import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
 import tSquare.imaging.ImageProccess;
+import triGame.game.Params;
 import triGame.game.safeArea.Circle;
 
 
 
-public class SafeAreaBoard{
+public class SafeAreaBoard implements GameIntegratable{
 	private CircleContainer circleChart = new CircleContainer();
-	private GameBoard gameBoard;
 	private BufferedImage areaImage;
 	private Color fillColor = Color.black;
 	private int drawPointX;
@@ -25,10 +25,9 @@ public class SafeAreaBoard{
 	private int drawPointHeight;
 	
 	private final int initialRadius = 600;
-	public SafeAreaBoard(GameBoard gameBoard) {
-		this.gameBoard = gameBoard;
-		int firstX = gameBoard.getWidth() / 2;
-		int firstY = gameBoard.getHeight() / 2;
+	public SafeAreaBoard() {
+		int firstX = Params.GAME_WIDTH / 2;
+		int firstY = Params.GAME_HEIGHT / 2;
 		circleChart.addCircle(firstX, firstY, initialRadius, null);
 		redrawSafeArea();
 	}
@@ -89,17 +88,22 @@ public class SafeAreaBoard{
 		}
 		return true;
 	}
-	
-	public void draw() {
-		int screenX = (int) (drawPointX - gameBoard.viewable.getX());
-		int screenY = (int) (drawPointY - gameBoard.viewable.getY());
-		gameBoard.getGraphics().drawImage(areaImage, screenX, screenY, null);
-		Graphics g = gameBoard.getGraphics();
+
+	@Override
+	public void performLogic(int frameDelta) { }
+
+
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
+
+		int screenX = (int) (drawPointX - rect.getX());
+		int screenY = (int) (drawPointY - rect.getY());
+		g.drawImage(areaImage, screenX, screenY, null);
 		g.setColor(fillColor);
-		int viewX = (int) gameBoard.viewable.getX();
-		int viewY = (int) gameBoard.viewable.getY();
-		int viewWidth = (int) gameBoard.viewable.getWidth();
-		int viewHeight = (int) gameBoard.viewable.getHeight();
+		int viewX = (int) rect.getX();
+		int viewY = (int) rect.getY();
+		int viewWidth = (int) rect.getWidth();
+		int viewHeight = (int) rect.getHeight();
 		
 		int leftFill = drawPointX - viewX;
 		if (leftFill > 0)
@@ -116,7 +120,6 @@ public class SafeAreaBoard{
 		int bottomFill = (viewY + viewHeight) - (drawPointY + drawPointHeight);
 		if (bottomFill > 0)
 			g.fillRect(0, drawPointY + drawPointHeight - viewY, viewWidth, bottomFill);
-		
 	}
 	
 }

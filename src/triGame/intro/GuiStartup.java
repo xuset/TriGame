@@ -19,7 +19,6 @@ public class GuiStartup {
 			CmdStartup.main(args);
 		else {
 			TriGame game = new TriGame(gatherPlayers());
-			game.load();
 			game.startGame();
 		}
 	}

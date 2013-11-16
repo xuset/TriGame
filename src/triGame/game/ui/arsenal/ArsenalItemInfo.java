@@ -4,10 +4,10 @@ import java.awt.image.BufferedImage;
 
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeManager;
+import triGame.game.ui.Attacher;
 
 public class ArsenalItemInfo {
-	public boolean hasRadius;
-	public int radius = 0;
+	public Attacher.AttachedItem attachedItem = null;
 	public boolean isImagge;
 	public BufferedImage image;
 	public String text;

@@ -15,26 +15,30 @@ import javax.swing.border.Border;
 
 import tSquare.imaging.ImageProccess;
 import tSquare.util.Observer;
+import triGame.game.entities.LocManCreator;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.ShopManager;
 import triGame.game.shopping.UpgradeManager;
+import triGame.game.ui.Attacher;
 
 public class ArsenalItem extends JPanel{
-	public static final int ITEM_SIZE = 50;
+	public static final double ITEM_SIZE = 50.0;
 	private static final long serialVersionUID = 8955177654417376268L;
 	private static final Border selectedBorder = BorderFactory.createLineBorder(Color.black, 1);
 	private static final Border emptyBorder = BorderFactory.createEmptyBorder(1, 1, 1, 1);
+
 	
+	final ArsenalItemInfo info = new ArsenalItemInfo();
+	final JLabel lblMain;
 	JLabel lblPrice;
-	JLabel lblMain;
 	ArsenalPanel arsenalPanel = null;
-	
-	ArsenalItemInfo info = new ArsenalItemInfo();
 	
 	public boolean visibile = true;
 	
+	public ArsenalItemInfo getInfo() { return info; }
+	
 	private void construct(ShopItem item, JLabel main) {
-		this.setSize(ITEM_SIZE, ITEM_SIZE);
+		this.setSize((int) ITEM_SIZE, (int) ITEM_SIZE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		if (item.getCost() > 0)
 			lblPrice = new JLabel("$" + item.getCost(), JLabel.CENTER);
@@ -45,21 +49,17 @@ public class ArsenalItem extends JPanel{
 		this.add(lblPrice);
 		info.shopItem = item;
 		info.arsenalItem = this;
+		
 		main.setBorder(emptyBorder);
 		main.addMouseListener(lblMainEvent);
 	}
 	
-	public ArsenalItem(ShopItem item, BufferedImage image, int radius) {
-		this(item, image);
-		info.hasRadius = true;
-		info.radius = radius;
-	}
-	
-	public ArsenalItem(ShopItem item, BufferedImage image) {
+	public ArsenalItem(ShopItem item, BufferedImage image, int radius, LocManCreator<?> creator) {
 		lblMain = new  JLabel();
 		lblMain.setIcon(new ImageIcon(scale(image)));
 		info.isImagge = true;
 		info.image = image;
+		info.attachedItem = new Attacher.AttachedItem(image, radius, item, creator);
 		construct(item, lblMain);
 	}
 	

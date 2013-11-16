@@ -1,28 +1,22 @@
 package triGame.game.entities.zombies;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import tSquare.paths.AStarDefiner;
 import tSquare.paths.DynamicPathFinder;
 import tSquare.paths.Node;
 import tSquare.paths.PathFinder;
-import triGame.game.TriGame;
+import triGame.game.ManagerService;
+import triGame.game.Params;
 import triGame.game.entities.Person;
-import triGame.game.entities.building.Building;
-import triGame.game.safeArea.SafeAreaBoard;
+import triGame.game.entities.buildings.Building;
+import triGame.game.entities.buildings.BuildingManager;
 
 public class ZombiePathFinder extends DynamicPathFinder {
-	private Collection<Building> buildings;
-	private Collection<Person> persons;
-	private SafeAreaBoard safeBoard;
+	private final ManagerService managers;
 	private Zombie zombie;
 	
-	public ZombiePathFinder(TriGame game) {
-		super(game.wallManager.objectGrid);
-		buildings = game.buildingManager.getList();
-		persons = game.personManager.getList();
-		this.safeBoard = game.safeBoard;
+	public ZombiePathFinder(ManagerService managers, BuildingManager buildingManager) {
+		super(buildingManager.objectGrid);
+		this.managers = managers;
 		setPathDefiner(new ZombieWrapper());
 	}
 	
@@ -50,17 +44,17 @@ public class ZombiePathFinder extends DynamicPathFinder {
 	
 	public class ZombieWrapper extends AStarDefiner {
 		public boolean isFinishNode(Node n, PathFinder pathFinder) {
-			int x = n.getX() - TriGame.BLOCK_WIDTH/2;
-			int y = n.getY() - TriGame.BLOCK_WIDTH/2;
-			final int width = TriGame.BLOCK_WIDTH;
-			final int height = TriGame.BLOCK_HEIGHT;
-			for (Person p : persons) {
+			int x = n.getX() - Params.BLOCK_SIZE/2;
+			int y = n.getY() - Params.BLOCK_SIZE/2;
+			final int width = Params.BLOCK_SIZE;
+			final int height = Params.BLOCK_SIZE;
+			for (Person p : managers.person.list) {
 				if (p.hitbox.contains(x, y, width, height) || p.hitbox.intersects(x, y, width, height)) {
 					zombie.target = p;
 					return true;
 				}
 			}
-			for (Building b : buildings) {
+			for (Building b : managers.building.list) {
 				if (b.hitbox.contains(x, y, width, height) || b.hitbox.intersects(x, y, width, height)) {
 					zombie.target = b;
 					return true;
@@ -69,7 +63,7 @@ public class ZombiePathFinder extends DynamicPathFinder {
 			return false;
 		}
 		
-		public Collection<Node> getAdjacentNodes(Node n) { //can optimize by putting Node.getAdjacentNodes() inside this. would remove iterator
+		/*public Collection<Node> getAdjacentNodes(Node n) { //can optimize by putting Node.getAdjacentNodes() inside this. would remove iterator
 			Collection<Node> col = n.getAdjacentNodes();
 			Iterator<Node> it = col.iterator();
 			while (it.hasNext()) {
@@ -78,6 +72,6 @@ public class ZombiePathFinder extends DynamicPathFinder {
 					it.remove();
 			}
 			return col;
-		}
+		}*/
 	}
 }

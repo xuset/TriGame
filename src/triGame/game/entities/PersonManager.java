@@ -1,48 +1,49 @@
 package triGame.game.entities;
 
-import objectIO.markupMsg.MarkupMsg;
-import tSquare.game.GameBoard;
+import tSquare.game.entity.EntityKey;
+import tSquare.game.entity.LocationCreator;
 import tSquare.game.entity.Manager;
 import tSquare.game.entity.ManagerController;
 import tSquare.system.PeripheralInput;
-import triGame.game.TriGame;
-import triGame.game.entities.building.BuildingManager;
-import triGame.game.entities.wall.WallManager;
-import triGame.game.entities.zombies.ZombieManager;
+import triGame.game.ManagerService;
 import triGame.game.safeArea.SafeAreaBoard;
-import triGame.game.shopping.ShopManager;
 
 public class PersonManager extends Manager<Person>{
 	public static final String HASH_MAP_KEY = "person";
-	private TriGame game;
 	
-	public PeripheralInput.Keyboard getInput() { return game.getInput().keyboard; }
-	public ShopManager getShop() { return game.shop; }
-	public BuildingManager getBuildingManager() { return game.buildingManager; }
-	public WallManager getWallManager() { return game.wallManager; }
-	public ZombieManager getZombieManager() { return game.zombieManager; }
-	public Person getPlayer() { return game.player; }
-	public SafeAreaBoard getSafeAreaBoard() { return game.safeBoard; }
+	private final ManagerService managers;
+	private final SafeAreaBoard safeBoard;
+	private final PeripheralInput.Keyboard keyboard;
 	
-	public PersonManager(ManagerController controller, TriGame game, GameBoard gameBoard) {
-		super(controller, gameBoard, HASH_MAP_KEY);
-		this.game = game;
+	public final LocationCreator<Person> creator;
+	
+	public PersonManager(ManagerController controller, ManagerService managers,
+			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard) {
+		
+		super(controller, HASH_MAP_KEY);
+		this.managers = managers;
+		this.safeBoard = safeBoard;
+		this.keyboard = keyboard;
+		
+		creator = new LocationCreator<Person>(HASH_MAP_KEY, controller.creator, 
+				new LocationCreator.IFace<Person>() {
+					@Override
+					public Person create(double x, double y, EntityKey key) {
+						return new Person(x, y, key, PersonManager.this.managers,
+								PersonManager.this.safeBoard, PersonManager.this.keyboard);
+					}
+				});
 	}
 	
-	void setGameOver() {
-		game.setGameOver();
+	public Person getPlayer() {
+		for (Person p : list) {
+			if (p.owned())
+				return p;
+		}
+		return null;
 	}
 	
-	public Person create(int x, int y) {
-		Person p = Person.create(x, y, this);
-		return p;
-	}
-	@Override
-	public Person createFromMsg(MarkupMsg msg, long entityId) {
-		int x = (int) msg.getAttribute("x").getDouble();
-		int y = (int) msg.getAttribute("y").getDouble();
-		Person p = new Person(x, y, this, entityId);
-		add(p);
-		return p;
+	public Person create(double x, double y) {
+		return creator.create(x, y, this);
 	}
 }

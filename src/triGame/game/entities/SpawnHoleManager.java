@@ -1,45 +1,45 @@
 package triGame.game.entities;
 
-import objectIO.markupMsg.MarkupMsg;
-import tSquare.game.GameBoard;
+import tSquare.game.entity.Entity;
+import tSquare.game.entity.EntityKey;
+import tSquare.game.entity.LocationCreator;
 import tSquare.game.entity.Manager;
 import tSquare.game.entity.ManagerController;
 import tSquare.paths.ObjectGrid;
+import triGame.game.Params;
 
 public class SpawnHoleManager extends Manager<SpawnHole>{
 	public static final String HASH_MAP_KEY = "spawnHole";
 	
-	public ObjectGrid objectGrid;
+	public final ObjectGrid objectGrid;
 	public SpawnHole[] initialSpawnHoles;
+	public final LocationCreator<SpawnHole> creator;
 	
-	public SpawnHoleManager(ManagerController controller, GameBoard gameBoard) {
-		super(controller, gameBoard, HASH_MAP_KEY);
-		objectGrid = new ObjectGrid(gameBoard, 50, 50);
+	public SpawnHoleManager(ManagerController controller) {
+		super(controller, HASH_MAP_KEY);
+		objectGrid = new ObjectGrid(Params.GAME_WIDTH, Params.GAME_HEIGHT, Params.BLOCK_SIZE, Params.BLOCK_SIZE);
+		
+		creator = new LocationCreator<SpawnHole>(HASH_MAP_KEY, controller.creator, 
+				new LocationCreator.IFace<SpawnHole>() {
+					@Override
+					public SpawnHole create(double x, double y, EntityKey key) {
+						return new SpawnHole(x, y, SpawnHoleManager.this, key);
+					}
+				});
 	}
 	
 	public SpawnHole create(int x, int y) {
-		return SpawnHole.create(x, y, this);
+		return creator.create(x, y, this);
 	}
 
 	@Override
-	public boolean add(SpawnHole spawnHole) {
+	protected void onAdd(SpawnHole spawnHole) {
 		objectGrid.turnOnBlock(spawnHole.getX(), spawnHole.getY());
-		return super.add(spawnHole);
 	}
 	
 	@Override
-	public boolean remove(SpawnHole spawnHole) {
+	protected void onRemove(Entity spawnHole) {
 		objectGrid.turnOffBlock(spawnHole.getX(), spawnHole.getY());
-		return super.remove(spawnHole);
-	}
-
-	@Override
-	public SpawnHole createFromMsg(MarkupMsg msg, long entityId) {
-		int x = (int) msg.getAttribute("x").getDouble();
-		int y = (int) msg.getAttribute("y").getDouble();
-		SpawnHole s= new SpawnHole(x, y, this, entityId);
-		add(s);
-		return s;
 	}
 
 }

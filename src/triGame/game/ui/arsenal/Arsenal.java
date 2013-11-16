@@ -1,33 +1,30 @@
 package triGame.game.ui.arsenal;
 
+import java.awt.image.BufferedImage;
+
 import javax.swing.JPanel;
 
 import tSquare.imaging.Sprite;
-import triGame.game.entities.building.LightTower;
-import triGame.game.entities.building.PointCollector;
-import triGame.game.entities.building.SmallTower;
-import triGame.game.entities.building.Tower;
-import triGame.game.entities.wall.Barrier;
-import triGame.game.entities.wall.TrapDoor;
-import triGame.game.projectile.gun.AbstractGun;
-import triGame.game.projectile.gun.GunManager;
+import triGame.game.entities.LocManCreator;
+import triGame.game.entities.buildings.Building;
+import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.ShopManager;
 import triGame.game.ui.Attacher;
 import triGame.game.ui.JPanelGetter;
 import triGame.game.ui.UserInterface;
 
 public class Arsenal implements JPanelGetter{
-	public ArsenalPanel panel;
-	public ArsenalGroup gunGroup;
-	public ArsenalGroup towerGroup;
+	public final ArsenalPanel panel;
+	public final ArsenalGroup gunGroup;
+	public final ArsenalGroup towerGroup;
 	
-	private ShopManager shop;
-	private Attacher attacher;
-	private UserInterface ui;
+	private final ShopManager shop;
+	private final Attacher attacher;
+	private final UserInterface ui;
 	
 	public JPanel getJPanel() { return panel.pnlSplit; }
 	
-	public Arsenal(UserInterface ui, ShopManager shop, Attacher attacher, GunManager gunManager) {
+	public Arsenal(UserInterface ui, ShopManager shop, Attacher attacher) {
 		this.ui = ui;
 		this.shop = shop;
 		this.attacher = attacher;
@@ -48,43 +45,30 @@ public class Arsenal implements JPanelGetter{
 		ArsenalGroup.PurchaseEvent towerEvent = new ArsenalGroup.PurchaseEvent() {
 			@Override
 			public void purchase(ArsenalItemInfo info) {
-				if (Arsenal.this.attacher.shopItem == info.shopItem) {
-					Arsenal.this.attacher.setAttached(info.shopItem, info.image, false, info.radius);
+				Attacher attacher = Arsenal.this.attacher;
+				if (attacher.isAttached() &&
+						attacher.getAttached().shopItem == info.shopItem) {
+					
+					attacher.setAttached(info.attachedItem, false);
 				} else {
-					Arsenal.this.attacher.setAttached(info.shopItem, info.image, true, info.radius);
+					attacher.setAttached(info.attachedItem, true);
 				}
 			}
 		};
 		
 		gunGroup = new ArsenalGroup("Guns", gunEvent);
 		towerGroup = new ArsenalGroup("Towers", towerEvent);
+	}
+	
+	public void addToArsenal(Building.BuildingInfo info, LocManCreator<?> creator) {
+		addToArsenal(info.item, Sprite.get(info.spriteId).getBuffered(), "-", info.visibilityRadius, towerGroup, creator);
+	}
+	
+	public void addToArsenal(ShopItem item, BufferedImage image, String description,
+			int radius, ArsenalGroup group, LocManCreator<?> creator) {
 		
-		ArsenalItem barrier = new ArsenalItem(Barrier.NEW_BARRIER, Sprite.get(Barrier.SPRITE_ID).getBuffered());
-		ArsenalItem trapDoor = new ArsenalItem(TrapDoor.NEW_TRAP_DOOR, Sprite.get(TrapDoor.SPRITE_ID).getBuffered());
-		ArsenalItem tower = new ArsenalItem(Tower.NEW_TOWER, Sprite.get(Tower.SPRITE_ID).getBuffered(), Tower.INITIAL_RANGE);
-		ArsenalItem sTower = new ArsenalItem(SmallTower.NEW_TOWER, Sprite.get(SmallTower.SPRITE_ID).getBuffered(), SmallTower.INITIAL_RANGE);
-		ArsenalItem pCollector = new ArsenalItem(PointCollector.NEW_POINT_COLLECTOR, Sprite.get(PointCollector.SPRITE_ID).getBuffered(), PointCollector.VISIBILITY_RADIUS);
-		ArsenalItem lightTower = new ArsenalItem(LightTower.NEW_LIGHT_TOWER, Sprite.get(LightTower.SPRITE_ID).getBuffered(), LightTower.VISIBILITY_RADIUS);
-		
-		barrier.info.description = "Just a general wall to block and redirect the hoards of evil triangles.";
-		trapDoor.info.description = "Not an ordinary wall. It has a special one-way function";
-		tower.info.description = "Need help defending yourself from waves of undead triangles?";
-		sTower.info.description = "Just a little bit smaller than its predecessor";
-		pCollector.info.description = "Want to collect more points? Than place this over a Point Well";
-		lightTower.info.description = "Just extends the playable area so you can easily expand your empire";
-		
-		for (AbstractGun gun : gunManager.getShopableGuns()) {
-			ArsenalItem gunItem = new ArsenalItem(gun.getUnlockItem(), gun.name, gun.getUpgradeManager());
-			gunItem.info.description = gun.description;
-			panel.addToArsenal(gunGroup, gunItem);
-		}
-		
-		panel.addToArsenal(towerGroup, barrier);
-		panel.addToArsenal(towerGroup, trapDoor);
-		panel.addToArsenal(towerGroup, tower);
-		panel.addToArsenal(towerGroup, sTower);
-		panel.addToArsenal(towerGroup, pCollector);
-		panel.addToArsenal(towerGroup, lightTower);
-		panel.switchGroup(towerGroup);
+		ArsenalItem ai = new ArsenalItem(item, image, radius, creator);
+		ai.info.description = description;
+		panel.addToArsenal(group, ai);
 	}
 }

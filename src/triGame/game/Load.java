@@ -15,15 +15,15 @@ import triGame.game.entities.Person;
 import triGame.game.entities.PointParticle;
 import triGame.game.entities.PointWell;
 import triGame.game.entities.SpawnHole;
-import triGame.game.entities.building.HeadQuarters;
-import triGame.game.entities.building.LightTower;
-import triGame.game.entities.building.PointCollector;
-import triGame.game.entities.building.SmallTower;
-import triGame.game.entities.building.Tower;
-import triGame.game.entities.wall.Barrier;
-import triGame.game.entities.wall.TrapDoor;
+import triGame.game.entities.buildings.types.Barrier;
+import triGame.game.entities.buildings.types.HeadQuarters;
+import triGame.game.entities.buildings.types.LightTower;
+import triGame.game.entities.buildings.types.PointCollector;
+import triGame.game.entities.buildings.types.SmallTower;
+import triGame.game.entities.buildings.types.Tower;
+import triGame.game.entities.buildings.types.TrapDoor;
+import triGame.game.entities.projectiles.Projectile;
 import triGame.game.entities.zombies.Zombie;
-import triGame.game.projectile.ProjectilePistol;
 
 
 abstract class Load {
@@ -90,7 +90,7 @@ abstract class Load {
 	}
 	
 	private static void spriteBarrier() {
-		if (Sprite.exists(Barrier.SPRITE_ID))
+		if (Sprite.exists(Barrier.INFO.spriteId))
 			return;
 		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
@@ -100,11 +100,11 @@ abstract class Load {
 		g.fillRect(5, 5, 40, 40);
 		g.dispose();
 		image = ImageProccess.createCompatiableImage(image);
-		new Sprite(Barrier.SPRITE_ID, image, true);
+		new Sprite(Barrier.INFO.spriteId, image, true);
 	}
 	
 	private static void spriteTower() {
-		if (Sprite.exists(Tower.SPRITE_ID))
+		if (Sprite.exists(Tower.INFO.spriteId))
 			return;
 		BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
@@ -113,11 +113,11 @@ abstract class Load {
 		g.setColor(Color.black);
 		g.fillRect(46, 0, 8, 50);
 		g.dispose();
-		new Sprite(Tower.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5));
+		new Sprite(Tower.INFO.spriteId, ImageProccess.scale(image, 0.5, 0.5));
 	}
 	
 	private static void spriteSmallTower() {
-		if (Sprite.exists(SmallTower.SPRITE_ID))
+		if (Sprite.exists(SmallTower.INFO.spriteId))
 			return;
 		BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
@@ -126,23 +126,23 @@ abstract class Load {
 		g.setColor(Color.yellow);
 		g.fillRect(46, 0, 8, 75);
 		g.dispose();
-		new Sprite(SmallTower.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5));
+		new Sprite(SmallTower.INFO.spriteId, ImageProccess.scale(image, 0.5, 0.5));
 		
 	}
 	
 	/*private static void spriteLaserTower() {
-		if (Sprite.exists(LaserTower.SPRITE_ID))
+		if (Sprite.exists(LaserTower.INFO.spriteId))
 			return;
 		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
 		g.setColor(Color.ORANGE);
 		g.fillOval(0, 0, 50, 50);
 		g.dispose();
-		new Sprite(LaserTower.SPRITE_ID, image);
+		new Sprite(LaserTower.INFO.spriteId, image);
 	}*/
 	
 	private static void spriteTrapDoor() {
-		if (Sprite.exists(TrapDoor.SPRITE_ID))
+		if (Sprite.exists(TrapDoor.INFO.spriteId))
 			return;
 		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
@@ -154,22 +154,22 @@ abstract class Load {
 		g.fillRect(5, 20, 40, 10);
 		g.fillRect(20, 5, 10, 40);
 		g.dispose();
-		new Sprite(TrapDoor.SPRITE_ID, image);
+		new Sprite(TrapDoor.INFO.spriteId, image);
 	}
 	
 	private static void spriteProjectile() {
-		if (Sprite.exists(ProjectilePistol.SPRITE_ID))
+		if (Sprite.exists(Projectile.SPRITE_ID))
 			return;
 		BufferedImage image = new BufferedImage(2, 10, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
 		g.setColor(new Color(255, 80, 0));
 		g.fillRect(0, 0, 2, 10);
 		g.dispose();
-		new Sprite(ProjectilePistol.SPRITE_ID, image);
+		new Sprite(Projectile.SPRITE_ID, image);
 	}
 	
 	private static void spriteHQ() {
-		if (Sprite.exists(HeadQuarters.SPRITE_ID))
+		if (Sprite.exists(HeadQuarters.INFO.spriteId))
 			return;
 		BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
@@ -189,7 +189,7 @@ abstract class Load {
 		int hqWidth = g.getFontMetrics().stringWidth(hq);
 		g.drawString(hq, 50 - hqWidth / 2, 58);
 		g.dispose();
-		new Sprite(HeadQuarters.SPRITE_ID, image);
+		new Sprite(HeadQuarters.INFO.spriteId, image);
 	}
 	
 	private static void spritePointParticle() {
@@ -205,11 +205,11 @@ abstract class Load {
 	}
 	
 	private static void spritePointCollector() {
-		Sprite.add(PointCollector.SPRITE_ID);
+		Sprite.add(PointCollector.INFO.spriteId);
 	}
 	
 	private static void spriteLightTower() {
-		Sprite.add(LightTower.SPRITE_ID);
+		Sprite.add(LightTower.INFO.spriteId);
 	}
 	
 	private static void spritePointWell() {

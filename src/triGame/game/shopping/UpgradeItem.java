@@ -1,18 +1,27 @@
 package triGame.game.shopping;
 
 public class UpgradeItem {
-	public ShopItem shopItem;
-	public int upgradeCount, maxUpgrades, value, upgradeIncriment;
+	public final ShopItem shopItem;
+	public final int initialValue;
+	public final int upgradeIncriment;
+	public final int maxUpgrades;
 	
-	public UpgradeItem(ShopItem shopItem, int maxUpgrades, int value, int upgradeIncriment) {
+	private int upgradeCount;
+	
+	public int getUpgradeCount() { return upgradeCount; }
+	public int getValue() { return initialValue + upgradeCount * upgradeIncriment; }
+	
+	
+	public UpgradeItem(ShopItem shopItem, int maxUpgrades, int initialValue, int upgradeIncriment) {
 		this.shopItem = shopItem;
-		this.value = value;
+		this.initialValue = initialValue;
 		this.upgradeIncriment = upgradeIncriment;
 		this.maxUpgrades = maxUpgrades;
 	}
 	
-	public UpgradeItem(String name, int cost, int maxUpgrades, int value, int upgradeIncriment) {
-		this(new ShopItem(name, cost), maxUpgrades, value, upgradeIncriment);
+	void upgrade() {
+		if (upgradeCount < maxUpgrades)
+			upgradeCount++;
 	}
 	
 	public String toString() {

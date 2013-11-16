@@ -2,155 +2,151 @@ package triGame.game.ui;
 
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-import tSquare.game.GameBoard;
+import tSquare.game.GameBoard.ViewRect;
+import tSquare.game.GameIntegratable;
 import tSquare.imaging.Sprite;
 import tSquare.system.PeripheralInput;
-import triGame.game.TriGame;
-import triGame.game.entities.building.Building;
-import triGame.game.entities.building.BuildingManager;
-import triGame.game.entities.building.LightTower;
-import triGame.game.entities.building.PointCollector;
-import triGame.game.entities.building.SmallTower;
-import triGame.game.entities.building.Tower;
-import triGame.game.entities.wall.Barrier;
-import triGame.game.entities.wall.TrapDoor;
-import triGame.game.entities.wall.WallManager;
+import triGame.game.ManagerService;
+import triGame.game.Params;
+import triGame.game.entities.LocManCreator;
+import triGame.game.entities.buildings.Building;
 import triGame.game.shopping.ShopItem;
+import triGame.game.shopping.ShopManager;
 
-public class Attacher extends MouseAdapter{
-	private PeripheralInput.Mouse mouse;
-	private UserInterface ui;
+public class Attacher extends MouseAdapter implements GameIntegratable{
+	private final PeripheralInput.Mouse mouse;
+	private final UserInterface ui;
+	private final ManagerService managers;
+	private final ShopManager shop;
+	
 	private Building selected;
-	private TriGame game;
+	private ViewRect rect;
+	private boolean dragged = false;
+	private AttachedItem attached = null;
+	private boolean mouseClicked = false;
 	
-	private GameBoard gameBoard() { return game.getGameBoard(); }
-	private WallManager wallManager() { return game.wallManager; }
-	private BuildingManager buildingManager() { return game.buildingManager; }
 	
-	public int radius = 0;
-	public ShopItem shopItem;
-	public boolean attached = false;
-	public BufferedImage image;
-	public boolean dragged = false;
-	
-	public Attacher(TriGame game, UserInterface ui) {
-		this.game = game;
-		this.mouse = game.getInput().mouse;
-		this.ui = ui;
-	}
-	
-	public void setAttached(ShopItem shopItem, BufferedImage image, boolean dragged) {
-		setAttached(shopItem, image, dragged, 0);
-	}
-	
-	public void setAttached(ShopItem shopItem, BufferedImage image, boolean dragged, int radius) {
-		this.radius = radius;
-		this.shopItem = shopItem;
-		this.attached = true;
-		this.image = image;
+	public void setAttached(AttachedItem attached, boolean dragged) {
+		this.attached = attached;
 		this.dragged = dragged;
 	}
 	
-	public void unsetAttached() {
-		shopItem = null;
-		image = null;
-		attached = false;
+	public void clearAttached() {
+		attached = null;
 		dragged = false;
-		radius = 0;
 	}
-
-	public void draw() {
-		if (attached) {
-			int boardX = roundX(mouse.x + gameBoard().viewable.getX());
-			int boardY = roundY(mouse.y + gameBoard().viewable.getY());
-			int graphicX = boardX - (int) gameBoard().viewable.getX();
-			int graphicY = boardY - (int) gameBoard().viewable.getY();
-			Graphics g = gameBoard().getGraphics();
-			gameBoard().getGraphics().drawImage(image, graphicX, graphicY, null);
-			g.setColor(Color.white);
-			g.drawRect(graphicX, graphicY, image.getWidth(), image.getHeight());
-			drawRadius(graphicX, graphicY, radius);
-		} else if (selected != null) {
-			drawRadius((int) (selected.getX() - gameBoard().viewable.getX()), (int) (selected.getY() - gameBoard().viewable.getY()), selected.getVisibilityRadius());
+	
+	public boolean isAttached() { return attached != null; }
+	public AttachedItem getAttached() { return attached; }
+	
+	public static class AttachedItem {
+		private BufferedImage image = null;
+		public int visibilityRadius = 0;
+		public ShopItem shopItem = null;
+		public LocManCreator<?> creator = null;
+		
+		public AttachedItem(BufferedImage img, int radius, ShopItem item, LocManCreator<?> c) {
+			image = img;
+			visibilityRadius = radius;
+			shopItem = item;
+			creator = c;
 		}
 	}
 	
-	private void drawRadius(int x, int y, int radius) {
+	public Attacher(ManagerService service, UserInterface ui,
+			ShopManager shop,PeripheralInput.Mouse mouse) {
+		
+		this.mouse = mouse;
+		this.ui = ui;
+		managers = service;
+		this.shop = shop;
+	}
+
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
+		this.rect = rect;
+		if (isAttached()) {
+			int boardX = Params.roundToGrid(mouse.x + rect.getX());
+			int boardY = Params.roundToGrid(mouse.y + rect.getY());
+			int graphicX = boardX - (int) rect.getX();
+			int graphicY = boardY - (int) rect.getY();
+			
+			g.drawImage(attached.image, graphicX, graphicY, null);
+			
+			Color color;
+			if (shop.canPurchase(attached.shopItem) &&
+					attached.creator.isValidLocation(boardX, boardY))
+				color = Color.green;
+			else
+				color = Color.red;
+			g.setColor(color);
+			
+			g.drawRect(graphicX, graphicY, attached.image.getWidth(), attached.image.getHeight());
+			drawRadius(graphicX, graphicY, attached.visibilityRadius, color, g);
+		} else if (selected != null) {
+			drawRadius((int) (selected.getX() - rect.getX()), (int) (selected.getY() - rect.getY()),
+					selected.getVisibilityRadius(), Color.green, g);
+		}
+	}
+	
+	private void drawRadius(int x, int y, int radius, Color c, Graphics2D g) {
 		if (radius > 0) {
-			Graphics g = gameBoard().getGraphics();
-			g.setColor(Color.green);
+			g.setColor(c);
 			g.drawOval(x - radius, y - radius, radius * 2, radius * 2);
 		}
 	}
-	
-	private int roundX(double x) {
-		return ((int) x / TriGame.BLOCK_WIDTH) * TriGame.BLOCK_WIDTH;
-	}
-	
-	private int roundY(double y) {
-		return ((int) y / TriGame.BLOCK_HEIGHT) * TriGame.BLOCK_HEIGHT;
-	}
 		
 	public void mouseClicked(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON1)
+			mouseClicked = true;
+		else
+			mouseClicked = false;
+	}
+	
+	@Override
+	public void performLogic(int frameDelta) {
 		selected = null;
-		if (e.getButton() == MouseEvent.BUTTON1) {
-			if (attached == true) {
-				int x = roundX(mouse.x + gameBoard().viewable.getX());
-				int y = roundX(mouse.y + gameBoard().viewable.getY());
-				int width = image.getWidth();
-				int height = image.getHeight();
-				if (buildingManager().objectGrid.isRectangleOpen(x, y, width, height) &&
-						wallManager().objectGrid.isRectangleOpen(x, y, width, height) &&
-						game.spawnHoleManager.objectGrid.isRectangleOpen(x, y, width, height)) {
-					if (shopItem == Barrier.NEW_BARRIER) {
-						if (wallManager().purchaseBarrier(x, y) == null)
-							unsetAttached();
-					}
-					if (shopItem == TrapDoor.NEW_TRAP_DOOR) {
-						if (wallManager().purchaseTrapDoor(x, y) == null)
-							unsetAttached();
-					}
-					if (shopItem == Tower.NEW_TOWER) {
-						if (buildingManager().purchaseTower(x, y) == null)
-							unsetAttached();
-					}
-					if (shopItem == SmallTower.NEW_TOWER) {
-						if (buildingManager().purchaseSmallTower(x, y) == null)
-							unsetAttached();
-					}
-					if (shopItem == PointCollector.NEW_POINT_COLLECTOR) {
-						if (buildingManager().purchasePointCollector(x, y) == null)
-							unsetAttached();
-					}
-					if (shopItem == LightTower.NEW_LIGHT_TOWER) {
-						if (buildingManager().purchaseLightTower(x, y) == null)
-							unsetAttached();
-					}
-					if (dragged)
-						attached = false;
-				} else {
-					unsetAttached();
-				}
+		if (mouseClicked) {
+			mouseClicked = false;
+			if (isAttached())
+				placeAttached();
+			else
+				selectBuilding();
+		}
+	}
+	
+	private void placeAttached() {
+		int x = Params.roundToGrid(mouse.x + rect.getX());
+		int y = Params.roundToGrid(mouse.y + rect.getY());
+		if (attached.creator.isValidLocation(x, y)) {
+			if (shop.purchase(attached.shopItem))
+				attached.creator.create(x, y);
+			if (dragged)
+				clearAttached();
+		} else {
+			clearAttached();
+		}
+	}
+	
+	private void selectBuilding() {
+		boolean found = false;
+		for (Building b : managers.building.list) {
+			if (b.isUpgradable() && b.owned() &&
+					b.hitbox.contains(mouse.x + rect.getX(), mouse.y + rect.getY())) {
 				
-			} else if (attached == false){
-				boolean found = false;
-				for (Building b : buildingManager().getList()) {
-					if (b.owned() && b.hitbox.contains(mouse.x + gameBoard().viewable.getX(), mouse.y + gameBoard().viewable.getY())) {
-						ui.upgrades.set(b.getUpgradeManager(), Sprite.get(b.getSpriteId()).getImage());
-						ui.switchTo(ui.upgrades);
-						selected = b;
-						found = true;
-						break;
-					}
-				}
-				if (found == false && ui.isSelected(ui.upgrades))
-					ui.switchTo(ui.arsenal);
+				ui.upgrades.set(b.upgrades, Sprite.get(b.getSpriteId()).getImage());
+				ui.switchTo(ui.upgrades);
+				selected = b;
+				found = true;
+				break;
 			}
 		}
-	}	
+		if (found == false && ui.isSelected(ui.upgrades))
+			ui.switchTo(ui.arsenal);
+	}
 }

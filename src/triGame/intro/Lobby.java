@@ -29,14 +29,14 @@ public class Lobby extends JPanel{
 	private boolean started = false;
 	
 	Lobby(Network net) {
-		netController = new ObjController(net.getHub());
+		netController = new ObjController(net.hub);
 		new Thread(netController).start();
 		startFunc = new NetFunction(netController, "start", startEvent);
 		
-		displaySize(net.getHub().getAllConnections().size());
+		displaySize(net.hub.getAllConnections().size());
 		add(lblSize);
 		add(Box.createHorizontalStrut(20));
-		if (net.isServer())
+		if (net.isServer)
 			hosting(net);
 		else
 			joining();

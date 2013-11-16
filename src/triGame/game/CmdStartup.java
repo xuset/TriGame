@@ -25,7 +25,6 @@ public class CmdStartup {
 			}
 			if (network != null) {
 				TriGame g = new TriGame(network);
-				g.load();
 				g.startGame();
 			} else {
 				displayHelp();

@@ -90,10 +90,10 @@ public class UpgradePanel extends JPanel{
 			lblPrice.setForeground(Color.red);
 		else
 			lblPrice.setForeground(Color.black);
-		int value = (int) (((double) upgrade.upgradeCount) / upgrade.maxUpgrades * 100);
+		int value = (int) (((double) upgrade.getUpgradeCount()) / upgrade.maxUpgrades * 100);
 		pbProgress.setValue(value);
 		bdrAttribute.setTitle(upgrade.shopItem.getName());
-		if (upgrade.upgradeCount >= upgrade.maxUpgrades)
+		if (upgrade.getUpgradeCount() >= upgrade.maxUpgrades)
 			btnBuy.setEnabled(false);
 		else
 			btnBuy.setEnabled(true);
@@ -136,7 +136,7 @@ public class UpgradePanel extends JPanel{
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			if (selectedAttribute != null && shop.canPurchase(selectedAttribute.shopItem)) {
-				upgradeManager.upgrade(selectedAttribute);
+				upgradeManager.upgrade(selectedAttribute, shop);
 				setAttribute(selectedAttribute);
 			}
 		}

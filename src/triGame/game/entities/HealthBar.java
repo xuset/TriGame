@@ -2,17 +2,17 @@ package triGame.game.entities;
 
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
-import tSquare.game.GameBoard;
+import tSquare.game.GameBoard.ViewRect;
+import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
 
-public class HealthBar {
+public class HealthBar implements GameIntegratable{
 	private static final int barWidth = 30;
 	private static final int barHeight = 5;
 	
-	private GameBoard gameBoard;
-	private Entity entity;
+	private final Entity entity;
 	
 	public int width = barWidth;
 	public int height = barHeight;
@@ -21,28 +21,13 @@ public class HealthBar {
 	public int maxHealth = 100;
 	public Color fillColor = Color.green;
 	
-	public HealthBar(GameBoard gameBoard, Entity entity) { //let constructor take care of which color to draw the healthbar
-		this.gameBoard = gameBoard;
+	public HealthBar(Entity entity) {
 		this.entity = entity;
 		relativeX = entity.getWidth() / 2 - barWidth / 2;
 	}
 	
 	public void recenter() {
 		relativeX = entity.getWidth() / 2 - barWidth / 2;
-	}
-	
-	public void drawHealthBar() {
-		drawHealthBar((int) (entity.getX() - gameBoard.viewable.getX() + relativeX), (int) (entity.getY() - gameBoard.viewable.getY() + relativeY), (int) entity.getHealth());
-	}
-	
-	public void drawHealthBar(int x, int y, int health) {
-		Graphics g = gameBoard.getGraphics();
-		g.setColor(Color.black);
-		g.fillRect(x, y, width, height);
-		if (entity.getHealth() > 0) {
-			g.setColor(determineColor(health));
-			g.fillRect(x, y,(int) (width * entity.getHealth() / maxHealth), height);
-		}
 	}
 	
 	private Color determineColor(double health) {
@@ -57,4 +42,21 @@ public class HealthBar {
 		Color c = new Color(red, green, blue);
 		return c;
 	}
+
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
+		int x = (int) (entity.getX() - rect.getX() + relativeX);
+		int y = (int) (entity.getY() - rect.getY() + relativeY);
+		int health = (int) entity.getHealth();
+		
+		g.setColor(Color.black);
+		g.fillRect(x, y, width, height);
+		if (health > 0) {
+			g.setColor(determineColor(health));
+			g.fillRect(x, y,(int) (width * entity.getHealth() / maxHealth), height);
+		}
+	}
+
+	@Override
+	public void performLogic(int frameDelta) { }
 }

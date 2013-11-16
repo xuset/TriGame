@@ -1,29 +1,33 @@
 package triGame.game;
 
 
-import tSquare.game.GameBoard;
 import tSquare.math.Point;
 import tSquare.paths.ObjectGrid;
+import triGame.game.entities.PointWellManager;
 import triGame.game.entities.SpawnHole;
 import triGame.game.entities.SpawnHoleManager;
-import triGame.game.entities.building.BuildingManager;
-import triGame.game.entities.wall.Barrier;
-import triGame.game.entities.wall.WallManager;
+import triGame.game.entities.buildings.BuildingCreator;
+import triGame.game.entities.buildings.BuildingManager;
+import triGame.game.entities.buildings.types.Barrier;
+import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.safeArea.SafeAreaBoard;
 
 abstract class Map {
-	public static void createRandomMap(TriGame g) {
-		createSpawnHoles(g.buildingManager, g.spawnHoleManager, g.safeBoard);
-		createPointWells(g);
-		wallEdges(g.wallManager);
-		placeRandomBarriers(g);
+	public static void createRandomMap(final ManagerService service, final SafeAreaBoard safeBoard) {
+		service.building.getCreator(HeadQuarters.INFO).create(Params.GAME_WIDTH / 2 - 50, Params.GAME_HEIGHT / 2 - 50);
+		
+		createSpawnHoles(service.building, service.spawnHole, safeBoard);
+		createPointWells(service.building, service.pointWell, service.spawnHole, safeBoard);
+		wallEdges(service.building);
+		placeRandomBarriers(service.building, service.pointWell, service.spawnHole);
 	}
 	
-	private static void createSpawnHoles(BuildingManager buildingManger, SpawnHoleManager manager, SafeAreaBoard safeArea) {
-		final int blockWidth = manager.objectGrid.getBlockWidth();
-		final int blockHeight = manager.objectGrid.getBlockHeight();
-		final int gameWidth = manager.gameBoard.getWidth();
-		final int gameHeight = manager.gameBoard.getHeight();
+	private static void createSpawnHoles(BuildingManager buildingManger,
+			SpawnHoleManager manager, SafeAreaBoard safeArea) {
+		final int blockWidth = Params.BLOCK_SIZE;
+		final int blockHeight = Params.BLOCK_SIZE;
+		final int gameWidth = Params.GAME_WIDTH;
+		final int gameHeight = Params.GAME_HEIGHT;
 		
 		manager.initialSpawnHoles = new SpawnHole[4];
 		manager.initialSpawnHoles[0] = manager.create(gameWidth/2, gameHeight/2 + 500);
@@ -34,59 +38,61 @@ abstract class Map {
 		for (int i = 0; i < gameWidth * gameHeight / 250000 + 1; i++) {
 			int x = (int) (Math.random() * (gameWidth - 2 * blockWidth)) + blockWidth;
 			int y = (int) (Math.random() * (gameHeight - 2 * blockHeight)) + blockHeight;
-			x = manager.objectGrid.roundToGridX(x);
-			y = manager.objectGrid.roundToGridX(y);
+			x = Params.roundToGrid(x);
+			y = Params.roundToGrid(y);
 			
 			if (safeArea.insideSafeArea(x, y) == false && buildingManger.objectGrid.isBlockOpen(x, y))
 				manager.create(x, y);
 		}
 	}
 	
-	private static void createPointWells(TriGame g) {
-		final int blockWidth = g.buildingManager.objectGrid.getBlockWidth();
-		final int blockHeight = g.buildingManager.objectGrid.getBlockHeight();
-		final int gameWidth = g.getGameBoard().getWidth();
-		final int gameHeight = g.getGameBoard().getHeight();
+	private static void createPointWells(BuildingManager building, PointWellManager pointWell,
+			SpawnHoleManager spawnHole, SafeAreaBoard safeBoard) {
+		final int blockWidth = Params.BLOCK_SIZE;
+		final int blockHeight = Params.BLOCK_SIZE;
+		final int gameWidth = Params.GAME_WIDTH;
+		final int gameHeight = Params.GAME_HEIGHT;
 		for (int i = 0; i < gameWidth * gameHeight / 1000000; i++) {
 			int x = (int) (Math.random() * (gameWidth - 2 * blockWidth)) + blockWidth;
 			int y = (int) (Math.random() * (gameHeight - 2 * blockHeight)) + blockHeight;
 			Point p = new Point(x, y);
-			g.buildingManager.objectGrid.roundToGrid(p);
-			if (g.safeBoard.insideSafeArea(p.intX(), p.intY()) == false && g.buildingManager.objectGrid.isBlockOpen(p) &&
-					g.spawnHoleManager.objectGrid.isBlockOpen(p) && g.pointWellManager.objectGrid.isBlockOpen(p))
-				g.pointWellManager.create(p.intX(), p.intY());
+			building.objectGrid.roundToGrid(p);
+			if (safeBoard.insideSafeArea(p.intX(), p.intY()) == false && building.objectGrid.isBlockOpen(p) &&
+					spawnHole.objectGrid.isBlockOpen(p) && pointWell.objectGrid.isBlockOpen(p))
+				pointWell.create(p.intX(), p.intY());
 		}
 	}
 	
 	
-	private static void wallEdges(WallManager manager) {
+	private static void wallEdges(BuildingManager manager) {
 		final ObjectGrid objectGrid = manager.objectGrid;
 		final int gridWidth = objectGrid.gridWidth;
 		final int gridHeight = objectGrid.gridHeight;
 		final int blockWidth = objectGrid.blockWidth;
 		final int blockHeight = objectGrid.blockHeight;
+		BuildingCreator creator = manager.getCreator(Barrier.INFO);
 		
-		manager.getList().ensureCapacity(gridWidth * 2 + gridHeight * 2);
+		manager.list.ensureCapacity(gridWidth * 2 + gridHeight * 2);
 		
 		for (int x = 0; x < gridWidth; x++) {
 			
 			if (objectGrid.isOpen(x, 0) && x > 2) {
-				Barrier.create(x * blockWidth, 0, manager);
+				creator.create(x * blockWidth, 0);
 			}
 			
 			if (objectGrid.isOpen(x, gridHeight - 1)) {
-				Barrier.create(x * blockWidth, (gridHeight - 1) * blockHeight, manager);
+				creator.create(x * blockWidth, (gridHeight - 1) * blockHeight);
 			}
 			
 		}
 		for (int y = 1; y < gridHeight - 1 ; y++) {
 			
 			if (objectGrid.isOpen(0, y)&& y > 2) {
-				Barrier.create(0, y*(blockHeight), manager);
+				creator.create(0, y*(blockHeight));
 			}
 			
 			if (objectGrid.isOpen(gridWidth - 1, y)) {
-				Barrier.create((gridWidth - 1) * blockWidth, y * blockHeight, manager);
+				creator.create((gridWidth - 1) * blockWidth, y * blockHeight);
 			}
 			
 		}
@@ -114,10 +120,12 @@ abstract class Map {
 		//return ((int) Math.sqrt((x - offsetX) * (x - offsetX) - (radius * radius)));
 	}*/
 	
-	private static void placeRandomBarriers(TriGame game) {
-		GameBoard gameBoard = game.buildingManager.gameBoard;
-		int amount = gameBoard.getWidth() * gameBoard.getHeight() / 20000;
-		game.wallManager.getList().ensureCapacity(game.wallManager.getList().size() + amount);
+	private static void placeRandomBarriers(BuildingManager building,
+			PointWellManager pointWell, SpawnHoleManager spawnHole) {
+		int amount = Params.GAME_WIDTH * Params.GAME_HEIGHT / 20000;
+		building.list.ensureCapacity(building.list.size() + amount);
+		
+		BuildingCreator barrier = building.getCreator(Barrier.INFO);
 		
 		for (int i = 0; i < amount; i++) {
 			Point p = null;
@@ -126,14 +134,19 @@ abstract class Map {
 			while (foundSpot == false) {
 				foundSpot = true;
 				
-				p = game.wallManager.objectGrid.roundToGrid(Math.random() * gameBoard.getWidth(), Math.random() * gameBoard.getHeight());
-				if (game.wallManager.objectGrid.isBlockOpen(p) == false || game.buildingManager.objectGrid.isBlockOpen(p) == false
-						|| game.spawnHoleManager.objectGrid.isBlockOpen(p) == false || game.pointWellManager.objectGrid.isBlockOpen(p) == false)
+				p = new Point(Math.random() * Params.GAME_WIDTH, Math.random() * Params.GAME_HEIGHT);
+				Params.roundToGrid(p);
+				
+				if (building.objectGrid.isBlockOpen(p) == false ||
+						building.objectGrid.isBlockOpen(p) == false||
+						spawnHole.objectGrid.isBlockOpen(p) == false ||
+						pointWell.objectGrid.isBlockOpen(p) == false)
 					foundSpot = false;
-				if (p.isEqualTo(gameBoard.getWidth() / 2 - 50, gameBoard.getHeight() / 2 -100)) //location of player spawn
+				
+				if (p.isEqualTo(Params.GAME_WIDTH / 2 - 50, Params.GAME_HEIGHT / 2 -100)) //location of player spawn
 					foundSpot = false;
 			}
-			Barrier.create(p.intX(),  p.intY(), game.wallManager);
+			barrier.create(p.intX(),  p.intY());
 		}
 	}
 }
