@@ -13,19 +13,16 @@ import tSquare.system.Display;
 
 public class DrawBoard extends Canvas{
 	private static final long serialVersionUID = -2837590450949463066L;
-	private BufferStrategy strategy;
-	private Display display;
+	private final BufferStrategy strategy;
 	
 	private Graphics graphics;
-	
-	public Display getDisplay() { return display; }
 	
 	public DrawBoard(Display display) {
 		this(display.getWidth(), display.getHeight(), display);
 	}
 	
-	public Graphics getDrawing() {
-		return graphics;
+	public Graphics2D getDrawing() {
+		return (Graphics2D) graphics;
 	}
 	
 	public DrawBoard(int width, int height, Display display) {
@@ -35,14 +32,13 @@ public class DrawBoard extends Canvas{
     	this.createBufferStrategy(2);
     	strategy = this.getBufferStrategy();
     	graphics = (Graphics2D) strategy.getDrawGraphics();
-    	this.display = display;
 	}
 	
 	public void exportToScreen() {
 		graphics.dispose();
 		graphics = null;
 		strategy.show();
-		Toolkit.getDefaultToolkit().sync();
+		Toolkit.getDefaultToolkit().sync(); //TODO what does this even do?
 		graphics = (Graphics2D) strategy.getDrawGraphics();
 	}
 	

@@ -1,39 +1,28 @@
 package tSquare.game;
 
 
-import java.awt.Graphics;
 import java.awt.Point;
 
 import tSquare.math.Rectangle;
 
 
 public class GameBoard{
-
-	private DrawBoard drawBoard;
 	private int width;
 	private int height;
-	public CustomRectangle viewable;
+	public ViewRect viewable;
 	
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
 	
-	public Graphics getGraphics() { return drawBoard.getDrawing(); }
-	public DrawBoard getDrawBoard() { return drawBoard; }
-	
 	public GameBoard(int width, int height) {
 		this.width = width;
 		this.height = height;
+		viewable = new ViewRect(width, height);
 	}
 	public GameBoard(int width, int height, DrawBoard drawBoard) {
 		this.width = width;
 		this.height = height;
-		this.drawBoard = drawBoard;
-		viewable = new CustomRectangle();
-	}
-	
-	public void setDrawBoard(DrawBoard drawBoard) {
-		this.drawBoard = drawBoard;
-		viewable = new CustomRectangle();
+		viewable = new DrwBoardViewRect(drawBoard);
 	}
 	
 	public void centerViewWindowCordinates(double centerX, double centerY) {
@@ -77,11 +66,33 @@ public class GameBoard{
 		return false;
 	}
 	
-	public class CustomRectangle extends Rectangle {
-		public CustomRectangle() {
-			super(0, 0, drawBoard.getWidth(), drawBoard.getHeight());
+	public class ViewRect extends Rectangle {
+		
+		public ViewRect(int width, int height) {
+			super(0, 0, width, height);
 		}
+		
+		public boolean isInside(double x, double y) {
+			return (x > getX() && y > getY() && x < getX() + getWidth() &&
+					y < getY() + getHeight());
+		}
+		
+		public boolean isInside(double x, double y, double width, double height) {
+			return (x + width > getX() && x < getX() + getWidth() &&
+					y + height > getY() && y < getY() + getHeight());
+		}
+	}
+	
+	public class DrwBoardViewRect extends ViewRect {
+		private DrawBoard drawBoard;
+
+		public DrwBoardViewRect(DrawBoard drawBoard) {
+			super(drawBoard.getWidth(), drawBoard.getHeight());
+			this.drawBoard = drawBoard;
+		}
+		
 		public double getWidth() { return drawBoard.getWidth(); }
 		public double getHeight() { return drawBoard.getHeight(); }
+		
 	}
 }

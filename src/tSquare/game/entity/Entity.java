@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import objectIO.connections.Connection;
-import objectIO.markupMsg.MarkupMsg;
 import objectIO.netObject.NetClass;
 import objectIO.netObject.NetVar;
+import objectIO.netObject.ObjController;
 import objectIO.netObject.OfflineClass;
-import tSquare.game.GameBoard;
 import tSquare.game.GameIntegratable;
+import tSquare.game.GameBoard.ViewRect;
 import tSquare.imaging.Sprite;
 import tSquare.math.IdGenerator;
 import tSquare.math.Point;
@@ -21,10 +21,9 @@ public class Entity implements GameIntegratable{
 	private boolean removed = false;
 	
 	boolean createdOnNetwork = false;
-	long id;
+	final long id;
 	boolean owned = true;
 	
-	protected Manager<? extends Entity> manager;
 	protected Sprite sprite;
 	protected NetClass objClass;
 	protected NetVar.nDouble x;
@@ -34,20 +33,42 @@ public class Entity implements GameIntegratable{
 	protected NetVar.nDouble scaleY;
 	protected NetVar.nString spriteId;
 	protected NetVar.nDouble health;
-	
+
+	public final boolean allowUpdates;
 	public CollisionBox hitbox;
 	public CollisionBox attackbox;
 	public boolean visible = true;
 	public boolean collidable = true;
 	
-	protected Entity(String sSpriteId, double startX, double startY, Manager<?> manager, long id) {
-		sprite = Sprite.add(sSpriteId);
-		
-		if (manager != null)
-			objClass = new NetClass(manager.game.getNetwork().getObjController(), "" + id, 7);
-		else
+	private Entity(String stringSpriteId, double startX, double startY, long id,
+			ObjController objCtr, boolean allowUpdates) {
+		if (!allowUpdates || objCtr == null)
 			objClass = new OfflineClass();
-		
+		else
+			objClass = new NetClass(objCtr, "" + id, 17);
+		assignVars(stringSpriteId, startX, startY, objClass);
+		this.id = id;
+		this.allowUpdates = allowUpdates;
+	}
+	
+	protected Entity(String sSpriteId, double startX, double startY) {
+		this(sSpriteId, startX, startY,
+				IdGenerator.getNext(),
+				null,
+				false);
+	}
+	
+	protected Entity(String sSpriteId, double startX, double startY, ObjController objCtr) {
+		this(sSpriteId, startX, startY, IdGenerator.getNext(), objCtr, true);
+	}
+	
+	public Entity(String sSpriteId, double startX, double startY, EntityKey key) {
+		this(sSpriteId, startX, startY, key.id, key.objController, key.allowUpdates);
+	}
+	
+	private void assignVars(String sSpriteId, double startX, double startY, NetClass cls) {
+		objClass = cls;
+		sprite = Sprite.add(sSpriteId);
 		x = new NetVar.nDouble(startX, "x", objClass);
 		y = new NetVar.nDouble(startY, "y", objClass);
 		angle = new NetVar.nDouble(90.0, "a", objClass);
@@ -59,34 +80,12 @@ public class Entity implements GameIntegratable{
 		attackbox = new CollisionBox(CollisionBox.Type.AttackBox, this);
 		spriteId.event = spriteIdEvent;
 		
-		this.manager = manager;
-		this.id = id;
 	}
 	
-	protected Entity(String spriteId, double startX, double startY, Manager<?> manager) {
-		this(spriteId, startX, startY, manager, IdGenerator.getNext());
+	public static Entity createOffline(String spriteId, int x, int y) {
+		return new Entity(spriteId, x, y, IdGenerator.getNext(), null, false);
 	}
 	
-	public Entity(String spriteId, int x, int y) {
-		this(spriteId, x, y, null, -1l);
-	}
-	
-	public static Entity create(String spriteId, int x, int y, Manager<Entity> manager) {
-		Entity e = new Entity(spriteId, x, y, manager, IdGenerator.getNext());
-		e.createOnNetwork(true);
-		manager.add(e);
-		return e;
-	}
-	
-	boolean allowUpdates = false;
-	protected void createOnNetwork(boolean allowUpdates) {
-		if (!createdOnNetwork && manager != null) {
-			manager.getCreator().createOnNetwork(this);
-			createdOnNetwork = true;
-		}
-	}
-	
-	public final Manager<?> getManager() { return manager; }
 	public final String getSpriteId() { return spriteId.get(); }
 	public final double getX() { return x.get(); }
 	public final double getY() { return y.get(); }
@@ -103,7 +102,7 @@ public class Entity implements GameIntegratable{
 	public final double getScaleY() { return scaleY.get(); }
 	public final double getHealth() { return health.get(); }
 	public final long getId() { return id; }
-	public final boolean isRemoved() { return removed; }
+	public final boolean removeRequested() { return removed; }
 	public final boolean owned() { return owned; }
 	
 	public void setSprite(String spriteId) {
@@ -157,42 +156,28 @@ public class Entity implements GameIntegratable{
 		return health.get();
 	}
 	
-	public boolean isViewable() {
-		return manager.gameBoard.isInsideViewable(x.get().intValue(), y.get().intValue(),
-				(int) (scaleX.get() * sprite.getWidth()), (int) (scaleY.get() * sprite.getHeight()));
-	}
-	
-	public void draw() {
-		draw(manager.gameBoard);
-	}
-	
-	public void draw(GameBoard gameBoard) {
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
 		if (!visible) return;
 		
-		int x = (int) (this.x.get() - gameBoard.viewable.getX());
-		int y = (int) (this.y.get() - gameBoard.viewable.getY());
+		int x = (int) (this.x.get() - rect.getX());
+		int y = (int) (this.y.get() - rect.getY());
 		int w = (int) (sprite.getWidth() * scaleX.get());
 		int h = (int) (sprite.getHeight() * scaleY.get());
 	
-		if (!gameBoard.isInsideViewable(this.x.get().intValue(), this.y.get().intValue(), w, h))
+		if (!rect.isInside(this.x.get(), this.y.get(), w, h))
 			return;
 		
 		if ((angle.get().intValue() - 90) % 360 == 0) {
-			sprite.draw(x, y, w, h, 0, 0, sprite.getWidth(), sprite.getHeight(), gameBoard.getGraphics());
+			sprite.draw(x, y, w, h, 0, 0, sprite.getWidth(), sprite.getHeight(), g);
 		} else {
 			if (scaleX.get() != 1 || scaleY.get() != 1)
-				sprite.draw(x, y, angle.get(), scaleX.get(), scaleY.get(), (Graphics2D) gameBoard.getGraphics());
+				sprite.draw(x, y, angle.get(), scaleX.get(), scaleY.get(), g);
 			else
-				sprite.draw(x, y, angle.get(), (Graphics2D) gameBoard.getGraphics());
+				sprite.draw(x, y, angle.get(), g);
 		}
 	}
 	
-	public ArrayList<? extends Entity> collided() {
-		return collided(manager.getList().size());
-	}
-	public ArrayList<? extends Entity> collided(int maxReturns) {
-		return collidedWith(manager.getList(), maxReturns);
-	}
 	public <T extends Entity> ArrayList<T> collidedWith(Collection<T> searchList) {
 		return collidedWith(searchList, searchList.size());
 	}
@@ -240,31 +225,25 @@ public class Entity implements GameIntegratable{
 		return null;
 	}
 	
-	public <T extends Entity> boolean collidedWith(T type) {
-		if (this.hitbox.intersects(type.hitbox))
-			return true;
+	public boolean collidedWith(Entity e) {
+		return (e.collidable && !equals(e) && hitbox.intersects(e.hitbox));
+	}
+	
+	public boolean collided(Collection<? extends Entity> searchList) {
+		for (Entity e : searchList) {
+			if (e.collidable && !equals(e) && e.hitbox.intersects(hitbox)) {
+				return true;
+			}
+		}
 		return false;
 	}
 	
-	protected void remove_localOnly() {
-		manager.remove(this);
-		removed = true;
-	}
+	@Override
+	public void performLogic(int frameDelta) { }
+	
+	public void onRemoved() { }
 	
 	public void remove() {
-		remove_localOnly();
-		if (createdOnNetwork) {
-			manager.getCreator().removeOnNetwork(this);
-		}
+		removed = true;
 	}
-	
-	public MarkupMsg createToMsg() {
-		MarkupMsg m = new MarkupMsg();
-		m.addAttribute(x);
-		m.addAttribute(y);
-		m.addAttribute(spriteId);
-		return m;
-	}
-	
-	public void performLogic() { }
 }

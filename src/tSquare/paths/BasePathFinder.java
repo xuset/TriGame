@@ -21,14 +21,14 @@ public class BasePathFinder implements PathFinder{
 	}
 	
 	public void setStart(double x, double y) {
-		int sx = ((int) x) / nodeList.getGrids()[0].getBlockWidth();
-		int sy =  ((int) y) / nodeList.getGrids()[0].getBlockHeight();
+		int sx = ((int) x) / nodeList.getGrids()[0].blockWidth;
+		int sy =  ((int) y) / nodeList.getGrids()[0].blockHeight;
 		startNode = nodeList.getNode_Safe(sx, sy);
 	}
 
 	public void setFinish(double x, double y) {
-		int fx = ((int) x) / nodeList.getGrids()[0].getBlockWidth();
-		int fy =  ((int) y) / nodeList.getGrids()[0].getBlockHeight();
+		int fx = ((int) x) / nodeList.getGrids()[0].blockWidth;
+		int fy =  ((int) y) / nodeList.getGrids()[0].blockHeight;
 		finishNode = nodeList.getNode_Safe(fx, fy);
 	}
 

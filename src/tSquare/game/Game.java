@@ -5,7 +5,6 @@ import java.io.IOException;
 import tSquare.events.EventHandler;
 import tSquare.game.entity.ManagerController;
 import tSquare.game.particles.ParticleController;
-import tSquare.math.IdGenerator;
 import tSquare.system.Network;
 
 //TODO implement a timer based game loop
@@ -17,44 +16,36 @@ public abstract class Game implements Runnable {
 	private boolean pauseGame = false;
 	private int delta = 0;
 	private int currentFps = 0;
-	private long userId;
-	
-	protected IdGenerator idGenerator = new IdGenerator();
-	protected Network network;
 
-	public ManagerController managerController;
-	public ParticleController particleController;
-	public EventHandler eventHandler;
-	public int targetFps = 100;
+	protected int targetFps = 100;
+
+	protected final long userId;
+	protected final Network network;
+	protected final ManagerController managerController;
+	protected final ParticleController particleController;
+	protected final EventHandler eventHandler;
 	
 	protected abstract void logicLoop();
 	protected abstract void displayLoop();
 
-	public IdGenerator getIdGenerator() { return idGenerator; }
-	public Network getNetwork() { return network; }
-	public long getUserId() { return userId; }
 	public int getDelta() { return delta; }
 	public int getCurrentFps() { return currentFps; }
 	public boolean isPaused() { return pauseGame; }
 	public boolean isStopped() { return stopGame; }
-	
-	public Game() {
-		try {
-			network = Network.startupServer(3000);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		construct();
-	}
+
 	
 	public Game(Network network) {
+		if (network == null) {
+			try {
+				network = Network.startupServer(3000);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		this.network = network;
-		construct();
-	}
-	
-	private void construct() {
-		userId = network.getUserId();
-		managerController = new ManagerController(this);
+		userId = network.userId;
+		managerController = new ManagerController(network.objController);
 		particleController = new ParticleController(this);
 		eventHandler = new EventHandler();
 	}
@@ -68,15 +59,18 @@ public abstract class Game implements Runnable {
 		delta = skipTime / milliToNano;
 		while(stopGame == false) {
 			skipTime = 1000/targetFps * milliToNano;
+			
 			if (pauseGame == false) {
 				logicLoop();
 				eventHandler.handleEvents();
 			}
-			network.getObjController().distributeRecievedUpdates();
+			network.objController.distributeRecievedUpdates();
 			displayLoop();
+			
 			pause = nextDisplayTime - System.nanoTime();
 			sleepNanos(pause);
 			delta = (int) ((System.nanoTime() - (nextDisplayTime - skipTime)) / milliToNano);
+			if (delta > 100) delta = 100;
 			nextDisplayTime = System.nanoTime() + skipTime;
 			currentFps = 1000 / delta;
 		}

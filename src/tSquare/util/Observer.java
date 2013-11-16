@@ -5,17 +5,14 @@ import java.util.LinkedList;
 public class Observer<T> {
 	public static interface Change<T> { void observeChange(T t); }
 	
-	private LinkedList<Change<T>> watchers;
+	private final LinkedList<Change<T>> watchers = new LinkedList<Change<T>>();
 	private T var;
 	
 	public Observer(T t) {
-		this();
 		var = t;
 	}
 	
-	public Observer() {
-		watchers = new LinkedList<Change<T>>();
-	}
+	public Observer() { }
 	
 	public void watch(Change<T> c) {
 		watchers.add(c);

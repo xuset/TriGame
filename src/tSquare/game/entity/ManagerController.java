@@ -1,54 +1,50 @@
 package tSquare.game.entity;
 
 
-import java.util.HashMap;
+import java.awt.Graphics2D;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import tSquare.game.Game;
+import objectIO.netObject.ObjController;
 import tSquare.game.GameIntegratable;
+import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
+import tSquare.util.HashMapKeyCollision;
 
-public class ManagerController implements GameIntegratable{
-	private final LinkedHashMap<String, Manager<?>> managers = new LinkedHashMap<String, Manager<?>>();
+public final class ManagerController implements GameIntegratable{
+	public final LinkedHashMap<String, Manager<?>> managers = new LinkedHashMap<String, Manager<?>>();
 	
-	EntityCreater creator;
-	Game game;
+	public final CreationHandler creator;
 	
-	public final HashMap<String, Manager<?>> getMap() { return managers; }
-	
-	public ManagerController(Game game) {
-		creator = new EntityCreater(managers, game.getNetwork().getObjController());
-		this.game = game;
+	public ManagerController(ObjController objController) {
+		creator = new CreationHandler(objController, this);
 	}
 	
-	public final Manager<?> put(String key, Manager<?> m) {
+	public Manager<?> put(String key, Manager<?> m) {
+		if (managers.containsKey(key))
+			throw new HashMapKeyCollision(key + " has already been used");
 		return managers.put(key, m);
 	}
 	
-	public final void performLogic() {
+	@Override
+	public void performLogic(int frameDelta) {
 		for (Map.Entry<String, Manager<?>> entry : managers.entrySet()) {
-			entry.getValue().performLogic();
+			entry.getValue().performLogic(frameDelta);
 		}
 	}
 
-	public final void draw() {
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
 		for (Map.Entry<String, Manager<?>> entry : managers.entrySet()) {
-			entry.getValue().draw();
+			entry.getValue().draw(g, rect);
 		}
 	}
 	
-	public final void completeAllListModifications() {
-		for (Map.Entry<String, Manager<?>> entry : managers.entrySet()) {
-			entry.getValue().getList().completeModifications();
-		}
-	}
-	
-	public final Manager<?> getManager(String managerKey) {
+	public Manager<?> getManager(String managerKey) {
 		return managers.get(managerKey);
 	}
 	
-	public final Entity getEntity(String managerKey, long entityId) {
+	public Entity getEntity(String managerKey, long entityId) {
 		Manager<?> manager = managers.get(managerKey);
 		if (manager != null)
 			return manager.getById(entityId);

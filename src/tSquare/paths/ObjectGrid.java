@@ -1,37 +1,27 @@
 package tSquare.paths;
 
-import tSquare.game.GameBoard;
 import tSquare.math.Point;
 
 
 public class ObjectGrid {
-	public int gridWidth;
-	public int gridHeight;
-	public int blockWidth;
-	public int blockHeight;
-	public int modCount = 0;
+	public final int gridWidth;
+	public final int gridHeight;
+	public final int blockWidth;
+	public final int blockHeight;
 	
+	private int modCount = 0;
 	private boolean[][] grid;
 	
-	public int getGridWidth() { return gridWidth; }
-	public int getGridHeight() { return gridHeight; }
-	public int getBlockWidth() { return blockWidth; }
-	public int getBlockHeight() { return blockHeight; }
+	public int getModCount() { return modCount; }
 
-	public ObjectGrid(int gridWidth, int gridHeight, int blockWidth, int blockHeight) {
-		this.gridWidth = gridWidth;
-		this.gridHeight = gridHeight;
+	public ObjectGrid(int areaWidth, int areaHeight, int blockWidth, int blockHeight) {
+		gridWidth = (areaWidth / blockWidth) +
+				((areaWidth % blockWidth == 0) ? 0 : 1);
+		gridHeight = (areaHeight / blockHeight) +
+				((areaHeight % blockHeight == 0) ? 0 : 1);
 		this.blockWidth = blockWidth;
 		this.blockHeight = blockHeight;
 		grid = new boolean[gridWidth][gridHeight];
-	}
-	
-	public ObjectGrid(GameBoard gameBoard, int blockWidth, int blockHeight) {
-		this(gameBoard.getWidth() / blockWidth, gameBoard.getHeight() / blockHeight, blockWidth, blockHeight);
-	}
-	
-	public ObjectGrid getReplica() {
-		return new ObjectGrid(this.gridWidth, this.gridHeight, this.blockWidth, this.blockHeight);
 	}
 	
 	public boolean turnOnBlock(Point p) {
@@ -86,6 +76,10 @@ public class ObjectGrid {
 		}
 		modCount++;
 		return allInBounds;
+	}
+	
+	public boolean isRectangleOpen(double x, double y, double w, double h) {
+		return isRectangleOpen((int) x, (int) y, (int) w, (int) h);
 	}
 	
 	public boolean isRectangleOpen(int x, int y, int width, int height) {

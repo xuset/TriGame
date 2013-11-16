@@ -9,38 +9,32 @@ import objectIO.connections.p2pServer.server.P2PServer;
 import objectIO.netObject.ObjController;
 
 public class Network {
-	private Hub<?> hub;
-	private ObjController netController;
-	private long userId;
-	private boolean isServer = false;
+	public final Hub<?> hub;
+	public final ObjController objController;
+	public final long userId;
+	public final boolean isServer;
 	
-	public Hub<?> getHub() { return hub; }
-	public ObjController getObjController() { return netController; }
-	public long getUserId() { return userId; }
-	public boolean isServer() { return isServer; }
-	
-	private P2PServer server;
+	private P2PServer server = null;
 	public P2PServer getServerInstance() { return server; }
 	
-	private ClientHub client;
+	private ClientHub client = null;
 	public ClientHub getClientInstance() { return client; }
 	
-	private Network(Hub<?> hub, long userId) {
+	private Network(Hub<?> hub, long userId, boolean isServer) {
 		this.hub = hub;
-		netController = new ObjController(hub);
+		objController = new ObjController(hub);
 		this.userId = userId;
+		this.isServer = isServer;
 	}
 	
 	private Network(P2PServer server, Hub<?> hub, long userId) {
-		this(hub, userId);
+		this(hub, userId, true);
 		this.server = server;
-		this.hub = hub;
-		isServer = true;
 	}
 	
 	public static Network connectToServer(String host, int port, long userId) throws UnknownHostException, IOException{
 		ClientHub hub = new ClientHub(host, port, userId);
-		Network n = new Network(hub, userId);
+		Network n = new Network(hub, userId, false);
 		n.client = hub;
 		return n;
 	}
@@ -57,7 +51,7 @@ public class Network {
 	public boolean waitForClientsToConnect(int numOfClients, int wait) {
 		long timeStarted = System.currentTimeMillis();
 		while (true) {
-			if (getHub().getAllConnections().size() == numOfClients)
+			if (hub.getAllConnections().size() == numOfClients)
 				return true;
 			if (wait >= 0 && timeStarted + wait < System.currentTimeMillis())
 				return false;
@@ -71,6 +65,5 @@ public class Network {
 			server.shutdown();
 		client = null;
 		server = null;
-		hub = null;
 	}
 }

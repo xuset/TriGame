@@ -1,12 +1,13 @@
 package tSquare.game.particles;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
-import tSquare.events.Event;
 import tSquare.game.Game;
 import tSquare.game.GameIntegratable;
+import tSquare.game.GameBoard.ViewRect;
 
-public class ParticleController implements GameIntegratable, Event{
+public class ParticleController implements GameIntegratable{
 	private final Game game;
 	public final ArrayList<Particle> particles = new ArrayList<Particle>();
 	
@@ -23,13 +24,13 @@ public class ParticleController implements GameIntegratable, Event{
 	}
 	
 	@Override
-	public void performLogic() { }
+	public void performLogic(int frameDelta) { }
 
 	@Override
-	public void draw() {
+	public void draw(Graphics2D g, ViewRect rect) {
 		for (int i = 0; i < particles.size(); i++) {
 			Particle p = particles.get(i);
-			p.draw(game.getDelta());
+			p.draw(game.getDelta(), g, rect);
 			if (p.isExpired()) {
 				particles.remove(i);
 				i--;
@@ -37,12 +38,12 @@ public class ParticleController implements GameIntegratable, Event{
 		}
 	}
 
-	@Override
-	public void doAction() {
-		draw();
-	}
+	//@Override
+	//public void doAction() {
+	//	draw();
+	//}
 
-	@Override
-	public boolean isExpired() { return false; }
+	//@Override
+	//public boolean isExpired() { return false; }
 	
 }

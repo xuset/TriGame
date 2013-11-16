@@ -1,52 +1,31 @@
 package tSquare.game.entity;
 
-import objectIO.markupMsg.MarkupMsg;
-import tSquare.game.Game;
-import tSquare.game.GameBoard;
+import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
-import tSquare.util.SafeArrayList;
-import tSquare.util.SafeContainer;
 
 
-public abstract class Manager<T extends Entity> extends SafeContainer<T> implements GameIntegratable{
-	
-	private ManagerController controller;
+public abstract class Manager<T extends Entity> implements GameIntegratable{
 	private String hashMapKey;
+	private final CreationHandler creationHandler;
 
-	Game game;
-	final EntityCreater getCreator() { return controller.creator; }
+	public final ArrayList<T> list;
 	
-	public GameBoard gameBoard;
-
-	public abstract T createFromMsg(MarkupMsg msg, long entityId);
+	protected void onRemove(Entity e) { }
+	protected void onAdd(T t) { }
 	
-	public int getDelta() { return game.getDelta(); }
-	public long getUserId() { return game.getUserId(); }
-	
-	public Manager(ManagerController controller, GameBoard gameBoard, String hashMapKey) {
-		this(controller, gameBoard, hashMapKey, new SafeArrayList<T>());
-	}
-	
-	public Manager(ManagerController controller, GameBoard gameBoard, String hashMapKey, SafeArrayList<T> list) {
-		this.controller = controller;
-		this.game = controller.game;
-		this.gameBoard = gameBoard;
+	public Manager(ManagerController controller, String hashMapKey) {
+		creationHandler = controller.creator;
 		this.hashMapKey = hashMapKey;
-		this.list = list;
+		this.list = new ArrayList<T>();
 		controller.put(hashMapKey, this);
 	}
 	
-	public Manager(String hashMapKey, Manager<T> manager) {
-		this.controller = manager.controller;
-		this.game = manager.game;
-		this.gameBoard = manager.gameBoard;
-		this.hashMapKey = hashMapKey;
-		this.list = manager.list;
-		controller.put(hashMapKey, this);
-	}
-	
-	public T getById(long id) {
+	public final T getById(long id) {
 		for (T type : list) {
 			if (type.getId() == id)
 				return type;
@@ -54,24 +33,35 @@ public abstract class Manager<T extends Entity> extends SafeContainer<T> impleme
 		return null;
 	}
 	
-	public String getHashMapKey() {
+	public final String getHashMapKey() {
 		return hashMapKey;
 	}
 	
-	public boolean remove(Entity e) {
-		return list.remove_safe(e);
+	public final boolean add(T t) {
+		boolean r = list.add(t);
+		onAdd(t);
+		return r;
 	}
 	
-	public void performLogic() {
-		for (Entity e : list) {
-			e.performLogic();
+	@Override
+	public final void performLogic(int frameDelta) {
+		for (Iterator<T> it = list.iterator(); it.hasNext();) {
+			Entity e = it.next();
+			if (e.removeRequested()) {
+				creationHandler.removeOnNetwork(e, this);
+				it.remove();
+				e.onRemoved();
+				onRemove(e);
+			} else {
+				e.performLogic(frameDelta);
+			}
 		}
-		completeListModifications();
 	}
 	
-	public void draw() {
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
 		for (Entity e : list) {
-			e.draw();
+			e.draw(g, rect);
 		}
 	}
 }
