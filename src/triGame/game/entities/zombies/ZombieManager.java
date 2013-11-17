@@ -1,13 +1,16 @@
 package triGame.game.entities.zombies;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
+import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.entity.LocationCreator;
 import tSquare.game.entity.Manager;
 import tSquare.game.entity.ManagerController;
 import tSquare.game.particles.ParticleController;
+import tSquare.imaging.Sprite;
 import tSquare.math.Point;
 import triGame.game.ManagerService;
 import triGame.game.entities.PointParticle;
@@ -51,10 +54,19 @@ public class ZombieManager extends Manager<Zombie> {
 	public Zombie create() {
 		Entity target = DETERMINE_TARGET(managers);
 		Point spawn = determineSpawnLocation(target);
-		Zombie z = creator.create(spawn.intX(), spawn.intY(), this);
+		Sprite s = Sprite.get(Zombie.SPRITE_ID);
+		int width = s.getWidth();
+		int height = s.getHeight();
+		Zombie z = creator.create(spawn.intX() - width / 2, spawn.intY() - height / 2, this);
 		z.target = target;
 		
 		return z;
+	}
+	
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
+		pathFinder.getDrawer().draw(g, rect);
+		super.draw(g, rect);
 	}
 	
 	@Override
@@ -104,7 +116,7 @@ public class ZombieManager extends Manager<Zombie> {
 		if (pORb < 90) {
 			return getRandomFromList(managers.person.list);
 		} else {
-			Entity e = getRandomFromList(managers.building.list);
+			Entity e = getRandomFromList(managers.building.interactives);
 			if (e == null)
 				return getRandomFromList(managers.person.list);
 			return e;

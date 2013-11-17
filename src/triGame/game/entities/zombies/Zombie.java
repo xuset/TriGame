@@ -66,10 +66,10 @@ public class Zombie extends Entity {
 	}
 	
 	private void findPath() {
-		pathFinder.setZombie(this);
-		if (pathFinder.findPath(path)) {
+		if (pathFinder.findPath(path, this)) {
 			pathToTargetExists = true;
-			lastTargetBlock.set(Params.roundToGrid(lastTargetBlock));
+			lastTargetBlock.x = Params.roundToGrid(target.getCenterX());
+			lastTargetBlock.y = Params.roundToGrid(target.getCenterY());
 			path = pathFinder.buildPath();
 		} else {
 			pathToTargetExists = false;
@@ -81,10 +81,10 @@ public class Zombie extends Entity {
 	public void move(int frameDelta) {
 		double distance = (speed * frameDelta) / 1000.0;
 		if (path != null && path.peekNextStep() != null) {
-			Node node = path.peekNextStep();
-			setAngle(Point.degrees(this.getCenterX(), this.getCenterY(), node.getX(), node.getY()));
+			Node.Point step = path.peekNextStep();
+			setAngle(Point.degrees(this.getCenterX(), this.getCenterY(), step.x, step.y));
 			moveForward(distance);
-			if (Math.abs(this.getCenterX() - node.getX()) < 1 && Math.abs(this.getCenterY() - node.getY()) < 1) {
+			if (Math.abs(this.getCenterX() - step.x) < 1 && Math.abs(this.getCenterY() - step.y) < 1) {
 				path.pollNextStep();
 			}
 		} else {
