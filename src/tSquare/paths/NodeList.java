@@ -1,8 +1,8 @@
 package tSquare.paths;
 
 public class NodeList {
-	public final ObjectGrid[] grids;
 	private final Node[][] nodes;
+	public final ObjectGrid[] grids;
 	public final int width;
 	public final int height;
 	

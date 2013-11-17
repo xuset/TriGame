@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 public class BasePathFinder implements PathFinder{
-	public PathDrawerI pathDrawer = new EmptyDrawer();
+	private PathDrawerI pathDrawer = new EmptyDrawer();
 	protected Node startNode;
 	protected Node finishNode;
 	protected Node finalNode;
@@ -38,24 +38,33 @@ public class BasePathFinder implements PathFinder{
 
 	@Override
 	public boolean findPath(double x1, double y1, double x2, double y2) {
-		pathDrawer.clearAll();
-		setStartFinishNodes(x1, y1, x2, y2);
-		openNodes.clear();
-		nodeList.resetNodes();
-		finalNode = null;
-		openNodes.add(startNode);
-		while (openNodes.isEmpty() == false) {
-			Node chosen = pathDefiner.chooseNextNode(openNodes);
-			pathDrawer.addToClosedNodes(chosen);
+		reset(x1, y1, x2, y2);
+		while (!openNodes.isEmpty()) {
+			Node chosen = iterate();
 			if (pathDefiner.isFinishNode(chosen, finishNode)) {
 				finalNode = chosen;
 				return true;
-			} else {
-				openNodes.remove(chosen);
-				addAdjacents(chosen);
 			}
 		}
-		return false;
+ 		return false;
+	}
+	
+	protected void reset(double x1, double y1, double x2, double y2) {
+		pathDrawer.clearAll();
+		openNodes.clear();
+		nodeList.resetNodes();
+		finalNode = null;
+		setStartFinishNodes(x1, y1, x2, y2);
+		pathDefiner.setNodeStats(startNode, null, finishNode);
+		openNodes.add(startNode);
+	}
+	
+	protected Node iterate() {
+		Node chosen = pathDefiner.chooseNextNode(openNodes);
+		pathDrawer.addToClosedNodes(chosen);
+		openNodes.remove(chosen);
+		addAdjacents(chosen);
+		return chosen;
 	}
 	
 	protected void addAdjacents(Node parent) {
@@ -88,5 +97,15 @@ public class BasePathFinder implements PathFinder{
 		Path p = new Path(startNode, finalNode);
 		pathDrawer.setPath(p);
 		return p;
+	}
+
+	@Override
+	public void setDrawer(PathDrawerI pathDrawer) {
+		this.pathDrawer = pathDrawer;
+	}
+
+	@Override
+	public PathDrawerI getDrawer() {
+		return pathDrawer;
 	}
 }

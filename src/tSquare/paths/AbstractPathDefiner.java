@@ -31,26 +31,33 @@ public abstract class AbstractPathDefiner implements PathDefiner {
 		}
 		return true;
 	}
-
-	@Override
-	public void setNodeStats(Node child, Node parent, Node finish) {
+	
+	protected int calculateNewG(Node child, Node parent) {
 		boolean isCorner = (parent == null) ? false : child.isCornerNode(parent);
 		int distance = (isCorner) ? 14 : 10;
 		int g = (parent == null) ? 10 : parent.g + distance;
+		return g;
+	}
+	
+	protected int estimateH(Node child, Node finish) {
+		int dx = Math.abs(finish.x - child.x);
+		int dy = Math.abs(finish.y - child.y);
+		int diagnols = Math.min(dx, dy);
+		int straights = Math.abs(dx - dy);
+		return straights * 10 + diagnols * 14;
+	}
+
+	@Override
+	public void setNodeStats(Node child, Node parent, Node finish) {
+		int g = calculateNewG(child, parent);
 		
 		if (g >= child.g && child.g != 0)
 			return;
 		
 		child.g = g;
-		child.parent = parent;
-		
-		int dx = Math.abs(finish.x - child.x);
-		int dy = Math.abs(finish.y - child.y);
-		int diagnols = Math.min(dx, dy);
-		int straights = Math.abs(dx - dy);
-		
-		child.h = straights * 10 + diagnols * 14;
+		child.h = estimateH(child, finish);
 		child.f = child.g + child.h;
+		child.parent = parent;
 		child.fetched = true;
 	}
 }

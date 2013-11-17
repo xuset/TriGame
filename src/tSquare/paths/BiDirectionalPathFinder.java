@@ -1,45 +1,40 @@
 package tSquare.paths;
 
-import java.util.ArrayList;
-
 public class BiDirectionalPathFinder implements PathFinder{
-	private final Finder leftFinder;
-	private final Finder rightFinder;
-	private final int blockWidth;
-	private final int blockHeight;
+	private final BasePathFinder leftFinder;
+	private final BasePathFinder rightFinder;
 	private Node finalNode = null;
-	private PathDefiner pathDefiner;
+	private PathDrawerI pathDrawer;
 	
-	public PathDrawerI pathDrawer = new EmptyDrawer();
+	@Override
+	public PathDrawerI getDrawer() { return pathDrawer; }
 	
 	public BiDirectionalPathFinder(ObjectGrid...grids) {
-		leftFinder = new Finder(true, grids);
-		rightFinder = new Finder(false, grids);
-		blockWidth = grids[0].blockWidth;
-		blockHeight = grids[0].blockHeight;
-	}
-	
-	private int normalize(double x, int block) {
-		return ((int) x) / block;
+		leftFinder = new BasePathFinder(grids);
+		rightFinder = new BasePathFinder(grids);
+		setDrawer(new EmptyDrawer());
 	}
 
 	@Override
 	public boolean findPath(double x1, double y1, double x2, double y2) {
-		pathDrawer.clearAll();
-		int sx = normalize(x1, blockWidth), sy = normalize(y1, blockHeight);
-		int fx = normalize(x2, blockWidth), fy = normalize(y2, blockHeight);
-		leftFinder.setEndpoints(sx, sy, fx, fy);
-		rightFinder.setEndpoints(fx, fy, sx, sy);
+		leftFinder.reset(x1, y1, x2, y2);
+		rightFinder.reset(x2, y2, x1, y1);
 		
 		while (!leftFinder.openNodes.isEmpty() &&
 				!rightFinder.openNodes.isEmpty()) {
 			
-			finalNode = leftFinder.iterate();
-			if (finalNode != null)
+			Node chosen = leftFinder.iterate();
+			chosen.isClosed = true;
+			if (rightFinder.nodeList.getNode(chosen.x, chosen.y).isClosed) {
+				finalNode = chosen;
 				return true;
-			finalNode = rightFinder.iterate();
-			if (finalNode != null)
+			}
+			chosen = rightFinder.iterate();
+			chosen.isClosed = true;
+			if (leftFinder.nodeList.getNode(chosen.x, chosen.y).isClosed) {
+				finalNode = chosen;
 				return true;
+			}
 		}
 		return false;
 	}
@@ -50,8 +45,8 @@ public class BiDirectionalPathFinder implements PathFinder{
 	}
 	
 	public Path buildPath(Path p) {
-		Node n1 = getFinder(true).nodeList.getNode(finalNode.x, finalNode.y);
-		Node n2 = getFinder(false).nodeList.getNode(finalNode.x, finalNode.y);
+		Node n1 = leftFinder.nodeList.getNode(finalNode.x, finalNode.y);
+		Node n2 = rightFinder.nodeList.getNode(finalNode.x, finalNode.y);
 		p.clear();
 		for (Node n = n1; n != null; n = n.parent)
 			p.steps.addFirst(n.relative);
@@ -63,76 +58,14 @@ public class BiDirectionalPathFinder implements PathFinder{
 
 	@Override
 	public void setPathDefiner(PathDefiner pathDefiner) {
-		this.pathDefiner = pathDefiner;
+		leftFinder.setPathDefiner(pathDefiner);
+		rightFinder.setPathDefiner(pathDefiner);
 	}
 	
-	private Finder getFinder(boolean left) {
-		if (left)
-			return leftFinder;
-		else
-			return rightFinder;
-	}
-	
-	private class Finder {
-		public final ArrayList<Node> openNodes = new ArrayList<Node>();
-		public final NodeList nodeList;
-		public final boolean left;
-		private Node finish;
-		
-		public Finder(boolean left, ObjectGrid...grids) {
-			this.left = left;
-			nodeList = new NodeList(grids);
-		}
-		
-		public void setEndpoints(int sx, int sy, int fx, int fy) {
-			nodeList.resetNodes();
-			openNodes.clear();
-			this.finish = nodeList.getNode_Safe(fx, fy);
-			Node start = nodeList.getNode_Safe(sx, sy);
-			start.fetched = true;
-			openNodes.add(start);
-		}
-		
-		public Node iterate() {
-			Node chosen = pathDefiner.chooseNextNode(openNodes);
-			openNodes.remove(chosen);
-			pathDrawer.addToClosedNodes(chosen);
-			if (checkForIntersect(chosen))
-				return chosen;
-			chosen.isClosed = true;
-			addAdjacents(chosen);
-			return null;
-		}
-		
-		private void addAdjacents(Node parent) {
-			for (int a = -1; a <= 1; a++) {
-				for (int b = -1; b <= 1; b++) {
-					if (!(a == 0 && b == 0)) {
-						Node child = nodeList.getNode(parent.x + a, parent.y + b);
-						checkNode(child, parent);
-					}
-				}
-			}
-		}
-				
-		private void checkNode(Node child, Node parent) {
-			if (child == null)
-				return;
-			
-			if (pathDefiner.isValidNode(child, parent, nodeList)) {
-				boolean alreadyFetched = child.fetched;
-				pathDefiner.setNodeStats(child, parent, finish);
-				if (!alreadyFetched) {
-					pathDrawer.addToOpenNodes(child);
-					openNodes.add(child);
-				}
-			}
-		}
-		
-		private boolean checkForIntersect(Node child) {
-			Finder f = getFinder(!left);
-			Node other = f.nodeList.getNode(child.x, child.y);
-			return other.isClosed;
-		}
+	@Override
+	public void setDrawer(PathDrawerI pathDrawer) {
+		this.pathDrawer = pathDrawer;
+		leftFinder.setDrawer(pathDrawer);
+		rightFinder.setDrawer(pathDrawer);
 	}
 }

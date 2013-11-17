@@ -5,10 +5,7 @@ import java.util.Iterator;
 
 
 public class DynamicPathFinder extends BasePathFinder {
-	private boolean wasModified = false;
-	
 	protected DynamicWrapper dynamicWrapper = new DynamicWrapper();
-	protected PathDefiner setPathDefiner;
 	protected Path modifiedPath;
 	
 	public DynamicPathFinder(ObjectGrid...grids) {
@@ -21,39 +18,36 @@ public class DynamicPathFinder extends BasePathFinder {
 
 	@Override
 	public void setPathDefiner(PathDefiner pathDefiner) {
-		setPathDefiner = pathDefiner;
-		dynamicWrapper.reset(this, pathDefiner);
+		dynamicWrapper.pathDefiner = pathDefiner;
 		super.setPathDefiner(pathDefiner);
 	}
 
 	public boolean findPath(Path path, double x1, double y1, double x2, double y2) {
-		if (path != null) {
-			wasModified = true;
-			modifiedPath = path;
-			super.setPathDefiner(dynamicWrapper);
-			//swapping start and finish is needed for dynamic path finding
-			boolean found = super.findPath(x2, y2, x1, y1);
-			return found;
-		} else
+		if (path == null)
 			return findPath(x1, y1, x2, y2);
+		
+		modifiedPath = path;
+		super.setPathDefiner(dynamicWrapper);
+		//swapping start and finish is needed for dynamic path finding
+		boolean found = super.findPath(x2, y2, x1, y1);
+		return found;
 	}
 
 	@Override
 	public boolean findPath(double x1, double y1, double x2, double y2) {
-		wasModified = false;
-		super.setPathDefiner(setPathDefiner);
+		modifiedPath = null;
+		super.setPathDefiner(dynamicWrapper.pathDefiner);
 		return super.findPath(x1, y1, x2, y2);
 	}
 
 	@Override
 	public Path buildPath() {
-		if (wasModified) {
-			Path p = buildModifiedPath();
-			wasModified = false;
-			modifiedPath = null;
-			return p;
-		}
+		if (modifiedPath == null)
 			return super.buildPath();
+		
+		Path p = buildModifiedPath();
+		modifiedPath = null;
+		return p;
 	}
 	
 	protected Path buildModifiedPath() {
@@ -63,23 +57,17 @@ public class DynamicPathFinder extends BasePathFinder {
   				break;
   			
 		}
-		pathDrawer.setPath(modifiedPath);
+		getDrawer().setPath(modifiedPath);
 		return modifiedPath;
 	}
 	
-	public class DynamicWrapper implements PathDefiner { //modifies user defined PathDefiner only at method isFinishNode
-		private PathDefiner pathDefiner;
-		private DynamicPathFinder dynamicFinder;
-		
-		public void reset(DynamicPathFinder dynamicFinder, PathDefiner pathDefiner) {
-			this.pathDefiner = pathDefiner;
-			this.dynamicFinder = dynamicFinder;
-		}
+	private class DynamicWrapper implements PathDefiner { //modifies user defined PathDefiner only at method isFinishNode
+		public PathDefiner pathDefiner;
 
 		@Override
 		public boolean isFinishNode(Node node, Node finish) {
-			Iterator<Node.Point> it = dynamicFinder.modifiedPath.steps.iterator();
-			if (node.isEqualTo(dynamicFinder.finishNode)) {
+			Iterator<Node.Point> it = DynamicPathFinder.this.modifiedPath.steps.iterator();
+			if (node.isEqualTo(DynamicPathFinder.this.finishNode)) {
 				clearPath(it);
 				return true;
 			}
