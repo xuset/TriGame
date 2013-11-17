@@ -15,12 +15,14 @@ public class Zombie extends Entity {
 	public static final String SPRITE_ID = "zombie";
 	public static final int MAX_ZOMBIES = 100;
 	private static final int spawnWaitTime = 3000; //milliseconds. time before zombie can start moving
-	private static final int deltaHitTime = 10; //milliseconds. time between damage hits
+	private static final int ticksPerFindPath = 5;
 	
-	public double damage = -1;
+	private double damage = -100; //damage per second
 
 	Entity target;
 	private long spawnTime = 0l;
+	private int lastFindPathTick = 0;
+	private int tickCount = 0;
 	
 	private final ManagerService managers;
 	private final boolean isServer;
@@ -28,10 +30,8 @@ public class Zombie extends Entity {
 	
 	private Path path;
 	private Point lastTargetBlock = new Point(0, 0);
-	private boolean pathToTargetExists = false;
 	private int lastObjectGridModCount = 0;
 	private int speed = 50;
-	private long lastHitTime = 0l;
 	
 	public Zombie(double x, double y, ManagerService managers,
 			boolean isServer, ZombiePathFinder pathFinder, EntityKey key) {
@@ -45,36 +45,47 @@ public class Zombie extends Entity {
 
 	@Override
 	public void performLogic(int frameDelta) {
+		if (!isServer)
+			return;
+		
 		if (getHealth() <= 0)
 			remove();
-		if (isServer) {
-			if (target == null || target.removeRequested())
-				target = ZombieManager.DETERMINE_TARGET(managers);
-			if (target != null) {
-				if (System.currentTimeMillis() > spawnTime) {
-					Point targetPosition = new Point(target.getCenterX(), target.getCenterY());
-					Params.roundToGrid(targetPosition);
-					boolean playerDidntMoved = lastTargetBlock.isEqualTo(targetPosition);
-					if (managers.building.objectGrid.getModCount() !=
-							lastObjectGridModCount || (pathToTargetExists && playerDidntMoved == false)) {
-						findPath();
-					}
-					move(frameDelta);
-				}
-			}
+		
+		if (System.currentTimeMillis() < spawnTime)
+			return;
+		
+		if (target == null || target.removeRequested())
+			target = ZombieManager.DETERMINE_TARGET(managers);
+		if (target == null)
+			return;
+		
+		if (shouldFindNewPath())
+			findPath();
+		move(frameDelta);
+		tickCount++;
+	}
+	
+	private boolean shouldFindNewPath() {
+		Point targetPosition = new Point(target.getCenterX(), target.getCenterY());
+		Params.roundToGrid(targetPosition);
+		boolean playerMoved = !lastTargetBlock.isEqualTo(targetPosition);
+		boolean modCountChanged = managers.building.objectGrid.getModCount() != lastObjectGridModCount;
+		boolean refresh = lastFindPathTick + ticksPerFindPath < tickCount;
+		if (refresh && (playerMoved || modCountChanged)) {
+			lastFindPathTick = tickCount;
+			return true;
 		}
+		return false;
 	}
 	
 	private void findPath() {
-		if (pathFinder.findPath(path, this)) {
-			pathToTargetExists = true;
-			lastTargetBlock.x = Params.roundToGrid(target.getCenterX());
-			lastTargetBlock.y = Params.roundToGrid(target.getCenterY());
-			path = pathFinder.buildPath();
-		} else {
-			pathToTargetExists = false;
-			path = null;
-		}
+		if (!pathFinder.findPath(path, this))
+			throw new RuntimeException("I dont know why this happened but it shouldnt have.");
+			//TODO remove this after enough time has passed. 
+		
+		path = pathFinder.buildPath();
+		lastTargetBlock.x = Params.roundToGrid(target.getCenterX());
+		lastTargetBlock.y = Params.roundToGrid(target.getCenterY());
 		lastObjectGridModCount = managers.building.objectGrid.getModCount();
 	}
 	
@@ -92,17 +103,16 @@ public class Zombie extends Entity {
 			moveForward(distance);
 		}
 		if (!inflictDamage(managers.person, frameDelta)) {
-			inflictDamage(managers.building, frameDelta);
+			if (!managers.building.objectGrid.isBlockOpen(getCenterX(), getCenterY())){
+				inflictDamage(managers.building, frameDelta);
+			}
 		}
 	}
 	
 	private boolean inflictDamage(Manager<?> manager, int frameDelta) {
 		Entity e = collidedWithFirst(manager.list);
 		if (e != null) {
-			if (lastHitTime + deltaHitTime < System.currentTimeMillis()) {
-				e.modifyHealth(damage);
-				lastHitTime = System.currentTimeMillis();
-			}
+			e.modifyHealth(damage * frameDelta / 1000.0);
 			moveForward(-speed * frameDelta / 1000.0);
 			return true;
 		}

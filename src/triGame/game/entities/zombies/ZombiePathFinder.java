@@ -5,7 +5,6 @@ import tSquare.paths.BiDirectionalPathFinder;
 import tSquare.paths.Node;
 import tSquare.paths.NodeList;
 import tSquare.paths.Path;
-import tSquare.paths.PathDrawer;
 import triGame.game.ManagerService;
 import triGame.game.entities.buildings.BuildingManager;
 
@@ -16,7 +15,7 @@ public class ZombiePathFinder extends BiDirectionalPathFinder {
 		super(buildingManager.objectGrid);
 		this.managers = managers;
 		setPathDefiner(new ZDefiner());
-		setDrawer(new PathDrawer());
+		//setDrawer(new PathDrawer()); //uncomment this to draw visual path feedback
 	}
 	
 	public boolean findPath(Path p, Zombie z) {
