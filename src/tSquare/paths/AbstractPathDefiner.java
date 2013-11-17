@@ -36,9 +36,9 @@ public abstract class AbstractPathDefiner implements PathDefiner {
 	public void setNodeStats(Node child, Node parent, Node finish) {
 		boolean isCorner = (parent == null) ? false : child.isCornerNode(parent);
 		int distance = (isCorner) ? 14 : 10;
-		int g = (parent == null) ? 0 : parent.g + distance;
+		int g = (parent == null) ? 10 : parent.g + distance;
 		
-		if (g >= child.g && child.fetched)
+		if (g >= child.g && child.g != 0)
 			return;
 		
 		child.g = g;
@@ -51,5 +51,6 @@ public abstract class AbstractPathDefiner implements PathDefiner {
 		
 		child.h = straights * 10 + diagnols * 14;
 		child.f = child.g + child.h;
+		child.fetched = true;
 	}
 }

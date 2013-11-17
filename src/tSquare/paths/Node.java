@@ -14,6 +14,10 @@ public class Node {
 		public boolean equals(Point p) {
 			return (p.x == x && p.y == y);
 		}
+		
+		public String toString() {
+			return "(" + x + ", " + y + ")";
+		}
 	}
 	
 	public final int x;
@@ -26,13 +30,7 @@ public class Node {
 	public boolean fetched = false;
 	public Node parent;
 	
-	/*
-	 * left, right, and isClosed is used exclusively by the 
-	 * BiDirectionalPathFinder.
-	 */
-	boolean left = false;
-	boolean right = false;
-	boolean isClosed = false;
+	boolean isClosed = false; //is used exclusively by BiDirectionalPathFinder
 	
 	Node(int x, int y, int relativeX, int relativeY) {
 		this.x = x;
@@ -46,8 +44,6 @@ public class Node {
 		h = 0;
 		fetched = false;
 		parent = null;
-		left = false;
-		right = false;
 		isClosed = false;
 	}
 	

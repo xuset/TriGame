@@ -74,11 +74,11 @@ public class BasePathFinder implements PathFinder{
 			return;
 		
 		if (pathDefiner.isValidNode(child, parent, nodeList)) {
+			boolean alreadyFetched = child.fetched;
 			pathDefiner.setNodeStats(child, parent, finishNode);
-			if (!child.fetched) {
+			if (!alreadyFetched) {
 				pathDrawer.addToOpenNodes(child);
 				openNodes.add(child);
-				child.fetched = true;
 			}
 		}
 	}
