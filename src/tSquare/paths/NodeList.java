@@ -1,13 +1,10 @@
 package tSquare.paths;
 
 public class NodeList {
-	private ObjectGrid[] grids;
-	private Node[][] nodes;
-	private int width, height;
-	
-	public int getWidth() { return width; }
-	public int getHeight() { return height; }
-	public ObjectGrid[] getGrids() { return grids; }
+	public final ObjectGrid[] grids;
+	private final Node[][] nodes;
+	public final int width;
+	public final int height;
 	
 	public NodeList(ObjectGrid...grids) {
 		this.grids = grids;
@@ -17,7 +14,7 @@ public class NodeList {
 		nodes = new Node[width][height];
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				nodes[x][y] = new Node(x, y, x * main.blockWidth + main.blockWidth / 2, y * main.blockHeight + main.blockHeight / 2, this);
+				nodes[x][y] = new Node(x, y, x * main.blockWidth + main.blockWidth / 2, y * main.blockHeight + main.blockHeight / 2);
 			}
 		}
 	}
@@ -46,6 +43,10 @@ public class NodeList {
 				return false;
 		}
 		return true;
+	}
+	
+	public boolean isNodeOpen(Node n) {
+		return isNodeOpen(n.x, n.y);
 	}
 	
 	public void resetNodes() {

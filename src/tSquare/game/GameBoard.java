@@ -72,6 +72,8 @@ public class GameBoard{
 			super(0, 0, width, height);
 		}
 		
+		public void translateToView(Point p) { p.x = (int) (p.x - getX()); p.y = (int) (p.y - getY()); }
+		
 		public boolean isInside(double x, double y) {
 			return (x > getX() && y > getY() && x < getX() + getWidth() &&
 					y < getY() + getHeight());

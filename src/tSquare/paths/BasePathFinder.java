@@ -1,10 +1,10 @@
 package tSquare.paths;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 public class BasePathFinder implements PathFinder{
+	public PathDrawerI pathDrawer = new EmptyDrawer();
 	protected Node startNode;
 	protected Node finishNode;
 	protected Node finalNode;
@@ -20,62 +20,73 @@ public class BasePathFinder implements PathFinder{
 		this.nodeList = nodeList;
 	}
 	
-	public void setStart(double x, double y) {
-		int sx = ((int) x) / nodeList.getGrids()[0].blockWidth;
-		int sy =  ((int) y) / nodeList.getGrids()[0].blockHeight;
-		startNode = nodeList.getNode_Safe(sx, sy);
+	protected void setStartFinishNodes(double x1, double y1, double x2, double y2) {
+		startNode = normalizeXY(x1, y1);
+		finishNode = normalizeXY(x2, y2);
+	}
+	
+	protected Node normalizeXY(double x, double y) {
+		int sx = ((int) x) / nodeList.grids[0].blockWidth;
+		int sy =  ((int) y) / nodeList.grids[0].blockHeight;
+		return  nodeList.getNode_Safe(sx, sy);
 	}
 
-	public void setFinish(double x, double y) {
-		int fx = ((int) x) / nodeList.getGrids()[0].blockWidth;
-		int fy =  ((int) y) / nodeList.getGrids()[0].blockHeight;
-		finishNode = nodeList.getNode_Safe(fx, fy);
-	}
-
+	@Override
 	public void setPathDefiner(PathDefiner pathDefiner) {
 		this.pathDefiner = pathDefiner;
 	}
 
-	public boolean findPath() {
+	@Override
+	public boolean findPath(double x1, double y1, double x2, double y2) {
+		pathDrawer.clearAll();
+		setStartFinishNodes(x1, y1, x2, y2);
 		openNodes.clear();
 		nodeList.resetNodes();
 		finalNode = null;
 		openNodes.add(startNode);
 		while (openNodes.isEmpty() == false) {
-			Node chosen = pathDefiner.chooseNextNode(openNodes, this);
-			if (pathDefiner.isFinishNode(chosen, this)) {
+			Node chosen = pathDefiner.chooseNextNode(openNodes);
+			pathDrawer.addToClosedNodes(chosen);
+			if (pathDefiner.isFinishNode(chosen, finishNode)) {
 				finalNode = chosen;
 				return true;
 			} else {
 				openNodes.remove(chosen);
-				Collection<Node> adjacents = pathDefiner.getAdjacentNodes(chosen, this);
-				adjacents = checkValidity(adjacents);
-				openNodes.addAll(adjacents);
+				addAdjacents(chosen);
 			}
 		}
 		return false;
 	}
 	
-	protected Collection<Node> checkValidity(Collection<Node> nodes) {
-		Iterator<Node> iterator = nodes.iterator();
-		while (iterator.hasNext()) {
-			Node next = iterator.next();
-			if (next.fetched || pathDefiner.isValidNode(next, this) == false) {
-				iterator.remove();
-			} else {
-				pathDefiner.setNodeStats(next, this);
+	protected void addAdjacents(Node parent) {
+		for (int a = -1; a <= 1; a++) {
+			for (int b = -1; b <= 1; b++) {
+				if (!(a == 0 && b == 0)) {
+					Node child = nodeList.getNode(parent.x + a, parent.y + b);
+					checkNode(child, parent);
+				}
 			}
 		}
-		return nodes;
+	}
+	
+	private void checkNode(Node child, Node parent) {
+		if (child == null)
+			return;
+		
+		if (pathDefiner.isValidNode(child, parent, nodeList)) {
+			pathDefiner.setNodeStats(child, parent, finishNode);
+			if (!child.fetched) {
+				pathDrawer.addToOpenNodes(child);
+				openNodes.add(child);
+				child.fetched = true;
+			}
+		}
 	}
 
+	@Override
 	public Path buildPath() {
 		Path p = new Path(startNode, finalNode);
+		pathDrawer.setPath(p);
 		return p;
 	}
-
-	public Node getStartNode() { return startNode; }
-
-	public Node getFinishNode() { return finishNode; }
-
 }

@@ -2,69 +2,98 @@ package tSquare.paths;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collection;
 
-import tSquare.game.GameBoard;
+import tSquare.game.GameBoard.ViewRect;
 import tSquare.imaging.ImageProccess;
 
-public class PathDrawer {
-	public static GameBoard gameBoard;
-	public static Path path;
-	public static Collection<Node> openNodes;
-	public static Collection<Node> closedNodes;
-	
+public class PathDrawer implements PathDrawerI{
+	private static boolean imagesCreated = false;
 	private static BufferedImage pathNode;
 	private static BufferedImage openNode;
 	private static BufferedImage closedNode;
+	private Path path;
+	private Collection<Node> openNodes;
+	private Collection<Node> closedNodes;
 	
-	public static void createImages() {
-		pathImage();
-		openImage();
-		closedImage();
+	public PathDrawer() {
+		openNodes = new ArrayList<Node>();
+		closedNodes = new ArrayList<Node>();
 	}
-	
-	private static void pathImage() {
-		pathNode = ImageProccess.createCompatiableImage(30, 30);
-		Graphics g = pathNode.getGraphics();
-		g.setColor(Color.red);
-		g.fillOval(0, 0, 30, 30);
-		g.dispose();
+
+	@Override
+	public void clearAll() {
+		path = null;
+		openNodes.clear();
+		closedNodes.clear();
 	}
-	
-	private static void openImage() {
-		openNode = ImageProccess.createCompatiableImage(40, 40);
-		Graphics g = openNode.getGraphics();
-		g.setColor(Color.yellow);
-		g.fillOval(0, 0, 40, 40);
-		g.dispose();
-	}
-	
-	private static void closedImage() {
-		closedNode = ImageProccess.createCompatiableImage(40, 40);
-		Graphics g = closedNode.getGraphics();
-		g.setColor(Color.magenta);
-		g.fillOval(0, 0, 40, 40);
-		g.dispose();
-	}
-	
-	public static void draw() {
+
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
+		if (!imagesCreated)
+			createImages();
+		
 		if (openNodes != null) {
 			for (Node n : openNodes) {
-				gameBoard.draw(openNode, n.relativeX - 20, n.relativeY - 20);
+				Point p = new Point(n.relative.x - 20, n.relative.y -20);
+				rect.translateToView(p);
+				g.drawImage(openNode, p.x, p.y, null);
 			}
 		}
 		
 		if (closedNodes != null) {
 			for (Node n : closedNodes) {
-				gameBoard.draw(closedNode, n.relativeX - 20, n.relativeY - 20);
+				Point p = new Point(n.relative.x - 20, n.relative.y -20);
+				rect.translateToView(p);
+				g.drawImage(closedNode, p.x, p.y, null);
 			}
 		}
 		
 		if (path != null) {
-			for (Node n : path.steps) {
-				gameBoard.draw(pathNode, n.relativeX - 15, n.relativeY - 15);
+			for (Node.Point n : path.steps) {
+				Point p = new Point(n.x - 15, n.y -15);
+				rect.translateToView(p);
+				g.drawImage(pathNode, p.x, p.y, null);
 			}
 		}
+	}
+
+	@Override
+	public void addToOpenNodes(Node n) {
+		openNodes.add(n);
+	}
+
+	@Override
+	public void addToClosedNodes(Node n) {
+		closedNodes.add(n);
+	}
+	
+	@Override
+	public void setPath(Path p) {
+		path = p;
+	}
+	
+	private static BufferedImage createCircle(int diameter, Color c) {
+		BufferedImage img = ImageProccess.createCompatiableImage(diameter, diameter);
+		Graphics g = img.getGraphics();
+		g.setColor(c);
+		g.fillOval(0, 0, diameter, diameter);
+		return img;
+	}
+	
+	public static void createImages() {
+		imagesCreated = true;
+		pathNode = createCircle(30, Color.red);
+		openNode = createCircle(40, Color.yellow);
+		closedNode = createCircle(40, Color.magenta);
+	}
+
+	@Override
+	public void performLogic(int frameDelta) {
+		
 	}
 }

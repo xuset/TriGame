@@ -18,35 +18,34 @@ public class DynamicPathFinder extends BasePathFinder {
 	public DynamicPathFinder(NodeList nodeList) {
 		super(nodeList);
 	}
-	
+
+	@Override
 	public void setPathDefiner(PathDefiner pathDefiner) {
 		setPathDefiner = pathDefiner;
 		dynamicWrapper.reset(this, pathDefiner);
 		super.setPathDefiner(pathDefiner);
 	}
-	
-	public boolean findPath(Path path) {
+
+	public boolean findPath(Path path, double x1, double y1, double x2, double y2) {
 		if (path != null) {
 			wasModified = true;
 			modifiedPath = path;
 			super.setPathDefiner(dynamicWrapper);
-			Node temp = startNode;
-			startNode = finishNode;
-			finishNode = temp; //swapping start and finish is needed for dynamic path finding
-			boolean found = super.findPath();
-			finishNode = startNode;
-			startNode = temp;
+			//swapping start and finish is needed for dynamic path finding
+			boolean found = super.findPath(x2, y2, x1, y1);
 			return found;
 		} else
-			return findPath();
+			return findPath(x1, y1, x2, y2);
 	}
-	
-	public boolean findPath() {
+
+	@Override
+	public boolean findPath(double x1, double y1, double x2, double y2) {
 		wasModified = false;
 		super.setPathDefiner(setPathDefiner);
-		return super.findPath();
+		return super.findPath(x1, y1, x2, y2);
 	}
-	
+
+	@Override
 	public Path buildPath() {
 		if (wasModified) {
 			Path p = buildModifiedPath();
@@ -58,9 +57,13 @@ public class DynamicPathFinder extends BasePathFinder {
 	}
 	
 	protected Path buildModifiedPath() {
-		for (Node current = finalNode; current != null && !finishNode.equals(current); current = current.parent)
-  			modifiedPath.steps.add(current);
-		modifiedPath.steps.add(finishNode);
+		for (Node current = finalNode; current != null ; current = current.parent) {
+			modifiedPath.steps.add(current.relative);
+			if (startNode.equals(current))
+  				break;
+  			
+		}
+		pathDrawer.setPath(modifiedPath);
 		return modifiedPath;
 	}
 	
@@ -72,16 +75,17 @@ public class DynamicPathFinder extends BasePathFinder {
 			this.pathDefiner = pathDefiner;
 			this.dynamicFinder = dynamicFinder;
 		}
-		
-		public boolean isFinishNode(Node node, PathFinder pathFinder) {
-			Iterator<Node> it = dynamicFinder.modifiedPath.steps.iterator();
+
+		@Override
+		public boolean isFinishNode(Node node, Node finish) {
+			Iterator<Node.Point> it = dynamicFinder.modifiedPath.steps.iterator();
 			if (node.isEqualTo(dynamicFinder.finishNode)) {
 				clearPath(it);
 				return true;
 			}
 			while (it.hasNext()) {
-				Node next = it.next();
-				if (next.isEqualTo(node)) {
+				Node.Point next = it.next();
+				if (next.equals(node.relative)) {
 					it.remove();
 					clearPath(it);
 					return true;
@@ -90,17 +94,19 @@ public class DynamicPathFinder extends BasePathFinder {
 			return false;
 		}
 		
-		private void clearPath(Iterator<Node> it) {
+		private void clearPath(Iterator<Node.Point> it) {
 			while (it.hasNext()) {
 				it.next();
 				it.remove();
 			}
 		}
-		
-		public final Node chooseNextNode(Collection<Node> nodes, PathFinder pathFinder) { return pathDefiner.chooseNextNode(nodes, pathFinder); }
-		public final Collection<Node> getAdjacentNodes(Node node, PathFinder pathFinder) { return pathDefiner.getAdjacentNodes(node, pathFinder); }
-		public final boolean isValidNode(Node node, PathFinder pathFinder) { return pathDefiner.isValidNode(node, pathFinder); }
-		public final void setNodeStats(Node node, PathFinder pathFinder) { pathDefiner.setNodeStats(node, pathFinder); }
+
+		@Override public final Node chooseNextNode(Collection<Node> nodes)
+			{ return pathDefiner.chooseNextNode(nodes); }
+		@Override public final boolean isValidNode(Node node, Node previous, NodeList nodeList)
+			{ return pathDefiner.isValidNode(node, previous, nodeList); }
+		@Override public final void setNodeStats(Node child, Node parent, Node finish)
+			{ pathDefiner.setNodeStats(child, parent, finish); }
 		
 	}
 }

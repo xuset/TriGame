@@ -1,61 +1,55 @@
 package tSquare.paths;
 
-
-import java.util.Collection;
-
 import tSquare.paths.Node;
 
 public abstract class AbstractPathDefiner implements PathDefiner {
-	protected Node chosenNode;
 	
-	public abstract Node chooseNodeToVisit(Collection<Node> nodes, PathFinder pathFinder);
-	
-	public Collection<Node> getAdjacentNodes(Node node, PathFinder pathFinder) {
-		return node.getAdjacentNodes();
+	@Override
+	public boolean isFinishNode(Node node, Node finish) {
+		return node.isEqualTo(finish);
 	}
 
-	public boolean isValidNode(Node node, PathFinder pathFinder) {
-		if (node.isOpen() && isValidDiagonalMovement(chosenNode, node))
+	@Override
+	public boolean isValidNode(Node node, Node previous, NodeList nodeList) {
+		if (nodeList.isNodeOpen(node) && isValidDiagonalMovement(previous, node, nodeList))
 			return true;
 		return false;
 	}
 	
-	private boolean isValidDiagonalMovement(Node n1, Node n2) {
-		if (n1.isCornerNode(n2)) {
-			Node[] nodes = n1.getCornerConnectors(n2);
-			for (int i = 0; i < nodes.length; i++) {
-				if (nodes[i].isOpen() == false)
+	protected boolean isValidDiagonalMovement(Node n1, Node n2, NodeList nodeList) {
+		int difX = n1.x - n2.x;
+		int difY = n1.y - n2.y;
+		if (Math.abs(difX) == 1 && Math.abs(difY) == 1) {
+			Node corners[] = {
+				nodeList.getNode(n2.x + difX, n2.y),
+				nodeList.getNode(n2.x, n2.y + difY)
+			};
+			for (Node n : corners) {
+				if (!nodeList.isNodeOpen(n))
 					return false;
 			}
 		}
 		return true;
 	}
 
-	public boolean isFinishNode(Node node, PathFinder pathFinder) {
-		if (node.isEqualTo(pathFinder.getFinishNode()))
-			return true;
-		return false;
-	}
-
-	public Node chooseNextNode(Collection<Node> nodes, PathFinder pathFinder) {
-		chosenNode = chooseNodeToVisit(nodes, pathFinder);
-		return chosenNode;
-	}
-
-	public void setNodeStats(Node node, PathFinder pathFinder) {
-		Node child = node;
-		Node parent = chosenNode;
-		Node finish = pathFinder.getFinishNode();
-		boolean isCorner = child.isCornerNode(parent);
+	@Override
+	public void setNodeStats(Node child, Node parent, Node finish) {
+		boolean isCorner = (parent == null) ? false : child.isCornerNode(parent);
 		int distance = (isCorner) ? 14 : 10;
+		int g = (parent == null) ? 0 : parent.g + distance;
+		
+		if (g >= child.g && child.fetched)
+			return;
+		
+		child.g = g;
 		child.parent = parent;
-		child.g = parent.g + distance;
+		
 		int dx = Math.abs(finish.x - child.x);
 		int dy = Math.abs(finish.y - child.y);
 		int diagnols = Math.min(dx, dy);
 		int straights = Math.abs(dx - dy);
+		
 		child.h = straights * 10 + diagnols * 14;
 		child.f = child.g + child.h;
-		child.fetched = true;
 	}
 }

@@ -5,7 +5,8 @@ import java.util.Iterator;
 
 public class DijkstraDefiner extends AbstractPathDefiner {
 
-	public Node chooseNodeToVisit(Collection<Node> nodes, PathFinder pathFinder) {
+	@Override
+	public Node chooseNextNode(Collection<Node> nodes) {
 		Iterator<Node> iterator = nodes.iterator();
 		if (iterator.hasNext())
 			return iterator.next();

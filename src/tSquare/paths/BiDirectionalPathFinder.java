@@ -1,109 +1,141 @@
 package tSquare.paths;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class BiDirectionalPathFinder implements PathFinder{
+	public PathDrawerI pathDrawer = new EmptyDrawer();
+	private Node finalLeft;
+	private Node finalRight;
+	protected PathDefiner pathDefiner;
 	protected Node startNode;
 	protected Node finishNode;
-	protected Node startFinalNode;
-	protected Node finishFinalNode;
 	protected NodeList nodeList;
-	protected Collection<Node> finishOpenNodes = new LinkedList<Node>();
-	protected Collection<Node> startOpenNodes = new LinkedList<Node>();
-	protected PathDefiner pathDefiner;
+	private AStarFinder leftFinder;
+	private AStarFinder rightFinder;
 	
-	public void setStart(double x, double y) {
-		int sx = ((int) x) / nodeList.getGrids()[0].getBlockWidth();
-		int sy =  ((int) y) / nodeList.getGrids()[0].getBlockHeight();
-		startNode = nodeList.getNode_Safe(sx, sy);
+	public BiDirectionalPathFinder(ObjectGrid...grids) {
+		nodeList = new NodeList(grids);
+		leftFinder = new AStarFinder(true);
+		rightFinder = new AStarFinder(false);
+	}
+	
+	protected Node normalizeXY(double x, double y) {
+		int sx = ((int) x) / nodeList.grids[0].blockWidth;
+		int sy =  ((int) y) / nodeList.grids[0].blockHeight;
+		return  nodeList.getNode_Safe(sx, sy);
+	}
+	
+	protected void setEndpoints(double x1, double y1, double x2, double y2) {
+		startNode = normalizeXY(x1, y1);
+		finishNode = normalizeXY(x2, y2);
 	}
 
-	public void setFinish(double x, double y) {
-		int fx = ((int) x) / nodeList.getGrids()[0].getBlockWidth();
-		int fy =  ((int) y) / nodeList.getGrids()[0].getBlockHeight();
-		finishNode = nodeList.getNode_Safe(fx, fy);
-	}
-
-	public void setPathDefiner(PathDefiner pathDefiner) {
-		this.pathDefiner = pathDefiner;
-	}
-
-	public boolean findPath() {
-		startOpenNodes.clear();
-		finishOpenNodes.clear();
+	@Override
+	public boolean findPath(double x1, double y1, double x2, double y2) {
+		pathDrawer.clearAll();
 		nodeList.resetNodes();
-		startFinalNode = null;
-		finishFinalNode = null;
-		startOpenNodes.add(startNode);
-		finishOpenNodes.add(finishNode);
-		boolean found = false;
-		while (found == false && startOpenNodes.isEmpty() == false && finishOpenNodes.isEmpty() == false) {
-			Node chosen = iterate(startOpenNodes, finishNode);
-			iterate(finishOpenNodes, startNode);
-			for (Node n : finishOpenNodes) {
-				if (chosen.isEqualTo(n)) {
-					finalNode = n;
-					return true;
-				}
-			}
+		setEndpoints(x1, y1, x2, y2);
+		leftFinder.setEndpoints(startNode, finishNode);
+		rightFinder.setEndpoints(finishNode, startNode);
+		while (!leftFinder.openNodes.isEmpty() &&
+				!rightFinder.openNodes.isEmpty()) {
+			
+			if (leftFinder.iterate())
+				return true;
+			if (rightFinder.iterate())
+				return true;
 		}
 		return false;
 	}
-	
-	private Node iterate(Collection<Node> openNodes, Node finish) {
-		Node chosen = pathDefiner.chooseNextNode(openNodes, this);
-		openNodes.remove(chosen);
-		Collection<Node> adjacents = pathDefiner.getAdjacentNodes(chosen, this);
-		adjacents = checkValidity(adjacents, chosen, finish);
-		openNodes.addAll(adjacents);
-		return chosen;
-	}
-	
-	protected Collection<Node> checkValidity(Collection<Node> nodes, Node chosen, Node finish) {
-		Iterator<Node> iterator = nodes.iterator();
-		while (iterator.hasNext()) {
-			Node next = iterator.next();
-			if (next.fetched || pathDefiner.isValidNode(next, this) == false) {
-				iterator.remove();
-			} else {
-				setNodeStats(next, chosen, finish);
-			}
-		}
-		return nodes;
-	}
-	
-	private void setNodeStats(Node child, Node parent, Node finish) {
-		boolean isCorner = child.isCornerNode(parent);
-		int distance = (isCorner) ? 14 : 10;
-		child.parent = parent;
-		child.g = parent.g + distance;
-		int dx = Math.abs(finish.x - child.x);
-		int dy = Math.abs(finish.y - child.y);
-		int diagnols = Math.min(dx, dy);
-		int straights = Math.abs(dx - dy);
-		child.h = straights * 10 + diagnols * 14;
-		child.f = child.g + child.h;
-		child.fetched = true;
-	}
 
+	@Override
 	public Path buildPath() {
-		Path p = new Path();
-		LinkedList<Node> steps = p.steps;
-		for (Node current = finalNode; current != null && !start.equals(current); current = current.parent)
-			steps.addFirst(n);
-		for (Node n : finishOpenNodes)
-			steps.addLast(n);
+		return buildPath(new Path());
+	}
+	
+	public Path buildPath(Path p) {
+		p.clear();
+		for (Node n = finalLeft; n != null; n = n.parent)
+			p.steps.addFirst(n.relative);
+		for (Node n = finalRight; n != null; n = n.parent)
+			p.steps.addLast(n.relative);
+		pathDrawer.setPath(p);
 		return p;
 	}
 
-	public Node getStartNode() {
-		return startNode;
+	@Override
+	public void setPathDefiner(PathDefiner pathDefiner) {
+		this.pathDefiner = pathDefiner;
 	}
-
-	public Node getFinishNode() {
-		return finishNode;
+	
+	public class AStarFinder {
+		private Node finish;
+		public ArrayList<Node> openNodes = new ArrayList<Node>();
+		public boolean left;
+		
+		public AStarFinder(boolean left) {
+			this.left = left;
+		}
+		
+		public void setEndpoints(Node start, Node finish) {
+			this.finish = finish;
+			openNodes.clear();
+			start.fetched = true;
+			openNodes.add(start);
+		}
+		
+		public boolean iterate() {
+			Node chosen = pathDefiner.chooseNextNode(openNodes);
+			openNodes.remove(chosen);
+			pathDrawer.addToClosedNodes(chosen);
+			return addAdjacents(chosen);
+		}
+		
+		private boolean addAdjacents(Node parent) {
+			for (int a = -1; a <= 1; a++) {
+				for (int b = -1; b <= 1; b++) {
+					if (!(a == 0 && b == 0)) {
+						Node child = nodeList.getNode(parent.x + a, parent.y + b);
+						if (checkNode(child, parent))
+							return true;
+					}
+				}
+			}
+			return false;
+		}
+				
+		private boolean checkNode(Node child, Node parent) {
+			if (child == null)
+				return false;
+			
+			if (pathDefiner.isValidNode(child, parent, nodeList)) {
+				if (checkForIntersect(child, parent))
+					return true;
+				pathDefiner.setNodeStats(child, parent, finish);
+				if (!child.fetched) {
+					pathDrawer.addToOpenNodes(child);
+					openNodes.add(child);
+					child.fetched = true;
+				}
+			}
+			return false;
+		}
+		
+		private boolean checkForIntersect(Node child, Node parent) {
+			if ((child.left && !left) || (child.right && left)) {
+				if (left) {
+					finalLeft = parent;
+					finalRight = child;
+				} else {
+					finalLeft = child;
+					finalRight = parent;
+				}
+				return true;
+			} else if (!child.left && !child.right) {
+				child.left = left ? true : false;
+				child.right = !left ? true : false;
+			}
+			return false;
+		}
 	}
-
 }

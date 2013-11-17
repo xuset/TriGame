@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 
 public class Path{
-	LinkedList<Node> steps = new LinkedList<Node>();
+	LinkedList<Node.Point> steps = new LinkedList<Node.Point>();
 	
 	public int getLength() { return steps.size(); }
 	public boolean isEmpty() { return steps.isEmpty(); }
@@ -17,15 +17,19 @@ public class Path{
 	}
 	
 	void buildPath(Node start, Node finish) {
-		for (Node current = finish; current != null && !start.equals(current); current = current.parent)
-  			steps.addFirst(current);
+		for (Node current = finish; current != null; current = current.parent) {
+  			steps.addFirst(current.relative);
+  			if (start.equals(current))
+  				break;
+		}
+	
 	}
 
-	public Node pollNextStep() {
+	public Node.Point pollNextStep() {
 		return steps.poll();
 	}
 	
-	public Node peekNextStep() {
+	public Node.Point peekNextStep() {
 		return steps.peek();
 	}
 	
@@ -35,7 +39,7 @@ public class Path{
 	
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		for (Node n : steps) {
+		for (Node.Point n : steps) {
 			builder.append(n.toString()).append(" , ");
 		}
 		return builder.toString();

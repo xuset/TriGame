@@ -1,40 +1,54 @@
 package tSquare.paths;
 
-import java.util.LinkedList;
-
 
 public class Node {
-	private NodeList nodeList;
 	
-	int x;
-	int y;
-	int relativeX;
-	int relativeY;
-	public int h = 0;
-	public int g = 0;
-	public int f = 0;
-	boolean fetched = false;
-	Node parent;
-	
-	public int getX() { return relativeX; }
-	public int getY() { return relativeY; }
-	
-	Node(int x, int y, int relativeX, int relativeY, NodeList list) {
-		this.x = x;
-		this.y = y;
-		this.relativeX = relativeX;
-		this.relativeY = relativeY;
-		this.nodeList = list;
+	public class Point {
+		public final int x;
+		public final int y;
+		public Point(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+		
+		public boolean equals(Point p) {
+			return (p.x == x && p.y == y);
+		}
 	}
 	
-	public boolean isOpen() { return nodeList.isNodeOpen(x, y); }
+	public final int x;
+	public final int y;
+	public final Point relative;
+	
+	public int h = 0; //estimated distance to finish
+	public int g = 0; //actual distance from start node
+	public int f = 0; // g + h
+	public boolean fetched = false;
+	public Node parent;
+	
+	/*
+	 * left, right, and isClosed is used exclusively by the 
+	 * BiDirectionalPathFinder.
+	 */
+	boolean left = false;
+	boolean right = false;
+	boolean isClosed = false;
+	
+	Node(int x, int y, int relativeX, int relativeY) {
+		this.x = x;
+		this.y = y;
+		relative = new Point(relativeX, relativeY);
+	}
 	
 	void resetStats() {
-		this.f = 0;
-		this.g = 0;
-		this.h = 0;
+		f = 0;
+		g = 0;
+		h = 0;
 		fetched = false;
-		this.parent = null;
+		parent = null;
+		left = false;
+		right = false;
+		isClosed = false;
 	}
 	
 	public boolean isCornerNode(Node relativeNode) {
@@ -43,28 +57,6 @@ public class Node {
 		if (difX == 1 && difY == 1)
 			return true;
 		return false;
-	}
-	
-	public Node[] getCornerConnectors(Node relativeNode) {
-		int difX = x - relativeNode.x;
-		int difY = y - relativeNode.y;
-		if (Math.abs(difX) == 1 && Math.abs(difY) == 1)
-			return new Node[] {nodeList.getNode(relativeNode.x + difX, relativeNode.y), nodeList.getNode(relativeNode.x, relativeNode.y + difY)};
-		return null;
-	}
-	
-	public LinkedList<Node> getAdjacentNodes() {
-		LinkedList<Node> list = new LinkedList<Node>();
-		for (int a = -1; a <= 1; a++) {
-			for (int b = -1; b <= 1; b++) {
-				if ((a == 0 && b == 0) == false) {
-					Node n = nodeList.getNode(x + a, y + b);
-					if (n != null)
-						list.add(n);
-				}
-			}
-		}
-		return list;
 	}
 	
 	public String toString() {

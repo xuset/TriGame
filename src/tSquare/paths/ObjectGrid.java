@@ -3,7 +3,7 @@ package tSquare.paths;
 import tSquare.math.Point;
 
 
-public class ObjectGrid {
+public class ObjectGrid{
 	public final int gridWidth;
 	public final int gridHeight;
 	public final int blockWidth;
