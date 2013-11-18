@@ -15,16 +15,18 @@ public class Projectile extends Entity {
 	
 	private final ManagerService managers;
 	private final ShopManager shop;
+	private final boolean noBuildingCollisions;
 	
 	private int speed, damage;
 
 	protected Projectile(String sSpriteId, double startX, double startY,
-			double angle, int speed, int damage,
+			double angle, int speed, int damage, boolean noBuildingCollisions,
 			ShopManager shop, ManagerService managers, EntityKey key) {
 		
 		super(sSpriteId, startX, startY, key);
 		this.speed = speed;
 		this.damage = damage;
+		this.noBuildingCollisions = noBuildingCollisions;
 		this.managers = managers;
 		this.shop = shop;
 		setAngle(angle);
@@ -43,6 +45,9 @@ public class Projectile extends Entity {
 	}
 	
 	protected boolean checkBuildingCollision() {
+		if (noBuildingCollisions)
+			return false;
+		
 		Point center = new Point(getCenterX(), getCenterY());
 		Params.roundToGrid(center);
 		if (!managers.building.objectGrid.isBlockOpen(center)) {

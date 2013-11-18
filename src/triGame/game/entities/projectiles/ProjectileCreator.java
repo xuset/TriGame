@@ -8,8 +8,10 @@ import tSquare.game.entity.EntityKey;
 import tSquare.game.entity.Manager;
 
 class ProjectileCreator extends Creator<Projectile> {
-	public static interface ICreate { Projectile create(String spriteId, int x, int y,
-			double angle, int speed, int damage, EntityKey key); }
+	public static interface ICreate { Projectile create(
+			String spriteId, int x, int y,
+			double angle, int speed, int damage,
+			boolean noBuildingCollisions, EntityKey key); }
 	
 	public final static String HASH_MAP_KEY = "projectile";
 	
@@ -21,7 +23,8 @@ class ProjectileCreator extends Creator<Projectile> {
 	}
 	
 	public Projectile create(String spriteId, int x, int y, double angle,
-			int speed, int damage, Manager<Projectile> manager) {
+			int speed, int damage, boolean noBuildingCollisions,
+			Manager<Projectile> manager) {
 		
 		EntityKey key = getNewKey(manager);
 		MarkupMsg msg = new MarkupMsg();
@@ -31,8 +34,10 @@ class ProjectileCreator extends Creator<Projectile> {
 		msg.addAttribute(new MsgAttribute("angle").set(angle));
 		msg.addAttribute(new MsgAttribute("speed").set(speed));
 		msg.addAttribute(new MsgAttribute("damage").set(damage));
+		msg.addAttribute(new MsgAttribute("building collisions").set(noBuildingCollisions));
 		networkCreate(key, msg);
-		Projectile p = iCreate.create(spriteId, x, y, angle, speed, damage, key);
+		Projectile p = iCreate.create(spriteId, x, y, angle, speed,
+				damage, noBuildingCollisions, key);
 		localCreate(p, manager);
 		return p;
 	}
@@ -45,7 +50,8 @@ class ProjectileCreator extends Creator<Projectile> {
 		double angle = msg.getAttribute("angle").getDouble();
 		int speed = msg.getAttribute("speed").getInt();
 		int damage = msg.getAttribute("damage").getInt();
-		Projectile p = iCreate.create(spriteId, x, y, angle, speed, damage, key);
+		boolean bc = msg.getAttribute("building collisions").getBool();
+		Projectile p = iCreate.create(spriteId, x, y, angle, speed, damage, bc, key);
 		return p;
 	}
 

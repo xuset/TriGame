@@ -44,7 +44,7 @@ public class Tower extends Building {
 	
 	private void shoot() {
 		if (lastShot + fireRateUpgrade.getValue()  < System.currentTimeMillis()) {
-			managers.projectile.create(getIntX(), getIntY(), getAngle(), 800, damageUpgrade.getValue());
+			managers.projectile.towerCreate(getIntX(), getIntY(), getAngle(), 800, damageUpgrade.getValue());
 			lastShot = System.currentTimeMillis();
 		}
 	}

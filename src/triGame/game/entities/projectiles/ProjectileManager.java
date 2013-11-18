@@ -21,19 +21,23 @@ public class ProjectileManager extends Manager<Projectile> {
 		this.shop = shop;
 		creator = new ProjectileCreator(controller.creator, standardCreate);
 		creator.allowUpdates = false;
-		
 	}
 	
 	public Projectile create(int x, int y, double angle, int speed, int damage) {
-		Projectile p = creator.create(Projectile.SPRITE_ID, x, y, angle, speed, damage, this);
+		Projectile p = creator.create(Projectile.SPRITE_ID, x, y, angle, speed, damage, false, this);
+		return p;
+	}
+	
+	public Projectile towerCreate(int x, int y, double angle, int speed, int damage) {
+		Projectile p = creator.create(Projectile.SPRITE_ID, x, y, angle, speed, damage, true, this);
 		return p;
 	}
 	
 	private final ProjectileCreator.ICreate standardCreate = new ICreate() {
 		@Override
 		public Projectile create(String spriteId, int x, int y, double angle,
-				int speed, int damage, EntityKey key) {
-			return new Projectile(spriteId, x, y, angle, speed, damage, shop, managers, key);
+				int speed, int damage, boolean noBCollisions, EntityKey key) {
+			return new Projectile(spriteId, x, y, angle, speed, damage, noBCollisions, shop, managers, key);
 		}
 	};
 
