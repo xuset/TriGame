@@ -1,16 +1,25 @@
 package tSquare.paths;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
 
 public class AStarDefiner extends AbstractPathDefiner{
 
 	@Override
-	public Node chooseNextNode(Collection<Node> nodes) {
-		Node bestFit = nodes.iterator().next();
-		for (Node n : nodes) {
-			if (n.f < bestFit.f)
-				bestFit = n;
+	public void addNode(Node n, List<Node> nodes) {
+		if (nodes.isEmpty()) {
+			nodes.add(n);
+			return;
 		}
-		return bestFit;
+		
+		for (ListIterator<Node> it = nodes.listIterator(); it.hasNext(); ) {
+			Node next = it.next();
+			if (n.f < next.f) {
+				it.previous();
+				it.add(n);
+				return;
+			}
+		}
+		nodes.add(n);
 	}
 }

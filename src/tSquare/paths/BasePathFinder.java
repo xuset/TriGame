@@ -1,7 +1,7 @@
 package tSquare.paths;
 
-import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 public class BasePathFinder implements PathFinder{
 	private PathDrawerI pathDrawer = new EmptyDrawer();
@@ -9,11 +9,12 @@ public class BasePathFinder implements PathFinder{
 	protected Node finishNode;
 	protected Node finalNode;
 	protected NodeList nodeList;
-	protected Collection<Node> openNodes = new LinkedList<Node>();
+	protected List<Node> openNodes;
 	protected PathDefiner pathDefiner;
 	
 	public BasePathFinder(ObjectGrid...grids) {
 		this.nodeList = new NodeList(grids);
+		openNodes = new LinkedList<Node>();
 	}
 	
 	public BasePathFinder(NodeList nodeList) {
@@ -56,13 +57,12 @@ public class BasePathFinder implements PathFinder{
 		finalNode = null;
 		setStartFinishNodes(x1, y1, x2, y2);
 		pathDefiner.setNodeStats(startNode, null, finishNode);
-		openNodes.add(startNode);
+		pathDefiner.addNode(startNode, openNodes);
 	}
 	
 	protected Node iterate() {
 		Node chosen = pathDefiner.chooseNextNode(openNodes);
 		pathDrawer.addToClosedNodes(chosen);
-		openNodes.remove(chosen);
 		addAdjacents(chosen);
 		return chosen;
 	}
@@ -87,7 +87,7 @@ public class BasePathFinder implements PathFinder{
 			pathDefiner.setNodeStats(child, parent, finishNode);
 			if (!alreadyFetched) {
 				pathDrawer.addToOpenNodes(child);
-				openNodes.add(child);
+				pathDefiner.addNode(child, openNodes);
 			}
 		}
 	}

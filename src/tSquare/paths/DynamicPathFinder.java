@@ -1,7 +1,7 @@
 package tSquare.paths;
 
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class DynamicPathFinder extends BasePathFinder {
@@ -89,12 +89,14 @@ public class DynamicPathFinder extends BasePathFinder {
 			}
 		}
 
-		@Override public final Node chooseNextNode(Collection<Node> nodes)
+		@Override public final Node chooseNextNode(List<Node> nodes)
 			{ return pathDefiner.chooseNextNode(nodes); }
 		@Override public final boolean isValidNode(Node node, Node previous, NodeList nodeList)
 			{ return pathDefiner.isValidNode(node, previous, nodeList); }
 		@Override public final void setNodeStats(Node child, Node parent, Node finish)
 			{ pathDefiner.setNodeStats(child, parent, finish); }
+		@Override public void addNode(Node n, List<Node> nodes)
+			{ pathDefiner.addNode(n, nodes); }
 		
 	}
 }

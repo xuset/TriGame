@@ -1,5 +1,7 @@
 package tSquare.paths;
 
+import java.util.List;
+
 import tSquare.paths.Node;
 
 public abstract class AbstractPathDefiner implements PathDefiner {
@@ -59,5 +61,10 @@ public abstract class AbstractPathDefiner implements PathDefiner {
 		child.f = child.g + child.h;
 		child.parent = parent;
 		child.fetched = true;
+	}
+
+	@Override
+	public Node chooseNextNode(List<Node> nodes) {
+		return nodes.remove(0);
 	}
 }
