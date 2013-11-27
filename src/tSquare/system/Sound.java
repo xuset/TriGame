@@ -1,16 +1,15 @@
 package tSquare.system;
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-//TODO ability to repeat sound without reinitialization or lag
-
 public class Sound {
-	private static HashMap<String, Sound> sounds = new HashMap<String, Sound>();
-	private String url;
+	private static final HashMap<String, Sound> sounds = new HashMap<String, Sound>();
+	private final String url;
 	private Clip clip;
 	
 	public static Sound get(String soundId) {
@@ -29,7 +28,7 @@ public class Sound {
 		try
 	    {
 	        clip = AudioSystem.getClip();
-	        AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(url));
+	        AudioInputStream audioStream = loadSound(url);
 	        clip.open(audioStream);
 	    }
 	    catch (Exception exc)
@@ -38,11 +37,27 @@ public class Sound {
 	    }
 	}
 	
+	private AudioInputStream loadSound(String url) {
+		File f = new File(url);
+		try {
+			if (f.exists() && f.isFile())
+				return AudioSystem.getAudioInputStream(f);
+			
+			URL stream = getClass().getResource("/" + url);
+			if (stream == null) {
+				return null;
+			}
+			return AudioSystem.getAudioInputStream(stream);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+	
 	public void play() {
-		/*clip.stop();
-		clip.flush();
+		clip.stop();
 		clip.setMicrosecondPosition(0l);
-		clip.start();*/
+		clip.start();
 	}
 	
 	
