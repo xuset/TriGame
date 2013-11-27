@@ -31,12 +31,12 @@ public final class ManagerService {
 	ManagerService(ManagerController managerController, SafeAreaBoard safeBoard,
 			PeripheralInput.Keyboard keyboard, ShopManager shop,
 			ParticleController particleController, boolean isServer,
-			PlaceHolder<RoundHandler> phRoundHandler) {
+			PlaceHolder<RoundHandler> phRoundHandler, long ownerId) {
 
 		spawnHole = new SpawnHoleManager(managerController);
 		pointWell = new PointWellManager(managerController, particleController);
 		projectile = new ProjectileManager(managerController, shop, this);
-		person = new PersonManager(managerController, this, safeBoard, keyboard);
+		person = new PersonManager(managerController, this, safeBoard, keyboard, ownerId);
 		building = new BuildingManager(managerController, this, safeBoard, phRoundHandler, shop);
 		zombie = new ZombieManager(managerController, this, building, isServer, particleController);
 	}

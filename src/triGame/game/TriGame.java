@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
+import objectIO.connections.p2pServer.client.ClientConnection;
+import objectIO.connections.p2pServer.client.ClientHub;
+import objectIO.connections.p2pServer.client.ConnectionEvent;
 import tSquare.game.DrawBoard;
 import tSquare.game.Game;
 import tSquare.game.GameBoard;
@@ -12,6 +15,7 @@ import tSquare.system.Display;
 import tSquare.system.Network;
 import tSquare.system.PeripheralInput;
 import tSquare.util.PlaceHolder;
+import tSquare.util.PopUp;
 import triGame.game.entities.Person;
 import triGame.game.guns.GunManager;
 import triGame.game.safeArea.SafeAreaBoard;
@@ -54,7 +58,7 @@ public class TriGame extends Game{
 		PlaceHolder<RoundHandler> phRoundHandler = new PlaceHolder<RoundHandler>();
 		
 		managerService = new ManagerService(managerController, safeBoard, input.keyboard,
-				shop, particleController, network.isServer, phRoundHandler);
+				shop, particleController, network.isServer, phRoundHandler, userId);
 		ui = new UserInterface(display, managerService, shop, input.mouse);
 		roundHandler = new RoundHandler(managerService, input.keyboard, drawBoard,
 				network.objController, network.isServer);
@@ -73,22 +77,46 @@ public class TriGame extends Game{
 		ui.arsenal.panel.switchGroup(ui.arsenal.towerGroup);
 		display.pack();
 		phRoundHandler.set(roundHandler);
+		network.getClientInstance().conEvent = connectionEvent;
 	}
 
 	protected void logicLoop() {
 		//System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
 		int frameDelta = getDelta();
-		managerService.person.performLogic(frameDelta);
-		gameBoard.centerViewWindowCordinates(player.getCenterX(), player.getCenterY());
-		managerService.zombie.performLogic(frameDelta);
-		managerService.building.performLogic(frameDelta);
+		
 		if (isGameOver == false) {
+			managerService.person.performLogic(frameDelta);
 			roundHandler.performLogic(frameDelta);
 			gunManager.performLogic(frameDelta);
+			ui.attacher.performLogic(frameDelta);
 		}
+		
+		managerService.zombie.performLogic(frameDelta);
+		managerService.building.performLogic(frameDelta);
+		gameBoard.centerViewWindowCordinates(player.getCenterX(), player.getCenterY());
 		managerService.projectile.performLogic(frameDelta);
-		ui.attacher.performLogic(frameDelta);
 	}
+	
+	private final ConnectionEvent connectionEvent = new ConnectionEvent() {
+		@Override public void onConnection(ClientHub hub, ClientConnection connection) { }
+
+		@Override
+		public void onDisconnection(ClientHub hub, ClientConnection connection) {
+			if (network.isServer) {
+				Person p = managerService.person.getByUserId(connection.getEndId());
+				if (p != null)
+					p.remove();
+			}
+		}
+		
+		@Override
+		public void onServerDisconnect(ClientHub hub) {
+			isGameOver = true;
+			PopUp popup = new PopUp(300, 200, "Disconnected",
+					"Lost connection to server. The game has ended.");
+			popup.display();
+		}
+	};
 
 	protected void displayLoop() {
 		drawBoard.clearBoard();

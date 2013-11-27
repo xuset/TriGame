@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import objectIO.netObject.NetVar;
 import tSquare.game.GameIntegratable;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
@@ -23,15 +24,23 @@ public class Person extends Entity implements GameIntegratable{
 	private final SafeAreaBoard safeBoard;
 	private final PeripheralInput.Keyboard keyboard;
 	private final HealthBar healthBar;
+	private final NetVar.nLong ownerId;
+	
+	long getOwnerId() { return ownerId.get(); }
 	
 	Person(double x, double y, EntityKey key, ManagerService managers,
-			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard) {
+			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard, long ownerIdL) {
 		
 		super(SPRITE_ID, x, y, key);
 		this.managers = managers;
 		this.safeBoard = safeBoard;
 		this.keyboard = keyboard;
 		healthBar = new HealthBar(this);
+		ownerId = new NetVar.nLong(0l, "ownerId", objClass);
+		if (owned())
+			ownerId.set(ownerIdL);
+			
+			
 	}
 	
 	private boolean up;
