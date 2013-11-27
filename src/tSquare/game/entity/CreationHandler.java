@@ -62,10 +62,9 @@ public final class CreationHandler {
 			key.manager = managerController.getManager(managerKey);
 			key.objController = objController;
 			key.allowUpdates = msg.getAttribute("allowUpdates").getBool();
+			key.owned = false;
 			
-			Entity e = creator.createFromMsg(msg.child.get(0), key);
-			e.createdOnNetwork = true;
-			e.owned = false;
+			creator.createFromMsg(msg.child.get(0), key);
 			return null;
 		}
 		

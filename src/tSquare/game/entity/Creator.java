@@ -42,6 +42,7 @@ public abstract class Creator<T extends Entity> {
 		key.manager = manager;
 		key.id = IdGenerator.getNext();
 		key.allowUpdates = allowUpdates;
+		key.owned = true;
 		if (allowUpdates && createOnNetwork)
 			key.objController = handler.objController;
 		else

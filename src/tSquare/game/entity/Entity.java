@@ -19,10 +19,9 @@ import tSquare.math.Point;
 
 public class Entity implements GameIntegratable{
 	private boolean removed = false;
+	private final boolean owned;
 	
-	boolean createdOnNetwork = false;
 	final long id;
-	boolean owned = true;
 	
 	protected Sprite sprite;
 	protected NetClass objClass;
@@ -41,7 +40,7 @@ public class Entity implements GameIntegratable{
 	public boolean collidable = true;
 	
 	private Entity(String stringSpriteId, double startX, double startY, long id,
-			ObjController objCtr, boolean allowUpdates) {
+			ObjController objCtr, boolean allowUpdates, boolean owned) {
 		if (!allowUpdates || objCtr == null)
 			objClass = new OfflineClass();
 		else
@@ -49,21 +48,23 @@ public class Entity implements GameIntegratable{
 		assignVars(stringSpriteId, startX, startY, objClass);
 		this.id = id;
 		this.allowUpdates = allowUpdates;
+		this.owned = owned;
 	}
 	
 	protected Entity(String sSpriteId, double startX, double startY) {
 		this(sSpriteId, startX, startY,
 				IdGenerator.getNext(),
 				null,
-				false);
+				false,
+				true);
 	}
 	
 	protected Entity(String sSpriteId, double startX, double startY, ObjController objCtr) {
-		this(sSpriteId, startX, startY, IdGenerator.getNext(), objCtr, true);
+		this(sSpriteId, startX, startY, IdGenerator.getNext(), objCtr, true, true);
 	}
 	
 	public Entity(String sSpriteId, double startX, double startY, EntityKey key) {
-		this(sSpriteId, startX, startY, key.id, key.objController, key.allowUpdates);
+		this(sSpriteId, startX, startY, key.id, key.objController, key.allowUpdates, key.owned);
 	}
 	
 	private void assignVars(String sSpriteId, double startX, double startY, NetClass cls) {
@@ -83,7 +84,7 @@ public class Entity implements GameIntegratable{
 	}
 	
 	public static Entity createOffline(String spriteId, int x, int y) {
-		return new Entity(spriteId, x, y, IdGenerator.getNext(), null, false);
+		return new Entity(spriteId, x, y, IdGenerator.getNext(), null, false, true);
 	}
 	
 	public final String getSpriteId() { return spriteId.get(); }

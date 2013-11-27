@@ -5,8 +5,11 @@ import objectIO.netObject.ObjController;
 public final class EntityKey {
 	public Manager<?> manager;
 	public boolean allowUpdates = true;
-	ObjController objController;
+	ObjController objController = null;
 	long id;
+	boolean owned = false;
+	
+	public boolean isOwned() { return owned; }
 	
 	EntityKey(Manager<?> manager, long id) {
 		this(manager, id, false, null);
