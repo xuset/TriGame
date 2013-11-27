@@ -53,6 +53,7 @@ public abstract class Building extends Entity{
 		public final boolean hasHealthBar;
 		public final boolean isUpgradable;
 		public final boolean isInteractive;
+		public final int selectionWeight = 10;
 		
 		public boolean isShopable() { return item != null; }
 		
@@ -67,6 +68,7 @@ public abstract class Building extends Entity{
 			this.hasHealthBar = hasHealthBar;
 			this.isUpgradable = isUpgradable;
 			this.isInteractive = isInteractive;
+			
 		}
 	}
 }

@@ -2,6 +2,7 @@ package triGame.game.entities.zombies;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
@@ -15,6 +16,7 @@ import tSquare.math.Point;
 import triGame.game.ManagerService;
 import triGame.game.entities.PointParticle;
 import triGame.game.entities.SpawnHole;
+import triGame.game.entities.buildings.Building;
 import triGame.game.entities.buildings.BuildingManager;
 
 
@@ -112,21 +114,24 @@ public class ZombieManager extends Manager<Zombie> {
 	}
 	
 	static Entity DETERMINE_TARGET(ManagerService managers) {
-		int pORb = (int) (Math.random() * 100);
-		if (pORb < 90) {
-			return getRandomFromList(managers.person.list);
+		final int initialWeight = 50 * managers.person.list.size();
+		Collection<Building> buildings = managers.building.interactives;
+		int totalWeights = initialWeight;
+		for (Building b : buildings)
+			totalWeights += b.info.selectionWeight;
+		int selected = (int) (Math.random() * totalWeights);
+		if (selected < initialWeight) {
+			int personSize = managers.person.list.size();
+			int index = selected / (initialWeight / personSize);
+			return managers.person.list.get(index);
 		} else {
-			Entity e = getRandomFromList(managers.building.interactives);
-			if (e == null)
-				return getRandomFromList(managers.person.list);
-			return e;
+			int sum = initialWeight;
+			for (Building b : buildings) {
+				sum += b.info.selectionWeight;
+				if (sum > selected)
+					return b;
+			}
 		}
-	}
-	
-	private static Entity getRandomFromList(ArrayList<? extends Entity> list) {
-		if (list.isEmpty())
-			return null;
-		int index = (int) (Math.random() * list.size());
-		return list.get(index);
+		return null;
 	}
 }
