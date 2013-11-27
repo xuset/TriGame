@@ -3,6 +3,7 @@ package triGame.game.entities.projectiles;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.math.Point;
+import tSquare.system.Sound;
 import triGame.game.ManagerService;
 import triGame.game.Params;
 import triGame.game.entities.zombies.Zombie;
@@ -16,6 +17,7 @@ public class Projectile extends Entity {
 	private final ManagerService managers;
 	private final ShopManager shop;
 	private final boolean noBuildingCollisions;
+	private final Sound fireSound = Sound.get("media/Pistol_Shot.wav");
 	
 	private int speed, damage;
 
@@ -30,6 +32,7 @@ public class Projectile extends Entity {
 		this.managers = managers;
 		this.shop = shop;
 		setAngle(angle);
+		fireSound.play();
 	}
 
 	@Override
