@@ -32,7 +32,7 @@ public class TrapDoor extends Wall {
 				primed = true;
 		} else if (collidedWith(player) == false) {
 			remove();
-			managers.building.getCreator(Barrier.INFO).create(getX(), getY());
+			//managers.building.getCreator(Barrier.INFO).create(getX(), getY());
 		}
 		super.performLogic(frameDelta);
 	}
