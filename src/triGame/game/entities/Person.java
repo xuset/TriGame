@@ -51,7 +51,7 @@ public class Person extends Entity implements GameIntegratable{
 	public void performLogic(int frameDelta) {
 		if (health.get() <= 0)
 			remove();
-		if (owned()) {
+		if (owned() && !removeRequested()) {
 			move(frameDelta);
 		}
 	}

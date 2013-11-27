@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import objectIO.connections.p2pServer.client.ClientConnection;
 import objectIO.connections.p2pServer.client.ClientHub;
 import objectIO.connections.p2pServer.client.ConnectionEvent;
+import objectIO.netObject.NetVar;
 import tSquare.game.DrawBoard;
 import tSquare.game.Game;
 import tSquare.game.GameBoard;
@@ -17,6 +18,7 @@ import tSquare.system.PeripheralInput;
 import tSquare.util.PlaceHolder;
 import tSquare.util.PopUp;
 import triGame.game.entities.Person;
+import triGame.game.entities.buildings.Building;
 import triGame.game.guns.GunManager;
 import triGame.game.safeArea.SafeAreaBoard;
 import triGame.game.shopping.ShopManager;
@@ -45,6 +47,7 @@ public class TriGame extends Game{
 	
 	public TriGame(Network network) {
 		super(network);
+		NetVar.nBool startGame = new NetVar.nBool(false, "start", network.objController);
 		Load.sprites();
 
 		safeBoard = new SafeAreaBoard();
@@ -78,23 +81,42 @@ public class TriGame extends Game{
 		display.pack();
 		phRoundHandler.set(roundHandler);
 		network.getClientInstance().conEvent = connectionEvent;
+		if (network.isServer) {
+			startGame.set(true);
+		}
+		while (!startGame.get()) {
+			network.objController.distributeRecievedUpdates();
+			try { Thread.sleep(10); } catch (Exception ex) { }
+		}
 	}
 
 	protected void logicLoop() {
 		//System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
 		int frameDelta = getDelta();
 		
-		if (isGameOver == false) {
-			managerService.person.performLogic(frameDelta);
-			roundHandler.performLogic(frameDelta);
-			gunManager.performLogic(frameDelta);
-			ui.attacher.performLogic(frameDelta);
-		}
 		
+		if (!isGameOver) {
+			roundHandler.performLogic(frameDelta);
+			isGameOver = (managerService.building.getHQ() == null);
+			managerService.person.performLogic(frameDelta);
+			gunManager.performLogic(frameDelta);
+		}
+
+
 		managerService.zombie.performLogic(frameDelta);
 		managerService.building.performLogic(frameDelta);
-		gameBoard.centerViewWindowCordinates(player.getCenterX(), player.getCenterY());
 		managerService.projectile.performLogic(frameDelta);
+		
+		if (player.removeRequested() || isGameOver) {
+			if (!managerService.building.interactives.isEmpty()) {
+				Building HQ = managerService.building.interactives.get(0);
+				gameBoard.centerViewWindowCordinates(HQ.getCenterX(), HQ.getCenterY());
+				background.centerTo = HQ;
+			}
+		} else {
+			ui.attacher.performLogic(frameDelta);
+			gameBoard.centerViewWindowCordinates(player.getCenterX(), player.getCenterY());
+		}
 	}
 	
 	private final ConnectionEvent connectionEvent = new ConnectionEvent() {

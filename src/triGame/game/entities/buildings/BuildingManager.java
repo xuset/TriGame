@@ -13,6 +13,7 @@ import triGame.game.ManagerService;
 import triGame.game.Params;
 import triGame.game.RoundHandler;
 import triGame.game.entities.buildings.Building.BuildingInfo;
+import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.safeArea.SafeAreaBoard;
 import triGame.game.shopping.ShopManager;
 import triGame.game.ui.UserInterface;
@@ -66,5 +67,14 @@ public class BuildingManager extends Manager<Building> {
 				ui.arsenal.panel.addToArsenal(ui.arsenal.towerGroup, item);
 			}
 		}
+	}
+	
+	public Building getHQ() {
+		if (list.isEmpty())
+			return null;
+		Building b = list.get(0);
+		if (b.info == HeadQuarters.INFO)
+			return b;
+		return null;
 	}
 }

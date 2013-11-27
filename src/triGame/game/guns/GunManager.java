@@ -44,7 +44,6 @@ public class GunManager implements GameIntegratable{
 	@Override
 	public void performLogic(int frameDelta) {
 		userShoot();
-		managers.projectile.performLogic(frameDelta);
 	}
 	
 	@Override
@@ -55,6 +54,9 @@ public class GunManager implements GameIntegratable{
 	private void userShoot() {
 		switchGuns();
 		Person player = managers.person.getPlayer();
+		if (player == null || player.removeRequested())
+			return;
+		
 		if (keyboard.isPressed(shootKey)) {
 			if (shootPressedLast) {
 				if (selectedGun.automaticFire && lastShot + selectedGun.autoShotDelay <= System.currentTimeMillis()) {
