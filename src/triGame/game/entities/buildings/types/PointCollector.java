@@ -43,8 +43,7 @@ public class PointCollector extends Building {
 		super.draw(g, rect);
 		if (phRoundHandler.get().isRoundOnGoing()) {
 			particle.draw(lastFrameDelta, g, rect);
-			if (owned())
-			if (particle.isExpired()) {
+			if (owned() && particle.isExpired()) {
 				particle.reset();
 				shop.points += 1;
 			}
