@@ -112,6 +112,6 @@ public abstract class Game implements Runnable {
 	}
 	
 	public void stopGame() {
-		stopGame = false;
+		stopGame = true;
 	}
 }
