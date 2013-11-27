@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -28,18 +29,9 @@ public class Sprite {
 	public final Image getImage() { return image; }
 	public final BufferedImage getBuffered() { return ImageProccess.createCompatiableImage(image); }
 	
-	
-	public Sprite(String url) {
-		this(url, false);
-	}
 	public Sprite(String url, boolean useVImage) {
-		File f = new File(url);
-		try {
-			BufferedImage image = ImageIO.read(f);
-			createSprite(url, image, useVImage);
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		}
+		BufferedImage image = loadImage(url);
+		createSprite(url, image, useVImage);
 	}
 	public Sprite(String url, BufferedImage image) {
 		this(url, image, false);
@@ -64,9 +56,24 @@ public class Sprite {
 		Sprite s = Sprite.sprites.get(url);
 		if (s != null)
 			return s;
-		if (new File(url).isFile())
-			return new Sprite(url, useVImage);
-		return null;
+		return new Sprite(url, useVImage);
+	}
+	
+	private BufferedImage loadImage(String url) {
+		File f = new File(url);
+		try {
+			if (f.exists() && f.isFile())
+				return ImageIO.read(f);
+			
+			URL stream = getClass().getResource("/" + url);
+			if (url == null) {
+				return null;
+			}
+			return ImageIO.read(stream);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
 	}
 	
 	public static Sprite get(String url) {
