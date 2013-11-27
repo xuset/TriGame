@@ -20,6 +20,7 @@ public class GuiStartup {
 		else {
 			TriGame game = new TriGame(gatherPlayers());
 			game.startGame();
+			game.shutdown();
 		}
 	}
 	

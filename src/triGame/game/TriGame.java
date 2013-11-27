@@ -3,6 +3,7 @@ package triGame.game;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 
 import objectIO.connections.p2pServer.client.ClientConnection;
 import objectIO.connections.p2pServer.client.ClientHub;
@@ -92,6 +93,8 @@ public class TriGame extends Game{
 
 	protected void logicLoop() {
 		//System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
+		if(input.keyboard.isPressed(KeyEvent.VK_ESCAPE))
+			stopGame();
 		int frameDelta = getDelta();
 		
 		
@@ -133,6 +136,8 @@ public class TriGame extends Game{
 		
 		@Override
 		public void onServerDisconnect(ClientHub hub) {
+			if (TriGame.this.isStopped())
+				return;
 			isGameOver = true;
 			PopUp popup = new PopUp(300, 200, "Disconnected",
 					"Lost connection to server. The game has ended.");
@@ -181,5 +186,11 @@ public class TriGame extends Game{
 		g.drawString("Round " + roundHandler.getRoundNumber(), ix, iy + 1 * 15);
 		g.drawString("Killed " + managerService.zombie.getZombiesKilled() + " zombies", ix, iy + 2 * 15);
 		g.drawString(getCurrentFps() + "FPS", ix, iy + 3 * 15);
+	}
+	
+	public void shutdown() {
+		stopGame();
+		network.disconnect();
+		display.dispose();
 	}
 }
