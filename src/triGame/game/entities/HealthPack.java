@@ -14,8 +14,8 @@ public class HealthPack extends Entity {
 	public static final String SPRITE_ID = "HealthPack";
 	private static final int minHealth = 20;
 	private static final int maxHealth = 60;
-	private static final long maxTimeAlive = 60000;
-	private static final long minTimeAlive = 30000;
+	private static final long maxTimeAlive = 35000;
+	private static final long minTimeAlive = 20000;
 	
 	private final NetVar.nInt healthToGive;
 	private final NetVar.nLong timeToLive;
@@ -56,11 +56,9 @@ public class HealthPack extends Entity {
 		private static final double dropRate = 0.02;
 
 		private final LocationCreator<HealthPack> creator;
-		private final boolean isServer;
 		
-		public HealthPackManager(ManagerController controller, boolean isServer) {
+		public HealthPackManager(ManagerController controller) {
 			super(controller, HASH_MAP_KEY);
-			this.isServer = isServer;
 			creator = new LocationCreator<HealthPack>(HASH_MAP_KEY, controller.creator,
 					new LocationCreator.IFace<HealthPack>() {
 						@Override
@@ -71,7 +69,7 @@ public class HealthPack extends Entity {
 		}
 		
 		public void maybeDropHealth(double x, double y) {
-			if (isServer && Math.random() < dropRate) {
+			if (Math.random() < dropRate) {
 				int w = Sprite.get(HealthPack.SPRITE_ID).getWidth();
 				int h = Sprite.get(HealthPack.SPRITE_ID).getHeight();
 				creator.create(x - w/2, y - h/2, this);

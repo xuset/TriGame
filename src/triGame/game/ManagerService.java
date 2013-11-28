@@ -37,7 +37,7 @@ public final class ManagerService {
 			PlaceHolder<RoundHandler> phRoundHandler, long ownerId) {
 
 		spawnHole = new SpawnHoleManager(managerController);
-		healthPack = new HealthPackManager(managerController, isServer);
+		healthPack = new HealthPackManager(managerController);
 		pointWell = new PointWellManager(managerController, particleController);
 		projectile = new ProjectileManager(managerController, shop, this);
 		person = new PersonManager(managerController, this, safeBoard, keyboard, ownerId);
