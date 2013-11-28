@@ -4,6 +4,7 @@ package triGame.game;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
@@ -11,6 +12,7 @@ import java.awt.image.BufferedImage;
 
 import tSquare.imaging.ImageProccess;
 import tSquare.imaging.Sprite;
+import triGame.game.entities.HealthPack;
 import triGame.game.entities.Person;
 import triGame.game.entities.PointParticle;
 import triGame.game.entities.PointWell;
@@ -42,6 +44,7 @@ abstract class Load {
 		spritePointCollector();
 		spriteLightTower();
 		spritePointWell();
+		spriteHealthPack();
 	}
 	
 	private static void spriteSpawnHole() {
@@ -214,5 +217,22 @@ abstract class Load {
 	
 	private static void spritePointWell() {
 		Sprite.add(PointWell.SPRITE_ID);
+	}
+	
+	private static void spriteHealthPack() {
+		if (Sprite.exists(HealthPack.SPRITE_ID))
+			return;
+		
+		BufferedImage image = new BufferedImage(24, 24, BufferedImage.TYPE_INT_RGB);
+		Graphics g = image.getGraphics();
+		g.setColor(Color.darkGray);
+		g.fillRect(0, 0, 24, 24);
+		g.setColor(Color.white);
+		g.fillRect(3, 3, 18, 18);
+		g.setColor(Color.red);
+		g.fillRect(10, 3, 4, 18);
+		g.fillRect(3, 10, 18, 4);
+		g.dispose();
+		new Sprite(HealthPack.SPRITE_ID, image);
 	}
 }
