@@ -18,6 +18,7 @@ import triGame.game.safeArea.SafeAreaBoard;
 
 public class Person extends Entity implements GameIntegratable{
 	public static final String SPRITE_ID = "person";
+	private static final int maxHealth = 100;
 	
 	private final int speed = 300;
 	private final ManagerService managers;
@@ -53,6 +54,14 @@ public class Person extends Entity implements GameIntegratable{
 			remove();
 		if (owned() && !removeRequested()) {
 			move(frameDelta);
+			double pickedUpHealth = managers.healthPack.grabHealth(attackbox);
+			if (pickedUpHealth > 0) {
+				double max = maxHealth - getHealth();
+				if (pickedUpHealth > max)
+					pickedUpHealth = max;
+				modifyHealth(pickedUpHealth);
+			}
+				
 		}
 	}
 

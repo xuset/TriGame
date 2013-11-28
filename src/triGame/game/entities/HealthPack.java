@@ -1,16 +1,19 @@
 package triGame.game.entities;
 
+import java.awt.geom.Rectangle2D;
+
 import objectIO.netObject.NetVar;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.entity.LocationCreator;
 import tSquare.game.entity.Manager;
 import tSquare.game.entity.ManagerController;
+import tSquare.imaging.Sprite;
 
 public class HealthPack extends Entity {
 	public static final String SPRITE_ID = "HealthPack";
 	private static final int minHealth = 20;
-	private static final int maxHealth = 100;
+	private static final int maxHealth = 60;
 	private static final long maxTimeAlive = 60000;
 	private static final long minTimeAlive = 30000;
 	
@@ -50,7 +53,7 @@ public class HealthPack extends Entity {
 	
 	public static class HealthPackManager extends Manager<HealthPack> {
 		public static final String HASH_MAP_KEY = "healthPack";
-		private static final double dropRate = 1.0;
+		private static final double dropRate = 0.02;
 
 		private final LocationCreator<HealthPack> creator;
 		private final boolean isServer;
@@ -68,8 +71,19 @@ public class HealthPack extends Entity {
 		}
 		
 		public void maybeDropHealth(double x, double y) {
-			if (isServer && Math.random() < dropRate)
-				creator.create(x, y, this);
+			if (isServer && Math.random() < dropRate) {
+				int w = Sprite.get(HealthPack.SPRITE_ID).getWidth();
+				int h = Sprite.get(HealthPack.SPRITE_ID).getHeight();
+				creator.create(x - w/2, y - h/2, this);
+			}
+		}
+		
+		public int grabHealth(Rectangle2D rect) {
+			for (HealthPack hp : list) {
+				if (rect.intersects(hp.hitbox) || rect.contains(hp.hitbox))
+					return hp.pickUpHealth();
+			}
+			return 0;
 		}
 		
 	}
