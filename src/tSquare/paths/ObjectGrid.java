@@ -1,5 +1,7 @@
 package tSquare.paths;
 
+import java.awt.Rectangle;
+
 import tSquare.math.Point;
 
 
@@ -50,11 +52,17 @@ public class ObjectGrid{
 		return true;
 	}
 	
+	public boolean turnOnRectange(Rectangle r) {
+		return setRectangleValue((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight(), true);
+	}
 	public boolean turnOnRectangle(double x, double y, double width, double height) {
 		return setRectangleValue((int) x, (int) y, (int) width, (int) height, true);
 	}
 	public boolean turnOnRectangle(int x, int y, int width, int height) {
 		return setRectangleValue(x, y, width, height, true);
+	}
+	public boolean turnOffRectange(Rectangle r) {
+		return setRectangleValue((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight(), false);
 	}
 	public boolean turnOffRectangle(double x, double y, double width, double height) {
 		return setRectangleValue((int) x, (int) y, (int) width, (int) height, false);
@@ -78,6 +86,9 @@ public class ObjectGrid{
 		return allInBounds;
 	}
 	
+	public boolean isRectangleOpen(Rectangle r) {
+		return isRectangleOpen((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+	}
 	public boolean isRectangleOpen(double x, double y, double w, double h) {
 		return isRectangleOpen((int) x, (int) y, (int) w, (int) h);
 	}
