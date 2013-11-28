@@ -3,6 +3,9 @@ package triGame.game.entities;
 import objectIO.netObject.NetVar;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
+import tSquare.game.entity.LocationCreator;
+import tSquare.game.entity.Manager;
+import tSquare.game.entity.ManagerController;
 
 public class HealthPack extends Entity {
 	public static final String SPRITE_ID = "HealthPack";
@@ -43,6 +46,32 @@ public class HealthPack extends Entity {
 		
 		remove();
 		return healthToGive.get();
+	}
+	
+	public static class HealthPackManager extends Manager<HealthPack> {
+		public static final String HASH_MAP_KEY = "healthPack";
+		private static final double dropRate = 1.0;
+
+		private final LocationCreator<HealthPack> creator;
+		private final boolean isServer;
+		
+		public HealthPackManager(ManagerController controller, boolean isServer) {
+			super(controller, HASH_MAP_KEY);
+			this.isServer = isServer;
+			creator = new LocationCreator<HealthPack>(HASH_MAP_KEY, controller.creator,
+					new LocationCreator.IFace<HealthPack>() {
+						@Override
+						public HealthPack create(double x, double y, EntityKey key) {
+							return new HealthPack(x, y, key);
+						}
+					});
+		}
+		
+		public void maybeDropHealth(double x, double y) {
+			if (isServer && Math.random() < dropRate)
+				creator.create(x, y, this);
+		}
+		
 	}
 
 }

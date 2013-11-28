@@ -106,6 +106,7 @@ public class TriGame extends Game{
 		}
 
 
+		managerService.healthPack.performLogic(frameDelta);
 		managerService.zombie.performLogic(frameDelta);
 		managerService.building.performLogic(frameDelta);
 		managerService.projectile.performLogic(frameDelta);
@@ -157,6 +158,7 @@ public class TriGame extends Game{
 		managerService.spawnHole.draw(g, rect);
 		managerService.projectile.draw(g, rect);
 		managerService.zombie.draw(g, rect);
+		managerService.healthPack.draw(g, rect);
 		safeBoard.draw(g, rect);
 		managerService.person.draw(g, rect);
 		ui.attacher.draw(g, rect);

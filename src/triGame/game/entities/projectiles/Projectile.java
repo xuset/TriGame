@@ -12,7 +12,6 @@ import triGame.game.shopping.ShopManager;
 
 public class Projectile extends Entity {
 	public static final String SPRITE_ID = "projectile";
-	private static final int hitBackDistance = 10;
 	
 	private final ManagerService managers;
 	private final ShopManager shop;
@@ -80,13 +79,7 @@ public class Projectile extends Entity {
 	protected void handleZombieCollision(Zombie z) {
 		shop.points++;
 		remove();
-		z.modifyHealth(damage);
-		if (z.isSpawning())
-			return;
-		
-		z.moveForward(-hitBackDistance);
-		if (!managers.building.objectGrid.isRectangleOpen(z.hitbox))
-			z.moveForward(hitBackDistance);
+		z.hitByProjectile(damage);
 	}
 	
 	protected boolean checkBounds() { 

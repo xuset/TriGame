@@ -14,6 +14,7 @@ import triGame.game.Params;
 public class Zombie extends Entity {
 	public static final String SPRITE_ID = "zombie";
 	public static final int MAX_ZOMBIES = 100;
+	private static final int hitBackDistance = 10;
 	private static final int spawnWaitTime = 3000; //milliseconds. time before zombie can start moving
 	private static final int ticksPerFindPath = 5;
 	
@@ -33,7 +34,7 @@ public class Zombie extends Entity {
 	private int lastObjectGridModCount = 0;
 	private int speed = 50;
 	
-	public boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
+	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
 	
 	public Zombie(double x, double y, ManagerService managers,
 			boolean isServer, ZombiePathFinder pathFinder, EntityKey key) {
@@ -121,11 +122,20 @@ public class Zombie extends Entity {
 		return false;
 	}
 	
-	public void hitBack(int distance) {
+	public void hitByProjectile(int damage) {
+		modifyHealth(damage);
+		hitBack(hitBackDistance);
+		if (getHealth() <= 0)
+			managers.healthPack.maybeDropHealth(getCenterX(), getCenterY());
+	}
+	
+	private void hitBack(int distance) {
+		if (isSpawning())
+			return;
 		distance = distance * -1;
 		moveForward(distance);
-		if (collidedWithFirst(managers.building.list) != null) {
-			moveForward(-distance);
-		}
+		if (!managers.building.objectGrid.isRectangleOpen(hitbox))
+			moveForward(-1 * distance);
+		
 	}
 }
