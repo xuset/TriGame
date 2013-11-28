@@ -25,22 +25,24 @@ public class RoundHandler implements GameIntegratable{
 	private final PeripheralInput.Keyboard keyboard;
 	private final DrawBoard drawBoard;
 	private final NetVar.nInt roundVar;
+	private final NetVar.nBool roundOnGoing;
 	private final boolean isServer;
 	
 	private int roundNumber = 0;
-	private boolean roundOnGoing = false;
+	//private boolean roundOnGoing = false;
 	private int zombiesToSpawn = 0;
 	private boolean drawingFadingRoundNumber = false;
 	private int maxPlayers = 0;
 	
 	public int getRoundNumber() { return roundNumber; }
-	public boolean isRoundOnGoing() { return roundOnGoing; }
+	public boolean isRoundOnGoing() { return roundOnGoing.get(); }
 	
 	public RoundHandler(ManagerService service, PeripheralInput.Keyboard keyboard, DrawBoard drawBoard, ObjController netCon,  boolean isServer) {
 		this.managerService = service;
 		this.keyboard = keyboard;
 		this.drawBoard = drawBoard;
 		this.isServer = isServer;
+		roundOnGoing = new NetVar.nBool(false,"roundOnGoing", netCon);
 		roundVar = new NetVar.nInt(0, "round", netCon);
 		roundVar.event = new NetVar.OnChange<Integer>() {
 			@Override public void onChange(NetVar<Integer> var, Connection c) {
@@ -57,12 +59,12 @@ public class RoundHandler implements GameIntegratable{
 	public void startRound(int round) {
 		setRound(round);
 		roundVar.set(roundNumber);
+		roundOnGoing.set(true);
 	}
 	
 	private void setRound(int round) {
 		PersonManager manager = managerService.person;
 		roundNumber = round;
-		roundOnGoing = true;
 		if (manager.list.size() > maxPlayers) maxPlayers = manager.list.size();
 		zombiesToSpawn = ((roundNumber * roundNumber) / 10 + roundNumber) * maxPlayers;
 		drawingFadingRoundNumber = true;
@@ -71,9 +73,9 @@ public class RoundHandler implements GameIntegratable{
 	@Override
 	public void performLogic(int frameDelta) {
 		if (isServer) {
-			if (roundOnGoing) {
+			if (roundOnGoing.get()) {
 				if (zombiesToSpawn == 0 && managerService.zombie.getZombiesAlive() == 0) {
-					roundOnGoing = false;
+					roundOnGoing.set(false);
 				} else if (zombiesToSpawn > 0) {
 					spawnIn();
 				}
@@ -97,7 +99,7 @@ public class RoundHandler implements GameIntegratable{
 	
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
-		if (roundOnGoing == false && isServer) {
+		if (!roundOnGoing.get() && isServer) {
 			//Graphics2D g = (Graphics2D) drawBoard.getDrawing();
 			g.setFont(roundStartFont);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
