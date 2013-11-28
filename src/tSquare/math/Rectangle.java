@@ -1,13 +1,14 @@
 package tSquare.math;
 
-public class Rectangle{
+
+public class Rectangle extends java.awt.Rectangle{
+	private static final long serialVersionUID = -7609527989117467150L;
 	private double x = 0;
 	private double y = 0;
 	private double width = 0;
 	private double height = 0;
 	
 	public Rectangle() {
-		
 	}
 	public Rectangle(double x, double y, double width, double height) {
 		this.x = x;
@@ -35,5 +36,4 @@ public class Rectangle{
 		this.width = width;
 		this.height = height;
 	}
-
 }

@@ -1,6 +1,6 @@
 package tSquare.paths;
 
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 import tSquare.math.Point;
 
@@ -52,7 +52,7 @@ public class ObjectGrid{
 		return true;
 	}
 	
-	public boolean turnOnRectange(Rectangle r) {
+	public boolean turnOnRectange(Rectangle2D r) {
 		return setRectangleValue((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight(), true);
 	}
 	public boolean turnOnRectangle(double x, double y, double width, double height) {
@@ -61,7 +61,7 @@ public class ObjectGrid{
 	public boolean turnOnRectangle(int x, int y, int width, int height) {
 		return setRectangleValue(x, y, width, height, true);
 	}
-	public boolean turnOffRectange(Rectangle r) {
+	public boolean turnOffRectange(Rectangle2D r) {
 		return setRectangleValue((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight(), false);
 	}
 	public boolean turnOffRectangle(double x, double y, double width, double height) {
@@ -86,7 +86,7 @@ public class ObjectGrid{
 		return allInBounds;
 	}
 	
-	public boolean isRectangleOpen(Rectangle r) {
+	public boolean isRectangleOpen(Rectangle2D r) {
 		return isRectangleOpen((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 	public boolean isRectangleOpen(double x, double y, double w, double h) {
