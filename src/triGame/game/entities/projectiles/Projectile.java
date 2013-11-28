@@ -78,10 +78,15 @@ public class Projectile extends Entity {
 	}
 	
 	protected void handleZombieCollision(Zombie z) {
-		z.modifyHealth(damage);
-		z.moveForward(-hitBackDistance);
 		shop.points++;
 		remove();
+		z.modifyHealth(damage);
+		if (z.isSpawning())
+			return;
+		
+		z.moveForward(-hitBackDistance);
+		if (!managers.building.objectGrid.isRectangleOpen(z.hitbox))
+			z.moveForward(hitBackDistance);
 	}
 	
 	protected boolean checkBounds() { 

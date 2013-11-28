@@ -33,6 +33,8 @@ public class Zombie extends Entity {
 	private int lastObjectGridModCount = 0;
 	private int speed = 50;
 	
+	public boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
+	
 	public Zombie(double x, double y, ManagerService managers,
 			boolean isServer, ZombiePathFinder pathFinder, EntityKey key) {
 		
