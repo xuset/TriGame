@@ -15,15 +15,16 @@ public class Zombie extends Entity {
 	public static final String SPRITE_ID = "zombie";
 	public static final int MAX_ZOMBIES = 100;
 	private static final int hitBackDistance = 10;
-	private static final int spawnWaitTime = 3000; //milliseconds. time before zombie can start moving
 	private static final int ticksPerFindPath = 5;
 	
 	private double damage = -100; //damage per second
 
 	Entity target;
-	private long spawnTime = 0l;
 	private int lastFindPathTick = 0;
 	private int tickCount = 0;
+
+	long spawnTime = 0l;
+	int speed = 50;
 	
 	private final ManagerService managers;
 	private final boolean isServer;
@@ -32,7 +33,6 @@ public class Zombie extends Entity {
 	private Path path;
 	private Point lastTargetBlock = new Point(0, 0);
 	private int lastObjectGridModCount = 0;
-	private int speed = 50;
 	
 	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
 	
@@ -43,7 +43,6 @@ public class Zombie extends Entity {
 		this.managers = managers;
 		this.isServer = isServer;
 		this.pathFinder = pathFinder;
-		spawnTime = System.currentTimeMillis() + spawnWaitTime;
 	}
 
 	@Override
@@ -98,7 +97,7 @@ public class Zombie extends Entity {
 			Node.Point step = path.peekNextStep();
 			setAngle(Point.degrees(this.getCenterX(), this.getCenterY(), step.x, step.y));
 			moveForward(distance);
-			if (Math.abs(this.getCenterX() - step.x) < 1 && Math.abs(this.getCenterY() - step.y) < 1) {
+			if (Math.abs(this.getCenterX() - step.x) < 3 && Math.abs(this.getCenterY() - step.y) < 3) {
 				path.pollNextStep();
 			}
 		} else {

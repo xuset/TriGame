@@ -53,7 +53,16 @@ public class ZombieManager extends Manager<Zombie> {
 				});
 	}
 	
-	public Zombie create() {
+	
+	public Zombie create(int roundNumber) {
+		final long initialSpawnDelay = 3000;
+		final int initialSpeed = 50;
+		
+		int speed = (int) (initialSpeed + 0.27 * roundNumber * roundNumber);
+		speed = (speed > 350) ? 350 : speed;
+		long spawnDelay = initialSpawnDelay - 75 * roundNumber;
+		spawnDelay = (spawnDelay < 0l) ? 0l : spawnDelay;
+		
 		Entity target = DETERMINE_TARGET(managers);
 		Point spawn = determineSpawnLocation(target);
 		Sprite s = Sprite.get(Zombie.SPRITE_ID);
@@ -61,7 +70,8 @@ public class ZombieManager extends Manager<Zombie> {
 		int height = s.getHeight();
 		Zombie z = creator.create(spawn.intX() - width / 2, spawn.intY() - height / 2, this);
 		z.target = target;
-		
+		z.spawnTime = spawnDelay;
+		z.speed = speed;
 		return z;
 	}
 	
@@ -81,6 +91,11 @@ public class ZombieManager extends Manager<Zombie> {
 	private static final int maxSpawnDistance = 600;
 	private static final int maxBufferSize = 15;
 	Point determineSpawnLocation(Entity target) {
+		if (target == null) {
+			System.err.println("Zombie's target is null.");
+			return new Point(0,0);
+		}
+		
 		ArrayList<SpawnHole> spawnHoles = managers.spawnHole.list;
 		SpawnHole[] buffer = new SpawnHole[maxBufferSize];
 		

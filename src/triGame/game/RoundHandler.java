@@ -29,7 +29,6 @@ public class RoundHandler implements GameIntegratable{
 	private final boolean isServer;
 	
 	private int roundNumber = 0;
-	//private boolean roundOnGoing = false;
 	private int zombiesToSpawn = 0;
 	private boolean drawingFadingRoundNumber = false;
 	private int maxPlayers = 0;
@@ -90,7 +89,7 @@ public class RoundHandler implements GameIntegratable{
 	private void spawnIn() {
 		ZombieManager manager = managerService.zombie;
 		if (manager.getZombiesAlive() < Zombie.MAX_ZOMBIES && System.currentTimeMillis() > nextSpawnTime) {
-			manager.create();
+			manager.create(roundNumber);
 			zombiesToSpawn--;
 			nextSpawnTime = System.currentTimeMillis() + initialWaitDelay;
 		}
