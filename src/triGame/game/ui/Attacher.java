@@ -110,8 +110,8 @@ public class Attacher extends MouseAdapter implements GameIntegratable{
 	
 	@Override
 	public void performLogic(int frameDelta) {
-		selected = null;
 		if (mouseClicked) {
+			selected = null;
 			mouseClicked = false;
 			if (isAttached())
 				placeAttached();
