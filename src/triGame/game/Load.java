@@ -18,6 +18,7 @@ import triGame.game.entities.PointParticle;
 import triGame.game.entities.PointWell;
 import triGame.game.entities.SpawnHole;
 import triGame.game.entities.buildings.types.Barrier;
+import triGame.game.entities.buildings.types.FreezeTower;
 import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.entities.buildings.types.LightTower;
 import triGame.game.entities.buildings.types.PointCollector;
@@ -49,6 +50,7 @@ abstract class Load {
 		spritePointWell();
 		spriteHealthPack();
 		spriteSteelBarrier();
+		spriteFreezeTower();
 	}
 	
 	private static void spriteSpawnHole() {
@@ -258,5 +260,9 @@ abstract class Load {
 	
 	private static void spriteSteelBarrier() {
 		Sprite.add(SteelBarrier.INFO.spriteId);
+	}
+	
+	private static void spriteFreezeTower() {
+		Sprite.add(FreezeTower.INFO.spriteId);
 	}
 }
