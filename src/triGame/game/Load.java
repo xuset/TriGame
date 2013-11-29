@@ -26,6 +26,7 @@ import triGame.game.entities.buildings.types.SteelBarrier;
 import triGame.game.entities.buildings.types.Tower;
 import triGame.game.entities.buildings.types.TrapDoor;
 import triGame.game.entities.projectiles.Projectile;
+import triGame.game.entities.zombies.BossZombie;
 import triGame.game.entities.zombies.Zombie;
 
 
@@ -34,6 +35,7 @@ abstract class Load {
 		spriteSpawnHole();
 		spritePerson();
 		spriteZombie();
+		spriteBossZombie();
 		spriteBarrier();
 		spriteTower();
 		spriteSmallTower();
@@ -92,6 +94,22 @@ abstract class Load {
 		g.fillPolygon(p);
 		g.dispose();
 		new Sprite(Zombie.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5));
+	}
+	
+	private static void spriteBossZombie() {
+		if (Sprite.exists(BossZombie.SPRITE_ID))
+			return;
+		BufferedImage image = new BufferedImage(80, 80, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		Polygon p = new Polygon(); p.addPoint(0, 80); p.addPoint(80, 80); p.addPoint(40, 0);
+		g.setColor(Color.DARK_GRAY);
+		g.fillPolygon(p);
+		p = new Polygon(); p.addPoint(10, 70); p.addPoint(70, 70); p.addPoint(40, 16);
+		g.setColor(Color.black);
+		g.fillPolygon(p);
+		g.dispose();
+		new Sprite(BossZombie.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5));
 	}
 	
 	private static void spriteBarrier() {

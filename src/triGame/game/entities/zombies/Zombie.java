@@ -36,10 +36,10 @@ public class Zombie extends Entity {
 	
 	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
 	
-	public Zombie(double x, double y, ManagerService managers,
+	public Zombie(String spriteId, double x, double y, ManagerService managers,
 			boolean isServer, ZombiePathFinder pathFinder, EntityKey key) {
 		
-		super(SPRITE_ID, x, y, key);
+		super(spriteId, x, y, key);
 		this.managers = managers;
 		this.isServer = isServer;
 		this.pathFinder = pathFinder;

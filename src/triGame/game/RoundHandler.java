@@ -88,6 +88,11 @@ public class RoundHandler implements GameIntegratable{
 	private long nextSpawnTime = 0;
 	private void spawnIn() {
 		ZombieManager manager = managerService.zombie;
+		if (roundNumber % 10 == 0) {//if boss round
+			manager.createBoss(roundNumber);
+			zombiesToSpawn = 0;
+			return;
+		}
 		if (manager.getZombiesAlive() < Zombie.MAX_ZOMBIES && System.currentTimeMillis() > nextSpawnTime) {
 			manager.create(roundNumber);
 			zombiesToSpawn--;

@@ -18,6 +18,7 @@ import triGame.game.entities.PointParticle;
 import triGame.game.entities.SpawnHole;
 import triGame.game.entities.buildings.Building;
 import triGame.game.entities.buildings.BuildingManager;
+import triGame.game.shopping.ShopManager;
 
 
 public class ZombieManager extends Manager<Zombie> {
@@ -26,33 +27,60 @@ public class ZombieManager extends Manager<Zombie> {
 	private int zombiesKilled = 0;
 
 	private final LocationCreator<Zombie> creator;
+	private final LocationCreator<Zombie> bossCreator;
 	private final ManagerService managers;
 	private final ZombiePathFinder pathFinder;
 	private final boolean isServer;
 	private final ParticleController particles;
+	private final ShopManager shop;
 	
 	public int getZombiesKilled() { return zombiesKilled; }
 	public int getZombiesAlive() { return list.size(); }
 	
 	public ZombieManager(ManagerController controller, ManagerService managers,
-			BuildingManager buildingManager, boolean isServer, ParticleController particles) {
+			BuildingManager buildingManager, boolean isServer,
+			ShopManager shop, ParticleController particles) {
 		
 		super(controller, HASH_MAP_KEY);
 		pathFinder = new ZombiePathFinder(managers, buildingManager);
 		this.isServer = isServer;
 		this.particles = particles;
 		this.managers = managers;
+		this.shop = shop;
 		
 		creator = new LocationCreator<Zombie>(HASH_MAP_KEY, controller.creator, 
 				new LocationCreator.IFace<Zombie>() {
 					@Override
 					public Zombie create(double x, double y, EntityKey key) {
-						return new Zombie(x, y, ZombieManager.this.managers,
-								ZombieManager.this.isServer, pathFinder, key);
+						ZombieManager m = ZombieManager.this;
+						return new Zombie(Zombie.SPRITE_ID, x, y, m.managers,
+								m.isServer, m.pathFinder, key);
+					}
+				});
+		
+		bossCreator = new LocationCreator<Zombie>("BossCreator", controller.creator,
+				new LocationCreator.IFace<Zombie>() {
+					@Override
+					public Zombie create(double x, double y, EntityKey key) {
+						ZombieManager m = ZombieManager.this;
+						return new BossZombie(x, y, m.managers, m.isServer, m.pathFinder, key);
 					}
 				});
 	}
 	
+	public Zombie createBoss(int roundNumber) {
+		final int speed = 30;
+		final long spawnDelay = 0;
+		
+		Building hq = managers.building.getHQ();
+		Point spawn = determineSpawnLocation(hq);
+		
+		BossZombie boss = (BossZombie) bossCreator.create(spawn.x, spawn.y, this);
+		setAttributes(boss, speed, spawnDelay, hq);
+		int health = (roundNumber / 10) * 300 + 100;
+		boss.setMaxHealth(health);
+		return boss;
+	}
 	
 	public Zombie create(int roundNumber) {
 		final long initialSpawnDelay = 3000;
@@ -65,14 +93,17 @@ public class ZombieManager extends Manager<Zombie> {
 		
 		Entity target = DETERMINE_TARGET(managers);
 		Point spawn = determineSpawnLocation(target);
-		Sprite s = Sprite.get(Zombie.SPRITE_ID);
-		int width = s.getWidth();
-		int height = s.getHeight();
-		Zombie z = creator.create(spawn.intX() - width / 2, spawn.intY() - height / 2, this);
+		
+		Zombie z = creator.create(spawn.x, spawn.y, this);
+		setAttributes(z, speed, spawnDelay, target);
+		return z;
+		
+	}
+	
+	private void setAttributes(Zombie z, int speed, long spawnDelay, Entity target) {		
 		z.target = target;
 		z.spawnTime = spawnDelay;
 		z.speed = speed;
-		return z;
 	}
 	
 	@Override
@@ -83,6 +114,16 @@ public class ZombieManager extends Manager<Zombie> {
 	
 	@Override
 	protected void onRemove(Entity z) {
+		if (z.getSpriteId().equals(BossZombie.SPRITE_ID)) {
+			for (int i = 0; i < 10; i++) {
+				Point var = new Point(z.getCenterX(), z.getCenterY());
+				var = var.translate(Math.random() * 50 - 25, Math.random() * 50 - 25);
+				int time = (int) (Math.random() * 400 + 500);
+				PointParticle p = new PointParticle.Floating(var.intX(), var.intY(), time);
+				particles.addParticle(p);
+			}
+			shop.points += 200;
+		}
 		zombiesKilled++;
 		PointParticle p = new PointParticle.Floating((int) z.getCenterX(),(int)  z.getCenterY(), 800);
 		particles.addParticle(p);
@@ -91,6 +132,9 @@ public class ZombieManager extends Manager<Zombie> {
 	private static final int maxSpawnDistance = 600;
 	private static final int maxBufferSize = 15;
 	Point determineSpawnLocation(Entity target) {
+		final int width = Sprite.get(Zombie.SPRITE_ID).getWidth();
+		final int height = Sprite.get(Zombie.SPRITE_ID).getHeight();
+		
 		if (target == null) {
 			System.err.println("Zombie's target is null.");
 			return new Point(0,0);
@@ -118,13 +162,13 @@ public class ZombieManager extends Manager<Zombie> {
 					shortestDistance = distance;
 				}
 			}
-			return new Point(shortest.getCenter());
+			return new Point(shortest.getCenter()).translate(-width/2, -height/2);
 		} else {
 			SpawnHole sh;
 			double rand = Math.random();
 			double index = size * rand;
 			sh = buffer[(int) index];
-			return new Point(sh.getCenterX(), sh.getCenterY());
+			return new Point(sh.getCenterX() - width/2, sh.getCenterY() - height/2);
 		}
 	}
 	

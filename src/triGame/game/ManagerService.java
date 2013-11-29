@@ -42,6 +42,6 @@ public final class ManagerService {
 		projectile = new ProjectileManager(managerController, shop, this);
 		person = new PersonManager(managerController, this, safeBoard, keyboard, ownerId);
 		building = new BuildingManager(managerController, this, safeBoard, phRoundHandler, shop);
-		zombie = new ZombieManager(managerController, this, building, isServer, particleController);
+		zombie = new ZombieManager(managerController, this, building, isServer, shop, particleController);
 	}
 }
