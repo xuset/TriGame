@@ -50,6 +50,7 @@ public abstract class Manager<T extends Entity> implements GameIntegratable{
 			if (e.removeRequested()) {
 				creationHandler.removeOnNetwork(e, this);
 				it.remove();
+				e.objClass.remove();
 				e.onRemoved();
 				onRemove(e);
 			} else {
