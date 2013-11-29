@@ -15,6 +15,7 @@ import triGame.game.shopping.UpgradeItem;
 public class FreezeTower extends Building {
 	private static final double circles = 4.0;
 	private static final int radiusSpeed = 20;
+	private static final Color radiusColor = new Color(184, 24, 210);
 
 	private final ManagerService managers;
 	private final UpgradeItem rangeUpgrade;
@@ -50,7 +51,7 @@ public class FreezeTower extends Building {
 		int x = (int) (getCenterX() - rect.getX());
 		int y = (int) (getCenterY() - rect.getY());
 		double delta = rangeUpgrade.getValue() / circles;
-		g.setColor(Color.cyan);
+		g.setColor(radiusColor);
 		for (int i = 0; i < circles; i++) {
 			int r = (int) (currentRadius + i * delta);
 			g.drawOval(x - r, y - r, 2 * r, 2 * r);
