@@ -32,9 +32,11 @@ public abstract class Building extends Entity{
 	}
 	
 	@Override
-	public void performLogic(int frameDelta) {
-		if (getHealth() <= 0)
+	public double modifyHealth(double delta) {
+		double health = super.modifyHealth(delta);
+		if (health <= 0)
 			remove();
+		return health;
 	}
 	
 	@Override
