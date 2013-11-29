@@ -96,9 +96,7 @@ public class Zombie extends Entity {
 	}
 	
 	public void move(int frameDelta) {
-		double distance = (speed * frameDelta) / 1000.0;
-		if (frozenSpeed.get() != 0)
-			distance = (speed - frozenSpeed.get()) * frameDelta / 1000.0;
+		double distance = (speed - frozenSpeed.get()) * frameDelta / 1000.0;
 		//TODO frozenSpeed can result in a negative distance
 		
 		

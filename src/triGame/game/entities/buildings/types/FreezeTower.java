@@ -7,6 +7,7 @@ import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
 import tSquare.math.Point;
 import triGame.game.ManagerService;
+import triGame.game.entities.Person;
 import triGame.game.entities.buildings.Building;
 import triGame.game.entities.zombies.Zombie;
 import triGame.game.shopping.ShopItem;
@@ -21,10 +22,12 @@ public class FreezeTower extends Building {
 	private final UpgradeItem rangeUpgrade;
 	private double currentRadius = 1;
 
+	@Override public int getVisibilityRadius() { return rangeUpgrade.getValue(); }
+
 	public FreezeTower(double x, double y, ManagerService managers, EntityKey key) {
 		super(INFO.spriteId, x, y, INFO, key);
 		this.managers = managers;
-		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 50);
+		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 25);
 		upgrades.addUpgrade(rangeUpgrade);
 		upgrades.addUpgrade(new UpgradeItem(new ShopItem("Freeze rate", 100),3, 2500, -500));
 	}
@@ -43,6 +46,12 @@ public class FreezeTower extends Building {
 			}
 		}
 		
+		for (Person p : managers.person.list) {
+			double distance = Point.distance(p.getCenterX(), p.getCenterY(), getCenterX(), getCenterY());
+			if (distance < rangeUpgrade.getValue()) {
+				p.freeze(30);
+			}
+		}
 	}
 	
 	@Override
@@ -63,7 +72,7 @@ public class FreezeTower extends Building {
 	public static final BuildingInfo INFO = new BuildingInfo(
 			"media/FreezeTower.png",    //spriteId
 			"freezeTower",    //Creator hash map key
-			100,        //visibilityRadius
+			75,        //visibilityRadius
 			"Slow down the hoards.",
 			new ShopItem("Freeze tower", 200),
 			true,    //has a healthBar
