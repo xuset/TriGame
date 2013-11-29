@@ -31,11 +31,6 @@ public class ZombiePathFinder extends BiDirectionalPathFinder {
 		private static final int additionalBuildingG = 70;
 
 		@Override
-		public boolean isFinishNode(Node node, Node finish) {
-			return super.isFinishNode(node, finish);
-		}
-
-		@Override
 		public boolean isValidNode(Node node, Node previous, NodeList nodeList) {
 			return super.isValidDiagonalMovement(node, previous, nodeList);
 		}
