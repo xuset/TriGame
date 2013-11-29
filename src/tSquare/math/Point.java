@@ -1,6 +1,8 @@
 package tSquare.math;
 
-public class Point {
+import java.awt.geom.Point2D;
+
+public class Point extends Point2D{
 	public double x = 0;
 	public double y = 0;
 	
@@ -125,5 +127,9 @@ public class Point {
 		if (quadrant == 2 || quadrant == 4)
 			degrees = (Math.toDegrees(Math.atan(Math.abs((x2 - x1)/(y2 - y1)))) + (quadrant - 1)*90);
 		return degrees;
+	}
+	@Override
+	public void setLocation(double x, double y) {
+		set(x, y);
 	}
 }
