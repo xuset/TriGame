@@ -22,6 +22,7 @@ import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.entities.buildings.types.LightTower;
 import triGame.game.entities.buildings.types.PointCollector;
 import triGame.game.entities.buildings.types.SmallTower;
+import triGame.game.entities.buildings.types.SteelBarrier;
 import triGame.game.entities.buildings.types.Tower;
 import triGame.game.entities.buildings.types.TrapDoor;
 import triGame.game.entities.projectiles.Projectile;
@@ -45,6 +46,7 @@ abstract class Load {
 		spriteLightTower();
 		spritePointWell();
 		spriteHealthPack();
+		spriteSteelBarrier();
 	}
 	
 	private static void spriteSpawnHole() {
@@ -234,5 +236,9 @@ abstract class Load {
 		g.fillRect(3, 10, 18, 4);
 		g.dispose();
 		new Sprite(HealthPack.SPRITE_ID, image);
+	}
+	
+	private static void spriteSteelBarrier() {
+		Sprite.add(SteelBarrier.INFO.spriteId);
 	}
 }
