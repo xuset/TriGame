@@ -1,5 +1,6 @@
 package triGame.game.entities.zombies;
 
+import objectIO.netObject.NetVar;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.entity.Manager;
@@ -29,10 +30,12 @@ public class Zombie extends Entity {
 	private final ManagerService managers;
 	private final boolean isServer;
 	private final ZombiePathFinder pathFinder;
+	private final NetVar.nInt frozenSpeed;
 	
 	private Path path;
 	private Point lastTargetBlock = new Point(0, 0);
 	private int lastObjectGridModCount = 0;
+	
 	
 	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
 	
@@ -43,6 +46,7 @@ public class Zombie extends Entity {
 		this.managers = managers;
 		this.isServer = isServer;
 		this.pathFinder = pathFinder;
+		frozenSpeed = new NetVar.nInt(0, "frozenSpeed", objClass);
 	}
 
 	@Override
@@ -93,6 +97,11 @@ public class Zombie extends Entity {
 	
 	public void move(int frameDelta) {
 		double distance = (speed * frameDelta) / 1000.0;
+		if (frozenSpeed.get() != 0)
+			distance = (speed - frozenSpeed.get()) * frameDelta / 1000.0;
+		//TODO frozenSpeed can result in a negative distance
+		
+		
 		if (path != null && path.peekNextStep() != null) {
 			Node.Point step = path.peekNextStep();
 			setAngle(Point.degrees(this.getCenterX(), this.getCenterY(), step.x, step.y));
@@ -109,6 +118,11 @@ public class Zombie extends Entity {
 				inflictDamage(managers.building, frameDelta);
 			}
 		}
+		frozenSpeed.set(0);
+	}
+	
+	public void freeze(int speedChange) {
+		frozenSpeed.set(speedChange);
 	}
 	
 	private boolean inflictDamage(Manager<?> manager, int frameDelta) {

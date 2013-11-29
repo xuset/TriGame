@@ -5,8 +5,10 @@ import java.awt.Graphics2D;
 
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
+import tSquare.math.Point;
 import triGame.game.ManagerService;
 import triGame.game.entities.buildings.Building;
+import triGame.game.entities.zombies.Zombie;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeItem;
 
@@ -32,6 +34,13 @@ public class FreezeTower extends Building {
 		double delta = rangeUpgrade.getValue() / circles;
 		if (currentRadius >= delta)
 			currentRadius = 1.0;
+		
+		for (Zombie z : managers.zombie.list) {
+			double distance = Point.distance(z.getCenterX(), z.getCenterY(), getCenterX(), getCenterY());
+			if (distance < rangeUpgrade.getValue()) {
+				z.freeze(30);
+			}
+		}
 		
 	}
 	
