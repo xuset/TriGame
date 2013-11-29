@@ -28,7 +28,7 @@ public class ZombiePathFinder extends BiDirectionalPathFinder {
 	}
 	
 	public class ZDefiner extends AStarDefiner {
-		private static final int additionalBuildingG = 70;
+		private static final int additionalBuildingG = 220;
 
 		@Override
 		public boolean isValidNode(Node node, Node previous, NodeList nodeList) {
