@@ -75,6 +75,8 @@ public class Attacher extends MouseAdapter implements GameIntegratable{
 			int boardY = Params.roundToGrid(mouse.y + rect.getY());
 			int graphicX = boardX - (int) rect.getX();
 			int graphicY = boardY - (int) rect.getY();
+			int width = attached.image.getWidth();
+			int height = attached.image.getHeight();
 			
 			g.drawImage(attached.image, graphicX, graphicY, null);
 			
@@ -87,7 +89,7 @@ public class Attacher extends MouseAdapter implements GameIntegratable{
 			g.setColor(color);
 			
 			g.drawRect(graphicX, graphicY, attached.image.getWidth(), attached.image.getHeight());
-			drawRadius(graphicX, graphicY, attached.visibilityRadius, color, g);
+			drawRadius(graphicX + width/2, graphicY + height/2, attached.visibilityRadius, color, g);
 		} else if (selected != null) {
 			int x = (int) (selected.getCenterX() - rect.getX());
 			int y = (int) (selected.getCenterY() - rect.getY());
