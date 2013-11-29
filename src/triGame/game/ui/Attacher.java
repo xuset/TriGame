@@ -89,8 +89,9 @@ public class Attacher extends MouseAdapter implements GameIntegratable{
 			g.drawRect(graphicX, graphicY, attached.image.getWidth(), attached.image.getHeight());
 			drawRadius(graphicX, graphicY, attached.visibilityRadius, color, g);
 		} else if (selected != null) {
-			drawRadius((int) (selected.getX() - rect.getX()), (int) (selected.getY() - rect.getY()),
-					selected.getVisibilityRadius(), Color.green, g);
+			int x = (int) (selected.getCenterX() - rect.getX());
+			int y = (int) (selected.getCenterY() - rect.getY());
+			drawRadius(x, y, selected.getVisibilityRadius(), Color.green, g);
 		}
 	}
 	

@@ -23,6 +23,7 @@ public class Tower extends Building {
 	
 	private long lastShot = 0;
 	
+	@Override
 	public int getVisibilityRadius() { return rangeUpgrade.getValue(); }
 	
 	public Tower(double x, double y, ManagerService managers, EntityKey key) {
@@ -57,7 +58,7 @@ public class Tower extends Building {
 		Zombie shortestZombie = null;
 		int shortestDistance = Integer.MAX_VALUE;
 		for (Zombie z : zombies) {
-			int dist = (int) Point.distance(getX(), getY(), z.getX(), z.getY());
+			int dist = (int) Point.distance(getCenterX(), getCenterY(), z.getX(), z.getY());
 			if (dist < shortestDistance) {
 				shortestDistance = dist;
 				shortestZombie = z;
