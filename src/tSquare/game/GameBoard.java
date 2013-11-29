@@ -67,7 +67,8 @@ public class GameBoard{
 	}
 	
 	public class ViewRect extends Rectangle {
-		
+		private static final long serialVersionUID = -8685354307404082973L;
+
 		public ViewRect(int width, int height) {
 			super(0, 0, width, height);
 		}
@@ -86,6 +87,7 @@ public class GameBoard{
 	}
 	
 	public class DrwBoardViewRect extends ViewRect {
+		private static final long serialVersionUID = 7415575589993188408L;
 		private DrawBoard drawBoard;
 
 		public DrwBoardViewRect(DrawBoard drawBoard) {
