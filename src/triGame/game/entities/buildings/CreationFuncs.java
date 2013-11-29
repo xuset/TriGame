@@ -11,6 +11,7 @@ import triGame.game.ManagerService;
 import triGame.game.RoundHandler;
 import triGame.game.entities.buildings.Building.BuildingInfo;
 import triGame.game.entities.buildings.types.Barrier;
+import triGame.game.entities.buildings.types.FreezeTower;
 import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.entities.buildings.types.LightTower;
 import triGame.game.entities.buildings.types.PointCollector;
@@ -31,6 +32,7 @@ final class CreationFuncs {
 		SmallTower.INFO,
 		Tower.INFO,
 		PointCollector.INFO,
+		FreezeTower.INFO
 	};
 	
 	public final ArrayList<BuildingCreator> creators = new ArrayList<BuildingCreator>();
@@ -62,6 +64,7 @@ final class CreationFuncs {
 		creators.add(new BuildingCreator(Barrier.INFO, bm, mc.creator, managers, barrierFunc));
 		creators.add(new BuildingCreator(SteelBarrier.INFO, bm, mc.creator, managers, steelFunc));
 		creators.add(new BuildingCreator(TrapDoor.INFO, bm, mc.creator, managers, trapDoorFunc));
+		creators.add(new BuildingCreator(FreezeTower.INFO, bm, mc.creator, managers, freezeFunc));
 	}
 	
 	
@@ -132,6 +135,12 @@ final class CreationFuncs {
 		public TrapDoor create(double x, double y, EntityKey key) {
 			return new TrapDoor(x, y, managers, key);
 		}
+	};
 	
+	private final LocationCreator.IFace<FreezeTower> freezeFunc = new IFace<FreezeTower>() {
+		@Override
+		public FreezeTower create(double x, double y, EntityKey key) {
+			return new FreezeTower(x, y, managers, key);
+		}
 	};
 }

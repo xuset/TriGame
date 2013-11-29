@@ -53,7 +53,7 @@ public class BuildingManager extends Manager<Building> {
 	protected void onAdd(Building b) {
 		objectGrid.turnOnRectangle(b.getX(), b.getY(), b.getWidth(), b.getHeight());
 		if (b.getVisibilityRadius() > 0)
-			safeBoard.addVisibilityForEntity(b);
+			safeBoard.addVisibilityForEntity(b, b.getVisibilityRadius());
 		if (b.isInteractive())
 			interactives.add(b);
 	}
