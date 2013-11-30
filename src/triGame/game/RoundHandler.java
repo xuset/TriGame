@@ -105,7 +105,7 @@ public class RoundHandler implements GameIntegratable{
 	}
 	
 	private int getWaitDelay() { 
-		int d =  (int) (600 - roundNumber * 15.0);
+		int d =  (int) (600 - roundNumber * 10.0);
 		d = d < 100 ? 100 : d;
 		return d;
 	}

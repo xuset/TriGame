@@ -87,7 +87,7 @@ public class ZombieManager extends Manager<Zombie> {
 		final long initialSpawnDelay = 3000;
 		final int initialSpeed = 50;
 		
-		int speed = (int) (initialSpeed + 0.15 * roundNumber * roundNumber);
+		int speed = (int) (initialSpeed + 0.10 * roundNumber * roundNumber);
 		speed = (speed > 350) ? 350 : speed;
 		long spawnDelay = initialSpawnDelay - 75 * roundNumber;
 		spawnDelay = (spawnDelay < 0l) ? 0l : spawnDelay;

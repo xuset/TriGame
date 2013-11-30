@@ -27,10 +27,9 @@ public class PointCollector extends Building {
 		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.phRoundHandler = phRoundHandler;
 		this.shop = shop;
-		pointAddFrequency = (int) (Math.random() * 500 + 750);
+		pointAddFrequency = 200;
 		particle = new PointParticle.Floating((int) getCenterX(), (int) getCenterY(), pointAddFrequency);
 	}
-	
 	
 	private int lastFrameDelta;
 	@Override
