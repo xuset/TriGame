@@ -79,7 +79,7 @@ public class ZombieManager extends Manager<Zombie> {
 		
 		BossZombie boss = (BossZombie) bossCreator.create(spawn.x, spawn.y, this);
 		setAttributes(boss, speed, spawnDelay, hq);
-		int health = (roundNumber / 10) * 300 + 100;
+		int health = (roundNumber * roundNumber) * 8;
 		boss.setMaxHealth(health);
 		return boss;
 	}
