@@ -13,9 +13,13 @@ public class Sound {
 	private Clip clip;
 	
 	public static Sound get(String soundId) {
+		return sounds.get(soundId);
+	}
+	
+	public static Sound add(String soundId) {
 		Sound s = sounds.get(soundId);
 		if (s == null) {
-			Sound newSound = new Sound(soundId, soundId);
+			Sound newSound = new Sound(soundId);
 			sounds.put(soundId, newSound);
 			return newSound;
 		} else {
@@ -23,7 +27,7 @@ public class Sound {
 		}
 	}
 	
-	public Sound(String soundId, String url) {
+	public Sound(String url) {
 		this.url = url;
 		try
 	    {
