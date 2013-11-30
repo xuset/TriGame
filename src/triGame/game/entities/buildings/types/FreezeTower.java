@@ -3,6 +3,7 @@ package triGame.game.entities.buildings.types;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import objectIO.netObject.NetVar;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.Particle;
@@ -18,12 +19,14 @@ import triGame.game.shopping.UpgradeItem;
 public class FreezeTower extends Building {
 	private final ManagerService managers;
 	private final UpgradeItem rangeUpgrade;
+	private final NetVar.nInt rangeValue;
 
-	@Override public int getVisibilityRadius() { return rangeUpgrade.getValue(); }
+	@Override public int getVisibilityRadius() { return rangeValue.get(); }
 
 	public FreezeTower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
 		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.managers = managers;
+		rangeValue = new NetVar.nInt(INFO.visibilityRadius, "rangeValue", objClass);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 25);
 		upgrades.addUpgrade(rangeUpgrade);
 		upgrades.addUpgrade(new UpgradeItem(new ShopItem("Freeze rate", 100),3, 2500, -500));
@@ -32,7 +35,8 @@ public class FreezeTower extends Building {
 	
 	@Override
 	public void performLogic(int frameDelta) {
-		
+		if (owned())
+			rangeValue.set(rangeUpgrade.getValue());
 		
 		for (Zombie z : managers.zombie.list) {
 			double distance = Point.distance(z.getCenterX(), z.getCenterY(), getCenterX(), getCenterY());
@@ -69,7 +73,7 @@ public class FreezeTower extends Building {
 		@Override
 		public void draw(int frameDelta, Graphics2D g, ViewRect rect) {
 			currentRadius += frameDelta * radiusSpeed / 1000.0;
-			double delta = rangeUpgrade.getValue() / circles;
+			double delta = rangeValue.get() / circles;
 			if (currentRadius >= delta)
 				currentRadius = 1.0;
 		
