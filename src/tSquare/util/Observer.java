@@ -23,10 +23,10 @@ public class Observer<T> {
 	}
 	
 	public void notifyWatchers() {
-		notifiyWatchers(var);
+		notifyWatchers(var);
 	}
 	
-	public void notifiyWatchers(T t) {
+	public void notifyWatchers(T t) {
 		for (Change<T> c : watchers) {
 			c.observeChange(t);
 		}
