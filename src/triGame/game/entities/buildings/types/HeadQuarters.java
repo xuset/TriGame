@@ -1,13 +1,14 @@
 package triGame.game.entities.buildings.types;
 
 import tSquare.game.entity.EntityKey;
+import tSquare.game.particles.ParticleController;
 import triGame.game.entities.buildings.Building;
 
 public class HeadQuarters extends Building {
 	
 	
-	public HeadQuarters(double x, double y, EntityKey key) {
-		super(INFO.spriteId, x, y, INFO, key);
+	public HeadQuarters(double x, double y, ParticleController pc, EntityKey key) {
+		super(INFO.spriteId, x, y, pc, INFO, key);
 		health.set(1500.0);
 		healthBar.relativeY = 5;
 		healthBar.maxHealth = health.get().intValue();

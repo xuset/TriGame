@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
+import tSquare.game.particles.Particle;
+import tSquare.game.particles.ParticleController;
 import tSquare.math.Point;
 import triGame.game.ManagerService;
 import triGame.game.entities.Person;
@@ -14,30 +16,23 @@ import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeItem;
 
 public class FreezeTower extends Building {
-	private static final double circles = 4.0;
-	private static final int radiusSpeed = 20;
-	private static final Color radiusColor = new Color(184, 24, 210);
-
 	private final ManagerService managers;
 	private final UpgradeItem rangeUpgrade;
-	private double currentRadius = 1;
 
 	@Override public int getVisibilityRadius() { return rangeUpgrade.getValue(); }
 
-	public FreezeTower(double x, double y, ManagerService managers, EntityKey key) {
-		super(INFO.spriteId, x, y, INFO, key);
+	public FreezeTower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
+		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.managers = managers;
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 25);
 		upgrades.addUpgrade(rangeUpgrade);
 		upgrades.addUpgrade(new UpgradeItem(new ShopItem("Freeze rate", 100),3, 2500, -500));
+		pc.addParticle(new RadiusParticle());
 	}
 	
 	@Override
 	public void performLogic(int frameDelta) {
-		currentRadius += frameDelta * radiusSpeed / 1000.0;
-		double delta = rangeUpgrade.getValue() / circles;
-		if (currentRadius >= delta)
-			currentRadius = 1.0;
+		
 		
 		for (Zombie z : managers.zombie.list) {
 			double distance = Point.distance(z.getCenterX(), z.getCenterY(), getCenterX(), getCenterY());
@@ -54,21 +49,6 @@ public class FreezeTower extends Building {
 		}
 	}
 	
-	@Override
-	public void draw(Graphics2D g, ViewRect rect) {
-		super.draw(g, rect);
-		int x = (int) (getCenterX() - rect.getX());
-		int y = (int) (getCenterY() - rect.getY());
-		double delta = rangeUpgrade.getValue() / circles;
-		g.setColor(radiusColor);
-		for (int i = 0; i < circles; i++) {
-			int r = (int) (currentRadius + i * delta);
-			g.drawOval(x - r, y - r, 2 * r, 2 * r);
-		}
-		
-		
-	}
-	
 	public static final BuildingInfo INFO = new BuildingInfo(
 			"media/FreezeTower.png",    //spriteId
 			"freezeTower",    //Creator hash map key
@@ -79,4 +59,33 @@ public class FreezeTower extends Building {
 			true,    //has an UpgradeManager
 			true
 	);
+	
+	public class RadiusParticle extends Particle {
+		private static final double circles = 4.0;
+		private static final int radiusSpeed = 20;
+		private final Color radiusColor = new Color(184, 24, 210);
+		private double currentRadius = 1.0;
+		
+		@Override
+		public void draw(int frameDelta, Graphics2D g, ViewRect rect) {
+			currentRadius += frameDelta * radiusSpeed / 1000.0;
+			double delta = rangeUpgrade.getValue() / circles;
+			if (currentRadius >= delta)
+				currentRadius = 1.0;
+		
+			int x = (int) (getCenterX() - rect.getX());
+			int y = (int) (getCenterY() - rect.getY());
+			g.setColor(radiusColor);
+			for (int i = 0; i < circles; i++) {
+				int r = (int) (currentRadius + i * delta);
+				g.drawOval(x - r, y - r, 2 * r, 2 * r);
+			}
+		}
+
+		@Override
+		public boolean isExpired() {
+			return removeRequested();
+		}
+		
+	}
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.Manager;
 import tSquare.game.entity.ManagerController;
+import tSquare.game.particles.ParticleController;
 import tSquare.imaging.Sprite;
 import tSquare.paths.ObjectGrid;
 import tSquare.util.PlaceHolder;
@@ -31,14 +32,14 @@ public class BuildingManager extends Manager<Building> {
 
 	public BuildingManager(ManagerController mc, ManagerService managers,
 			SafeAreaBoard safeBoard, PlaceHolder<RoundHandler> phRoundHandler,
-			ShopManager shop) {
+			ShopManager shop, ParticleController particle) {
 		
 		super(mc, HASH_MAP_KEY);
 		this.safeBoard = safeBoard;
 		interactives = new ArrayList<Building>();
 		objectGrid = new ObjectGrid(Params.GAME_WIDTH, Params.GAME_HEIGHT,
 				Params.BLOCK_SIZE, Params.BLOCK_SIZE);
-		creators = new CreationFuncs(this, mc, managers, phRoundHandler, shop);
+		creators = new CreationFuncs(this, mc, managers, phRoundHandler, shop, particle);
 	}
 	
 	@Override

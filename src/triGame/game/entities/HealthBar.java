@@ -7,8 +7,9 @@ import java.awt.Graphics2D;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
+import tSquare.game.particles.Particle;
 
-public class HealthBar implements GameIntegratable{
+public class HealthBar extends Particle implements GameIntegratable {
 	private static final int barWidth = 30;
 	private static final int barHeight = 5;
 	
@@ -59,4 +60,15 @@ public class HealthBar implements GameIntegratable{
 
 	@Override
 	public void performLogic(int frameDelta) { }
+
+	@Override
+	public void draw(int delta, Graphics2D g, ViewRect rect) {
+		draw(g, rect);
+		
+	}
+
+	@Override
+	public boolean isExpired() {
+		return entity == null || entity.removeRequested();
+	}
 }

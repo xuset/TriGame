@@ -4,6 +4,7 @@ package triGame.game.entities.buildings.types;
 import java.util.ArrayList;
 
 import tSquare.game.entity.EntityKey;
+import tSquare.game.particles.ParticleController;
 import tSquare.math.Point;
 import triGame.game.ManagerService;
 import triGame.game.entities.buildings.Building;
@@ -26,8 +27,8 @@ public class Tower extends Building {
 	@Override
 	public int getVisibilityRadius() { return rangeUpgrade.getValue(); }
 	
-	public Tower(double x, double y, ManagerService managers, EntityKey key) {
-		this(x, y, INFO, managers, key);
+	public Tower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
+		this(x, y, pc, managers, INFO, key);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 50);
 		if (owned()) {
 			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, initialShootDelay, -30);
@@ -38,8 +39,8 @@ public class Tower extends Building {
 		}
 	}
 	
-	protected Tower(double x, double y, BuildingInfo info, ManagerService managers, EntityKey key) {
-		super(info.spriteId, x, y, info, key);
+	protected Tower(double x, double y, ParticleController pc, ManagerService managers, BuildingInfo info, EntityKey key) {
+		super(info.spriteId, x, y, pc, info, key);
 		this.managers = managers;
 	}
 	

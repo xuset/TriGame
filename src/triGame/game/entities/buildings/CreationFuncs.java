@@ -6,6 +6,7 @@ import tSquare.game.entity.EntityKey;
 import tSquare.game.entity.LocationCreator;
 import tSquare.game.entity.LocationCreator.IFace;
 import tSquare.game.entity.ManagerController;
+import tSquare.game.particles.ParticleController;
 import tSquare.util.PlaceHolder;
 import triGame.game.ManagerService;
 import triGame.game.RoundHandler;
@@ -39,6 +40,7 @@ final class CreationFuncs {
 	private final ManagerService managers;
 	private final PlaceHolder<RoundHandler> phRoundHandler;
 	private final ShopManager shop;
+	private final ParticleController particle;
 	
 	public BuildingCreator getCreator(BuildingInfo info) {
 		for (BuildingCreator c : creators) {
@@ -49,12 +51,12 @@ final class CreationFuncs {
 	}
 	
 	public CreationFuncs(BuildingManager bm, ManagerController mc, ManagerService managers,
-			PlaceHolder<RoundHandler> phRoundHandler,
-			ShopManager shop) {
+			PlaceHolder<RoundHandler> phRoundHandler, ShopManager shop, ParticleController particle) {
 		
 		this.managers = managers;
 		this.phRoundHandler = phRoundHandler;
 		this.shop = shop;
+		this.particle = particle;
 		
 		creators.add(new BuildingCreator(HeadQuarters.INFO, bm, mc.creator, managers, headQuartersFunc));
 		creators.add(new BuildingCreator(LightTower.INFO, bm, mc.creator, managers, lightTowerFunc));
@@ -75,7 +77,7 @@ final class CreationFuncs {
 
 		@Override
 		public HeadQuarters create(double x, double y, EntityKey key) {
-			return new HeadQuarters(x, y, key);
+			return new HeadQuarters(x, y, particle, key);
 		}
 		
 	};
@@ -84,7 +86,7 @@ final class CreationFuncs {
 
 		@Override
 		public LightTower create(double x, double y, EntityKey key) {
-			return new LightTower(x, y, key);
+			return new LightTower(x, y, particle, key);
 		}
 		
 	};
@@ -93,7 +95,7 @@ final class CreationFuncs {
 
 		@Override
 		public PointCollector create(double x, double y, EntityKey key) {
-			return new PointCollector(x, y, shop, phRoundHandler, key);
+			return new PointCollector(x, y, particle, shop, phRoundHandler, key);
 		}
 		
 	};
@@ -102,7 +104,7 @@ final class CreationFuncs {
 
 		@Override
 		public SmallTower create(double x, double y, EntityKey key) {
-			return new SmallTower(x, y, managers, key);
+			return new SmallTower(x, y, particle, managers, key);
 		}
 		
 	};
@@ -111,7 +113,7 @@ final class CreationFuncs {
 
 		@Override
 		public Tower create(double x, double y, EntityKey key) {
-			return new Tower(x, y, managers, key);
+			return new Tower(x, y, particle, managers, key);
 		}
 		
 	};
@@ -140,7 +142,7 @@ final class CreationFuncs {
 	private final LocationCreator.IFace<FreezeTower> freezeFunc = new IFace<FreezeTower>() {
 		@Override
 		public FreezeTower create(double x, double y, EntityKey key) {
-			return new FreezeTower(x, y, managers, key);
+			return new FreezeTower(x, y, particle, managers, key);
 		}
 	};
 }

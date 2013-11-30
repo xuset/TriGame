@@ -7,7 +7,7 @@ public abstract class Wall extends Building {
 
 	public Wall(String spriteId, double x, double y, BuildingInfo info,
 			EntityKey key) {
-		super(spriteId, x, y, info, key);
+		super(spriteId, x, y, null, info, key);
 	}
 	
 	public static class WallInfo extends BuildingInfo {

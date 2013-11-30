@@ -1,13 +1,14 @@
 package triGame.game.entities.buildings.types;
 
 import tSquare.game.entity.EntityKey;
+import tSquare.game.particles.ParticleController;
 import triGame.game.entities.buildings.Building;
 import triGame.game.shopping.ShopItem;
 
 public class LightTower extends Building {
 
-	public LightTower(double x, double y, EntityKey key) {
-		super(INFO.spriteId, x, y, INFO, key);
+	public LightTower(double x, double y, ParticleController pc, EntityKey key) {
+		super(INFO.spriteId, x, y, pc, INFO, key);
 	}
 	
 	public static final BuildingInfo INFO = new BuildingInfo(

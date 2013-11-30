@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
+import tSquare.game.particles.ParticleController;
 import tSquare.util.PlaceHolder;
 import triGame.game.RoundHandler;
 import triGame.game.entities.PointParticle;
@@ -20,10 +21,10 @@ public class PointCollector extends Building {
 	private final PlaceHolder<RoundHandler> phRoundHandler;
 	
 
-	public PointCollector(double x, double y, ShopManager shop,
-			PlaceHolder<RoundHandler> phRoundHandler, EntityKey key) {
+	public PointCollector(double x, double y, ParticleController pc, 
+			ShopManager shop, PlaceHolder<RoundHandler> phRoundHandler, EntityKey key) {
 		
-		super(INFO.spriteId, x, y, INFO, key);
+		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.phRoundHandler = phRoundHandler;
 		this.shop = shop;
 		pointAddFrequency = (int) (Math.random() * 1000 + 2000);

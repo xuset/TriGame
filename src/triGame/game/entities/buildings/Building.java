@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
+import tSquare.game.particles.ParticleController;
 import triGame.game.entities.HealthBar;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeManager;
@@ -21,12 +22,14 @@ public abstract class Building extends Entity{
 	public boolean isShopable() { return info.isShopable(); }
 	public boolean isInteractive() { return info.isInteractive; }
 	
-	public Building(String spriteId, double x, double y, BuildingInfo info, EntityKey key) {
+	public Building(String spriteId, double x, double y,
+			ParticleController pc, BuildingInfo info, EntityKey key) {
 		super(spriteId, x, y, key);
 		this.info = info;
 		healthBar = (info.hasHealthBar) ? new HealthBar(this) : null;
 		upgrades = (info.isUpgradable) ? new UpgradeManager() : null;
-		
+		if (healthBar != null && pc != null)
+			pc.addParticle(healthBar);
 
 		visibilityRadius = info.visibilityRadius;
 	}
@@ -42,8 +45,6 @@ public abstract class Building extends Entity{
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
 		super.draw(g, rect);
-		if (healthBar != null)
-			healthBar.draw(g, rect);
 	}
 	
 	public static class BuildingInfo{
