@@ -12,11 +12,12 @@ import triGame.game.shopping.ShopManager;
 
 public class Projectile extends Entity {
 	public static final String SPRITE_ID = "projectile";
+	public static final String SOUND_ID = "media/Pistol_Shot.wav";
 	
 	private final ManagerService managers;
 	private final ShopManager shop;
 	private final boolean noBuildingCollisions;
-	private final Sound fireSound = Sound.get("media/Pistol_Shot.wav");
+	private final Sound fireSound = Sound.get(SOUND_ID);
 	
 	private int speed, damage;
 
@@ -77,7 +78,7 @@ public class Projectile extends Entity {
 	}
 	
 	protected void handleZombieCollision(Zombie z) {
-		shop.points++;
+		shop.points += 2;
 		remove();
 		z.hitByProjectile(damage);
 	}

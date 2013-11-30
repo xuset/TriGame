@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 
 import tSquare.imaging.ImageProccess;
 import tSquare.imaging.Sprite;
+import tSquare.system.Sound;
 import triGame.game.entities.HealthPack;
 import triGame.game.entities.Person;
 import triGame.game.entities.PointParticle;
@@ -51,6 +52,7 @@ abstract class Load {
 		spriteHealthPack();
 		spriteSteelBarrier();
 		spriteFreezeTower();
+		Sound.add(Projectile.SOUND_ID);
 	}
 	
 	private static void spriteSpawnHole() {
