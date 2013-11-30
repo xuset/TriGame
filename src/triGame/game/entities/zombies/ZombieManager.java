@@ -73,14 +73,13 @@ public class ZombieManager extends Manager<Zombie> {
 	public Zombie createBoss(int roundNumber) {
 		final int speed = 30;
 		final long spawnDelay = 0;
+		int health = (roundNumber * roundNumber) * 8;
 		
 		Building hq = managers.building.getHQ();
 		Point spawn = determineSpawnLocation(hq);
 		
 		BossZombie boss = (BossZombie) bossCreator.create(spawn.x, spawn.y, this);
-		setAttributes(boss, speed, spawnDelay, hq);
-		int health = (roundNumber * roundNumber) * 8;
-		boss.setMaxHealth(health);
+		setAttributes(boss, speed, spawnDelay, hq, health);
 		return boss;
 	}
 	
@@ -92,20 +91,22 @@ public class ZombieManager extends Manager<Zombie> {
 		speed = (speed > 350) ? 350 : speed;
 		long spawnDelay = initialSpawnDelay - 75 * roundNumber;
 		spawnDelay = (spawnDelay < 0l) ? 0l : spawnDelay;
+		int health = (int) (90 + 2.5 * roundNumber);
 		
 		Entity target = DETERMINE_TARGET(managers);
 		Point spawn = determineSpawnLocation(target);
 		
 		Zombie z = creator.create(spawn.x, spawn.y, this);
-		setAttributes(z, speed, spawnDelay, target);
+		setAttributes(z, speed, spawnDelay, target, health);
 		return z;
 		
 	}
 	
-	private void setAttributes(Zombie z, int speed, long spawnDelay, Entity target) {		
+	private void setAttributes(Zombie z, int speed, long spawnDelay, Entity target, int health) {		
 		z.target = target;
 		z.spawnTime = spawnDelay;
 		z.speed = speed;
+		z.setMaxHealth(health);
 	}
 	
 	@Override

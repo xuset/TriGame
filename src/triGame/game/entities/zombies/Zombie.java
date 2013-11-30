@@ -49,6 +49,11 @@ public class Zombie extends Entity {
 		this.pathFinder = pathFinder;
 		this.shop = shop;
 	}
+	
+	void setMaxHealth(int max) {
+		int actual = (int) (max - getHealth());
+		modifyHealth(actual);
+	}
 
 	@Override
 	public void performLogic(int frameDelta) {

@@ -1,7 +1,10 @@
 package triGame.game.entities.zombies;
 
+import java.awt.Graphics2D;
+
 import objectIO.connections.Connection;
 import objectIO.netObject.NetVar;
+import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
 import triGame.game.ManagerService;
 import triGame.game.entities.HealthBar;
@@ -29,6 +32,7 @@ public class BossZombie extends Zombie {
 		};
 	}
 	
+	@Override
 	void setMaxHealth(int max) {
 		int actual = (int) (max - getHealth());
 		maxHealth.set(actual);
@@ -44,6 +48,12 @@ public class BossZombie extends Zombie {
 	@Override
 	public void onRemoved() {
 		shop.addPoints(150);
+	}
+	
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
+		super.draw(g, rect);
+		healthBar.draw(g, rect);
 	}
 
 }
