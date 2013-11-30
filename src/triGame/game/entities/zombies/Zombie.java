@@ -119,8 +119,8 @@ public class Zombie extends Entity {
 		frozenSpeed.set(0);
 	}
 	
-	public void freeze(int speedChange) {
-		frozenSpeed.set(speedChange);
+	public void freeze(double speedChange) {
+		frozenSpeed.set((int) (speed * speedChange));
 	}
 	
 	private boolean inflictDamage(Manager<?> manager, int frameDelta) {

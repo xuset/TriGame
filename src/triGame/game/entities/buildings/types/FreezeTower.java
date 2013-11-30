@@ -37,14 +37,14 @@ public class FreezeTower extends Building {
 		for (Zombie z : managers.zombie.list) {
 			double distance = Point.distance(z.getCenterX(), z.getCenterY(), getCenterX(), getCenterY());
 			if (distance < rangeUpgrade.getValue()) {
-				z.freeze(30);
+				z.freeze(0.3);
 			}
 		}
 		
 		for (Person p : managers.person.list) {
 			double distance = Point.distance(p.getCenterX(), p.getCenterY(), getCenterX(), getCenterY());
 			if (distance < rangeUpgrade.getValue()) {
-				p.freeze(30);
+				p.freeze(0.3);
 			}
 		}
 	}

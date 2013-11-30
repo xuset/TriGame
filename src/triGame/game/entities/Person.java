@@ -155,7 +155,7 @@ public class Person extends Entity implements GameIntegratable{
 		numOfCollisions = hits;
 	}
 	
-	public void freeze(int speedDelta) {
-		freezeSpeed = speedDelta;
+	public void freeze(double speedDelta) {
+		freezeSpeed = (int) (speed * speedDelta);
 	}
 }
