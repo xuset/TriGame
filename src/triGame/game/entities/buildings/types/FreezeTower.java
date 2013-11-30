@@ -32,8 +32,8 @@ public class FreezeTower extends Building {
 		this.managers = managers;
 		rangeValue = new NetVar.nInt(INFO.visibilityRadius, "rangeValue", objClass);
 		powerValue = new NetVar.nInt(1, "powerValue", objClass);
-		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 25);
-		powerUpgrade = new UpgradeItem(new ShopItem("Power", 100),3, 1, 1);
+		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 75),3, INFO.visibilityRadius, 25);
+		powerUpgrade = new UpgradeItem(new ShopItem("Power", 50),3, 1, 1);
 		upgrades.addUpgrade(rangeUpgrade);
 		upgrades.addUpgrade(powerUpgrade);
 		pc.addParticle(new RadiusParticle());

@@ -8,15 +8,15 @@ import triGame.game.shopping.UpgradeItem;
 
 public class SmallTower extends Tower {
 	
-	private static final int initialShootDelay = 600;
-	private static final int initialDamage = -20;
+	private static final int initialShootDelay = 500;
+	private static final int initialDamage = -15;
 	
 	public SmallTower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
 		super(x, y, pc, managers, INFO, key);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 50);
 		if (owned()) {
-			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, initialShootDelay, -30);
-			damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, initialDamage, -10);
+			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 50), 3, initialShootDelay, -50);
+			damageUpgrade = new UpgradeItem(new ShopItem("Damage", 50), 3, initialDamage, -5);
 			upgrades.addUpgrade(rangeUpgrade);
 			upgrades.addUpgrade(fireRateUpgrade);
 			upgrades.addUpgrade(damageUpgrade);
@@ -28,7 +28,7 @@ public class SmallTower extends Tower {
 			"samll tower",	//Creator hash map key
 			300,			//visibilityRadius
 			"Just a little bit smaller than its predecessor",
-			new ShopItem("Small Tower", 250),
+			new ShopItem("Small Tower", 150),
 			true,   //has a healthBar
 			true,    //has an UpgradeManager
 			true

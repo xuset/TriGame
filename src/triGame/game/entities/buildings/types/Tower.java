@@ -15,7 +15,7 @@ import triGame.game.shopping.UpgradeItem;
 public class Tower extends Building {
 	
 	private static final int initialShootDelay = 500;
-	private static final int initialDamage = -30;
+	private static final int initialDamage = -35;
 	
 	protected final ManagerService managers;
 	protected UpgradeItem rangeUpgrade = null;
@@ -31,7 +31,7 @@ public class Tower extends Building {
 		this(x, y, pc, managers, INFO, key);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 50);
 		if (owned()) {
-			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, initialShootDelay, -30);
+			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, initialShootDelay, -50);
 			damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, initialDamage, -10);
 			upgrades.addUpgrade(rangeUpgrade);
 			upgrades.addUpgrade(fireRateUpgrade);

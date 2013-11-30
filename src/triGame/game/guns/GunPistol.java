@@ -12,7 +12,7 @@ import triGame.game.shopping.UpgradeItem;
 public class GunPistol extends AbstractGun {
 	private static final int shotDelayDelta = -20;
 	private static final int initialDamage = -35;
-	private static final int damageDelta = -10;
+	private static final int damageDelta = -8;
 	private static final int initialSpeed = 800;
 	
 	private final UpgradeItem fireRateUpgrade;
@@ -27,8 +27,8 @@ public class GunPistol extends AbstractGun {
 				false,       //full auto
 				0);          //auto-shot delay
 		
-		fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, semiShotDelay, shotDelayDelta);
-		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, initialDamage, damageDelta);
+		fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 50), 3, semiShotDelay, shotDelayDelta);
+		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 50), 3, initialDamage, damageDelta);
 		upgradeManager.addUpgrade(fireRateUpgrade);
 		upgradeManager.addUpgrade(damageUpgrade);
 		upgradeManager.observer().watch(fireRateObserve);

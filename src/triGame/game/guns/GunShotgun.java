@@ -28,9 +28,9 @@ public class GunShotgun extends AbstractGun {
 				700);          //auto-shot delay
 		
 		
-		fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, autoShotDelay, -50);
-		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, initialDamage, -10);
-		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100), 3, initialRange, -2);
+		fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 50), 3, autoShotDelay, -50);
+		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 50), 3, initialDamage, -10);
+		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 50), 3, initialRange, -2);
 		upgradeManager.addUpgrade(fireRateUpgrade);
 		upgradeManager.addUpgrade(damageUpgrade);
 		upgradeManager.addUpgrade(rangeUpgrade);
