@@ -9,6 +9,7 @@ import tSquare.game.GameIntegratable;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
+import tSquare.math.Point;
 import tSquare.system.PeripheralInput;
 import triGame.game.ManagerService;
 import triGame.game.Params;
@@ -55,6 +56,11 @@ public class Person extends Entity implements GameIntegratable{
 		if (health.get() <= 0)
 			remove();
 		if (owned() && !removeRequested()) {
+			if (!safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY())) {
+				moveToSafeArea(frameDelta);
+				return;
+			}
+			
 			move(frameDelta);
 			double pickedUpHealth = managers.healthPack.grabHealth(attackbox);
 			if (pickedUpHealth > 0) {
@@ -65,6 +71,16 @@ public class Person extends Entity implements GameIntegratable{
 			}
 				
 		}
+	}
+	
+	private void moveToSafeArea(int frameDelta) {
+		Point moveTo = new Point(Params.GAME_WIDTH / 2, Params.GAME_HEIGHT / 2);
+		Building hq = managers.building.getHQ();
+		if (hq != null)
+			moveTo.set(hq.getX(), hq.getY());
+		
+		turn(moveTo);
+		super.moveForward(300 * frameDelta / 1000.0);
 	}
 
 	@Override
