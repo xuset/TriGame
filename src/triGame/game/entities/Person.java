@@ -27,7 +27,7 @@ public class Person extends Entity implements GameIntegratable{
 	private final HealthBar healthBar;
 	private final NetVar.nLong ownerId;
 	
-	private int freezeSpeed = 0;
+	private int realSpeed = 0;
 	
 	long getOwnerId() { return ownerId.get(); }
 	
@@ -98,8 +98,8 @@ public class Person extends Entity implements GameIntegratable{
 			setAngle(0);
 		}
 		if (up || down || left || right)
-			moveForward((speed - freezeSpeed) * frameDelta / 1000);
-		freezeSpeed = 0;
+			moveForward(realSpeed * frameDelta / 1000);
+		realSpeed = speed;
 	}
 	
 	private Entity collidedBuilding;
@@ -156,6 +156,6 @@ public class Person extends Entity implements GameIntegratable{
 	}
 	
 	public void freeze(double speedDelta) {
-		freezeSpeed = (int) (speed * speedDelta);
+		realSpeed *= speedDelta;
 	}
 }

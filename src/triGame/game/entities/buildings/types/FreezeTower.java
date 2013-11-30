@@ -19,37 +19,45 @@ import triGame.game.shopping.UpgradeItem;
 public class FreezeTower extends Building {
 	private final ManagerService managers;
 	private final UpgradeItem rangeUpgrade;
+	private final UpgradeItem powerUpgrade;
 	private final NetVar.nInt rangeValue;
+	private final NetVar.nInt powerValue;
 
 	@Override public int getVisibilityRadius() { return rangeValue.get(); }
+	
+	private double getPower() { return 1.0 - powerValue.get() / 10.0; }
 
 	public FreezeTower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
 		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.managers = managers;
 		rangeValue = new NetVar.nInt(INFO.visibilityRadius, "rangeValue", objClass);
+		powerValue = new NetVar.nInt(1, "powerValue", objClass);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 25);
+		powerUpgrade = new UpgradeItem(new ShopItem("Power", 100),3, 1, 1);
 		upgrades.addUpgrade(rangeUpgrade);
-		upgrades.addUpgrade(new UpgradeItem(new ShopItem("Freeze rate", 100),3, 2500, -500));
+		upgrades.addUpgrade(powerUpgrade);
 		pc.addParticle(new RadiusParticle());
 	}
 	
 	@Override
 	public void performLogic(int frameDelta) {
-		if (owned())
+		if (owned()) {
 			rangeValue.set(rangeUpgrade.getValue());
+			powerValue.set(powerUpgrade.getValue());
+		}
 		
 		for (Zombie z : managers.zombie.list) {
 			double distance = Point.distance(z.getCenterX(), z.getCenterY(), getCenterX(), getCenterY());
-			if (distance < rangeUpgrade.getValue()) {
-				z.freeze(0.3);
+			if (distance < rangeValue.get()) {
+				z.freeze(getPower());
 			}
 		}
 		
-		for (Person p : managers.person.list) {
-			double distance = Point.distance(p.getCenterX(), p.getCenterY(), getCenterX(), getCenterY());
-			if (distance < rangeUpgrade.getValue()) {
-				p.freeze(0.3);
-			}
+		Person p = managers.person.getPlayer();
+		if (p != null && Point.distance(p.getCenterX(), p.getCenterY(),
+				getCenterX(), getCenterY()) < rangeValue.get()) {
+			
+			p.freeze(getPower());
 		}
 	}
 	
@@ -58,7 +66,7 @@ public class FreezeTower extends Building {
 			"freezeTower",    //Creator hash map key
 			75,        //visibilityRadius
 			"Slow down the hoards.",
-			new ShopItem("Freeze tower", 200),
+			new ShopItem("Freeze tower", 100),
 			true,    //has a healthBar
 			true,    //has an UpgradeManager
 			true

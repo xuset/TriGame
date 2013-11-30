@@ -1,6 +1,5 @@
 package triGame.game.entities.zombies;
 
-import objectIO.netObject.NetVar;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.entity.Manager;
@@ -30,7 +29,7 @@ public class Zombie extends Entity {
 	private final ManagerService managers;
 	private final boolean isServer;
 	private final ZombiePathFinder pathFinder;
-	private final NetVar.nInt frozenSpeed;
+	private int realSpeed = speed;
 	
 	private Path path;
 	private Point lastTargetBlock = new Point(0, 0);
@@ -46,7 +45,6 @@ public class Zombie extends Entity {
 		this.managers = managers;
 		this.isServer = isServer;
 		this.pathFinder = pathFinder;
-		frozenSpeed = new NetVar.nInt(0, "frozenSpeed", objClass);
 	}
 
 	@Override
@@ -96,9 +94,7 @@ public class Zombie extends Entity {
 	}
 	
 	public void move(int frameDelta) {
-		double distance = (speed - frozenSpeed.get()) * frameDelta / 1000.0;
-		//TODO frozenSpeed can result in a negative distance
-		
+		double distance = realSpeed * frameDelta / 1000.0;		
 		
 		if (path != null && path.peekNextStep() != null) {
 			Node.Point step = path.peekNextStep();
@@ -116,11 +112,12 @@ public class Zombie extends Entity {
 				inflictDamage(managers.building, frameDelta);
 			}
 		}
-		frozenSpeed.set(0);
+		realSpeed = speed;
 	}
 	
 	public void freeze(double speedChange) {
-		frozenSpeed.set((int) (speed * speedChange));
+		if (isServer)
+			realSpeed *= speedChange;
 	}
 	
 	private boolean inflictDamage(Manager<?> manager, int frameDelta) {
@@ -143,7 +140,8 @@ public class Zombie extends Entity {
 	private void hitBack(int distance) {
 		if (isSpawning())
 			return;
-		distance = distance * -1;
+		double ratio = (1.0 * realSpeed) / (1.0 * speed);
+		distance = (int) (-1 * distance * ratio);
 		moveForward(distance);
 		if (!managers.building.objectGrid.isRectangleOpen(hitbox))
 			moveForward(-1 * distance);
