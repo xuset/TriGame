@@ -104,7 +104,12 @@ public class RoundHandler implements GameIntegratable{
 		}
 	}
 	
-	private static final int initialWaitDelay = 500;
+	private int getWaitDelay() { 
+		int d =  (int) (600 - roundNumber * 15.0);
+		d = d < 100 ? 100 : d;
+		return d;
+	}
+	
 	private long nextSpawnTime = 0;
 	private void spawnIn() {
 		ZombieManager manager = managerService.zombie;
@@ -116,7 +121,7 @@ public class RoundHandler implements GameIntegratable{
 		if (manager.getZombiesAlive() < Zombie.MAX_ZOMBIES && System.currentTimeMillis() > nextSpawnTime) {
 			manager.create(roundNumber);
 			zombiesToSpawn--;
-			nextSpawnTime = System.currentTimeMillis() + initialWaitDelay;
+			nextSpawnTime = System.currentTimeMillis() + getWaitDelay();
 		}
 	}
 
