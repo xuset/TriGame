@@ -7,8 +7,7 @@ import tSquare.util.Observer;
 public class ShopManager {
 	private ArrayList<ShopItem> reciept = new ArrayList<ShopItem>();
 	private Observer<ShopManager> observer = new Observer<ShopManager>(this);
-	
-	public int points;
+	private int points;
 	
 	public Observer<ShopManager> observer() { return observer; }
 	
@@ -21,6 +20,13 @@ public class ShopManager {
 			return true;
 		return false;
 	}
+	
+	public void addPoints(int amount) {
+		points += amount;
+		observer.notifyWatchers();
+	}
+	
+	public int getPointCount() { return points; }
 
 	public boolean purchase(ShopItem item) {
 		if (canPurchase(item)) {

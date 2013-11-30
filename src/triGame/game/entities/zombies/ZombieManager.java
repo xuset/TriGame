@@ -122,7 +122,7 @@ public class ZombieManager extends Manager<Zombie> {
 				PointParticle p = new PointParticle.Floating(var.intX(), var.intY(), time);
 				particles.addParticle(p);
 			}
-			shop.points += 200;
+			shop.addPoints(200);
 		}
 		zombiesKilled++;
 		PointParticle p = new PointParticle.Floating((int) z.getCenterX(),(int)  z.getCenterY(), 800);

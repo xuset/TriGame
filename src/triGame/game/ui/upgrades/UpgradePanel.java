@@ -86,7 +86,7 @@ public class UpgradePanel extends JPanel{
 	
 	private void setAttribute(UpgradeItem upgrade) {
 		lblPrice.setText("$" + upgrade.shopItem.getCost());
-		if (shop.points < upgrade.shopItem.getCost())
+		if (shop.getPointCount() < upgrade.shopItem.getCost())
 			lblPrice.setForeground(Color.red);
 		else
 			lblPrice.setForeground(Color.black);
@@ -115,7 +115,7 @@ public class UpgradePanel extends JPanel{
 		@Override
 		public void observeChange(ShopManager t) {
 			if (selectedAttribute != null) {
-				if (t.points < selectedAttribute.shopItem.getCost())
+				if (t.getPointCount() < selectedAttribute.shopItem.getCost())
 					lblPrice.setForeground(Color.red);
 				else
 					lblPrice.setForeground(Color.black);

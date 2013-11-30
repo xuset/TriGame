@@ -46,7 +46,7 @@ public class PointCollector extends Building {
 			particle.draw(lastFrameDelta, g, rect);
 			if (owned() && particle.isExpired()) {
 				particle.reset();
-				shop.points += 1;
+				shop.addPoints(1);
 			}
 		}
 	}

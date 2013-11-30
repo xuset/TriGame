@@ -73,7 +73,7 @@ public class ArsenalItem extends JPanel{
 	Observer.Change<ShopManager> observeShopPoints = new Observer.Change<ShopManager>() {
 		@Override
 		public void observeChange(ShopManager t) {
-			if (t.points < info.shopItem.getCost())
+			if (t.getPointCount() < info.shopItem.getCost())
 				lblPrice.setForeground(Color.red);
 			else
 				lblPrice.setForeground(Color.black);

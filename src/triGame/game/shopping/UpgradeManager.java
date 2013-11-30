@@ -30,7 +30,7 @@ public class UpgradeManager {
 		if (item.getUpgradeCount() < item.maxUpgrades && shop.canPurchase(item.shopItem)) {
 			shop.purchase(item.shopItem);
 			item.upgrade();
-			observer.notifiyWatchers(item);
+			observer.notifyWatchers(item);
 			return true;
 		}
 		return false;

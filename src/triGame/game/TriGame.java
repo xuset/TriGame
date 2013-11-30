@@ -184,7 +184,7 @@ public class TriGame extends Game{
 		g.fillRoundRect(ix -10, iy - 13, iw, ih, 15, 15);
 		g.setColor(Color.LIGHT_GRAY);
 		g.setFont(statFont);
-		g.drawString("$" + shop.points, ix, iy);
+		g.drawString("$" + shop.getPointCount(), ix, iy);
 		g.drawString("Round " + roundHandler.getRoundNumber(), ix, iy + 1 * 15);
 		g.drawString("Killed " + managerService.zombie.getZombiesKilled() + " zombies", ix, iy + 2 * 15);
 		g.drawString(getCurrentFps() + "FPS", ix, iy + 3 * 15);

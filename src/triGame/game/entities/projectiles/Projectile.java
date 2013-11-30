@@ -78,7 +78,7 @@ public class Projectile extends Entity {
 	}
 	
 	protected void handleZombieCollision(Zombie z) {
-		shop.points += 2;
+		shop.addPoints(2);
 		remove();
 		z.hitByProjectile(damage);
 	}
