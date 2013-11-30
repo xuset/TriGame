@@ -43,7 +43,7 @@ public class BossZombie extends Zombie {
 	
 	@Override
 	public void onRemoved() {
-		shop.addPoints(100);
+		shop.addPoints(150);
 	}
 
 }

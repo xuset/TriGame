@@ -85,7 +85,7 @@ public class RoundHandler implements GameIntegratable{
 		if (player != null && player.isDead()) {
 			player.giveFullHealth();
 		} else {
-			shop.addPoints(100);
+			shop.addPoints(50);
 		}
 	}
 	
