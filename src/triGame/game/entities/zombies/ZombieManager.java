@@ -14,6 +14,7 @@ import tSquare.game.particles.ParticleController;
 import tSquare.imaging.Sprite;
 import tSquare.math.Point;
 import triGame.game.ManagerService;
+import triGame.game.entities.Person;
 import triGame.game.entities.PointParticle;
 import triGame.game.entities.SpawnHole;
 import triGame.game.entities.buildings.Building;
@@ -173,23 +174,30 @@ public class ZombieManager extends Manager<Zombie> {
 	}
 	
 	static Entity DETERMINE_TARGET(ManagerService managers) {
-		final int initialWeight = 50 * managers.person.list.size();
+		final int personWeight = 50;
 		Collection<Building> buildings = managers.building.interactives;
-		int totalWeights = initialWeight;
+		Collection<Person> persons = managers.person.list;
+		
+		int totalWeights = 0;
+		for (Person p : persons) {
+			if (!p.removeRequested() && !p.isDead())
+				totalWeights += personWeight;
+		}
 		for (Building b : buildings)
 			totalWeights += b.info.selectionWeight;
+		
 		int selected = (int) (Math.random() * totalWeights);
-		if (selected < initialWeight) {
-			int personSize = managers.person.list.size();
-			int index = selected / (initialWeight / personSize);
-			return managers.person.list.get(index);
-		} else {
-			int sum = initialWeight;
-			for (Building b : buildings) {
-				sum += b.info.selectionWeight;
-				if (sum > selected)
-					return b;
-			}
+		int sum = 0;
+		for (Person p : persons) {
+			if (!p.removeRequested() && !p.isDead())
+				sum += personWeight;
+			if (sum > selected)
+				return p;
+		}
+		for (Building b : buildings) {
+			sum += b.info.selectionWeight;
+			if (sum > selected)
+				return b;
 		}
 		return null;
 	}

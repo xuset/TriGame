@@ -58,7 +58,7 @@ public class Zombie extends Entity {
 		if (System.currentTimeMillis() < spawnTime)
 			return;
 		
-		if (target == null || target.removeRequested())
+		if (target == null || target.getHealth() <= 0 || target.removeRequested())
 			target = ZombieManager.DETERMINE_TARGET(managers);
 		if (target == null)
 			return;
@@ -122,7 +122,7 @@ public class Zombie extends Entity {
 	
 	private boolean inflictDamage(Manager<?> manager, int frameDelta) {
 		Entity e = collidedWithFirst(manager.list);
-		if (e != null) {
+		if (e != null && e.getHealth() > 0) {
 			e.modifyHealth(damage * frameDelta / 1000.0);
 			moveForward(-speed * frameDelta / 1000.0);
 			return true;

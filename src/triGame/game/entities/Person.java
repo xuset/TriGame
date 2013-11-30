@@ -32,6 +32,8 @@ public class Person extends Entity implements GameIntegratable{
 	
 	long getOwnerId() { return ownerId.get(); }
 	
+	public boolean isDead() { return getHealth() <= 0; }
+	
 	Person(double x, double y, EntityKey key, ManagerService managers,
 			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard, long ownerIdL) {
 		
@@ -43,8 +45,11 @@ public class Person extends Entity implements GameIntegratable{
 		ownerId = new NetVar.nLong(0l, "ownerId", objClass);
 		if (owned())
 			ownerId.set(ownerIdL);
-			
-			
+	}
+	
+	public void giveFullHealth() {
+		double toAdd = maxHealth - getHealth();
+		modifyHealth(toAdd);
 	}
 	
 	private boolean up;
@@ -53,9 +58,7 @@ public class Person extends Entity implements GameIntegratable{
 	private boolean right;
 	@Override
 	public void performLogic(int frameDelta) {
-		if (health.get() <= 0)
-			remove();
-		if (owned() && !removeRequested()) {
+		if (owned() && !isDead()) {
 			if (!safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY())) {
 				moveToSafeArea(frameDelta);
 				return;
@@ -85,6 +88,8 @@ public class Person extends Entity implements GameIntegratable{
 
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
+		if (isDead())
+			return;
 		super.draw(g, rect);
 		healthBar.draw(g, rect);
 	}

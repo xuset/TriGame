@@ -54,7 +54,7 @@ public class TriGame extends Game{
 		safeBoard = new SafeAreaBoard();
 		gameOver = new GameOver();
 		input = new PeripheralInput();
-		shop = new ShopManager(500);
+		shop = new ShopManager(300);
 		display = new Display(500, 500, "Triangle Game - " + (network.isServer ? "Server" : "Client"));
 		drawBoard = new DrawBoard(display.getWidth(), display.getHeight(), display);
 		gameBoard = new GameBoard(5000, 5000, drawBoard);
@@ -65,7 +65,7 @@ public class TriGame extends Game{
 				shop, particleController, network.isServer, phRoundHandler, userId);
 		ui = new UserInterface(display, managerService, shop, input.mouse);
 		roundHandler = new RoundHandler(managerService, input.keyboard, drawBoard,
-				network.objController, network.isServer);
+				network.objController, network.isServer, shop);
 		if (network.isServer) {
 			Map.createRandomMap(managerService, safeBoard);
 		}
@@ -111,7 +111,7 @@ public class TriGame extends Game{
 		managerService.building.performLogic(frameDelta);
 		managerService.projectile.performLogic(frameDelta);
 		
-		if (player.removeRequested() || isGameOver) {
+		if (player.isDead() || player.removeRequested() || isGameOver) {
 			if (!managerService.building.interactives.isEmpty()) {
 				Building HQ = managerService.building.interactives.get(0);
 				gameBoard.centerViewWindowCordinates(HQ.getCenterX(), HQ.getCenterY());
@@ -120,6 +120,7 @@ public class TriGame extends Game{
 		} else {
 			ui.attacher.performLogic(frameDelta);
 			gameBoard.centerViewWindowCordinates(player.getCenterX(), player.getCenterY());
+			background.centerTo = player;
 		}
 	}
 	

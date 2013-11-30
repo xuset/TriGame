@@ -13,9 +13,11 @@ import tSquare.game.DrawBoard;
 import tSquare.game.GameIntegratable;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.system.PeripheralInput;
+import triGame.game.entities.Person;
 import triGame.game.entities.PersonManager;
 import triGame.game.entities.zombies.Zombie;
 import triGame.game.entities.zombies.ZombieManager;
+import triGame.game.shopping.ShopManager;
 
 public class RoundHandler implements GameIntegratable{
 	private static final Font roundNumberFont = new java.awt.Font("Arial", Font.BOLD, 30);
@@ -27,6 +29,7 @@ public class RoundHandler implements GameIntegratable{
 	private final NetVar.nInt roundVar;
 	private final NetVar.nBool roundOnGoing;
 	private final boolean isServer;
+	private final ShopManager shop;
 	
 	private int roundNumber = 0;
 	private int zombiesToSpawn = 0;
@@ -36,11 +39,14 @@ public class RoundHandler implements GameIntegratable{
 	public int getRoundNumber() { return roundNumber; }
 	public boolean isRoundOnGoing() { return roundOnGoing.get(); }
 	
-	public RoundHandler(ManagerService service, PeripheralInput.Keyboard keyboard, DrawBoard drawBoard, ObjController netCon,  boolean isServer) {
+	public RoundHandler(ManagerService service, PeripheralInput.Keyboard keyboard,
+			DrawBoard drawBoard, ObjController netCon,  boolean isServer, ShopManager shop) {
+		
 		this.managerService = service;
 		this.keyboard = keyboard;
 		this.drawBoard = drawBoard;
 		this.isServer = isServer;
+		this.shop = shop;
 		roundOnGoing = new NetVar.nBool(false,"roundOnGoing", netCon);
 		roundVar = new NetVar.nInt(0, "round", netCon);
 		roundVar.event = new NetVar.OnChange<Integer>() {
@@ -62,11 +68,25 @@ public class RoundHandler implements GameIntegratable{
 	}
 	
 	private void setRound(int round) {
-		PersonManager manager = managerService.person;
 		roundNumber = round;
+		onNewRound();
+		PersonManager manager = managerService.person;
 		if (manager.list.size() > maxPlayers) maxPlayers = manager.list.size();
 		zombiesToSpawn = ((roundNumber * roundNumber) / 10 + roundNumber) * maxPlayers;
 		drawingFadingRoundNumber = true;
+	}
+	
+	private void onNewRound() {
+		if (roundNumber == 1)
+			return;
+		
+		PersonManager manager = managerService.person;
+		Person player = manager.getPlayer();
+		if (player != null && player.isDead()) {
+			player.giveFullHealth();
+		} else {
+			shop.addPoints(100);
+		}
 	}
 	
 	@Override
