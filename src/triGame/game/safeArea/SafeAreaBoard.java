@@ -61,8 +61,8 @@ public class SafeAreaBoard implements GameIntegratable{
 	}
 	
 	public void removeVisibility(Entity e) {
-		circleChart.removeByEntity(e);
-		redrawSafeArea();
+		if (circleChart.removeByEntity(e))
+			redrawSafeArea();
 	}
 	
 	public boolean insideSafeArea(int x, int y) {

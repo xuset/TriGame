@@ -24,14 +24,17 @@ class CircleContainer {
 		}
 	}
 	
-	public void removeByEntity(Entity owner) {
+	public boolean removeByEntity(Entity owner) {
 		Iterator<Circle> i = circles.iterator();
+		boolean found = false;
 		while(i.hasNext()) {
 			Circle c = i.next();
 			if (c.owner != null && c.owner.equals(owner)) {
 				i.remove();
+				found = true;
 			}
 		}
+		return found;
 	}
 	
 	public boolean isInsideACircle(int x, int y) {
