@@ -39,7 +39,7 @@ public final class ManagerService {
 		spawnHole = new SpawnHoleManager(managerController);
 		healthPack = new HealthPackManager(managerController);
 		pointWell = new PointWellManager(managerController, particleController);
-		projectile = new ProjectileManager(managerController, shop, this);
+		projectile = new ProjectileManager(managerController, this);
 		person = new PersonManager(managerController, this, safeBoard, keyboard, ownerId);
 		building = new BuildingManager(managerController, this, safeBoard, phRoundHandler, shop, particleController);
 		zombie = new ZombieManager(managerController, this, building, isServer, shop, particleController);

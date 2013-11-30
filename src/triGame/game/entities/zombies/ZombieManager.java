@@ -55,7 +55,7 @@ public class ZombieManager extends Manager<Zombie> {
 					public Zombie create(double x, double y, EntityKey key) {
 						ZombieManager m = ZombieManager.this;
 						return new Zombie(Zombie.SPRITE_ID, x, y, m.managers,
-								m.isServer, m.pathFinder, key);
+								m.isServer, m.pathFinder, m.shop, key);
 					}
 				});
 		
@@ -64,7 +64,8 @@ public class ZombieManager extends Manager<Zombie> {
 					@Override
 					public Zombie create(double x, double y, EntityKey key) {
 						ZombieManager m = ZombieManager.this;
-						return new BossZombie(x, y, m.managers, m.isServer, m.pathFinder, key);
+						return new BossZombie(x, y, m.managers, m.isServer,
+								m.pathFinder, m.shop, key);
 					}
 				});
 	}

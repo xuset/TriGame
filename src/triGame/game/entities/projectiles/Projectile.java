@@ -8,14 +8,12 @@ import triGame.game.ManagerService;
 import triGame.game.Params;
 import triGame.game.entities.zombies.Zombie;
 import triGame.game.entities.buildings.Building;
-import triGame.game.shopping.ShopManager;
 
 public class Projectile extends Entity {
 	public static final String SPRITE_ID = "projectile";
 	public static final String SOUND_ID = "media/Pistol_Shot.wav";
 	
 	private final ManagerService managers;
-	private final ShopManager shop;
 	private final boolean noBuildingCollisions;
 	private final Sound fireSound = Sound.get(SOUND_ID);
 	
@@ -23,14 +21,13 @@ public class Projectile extends Entity {
 
 	protected Projectile(String sSpriteId, double startX, double startY,
 			double angle, int speed, int damage, boolean noBuildingCollisions,
-			ShopManager shop, ManagerService managers, EntityKey key) {
+			ManagerService managers, EntityKey key) {
 		
 		super(sSpriteId, startX, startY, key);
 		this.speed = speed;
 		this.damage = damage;
 		this.noBuildingCollisions = noBuildingCollisions;
 		this.managers = managers;
-		this.shop = shop;
 		setAngle(angle);
 		fireSound.play();
 	}
@@ -78,7 +75,6 @@ public class Projectile extends Entity {
 	}
 	
 	protected void handleZombieCollision(Zombie z) {
-		shop.addPoints(2);
 		remove();
 		z.hitByProjectile(damage);
 	}

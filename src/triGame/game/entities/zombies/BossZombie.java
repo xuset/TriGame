@@ -5,17 +5,20 @@ import objectIO.netObject.NetVar;
 import tSquare.game.entity.EntityKey;
 import triGame.game.ManagerService;
 import triGame.game.entities.HealthBar;
+import triGame.game.shopping.ShopManager;
 
 public class BossZombie extends Zombie {
 	public static final String SPRITE_ID = "bossZombie";
 	
 	private final HealthBar healthBar;
 	private final NetVar.nInt maxHealth;
+	private final ShopManager shop;
 
 	public BossZombie(double x, double y, ManagerService managers,
-			boolean isServer, ZombiePathFinder pathFinder, EntityKey key) {
+			boolean isServer, ZombiePathFinder pathFinder, ShopManager shop, EntityKey key) {
 		
-		super(SPRITE_ID, x, y, managers, isServer, pathFinder, key);
+		super(SPRITE_ID, x, y, managers, isServer, pathFinder, shop, key);
+		this.shop = shop;
 		healthBar = new HealthBar(this);
 		maxHealth = new NetVar.nInt(100, "maxHealth", objClass);
 		maxHealth.event = new NetVar.OnChange<Integer>() {
@@ -36,6 +39,11 @@ public class BossZombie extends Zombie {
 	@Override
 	public void hitByProjectile(int damage) {
 		modifyHealth(damage);
+	}
+	
+	@Override
+	public void onRemoved() {
+		shop.addPoints(100);
 	}
 
 }

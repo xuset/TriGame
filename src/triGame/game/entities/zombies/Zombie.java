@@ -8,6 +8,7 @@ import tSquare.paths.Node;
 import tSquare.paths.Path;
 import triGame.game.ManagerService;
 import triGame.game.Params;
+import triGame.game.shopping.ShopManager;
 
 //TODO prevent zombies humping persons upon collision
 
@@ -29,8 +30,9 @@ public class Zombie extends Entity {
 	private final ManagerService managers;
 	private final boolean isServer;
 	private final ZombiePathFinder pathFinder;
-	private int realSpeed = speed;
+	private final ShopManager shop;
 	
+	private int realSpeed = speed;
 	private Path path;
 	private Point lastTargetBlock = new Point(0, 0);
 	private int lastObjectGridModCount = 0;
@@ -39,12 +41,13 @@ public class Zombie extends Entity {
 	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
 	
 	public Zombie(String spriteId, double x, double y, ManagerService managers,
-			boolean isServer, ZombiePathFinder pathFinder, EntityKey key) {
+			boolean isServer, ZombiePathFinder pathFinder, ShopManager shop, EntityKey key) {
 		
 		super(spriteId, x, y, key);
 		this.managers = managers;
 		this.isServer = isServer;
 		this.pathFinder = pathFinder;
+		this.shop = shop;
 	}
 
 	@Override
@@ -133,8 +136,10 @@ public class Zombie extends Entity {
 	public void hitByProjectile(int damage) {
 		modifyHealth(damage);
 		hitBack(hitBackDistance);
-		if (getHealth() <= 0)
+		if (getHealth() <= 0) {
 			managers.healthPack.maybeDropHealth(getCenterX(), getCenterY());
+			shop.addPoints(4);
+		}
 	}
 	
 	private void hitBack(int distance) {
@@ -145,6 +150,5 @@ public class Zombie extends Entity {
 		moveForward(distance);
 		if (!managers.building.objectGrid.isRectangleOpen(hitbox))
 			moveForward(-1 * distance);
-		
 	}
 }
