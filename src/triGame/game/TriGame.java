@@ -67,6 +67,7 @@ public class TriGame extends Game{
 		roundHandler = new RoundHandler(managerService, input.keyboard, drawBoard,
 				network.objController, network.isServer, shop);
 		if (network.isServer) {
+			network.getServerInstance().accepter.stop();
 			Map.createRandomMap(managerService, safeBoard);
 		}
 		gunManager = new GunManager(managerController, managerService, shop, input.keyboard);
