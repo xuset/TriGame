@@ -26,9 +26,11 @@ public class Lobby extends JPanel{
 	private JButton btnStart = new JButton("Start game");
 	private ObjController netController;
 	private NetFunction startFunc;
+	private Network network;
 	private boolean started = false;
 	
 	Lobby(Network net) {
+		network = net;
 		netController = new ObjController(net.hub);
 		new Thread(netController).start();
 		startFunc = new NetFunction(netController, "start", startEvent);
@@ -83,6 +85,7 @@ public class Lobby extends JPanel{
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			startFunc.sendCall(new MarkupMsg(), Connection.BROADCAST_CONNECTION);
+			network.flush();
 			shutdown();
 		}
 		public void mouseEntered(MouseEvent arg0) { }
