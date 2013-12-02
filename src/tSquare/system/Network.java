@@ -66,4 +66,8 @@ public class Network {
 		client = null;
 		server = null;
 	}
+	
+	public void flush() {
+		client.flush();
+	}
 }

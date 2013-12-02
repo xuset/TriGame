@@ -55,6 +55,7 @@ public abstract class Manager<T extends Entity> implements GameIntegratable{
 				onRemove(e);
 			} else {
 				e.performLogic(frameDelta);
+				e.sendUpdates();
 			}
 		}
 	}

@@ -65,6 +65,7 @@ public abstract class Game implements Runnable {
 				eventHandler.handleEvents();
 			}
 			network.objController.distributeRecievedUpdates();
+			network.flush();
 			displayLoop();
 			
 			pause = nextDisplayTime - System.nanoTime();

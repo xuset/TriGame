@@ -242,6 +242,10 @@ public class Entity implements GameIntegratable{
 	@Override
 	public void performLogic(int frameDelta) { }
 	
+	void sendUpdates() {
+		objClass.update();
+	}
+	
 	public void onRemoved() { }
 	
 	public void remove() {
