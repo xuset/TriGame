@@ -260,7 +260,7 @@ abstract class Load {
 		g.fillRect(10, 3, 4, 18);
 		g.fillRect(3, 10, 18, 4);
 		g.dispose();
-		new Sprite(HealthPack.SPRITE_ID, image);
+		Sprite.add(new Sprite(HealthPack.SPRITE_ID, image));
 	}
 	
 	private static void spriteSteelBarrier() {
