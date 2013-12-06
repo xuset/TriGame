@@ -61,7 +61,7 @@ public class Arsenal implements JPanelGetter{
 	}
 	
 	public void addToArsenal(Building.BuildingInfo info, LocManCreator<?> creator) {
-		addToArsenal(info.item, Sprite.get(info.spriteId).getBuffered(), "-", info.visibilityRadius, towerGroup, creator);
+		addToArsenal(info.item, Sprite.get(info.spriteId).createCopy(), "-", info.visibilityRadius, towerGroup, creator);
 	}
 	
 	public void addToArsenal(ShopItem item, BufferedImage image, String description,

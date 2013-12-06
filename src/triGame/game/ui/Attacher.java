@@ -142,7 +142,7 @@ public class Attacher extends MouseAdapter implements GameIntegratable{
 			if (b.isUpgradable() && b.owned() &&
 					b.hitbox.contains(mouse.x + rect.getX(), mouse.y + rect.getY())) {
 				
-				ui.upgrades.set(b.upgrades, Sprite.get(b.getSpriteId()).getImage());
+				ui.upgrades.set(b.upgrades, Sprite.get(b.getSpriteId()).image);
 				ui.switchTo(ui.upgrades);
 				selected = b;
 				found = true;

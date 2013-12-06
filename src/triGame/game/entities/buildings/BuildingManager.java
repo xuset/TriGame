@@ -62,7 +62,7 @@ public class BuildingManager extends Manager<Building> {
 	public void addItemsToUI(UserInterface ui) {
 		for (BuildingInfo info : CreationFuncs.INFOS) {
 			if (info.isShopable()) {
-				BufferedImage image = Sprite.get(info.spriteId).getBuffered();
+				BufferedImage image = Sprite.get(info.spriteId).createCopy();
 				ArsenalItem item = new ArsenalItem(info.item, image, info.visibilityRadius, getCreator(info));
 				item.getInfo().description = info.description;
 				ui.arsenal.panel.addToArsenal(ui.arsenal.towerGroup, item);
