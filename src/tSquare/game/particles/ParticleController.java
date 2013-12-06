@@ -2,6 +2,7 @@ package tSquare.game.particles;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import tSquare.game.Game;
 import tSquare.game.GameIntegratable;
@@ -28,12 +29,12 @@ public class ParticleController implements GameIntegratable{
 
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
-		for (int i = 0; i < particles.size(); i++) {
-			Particle p = particles.get(i);
+		
+		for (Iterator<Particle> it = particles.iterator(); it.hasNext();) {
+			Particle p = it.next();
 			p.draw(game.getDelta(), g, rect);
 			if (p.isExpired()) {
-				particles.remove(i);
-				i--;
+				it.remove();
 			}
 		}
 	}
