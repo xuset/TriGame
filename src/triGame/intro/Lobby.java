@@ -9,14 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import objectIO.connections.Connection;
-import objectIO.connections.p2pServer.server.ConnectionEvent;
-import objectIO.connections.p2pServer.server.P2PServer;
-import objectIO.connections.p2pServer.server.ServerConnection;
+import objectIO.connections.sockets.p2pServer.server.ConnectionEvent;
+import objectIO.connections.sockets.p2pServer.server.P2PServer;
+import objectIO.connections.sockets.p2pServer.server.ServerConnection;
 import objectIO.markupMsg.MarkupMsg;
 import objectIO.netObject.NetFunction;
 import objectIO.netObject.NetFunctionEvent;
 import objectIO.netObject.ObjController;
-
 import tSquare.system.Network;
 
 public class Lobby extends JPanel{

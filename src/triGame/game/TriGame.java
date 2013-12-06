@@ -5,9 +5,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
-import objectIO.connections.p2pServer.client.ClientConnection;
-import objectIO.connections.p2pServer.client.ClientHub;
-import objectIO.connections.p2pServer.client.ConnectionEvent;
+import objectIO.connections.sockets.p2pServer.client.ClientConnection;
+import objectIO.connections.sockets.p2pServer.client.ClientHub;
+import objectIO.connections.sockets.p2pServer.client.ConnectionEvent;
 import objectIO.netObject.NetVar;
 import tSquare.game.DrawBoard;
 import tSquare.game.Game;
