@@ -28,6 +28,9 @@ public abstract class Wall extends Building {
 	
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
+		if (!visible || !isOnScreen(rect))
+			return;
+		
 		super.draw(g, rect);
 		
 		int index = (int) ((getHealth() * cracks.total) / info.maxHealth);
