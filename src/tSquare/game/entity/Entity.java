@@ -157,17 +157,18 @@ public class Entity implements GameIntegratable{
 		return health.get();
 	}
 	
+	public boolean isOnScreen(ViewRect rect) {
+		return rect.isInside(getX(), getY(), getWidth(), getHeight());
+	}
+	
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
-		if (!visible) return;
+		if (!visible || !isOnScreen(rect)) return;
 		
 		int x = (int) (this.x.get() - rect.getX());
 		int y = (int) (this.y.get() - rect.getY());
-		int w = (int) (sprite.getWidth() * scaleX.get());
-		int h = (int) (sprite.getHeight() * scaleY.get());
-	
-		if (!rect.isInside(this.x.get(), this.y.get(), w, h))
-			return;
+		int w = getWidth();
+		int h = getHeight();
 		
 		if ((angle.get().intValue() - 90) % 360 == 0) {
 			sprite.draw(x, y, w, h, 0, 0, sprite.getWidth(), sprite.getHeight(), g);
