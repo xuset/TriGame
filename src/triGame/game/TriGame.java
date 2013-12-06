@@ -55,7 +55,7 @@ public class TriGame extends Game{
 		gameOver = new GameOver();
 		input = new PeripheralInput();
 		shop = new ShopManager(300);
-		display = new Display(500, 500, "Triangle Game - " + (network.isServer ? "Server" : "Client"));
+		display = new Display(500, 500, "TriGame - " + (network.isServer ? "Server" : "Client"));
 		drawBoard = new DrawBoard(display.getWidth(), display.getHeight(), display);
 		gameBoard = new GameBoard(5000, 5000, drawBoard);
 		
