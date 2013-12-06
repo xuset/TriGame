@@ -131,7 +131,7 @@ public class Person extends Entity implements GameIntegratable{
 			setX(getX() + Math.cos(Math.toRadians(-getAngle())) * distance * -1);
 		else {
 			buildingCollisions();
-			if (numOfCollisions > 0 && (collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId || numOfCollisions > 1)) {
+			if (numOfCollisions > 0 && (collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId)) {
 				setX(getX() + Math.cos(Math.toRadians(-getAngle())) * distance * -1);
 				if (numOfCollisions == 1 && up == false && down == false && collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId) {
 					int direction = 1;
@@ -150,7 +150,7 @@ public class Person extends Entity implements GameIntegratable{
 			setY(getY() + Math.sin(Math.toRadians(-getAngle())) * distance * -1);
 		else {
 			buildingCollisions();
-			if (numOfCollisions > 0 && (collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId || numOfCollisions > 1)) {
+			if (numOfCollisions > 0 && (collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId)) {
 				setY(getY() + Math.sin(Math.toRadians(-getAngle())) * distance * -1);
 				if (numOfCollisions == 1 && left == false && right == false && collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId) {
 					int direction = 1;

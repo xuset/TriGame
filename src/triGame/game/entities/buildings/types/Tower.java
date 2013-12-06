@@ -13,7 +13,7 @@ import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeItem;
 
 public class Tower extends Building {
-	
+	private static final int initialSpeed = 700;
 	private static final int initialShootDelay = 500;
 	private static final int initialDamage = -35;
 	
@@ -21,6 +21,7 @@ public class Tower extends Building {
 	protected UpgradeItem rangeUpgrade = null;
 	protected UpgradeItem fireRateUpgrade = null;
 	protected UpgradeItem damageUpgrade = null;
+	protected UpgradeItem accuracyUpgrade = null;
 	
 	private long lastShot = 0;
 	
@@ -33,9 +34,11 @@ public class Tower extends Building {
 		if (owned()) {
 			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, initialShootDelay, -50);
 			damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, initialDamage, -10);
+			accuracyUpgrade = new UpgradeItem(new ShopItem("Accuracy", 200), 3, 1, 1);
 			upgrades.addUpgrade(rangeUpgrade);
 			upgrades.addUpgrade(fireRateUpgrade);
 			upgrades.addUpgrade(damageUpgrade);
+			upgrades.addUpgrade(accuracyUpgrade);
 		}
 	}
 	
@@ -46,7 +49,10 @@ public class Tower extends Building {
 	
 	private void shoot() {
 		if (lastShot + fireRateUpgrade.getValue()  < System.currentTimeMillis()) {
-			managers.projectile.towerCreate((int) getCenterX(), (int) getCenterY(), getAngle(), 800, damageUpgrade.getValue());
+			int tSpeed = initialSpeed + 100 * accuracyUpgrade.getValue();
+			if (accuracyUpgrade != null)
+				tSpeed += 100 * accuracyUpgrade.getValue();
+			managers.projectile.towerCreate((int) getCenterX(), (int) getCenterY(), getAngle(), tSpeed, damageUpgrade.getValue());
 			lastShot = System.currentTimeMillis();
 		}
 	}

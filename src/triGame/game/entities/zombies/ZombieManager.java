@@ -73,7 +73,7 @@ public class ZombieManager extends Manager<Zombie> {
 	public Zombie createBoss(int roundNumber) {
 		final int speed = 30;
 		final long spawnDelay = 0;
-		int health = (roundNumber * roundNumber * roundNumber) * 10;
+		int health = (roundNumber * roundNumber * roundNumber) * 1 * managers.person.list.size();
 		
 		Building hq = managers.building.getHQ();
 		Point spawn = determineSpawnLocation(hq);
