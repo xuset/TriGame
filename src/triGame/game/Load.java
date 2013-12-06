@@ -10,6 +10,7 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import tSquare.imaging.AnimatedSprite;
 import tSquare.imaging.ImageProccess;
 import tSquare.imaging.Sprite;
 import tSquare.system.Sound;
@@ -18,6 +19,7 @@ import triGame.game.entities.Person;
 import triGame.game.entities.PointParticle;
 import triGame.game.entities.PointWell;
 import triGame.game.entities.SpawnHole;
+import triGame.game.entities.buildings.Wall;
 import triGame.game.entities.buildings.types.Barrier;
 import triGame.game.entities.buildings.types.FreezeTower;
 import triGame.game.entities.buildings.types.HeadQuarters;
@@ -53,6 +55,7 @@ abstract class Load {
 		spriteSteelBarrier();
 		spriteFreezeTower();
 		Sound.add(Projectile.SOUND_ID);
+		AnimatedSprite.ADD(Wall.CRACKS_SPRITE_ID, new AnimatedSprite(Wall.CRACKS_SPRITE_ID, 1, 3, 3));
 	}
 	
 	private static void spriteSpawnHole() {
