@@ -58,7 +58,7 @@ public class AnimatedSprite {
 				return ImageIO.read(f);
 			
 			URL stream = getClass().getResource("/" + url);
-			if (url == null) {
+			if (stream == null) {
 				return null;
 			}
 			return ImageIO.read(stream);
