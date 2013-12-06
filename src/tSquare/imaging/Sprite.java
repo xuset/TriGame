@@ -3,7 +3,6 @@ package tSquare.imaging;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,51 +11,40 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
-//TODO check Vimage if contents are available
-
 public class Sprite {
 	private static HashMap<String, Sprite> sprites = new HashMap<String, Sprite>();
 	
-	private Image image;
-	private String url;
+	public final BufferedImage image;
+	public final String url;
 	
-	public boolean useVolatileImage = false;
-	public boolean useAntiAlias = false;
+	public final int getWidth() { return image.getWidth(); }
+	public final int getHeight() { return image.getHeight(); }
+	public final BufferedImage createCopy() { return ImageProccess.createCompatiableImage(image); }
 	
-	public final int getWidth() { return image.getWidth(null); }
-	public final int getHeight() { return image.getHeight(null); }
-	public final String getUrl() { return url; }
-	public final Image getImage() { return image; }
-	public final BufferedImage getBuffered() { return ImageProccess.createCompatiableImage(image); }
-	
-	public Sprite(String url, boolean useVImage) {
-		BufferedImage image = loadImage(url);
-		createSprite(url, image, useVImage);
-	}
-	public Sprite(String url, BufferedImage image) {
-		this(url, image, false);
-	}
-	public Sprite(String url, BufferedImage image, boolean useVImage) {
-		createSprite(url, image, useVImage);
-	}
-	
-	private void createSprite(String url, BufferedImage image, boolean useVImage) {
-		if (useVImage)
-			this.image = ImageProccess.createVolatileImage(image);
-		else
-			this.image = ImageProccess.createCompatiableImage(image);
+	public Sprite(String url) {
+		BufferedImage img = loadImage(url);
+		this.image = ImageProccess.createCompatiableImage(img);
 		this.url = url;
-		Sprite.sprites.put(url, this);
+	}
+	
+	public Sprite(String url, BufferedImage image) {
+		this.image = ImageProccess.createCompatiableImage(image);
+		this.url = url;
 	}
 	
 	public static Sprite add(String url) {
-		return add(url, false);
-	}
-	public static Sprite add(String url, boolean useVImage) {
 		Sprite s = Sprite.sprites.get(url);
 		if (s != null)
 			return s;
-		return new Sprite(url, useVImage);
+		
+		Sprite cre = new Sprite(url);
+		sprites.put(url, cre);
+		return s;
+	}
+	
+	public static Sprite add(Sprite s) {
+		sprites.put(s.url, s);
+		return s;
 	}
 	
 	private BufferedImage loadImage(String url) {
