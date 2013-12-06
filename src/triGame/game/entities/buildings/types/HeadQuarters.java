@@ -9,9 +9,7 @@ public class HeadQuarters extends Building {
 	
 	public HeadQuarters(double x, double y, ParticleController pc, EntityKey key) {
 		super(INFO.spriteId, x, y, pc, INFO, key);
-		health.set(1500.0);
 		healthBar.relativeY = 5;
-		healthBar.maxHealth = health.get().intValue();
 	}
 
 	public static final BuildingInfo INFO = new BuildingInfo(
@@ -22,7 +20,9 @@ public class HeadQuarters extends Building {
 			null,   //the ShopItem
 			true,   //has a healthBar
 			false,  //has an UpgradeManager
-			true
+			true,   //is interactive
+			10,     //zombie target selection weight
+			1500     //max health
 	);
 
 }

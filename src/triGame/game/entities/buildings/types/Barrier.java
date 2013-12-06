@@ -15,7 +15,8 @@ public class Barrier extends Wall {
 			"barrier",	//spriteId
 			"barrier",  //Creator hash map key
 			"Just a general wall to block and redirect the hoards of evil triangles",
-			new ShopItem("Barrier", 10)
+			new ShopItem("Barrier", 10),
+			100
 	);
 
 }

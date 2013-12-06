@@ -20,9 +20,9 @@ public abstract class Wall extends Building {
 	public static class WallInfo extends BuildingInfo {
 		
 		public WallInfo(String spriteId, String identifier,
-				String description, ShopItem item) {
+				String description, ShopItem item, int maxHealth) {
 			
-			super(spriteId, identifier, 0, description, item, false, false, false);
+			super(spriteId, identifier, 0, description, item, false, false, false, 10, maxHealth);
 		}
 	}
 	
@@ -30,9 +30,9 @@ public abstract class Wall extends Building {
 	public void draw(Graphics2D g, ViewRect rect) {
 		super.draw(g, rect);
 		
-		int index = (int) ((getHealth() * cracks.total) / 100.0);
+		int index = (int) ((getHealth() * cracks.total) / info.maxHealth);
 		index = 3 - 1 - index;
-		if (getHealth() < 100.0 && index >= 0 && index < cracks.total) {
+		if (getHealth() < info.maxHealth && index >= 0 && index < cracks.total) {
 			Sprite s = cracks.sprites[index];
 			int x = (int) (getX() - rect.getX());
 			int y = (int) (getY() - rect.getY());

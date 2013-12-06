@@ -41,6 +41,7 @@ public class TrapDoor extends Wall {
 			"trapdoor",	//spriteId
 			"tp",       //Creator hash map key
 			"Not an ordinary wall. It has a special one-way function", 
-			new ShopItem("Trap door", 25)
+			new ShopItem("Trap door", 25),
+			100 //max health
 	);
 }

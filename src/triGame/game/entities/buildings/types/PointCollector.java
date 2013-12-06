@@ -57,8 +57,10 @@ public class PointCollector extends Building {
 			"Want to collect more points? Than place this over a Point Well",
 			new ShopItem("Point collector", 300),
 			true,   //has a healthBar
-			true,    //has an UpgradeManager
-			true
+			true,   //has an UpgradeManager
+			true,   //is interactive
+			10,     //zombie target selection weight
+			100     //max health
 	);
 
 }

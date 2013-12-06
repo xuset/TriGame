@@ -26,12 +26,27 @@ public abstract class Building extends Entity{
 			ParticleController pc, BuildingInfo info, EntityKey key) {
 		super(spriteId, x, y, key);
 		this.info = info;
+		
 		healthBar = (info.hasHealthBar) ? new HealthBar(this) : null;
+		setupHealth(info.maxHealth);
+		
 		upgrades = (info.isUpgradable) ? new UpgradeManager() : null;
+		
 		if (healthBar != null && pc != null)
 			pc.addParticle(healthBar);
 
 		visibilityRadius = info.visibilityRadius;
+	}
+	
+	private void setupHealth(int maxHealth) {
+		if (owned()) {
+			double toAdd = maxHealth - getHealth();
+			modifyHealth(toAdd);
+		}
+		if (healthBar != null) {
+			healthBar.maxHealth = maxHealth;
+		}
+		
 	}
 	
 	@Override
@@ -56,13 +71,17 @@ public abstract class Building extends Entity{
 		public final boolean hasHealthBar;
 		public final boolean isUpgradable;
 		public final boolean isInteractive;
-		public final int selectionWeight = 10;
+		public final int selectionWeight;
+		public final int maxHealth;
+		
 		
 		public boolean isShopable() { return item != null; }
 		
 		public BuildingInfo(String spriteId, String identifier, int visibilityRadius,
 				String description, ShopItem item,
-				boolean hasHealthBar, boolean isUpgradable, boolean isInteractive) {
+				boolean hasHealthBar, boolean isUpgradable, boolean isInteractive,
+				int selectionWeight, int maxHealth) {
+			
 			this.spriteId = spriteId;
 			this.identifier = identifier;
 			this.visibilityRadius = visibilityRadius;
@@ -71,6 +90,8 @@ public abstract class Building extends Entity{
 			this.hasHealthBar = hasHealthBar;
 			this.isUpgradable = isUpgradable;
 			this.isInteractive = isInteractive;
+			this.selectionWeight =  10;
+			this.maxHealth = maxHealth;
 			
 		}
 	}

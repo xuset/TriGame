@@ -69,7 +69,9 @@ public class FreezeTower extends Building {
 			new ShopItem("Freeze tower", 100),
 			true,    //has a healthBar
 			true,    //has an UpgradeManager
-			true
+			true,   //is interactive
+			10,     //zombie target selection weight
+			100     //max health
 	);
 	
 	public class RadiusParticle extends Particle {

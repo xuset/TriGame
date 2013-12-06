@@ -18,8 +18,10 @@ public class LightTower extends Building {
 			"Just extends the playable area so you can easily expand your empire",
 			new ShopItem("Light Tower", 80),
 			true,   //has a healthBar
-			false,    //has an UpgradeManager
-			true
+			false,  //has an UpgradeManager
+			true,   //is interactive
+			10,     //zombie target selection weight
+			100     //max health
 	);
 
 }

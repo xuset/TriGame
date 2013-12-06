@@ -79,7 +79,9 @@ public class Tower extends Building {
 			"Need help defending yourself from waves of undead triangles?",
 			new ShopItem("Tower", 500),
 			true,   //has a healthBar
-			true,    //has an UpgradeManager
-			true
+			true,   //has an UpgradeManager
+			true,   //is interactive
+			10,     //zombie target selection weight
+			100     //max health
 	);
 }

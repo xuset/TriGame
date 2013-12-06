@@ -30,7 +30,9 @@ public class SmallTower extends Tower {
 			"Just a little bit smaller than its predecessor",
 			new ShopItem("Small Tower", 150),
 			true,   //has a healthBar
-			true,    //has an UpgradeManager
-			true
+			true,   //has an UpgradeManager
+			true,   //is interactive
+			10,     //zombie target selection weight
+			100     //max health
 	);
 }

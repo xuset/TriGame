@@ -8,16 +8,14 @@ public class SteelBarrier extends Wall {
 
 	public SteelBarrier(double x, double y, EntityKey key) {
 		super(INFO.spriteId, x, y, INFO, key);
-		if (owned()) {
-			modifyHealth(200);
-		}
 	}
 	
 	public static final WallInfo INFO = new WallInfo(
 			"media/SteelBarrier.png",  //spriteId
 			"steel",                   //Creator hash map key
 			"Forged from steel, unlike Barriers.",
-			new ShopItem("Steel", 20)
+			new ShopItem("Steel", 20),
+			200 //max health
 		);
 
 }
