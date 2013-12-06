@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 import objectIO.connections.Hub;
-import objectIO.connections.p2pServer.client.ClientHub;
-import objectIO.connections.p2pServer.server.P2PServer;
+import objectIO.connections.sockets.p2pServer.client.ClientHub;
+import objectIO.connections.sockets.p2pServer.server.P2PServer;
 import objectIO.netObject.ObjController;
 
 public class Network {
