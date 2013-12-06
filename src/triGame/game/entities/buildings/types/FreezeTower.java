@@ -73,13 +73,14 @@ public class FreezeTower extends Building {
 	);
 	
 	public class RadiusParticle extends Particle {
-		private static final double circles = 4.0;
+		private static final double initCircles = 4.0;
 		private static final int radiusSpeed = 20;
 		private final Color radiusColor = new Color(184, 24, 210);
 		private double currentRadius = 1.0;
 		
 		@Override
 		public void draw(int frameDelta, Graphics2D g, ViewRect rect) {
+			double circles = initCircles + powerUpgrade.getUpgradeCount();
 			currentRadius += frameDelta * radiusSpeed / 1000.0;
 			double delta = rangeValue.get() / circles;
 			if (currentRadius >= delta)
