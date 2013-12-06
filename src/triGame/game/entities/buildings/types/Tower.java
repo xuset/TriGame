@@ -49,7 +49,7 @@ public class Tower extends Building {
 	
 	private void shoot() {
 		if (lastShot + fireRateUpgrade.getValue()  < System.currentTimeMillis()) {
-			int tSpeed = initialSpeed + 100 * accuracyUpgrade.getValue();
+			int tSpeed = initialSpeed;
 			if (accuracyUpgrade != null)
 				tSpeed += 100 * accuracyUpgrade.getValue();
 			managers.projectile.towerCreate((int) getCenterX(), (int) getCenterY(), getAngle(), tSpeed, damageUpgrade.getValue());
