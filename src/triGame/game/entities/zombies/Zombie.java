@@ -37,7 +37,6 @@ public class Zombie extends Entity {
 	private Point lastTargetBlock = new Point(0, 0);
 	private int lastObjectGridModCount = 0;
 	
-	public int getSpeed() { return realSpeed; }
 	
 	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
 	
