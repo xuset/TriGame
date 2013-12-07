@@ -38,6 +38,7 @@ public class RoundHandler implements GameIntegratable{
 	
 	public int getRoundNumber() { return roundNumber; }
 	public boolean isRoundOnGoing() { return roundOnGoing.get(); }
+	public boolean areZombiesSpawning() { return zombiesToSpawn > 0; }
 	
 	public RoundHandler(ManagerService service, PeripheralInput.Keyboard keyboard,
 			DrawBoard drawBoard, ObjController netCon,  boolean isServer, ShopManager shop) {

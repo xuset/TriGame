@@ -7,8 +7,10 @@ import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
 import tSquare.util.PlaceHolder;
+import triGame.game.ManagerService;
 import triGame.game.RoundHandler;
 import triGame.game.entities.PointParticle;
+import triGame.game.entities.PointWell;
 import triGame.game.entities.buildings.Building;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.ShopManager;
@@ -19,16 +21,19 @@ public class PointCollector extends Building {
 	private final ShopManager shop;
 	private final int pointAddFrequency;
 	private final PlaceHolder<RoundHandler> phRoundHandler;
+	private final PointWell pointWell;
 	
 
-	public PointCollector(double x, double y, ParticleController pc, 
+	public PointCollector(double x, double y, ManagerService managers, ParticleController pc,
 			ShopManager shop, PlaceHolder<RoundHandler> phRoundHandler, EntityKey key) {
 		
 		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.phRoundHandler = phRoundHandler;
 		this.shop = shop;
-		pointAddFrequency = 200;
+		pointAddFrequency = 333;
 		particle = new PointParticle.Floating((int) getCenterX(), (int) getCenterY(), pointAddFrequency);
+		particle.height = 50;
+		pointWell = managers.pointWell.getByPoint(getX(), getY());
 	}
 	
 	private int lastFrameDelta;
@@ -41,11 +46,13 @@ public class PointCollector extends Building {
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
 		super.draw(g, rect);
-		if (phRoundHandler.get().isRoundOnGoing()) {
+		
+		if (phRoundHandler.get().areZombiesSpawning() && !pointWell.isEmpty()) {
 			particle.draw(lastFrameDelta, g, rect);
 			if (owned() && particle.isExpired()) {
 				particle.reset();
 				shop.addPoints(1);
+				pointWell.takePoints(1);
 			}
 		}
 	}

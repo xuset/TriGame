@@ -95,7 +95,7 @@ final class CreationFuncs {
 
 		@Override
 		public PointCollector create(double x, double y, EntityKey key) {
-			return new PointCollector(x, y, particle, shop, phRoundHandler, key);
+			return new PointCollector(x, y, managers, particle, shop, phRoundHandler, key);
 		}
 		
 	};

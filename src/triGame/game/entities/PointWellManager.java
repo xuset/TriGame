@@ -39,6 +39,14 @@ public class PointWellManager extends Manager<PointWell> {
 		return pw;
 	}
 	
+	public PointWell getByPoint(double x, double y) {
+		for (PointWell p : list) {
+			if (p.getX() == x && p.getY() == y)
+				return p;
+		}
+		return null;
+	}
+	
 	@Override
 	protected void onAdd(PointWell pw) {
 		objectGrid.turnOnRectangle(pw.getX(), pw.getY(), Params.BLOCK_SIZE, Params.BLOCK_SIZE);

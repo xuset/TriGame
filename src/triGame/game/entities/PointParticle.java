@@ -30,8 +30,10 @@ public abstract class PointParticle extends SpriteParticle{
 	}
 	
 	public static class Floating extends PointParticle {
+		public int height = 35, width = 8;
 
 		protected int progress = 0, timeDuration = 800;
+		
 		public Floating(int x, int y, int timeDuration) {
 			super(x, y);
 			this.timeDuration = timeDuration;
@@ -48,8 +50,8 @@ public abstract class PointParticle extends SpriteParticle{
 		protected void setXY(int delta) {
 			progress += delta;
 			double ratio = ((double) progress) / timeDuration;
-			x = (int) (startX + 8 * Math.sin(ratio * 4 * Math.PI));
-			y = (int) (startY - ratio * 35);
+			x = (int) (startX + width * Math.sin(ratio * 4 * Math.PI));
+			y = (int) (startY - ratio * height);
 			
 			if (isExpired())
 				draw = false;
@@ -58,7 +60,7 @@ public abstract class PointParticle extends SpriteParticle{
 	}
 	
 	public static class Hovering extends PointParticle {
-
+		private boolean expired = false;
 		private int boxRadius = 35;
 		private int jumpDelta = (int) (Math.random() * 300) + 200;
 		private long lastJumpTime = 0l;
@@ -67,7 +69,7 @@ public abstract class PointParticle extends SpriteParticle{
 			super(x, y);
 		}
 
-		@Override public boolean isExpired() { return false; }
+		@Override public boolean isExpired() { return expired; }
 
 		@Override
 		protected void setXY(int delta) {
@@ -77,6 +79,10 @@ public abstract class PointParticle extends SpriteParticle{
 				lastJumpTime = System.currentTimeMillis();
 			}
 			
+		}
+		
+		public void setExpired() {
+			expired = true;
 		}
 		
 	}
