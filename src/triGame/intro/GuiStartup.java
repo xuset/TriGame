@@ -1,10 +1,14 @@
 package triGame.intro;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -32,6 +36,21 @@ public class GuiStartup {
 		}
 	}
 	
+	private GuiStartup() {
+		versionThread = new Thread(new Runnable() {
+				@Override public void run() {
+					if (isNewerVersion()) {
+						lblVersion.setText("A newer version is available for download!");
+					}
+				}
+		});
+		
+		versionThread.start();
+	}
+	
+	private Thread versionThread;
+	private JLabel lblVersion = new JLabel();
+	private final String myVersion = "1.0.0";
 	private Network gatherPlayers() {
 
 		JFrame frame = new JFrame(); //start display where all panels are displayed
@@ -49,6 +68,8 @@ public class GuiStartup {
 		JLabel lblImage = new JLabel(new ImageIcon(loadImage("media/MainScreen.png")));
 		JLabel lblCopyright = new JLabel("© Copyright 2013 (not really... shhhh)");
 		JLabel lblLicense = new JLabel("Licensed under the GPLv2 (really)");
+		lblVersion.setForeground(Color.red);
+		lblVersion.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblAuthor.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblWebsite.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblImage.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -59,12 +80,16 @@ public class GuiStartup {
 		panel.add(Box.createVerticalGlue());
 		panel.add(lblImage);
 		panel.add(Box.createVerticalGlue());
+		panel.add(lblVersion);
 		panel.add(lblAuthor);
 		panel.add(lblWebsite);
 		panel.add(lblCopyright);
 		panel.add(lblLicense);
 		panel.updateUI();
 		MODES mode = gm.getGameMode(); //get chosen game mode
+		
+		if (versionThread.isAlive())
+			versionThread.interrupt();
 
 		AddressInfo ai = new AddressInfo(mode); //show address/port port
 		panel.removeAll();
@@ -101,6 +126,19 @@ public class GuiStartup {
 			ex.printStackTrace();
 			return null;
 		}
+	}
+	
+	private boolean isNewerVersion() {
+		try {
+			URL github = new URL("http://github.com/xuset/TriGame/blob/master/version");
+			InputStream stream = github.openStream();
+			String contents = new BufferedReader(new InputStreamReader(stream)).readLine();
+			return !contents.equals(myVersion);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }
