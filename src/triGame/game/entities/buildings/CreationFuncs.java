@@ -30,10 +30,10 @@ final class CreationFuncs {
 		SteelBarrier.INFO,
 		TrapDoor.INFO,
 		LightTower.INFO,
+		FreezeTower.INFO,
 		SmallTower.INFO,
-		Tower.INFO,
 		PointCollector.INFO,
-		FreezeTower.INFO
+		Tower.INFO
 	};
 	
 	public final ArrayList<BuildingCreator> creators = new ArrayList<BuildingCreator>();
