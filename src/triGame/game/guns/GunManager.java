@@ -37,8 +37,8 @@ public class GunManager implements GameIntegratable{
 		AbstractGun pistol = new GunPistol();
 		shop.purchase(pistol.unlock);
 		addGun(pistol);
-		addGun(new GunSub());
 		addGun(new GunShotgun());
+		addGun(new GunSub());
 	}
 	
 	@Override

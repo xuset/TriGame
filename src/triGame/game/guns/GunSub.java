@@ -21,7 +21,7 @@ public class GunSub extends AbstractGun {
 	public GunSub() {
 		super(KeyEvent.VK_3, //key to switch to gun
 				"Sub",       //name
-				"A rapid fire sub-machine gun to defend against evil red triangles", //description
+				"A rapid fire sub-machine gun to defend against evil red triangles. Keyboard #3.", //description
 				new ShopItem("Sub", 200, true), //to buy the gun
 				180,         //semi-shot delay
 				true,        //full auto

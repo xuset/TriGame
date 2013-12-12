@@ -21,7 +21,7 @@ public class GunShotgun extends AbstractGun {
 	public GunShotgun() {
 		super(KeyEvent.VK_2, //key to switch to gun
 				"Shotgun",    //name
-				"A 3-round burst should it",     //description
+				"A 3-round burst should it. Keybord #2.",     //description
 				new ShopItem("Shotgun", 200, true), //to buy the gun
 				500,         //semi-shot delay
 				true,       //full auto
