@@ -2,8 +2,14 @@ package triGame.intro;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,8 +27,10 @@ import tSquare.system.Network;
 public class Lobby extends JPanel{
 	private static final long serialVersionUID = 2236815803494900637L;
 	
+	private JPanel pnlMain = new JPanel();
 	private JLabel lblSize = new JLabel();
 	private JButton btnStart = new JButton("Start game");
+	private JLabel lblHostInfo = new JLabel();
 	private ObjController netController;
 	private NetFunction startFunc;
 	private Network network;
@@ -34,19 +42,25 @@ public class Lobby extends JPanel{
 		new Thread(netController).start();
 		startFunc = new NetFunction(netController, "start", startEvent);
 		
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		displaySize(net.hub.getAllConnections().size());
-		add(lblSize);
-		add(Box.createHorizontalStrut(20));
+		pnlMain.add(lblSize);
+		pnlMain.add(Box.createHorizontalStrut(20));
 		if (net.isServer)
 			hosting(net);
 		else
 			joining();
+		add(lblHostInfo);
+		add(Box.createVerticalGlue());
+		add(pnlMain);
 	}
 	
 	private void hosting(Network net) {
 		net.getServerInstance().event = connectionEvent;
 		btnStart.addMouseListener(startListener);
-		add(btnStart);
+		pnlMain.add(btnStart);
+		lblHostInfo.setText("Your ip:port = " + getIp() + ":" + net.getServerInstance().getPort());
+		lblHostInfo.setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
 	private void joining() {
@@ -106,4 +120,32 @@ public class Lobby extends JPanel{
 		
 		public void onLastDisconnect(P2PServer s) { }
 	};
+	
+	private String getIp() {
+		Enumeration<NetworkInterface> interfaces;
+		try {
+			interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements()){
+			    NetworkInterface current = interfaces.nextElement();
+			    
+			    if (!current.isUp() || current.isLoopback() || current.isVirtual())
+			    	continue;
+			    
+			    Enumeration<InetAddress> addresses = current.getInetAddresses();
+			    while (addresses.hasMoreElements()){
+			        InetAddress currentAddr = addresses.nextElement();
+			        
+			        if (currentAddr.isLoopbackAddress())
+			        	continue;
+			        
+			        if (currentAddr instanceof Inet4Address) {
+			        	return currentAddr.getHostAddress();
+			        }
+			    }
+			}
+		} catch (SocketException ex) {
+			ex.printStackTrace();
+		}
+		return "ip not found";
+	}
 }

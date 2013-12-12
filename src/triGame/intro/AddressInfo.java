@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -47,8 +46,10 @@ public class AddressInfo extends JPanel{
 	
 	private void construct(boolean hosting) {
 		this.hosting = hosting;
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		lblHint.setAlignmentX(CENTER_ALIGNMENT);
 		lblError.setForeground(Color.red);
-		pnlInput.setLayout(new BoxLayout(pnlInput, BoxLayout.X_AXIS));
+		lblError.setAlignmentX(CENTER_ALIGNMENT);
 		txtAddress.setPreferredSize(new Dimension(200, 20));
 		btnConnect.addMouseListener(conctListener);
 		add(lblHint);
@@ -65,10 +66,11 @@ public class AddressInfo extends JPanel{
 	private void hostSetup() {
 		lblHint.setText("Port number");
 		btnConnect.setText("host");
+		txtAddress.setText("3000");
 	}
 	
 	private void joinSetup() {
-		lblHint.setText("IP:PORT ex 192.168.1.7:3000");
+		lblHint.setText("ip:port example 192.168.1.7:3000");
 		btnConnect.setText("join");
 	}
 	
@@ -76,6 +78,8 @@ public class AddressInfo extends JPanel{
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			printError("");
+			if (network != null)
+				network.disconnect();
 			if (hosting) {
 				try {
 					int port = Integer.parseInt(txtAddress.getText());
@@ -83,17 +87,23 @@ public class AddressInfo extends JPanel{
 				} catch (NumberFormatException ex) {
 					printError("Invalid format!");
 				} catch (IOException ex) {
+					ex.printStackTrace();
 					printError(ex.getMessage());
 				}
 			} else {
 				try {
-					String[] split = txtAddress.getText().split(":");
-					String address = split[0];
-					int port = Integer.parseInt(split[1]);
+					String total = txtAddress.getText();
+					int index = total.lastIndexOf(":");
+					if (index == -1)
+						throw new NumberFormatException();
+
+					String address = total.substring(0, index);
+					int port = Integer.parseInt(total.substring(index + 1));
 					network = Network.connectToServer(address, port, IdGenerator.getNext());
-				} catch (UnknownHostException ex) {
+				} catch (IOException ex) {
+					ex.printStackTrace();
 					printError(ex.getMessage());
-				} catch (Exception ex) {
+				} catch (NumberFormatException ex) {
 					printError("Invalid format!");
 				}
 			}
