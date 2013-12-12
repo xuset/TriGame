@@ -7,14 +7,15 @@ import javax.swing.JPanel;
 import triGame.game.shopping.ShopManager;
 import triGame.game.shopping.UpgradeManager;
 import triGame.game.ui.JPanelGetter;
+import triGame.game.ui.UserInterface;
 
 public class Upgrades implements JPanelGetter{
 	public UpgradePanel panel;
 	
 	public JPanel getJPanel() { return panel; }
 	
-	public Upgrades(ShopManager shop) {
-		panel = new UpgradePanel(shop);
+	public Upgrades(ShopManager shop, UserInterface ui) {
+		panel = new UpgradePanel(shop, ui);
 	}
 	
 	public void set(UpgradeManager manager, Image image) {

@@ -3,7 +3,6 @@ package triGame.game;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 
 import objectIO.connections.sockets.p2pServer.client.ClientConnection;
 import objectIO.connections.sockets.p2pServer.client.ClientHub;
@@ -63,7 +62,7 @@ public class TriGame extends Game{
 		
 		managerService = new ManagerService(managerController, safeBoard, input.keyboard,
 				shop, particleController, network.isServer, phRoundHandler, userId);
-		ui = new UserInterface(display, managerService, shop, input.mouse);
+		ui = new UserInterface(display, drawBoard, managerService, shop, input.mouse);
 		roundHandler = new RoundHandler(managerService, input.keyboard, drawBoard,
 				network.objController, network.isServer, shop);
 		if (network.isServer) {
@@ -94,8 +93,6 @@ public class TriGame extends Game{
 
 	protected void logicLoop() {
 		//System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
-		if(input.keyboard.isPressed(KeyEvent.VK_ESCAPE))
-			stopGame();
 		int frameDelta = getDelta();
 		
 		

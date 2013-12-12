@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import triGame.game.shopping.ShopManager;
+import triGame.game.ui.UserInterface;
 
 public class ArsenalPanel{
 	
@@ -21,12 +22,14 @@ public class ArsenalPanel{
 	private final JLabel lblDescription = new JLabel("-", JLabel.CENTER);
 	private final JPanel panel;
 	private final ShopManager shop;
+	private final UserInterface ui;
 
 	final JPanel pnlSplit;
 	
 	public final ArrayList<ArsenalGroup> groups = new ArrayList<ArsenalGroup>();
 	
-	public ArsenalPanel(ShopManager shop) {
+	public ArsenalPanel(ShopManager shop, UserInterface ui) {
+		this.ui = ui;
 		this.shop = shop;
 		
 		pnlSplit = new JPanel();
@@ -50,23 +53,28 @@ public class ArsenalPanel{
 	private MouseListener lblSwitchEvent = new MouseListener() {
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
-			Iterator<ArsenalGroup> it = groups.iterator();
-			while (it.hasNext()) {
-				ArsenalGroup next = it.next();
-				if (next == displayedGroup) {
-					if (it.hasNext())
-						switchGroup(it.next());
-					else
-						switchGroup(groups.get(0));
-					break;
-				}
-			}
+			switchGroup(getNextGroup());
+			ui.giveupFocus();
 		}
 		public void mouseEntered(MouseEvent arg0) { }
 		public void mouseExited(MouseEvent arg0) { }
 		public void mousePressed(MouseEvent arg0) { }
 		public void mouseReleased(MouseEvent arg0) { }
 	};
+	
+	private ArsenalGroup getNextGroup() {
+		Iterator<ArsenalGroup> it = groups.iterator();
+		while (it.hasNext()) {
+			ArsenalGroup next = it.next();
+			if (next == displayedGroup) {
+				if (it.hasNext())
+					return it.next();
+				else
+					return groups.get(0);
+			}
+		}
+		return null;
+	}
 	
 	public void addToArsenal(ArsenalGroup group, ArsenalItem aItem) {
 		if (groups.contains(group)) {
@@ -101,7 +109,7 @@ public class ArsenalPanel{
 	
 	public void switchGroup(ArsenalGroup g) {
 		displayedGroup = g;
-		btnSwitch.setText(g.name);
+		btnSwitch.setText(getNextGroup().name);
 		refreshDisplay();
 	}
 	
@@ -114,4 +122,6 @@ public class ArsenalPanel{
 	void displayDescription(String text) {
 		lblDescription.setText(text);
 	}
+	
+	void giveupFocus() { ui.giveupFocus(); }
 }

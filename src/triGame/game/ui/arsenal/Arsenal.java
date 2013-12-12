@@ -28,7 +28,7 @@ public class Arsenal implements JPanelGetter{
 		this.ui = ui;
 		this.shop = shop;
 		this.attacher = attacher;
-		panel = new ArsenalPanel(shop);
+		panel = new ArsenalPanel(shop, ui);
 		
 		ArsenalGroup.PurchaseEvent gunEvent = new ArsenalGroup.PurchaseEvent() {
 			@Override

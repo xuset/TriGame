@@ -84,6 +84,8 @@ public class ArsenalItem extends JPanel{
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			info.arsenalGroup.purchaseEvent.purchase(info);
+			if (arsenalPanel != null)
+				arsenalPanel.giveupFocus();
 		}
 
 		@Override
