@@ -130,7 +130,7 @@ public class GuiStartup {
 	
 	private boolean isNewerVersion() {
 		try {
-			URL github = new URL("http://github.com/xuset/TriGame/blob/master/version");
+			URL github = new URL("https://raw.github.com/xuset/TriGame/master/version");
 			InputStream stream = github.openStream();
 			String contents = new BufferedReader(new InputStreamReader(stream)).readLine();
 			return !contents.equals(myVersion);
