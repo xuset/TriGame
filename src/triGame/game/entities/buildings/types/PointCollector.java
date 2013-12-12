@@ -47,7 +47,7 @@ public class PointCollector extends Building {
 	public void draw(Graphics2D g, ViewRect rect) {
 		super.draw(g, rect);
 		
-		if (phRoundHandler.get().areZombiesSpawning() && !pointWell.isEmpty()) {
+		if (phRoundHandler.get().isRoundOnGoing() && !pointWell.isEmpty()) {
 			particle.draw(lastFrameDelta, g, rect);
 			if (owned() && particle.isExpired()) {
 				particle.reset();
