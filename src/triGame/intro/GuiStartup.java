@@ -35,7 +35,7 @@ public class GuiStartup {
 	private Network gatherPlayers() {
 
 		JFrame frame = new JFrame(); //start display where all panels are displayed
-		frame.setPreferredSize(new Dimension(400, 300));
+		frame.setPreferredSize(new Dimension(400, 350));
 		frame.setTitle("Attack of the Triangles!");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -47,17 +47,22 @@ public class GuiStartup {
 		JLabel lblAuthor = new JLabel("By: Austin Middleton", JLabel.CENTER);
 		JLabel lblWebsite = new JLabel("https://github.com/xuset/", JLabel.CENTER);
 		JLabel lblImage = new JLabel(new ImageIcon(loadImage("media/MainScreen.png")));
+		JLabel lblCopyright = new JLabel("© Copyright 2013 (not really... shhhh)");
+		JLabel lblLicense = new JLabel("Licensed under the GPLv2 (really)");
 		lblAuthor.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblWebsite.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblImage.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblCopyright.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblLicense.setAlignmentX(Component.CENTER_ALIGNMENT);
 		GameMode gm = new GameMode(); //show game mode panel
 		panel.add(gm);
 		panel.add(Box.createVerticalGlue());
 		panel.add(lblImage);
 		panel.add(Box.createVerticalGlue());
 		panel.add(lblAuthor);
-		panel.add(Box.createVerticalGlue());
 		panel.add(lblWebsite);
+		panel.add(lblCopyright);
+		panel.add(lblLicense);
 		panel.updateUI();
 		MODES mode = gm.getGameMode(); //get chosen game mode
 
