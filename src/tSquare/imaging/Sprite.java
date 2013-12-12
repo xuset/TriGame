@@ -54,7 +54,7 @@ public class Sprite {
 				return ImageIO.read(f);
 			
 			URL stream = getClass().getResource("/" + url);
-			if (url == null) {
+			if (stream == null) {
 				return null;
 			}
 			return ImageIO.read(stream);
@@ -86,6 +86,7 @@ public class Sprite {
 		draw(x, y, t, g2d);
 	}
 	public void draw(int x, int y, double degrees, double scaleX, double scaleY, Graphics2D g2d) {
+		//TODO this does not work when scale is used
 		AffineTransform t = new AffineTransform();
 		t.translate(-x * scaleX + x, -y * scaleY + y);
 		t.scale(scaleX, scaleY);
