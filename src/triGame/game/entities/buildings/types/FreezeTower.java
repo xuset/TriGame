@@ -82,7 +82,7 @@ public class FreezeTower extends Building {
 		
 		@Override
 		public void draw(int frameDelta, Graphics2D g, ViewRect rect) {
-			double circles = initCircles + powerUpgrade.getUpgradeCount();
+			double circles = initCircles + powerValue.get();
 			currentRadius += frameDelta * radiusSpeed / 1000.0;
 			double delta = rangeValue.get() / circles;
 			if (currentRadius >= delta)
