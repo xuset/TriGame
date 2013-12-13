@@ -34,8 +34,8 @@ import triGame.game.entities.zombies.BossZombie;
 import triGame.game.entities.zombies.Zombie;
 
 
-abstract class Load {
-	public static void sprites() {
+public abstract class Load {
+	static void sprites() {
 		spriteSpawnHole();
 		spritePerson();
 		spriteZombie();
@@ -58,6 +58,20 @@ abstract class Load {
 		AnimatedSprite.ADD(Wall.CRACKS_SPRITE_ID, new AnimatedSprite(Wall.CRACKS_SPRITE_ID, 1, 3, 3));
 	}
 	
+	public static BufferedImage triangleImage(Color color) {
+		BufferedImage image = new BufferedImage(40, 40, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		Polygon p = new Polygon(); p.addPoint(0, 40); p.addPoint(40, 40); p.addPoint(20, 0);
+		g.setColor(Color.DARK_GRAY);
+		g.fillPolygon(p);
+		p = new Polygon(); p.addPoint(5, 35); p.addPoint(35, 35); p.addPoint(20, 8);
+		g.setColor(color);
+		g.fillPolygon(p);
+		g.dispose();
+		return image;
+	}
+	
 	private static void spriteSpawnHole() {
 		if (Sprite.exists(SpawnHole.SPRITE_ID))
 			return;
@@ -72,51 +86,22 @@ abstract class Load {
 	private static void spritePerson() {
 		if (Sprite.exists(Person.SPRITE_ID))
 			return;
-		BufferedImage image = new BufferedImage(80, 80, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		Polygon p = new Polygon(); p.addPoint(0, 80); p.addPoint(80, 80); p.addPoint(40, 0);
-		g.setColor(Color.DARK_GRAY);
-		g.fillPolygon(p);
-		p = new Polygon(); p.addPoint(10, 70); p.addPoint(70, 70); p.addPoint(40, 16);
-		g.setColor(Color.cyan);
-		//g.setColor(new Color((int) (120 * Math.random()), (int) (255 * Math.random()), (int) (255 * Math.random())));
-		g.fillPolygon(p);
-		g.dispose();
 		
-		Sprite.add(new Sprite(Person.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5)));
+		Sprite.add(new Sprite(Person.SPRITE_ID, triangleImage(Color.cyan)));
 	}
 	
 	private static void spriteZombie() {
 		if (Sprite.exists(Zombie.SPRITE_ID))
 			return;
-		BufferedImage image = new BufferedImage(80, 80, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		Polygon p = new Polygon(); p.addPoint(0, 80); p.addPoint(80, 80); p.addPoint(40, 0);
-		g.setColor(Color.DARK_GRAY);
-		g.fillPolygon(p);
-		p = new Polygon(); p.addPoint(10, 70); p.addPoint(70, 70); p.addPoint(40, 16);
-		g.setColor(Color.red);
-		g.fillPolygon(p);
-		g.dispose();
-		Sprite.add(new Sprite(Zombie.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5)));
+		
+		Sprite.add(new Sprite(Zombie.SPRITE_ID, triangleImage(Color.red)));
 	}
 	
 	private static void spriteBossZombie() {
 		if (Sprite.exists(BossZombie.SPRITE_ID))
 			return;
-		BufferedImage image = new BufferedImage(80, 80, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		Polygon p = new Polygon(); p.addPoint(0, 80); p.addPoint(80, 80); p.addPoint(40, 0);
-		g.setColor(Color.DARK_GRAY);
-		g.fillPolygon(p);
-		p = new Polygon(); p.addPoint(10, 70); p.addPoint(70, 70); p.addPoint(40, 16);
-		g.setColor(Color.black);
-		g.fillPolygon(p);
-		g.dispose();
-		Sprite.add(new Sprite(BossZombie.SPRITE_ID, ImageProccess.scale(image, 0.5, 0.5)));
+		
+		Sprite.add(new Sprite(BossZombie.SPRITE_ID, triangleImage(Color.black)));
 	}
 	
 	private static void spriteBarrier() {
