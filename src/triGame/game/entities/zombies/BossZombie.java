@@ -21,6 +21,7 @@ public class BossZombie extends Zombie {
 			boolean isServer, ZombiePathFinder pathFinder, ShopManager shop, EntityKey key) {
 		
 		super(SPRITE_ID, x, y, managers, isServer, pathFinder, shop, key);
+		additionalBuildingG = 40;
 		this.shop = shop;
 		healthBar = new HealthBar(this);
 		maxHealth = new NetVar.nInt(100, "maxHealth", objClass);

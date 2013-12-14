@@ -8,17 +8,20 @@ import tSquare.paths.Path;
 import triGame.game.ManagerService;
 import triGame.game.entities.buildings.BuildingManager;
 
-public class ZombiePathFinder extends BiDirectionalPathFinder {
+class ZombiePathFinder extends BiDirectionalPathFinder {
 	private final ManagerService managers;
+	private int additionalBuildingG = 0;
 	
-	public ZombiePathFinder(ManagerService managers, BuildingManager buildingManager) {
+	ZombiePathFinder(ManagerService managers, BuildingManager buildingManager) {
 		super(buildingManager.objectGrid);
 		this.managers = managers;
 		setPathDefiner(new ZDefiner());
 		//setDrawer(new PathDrawer()); //uncomment this to draw visual path feedback
 	}
 	
-	public boolean findPath(Path p, Zombie z) {
+	boolean findPath(Path p, Zombie z) {
+		additionalBuildingG = z.additionalBuildingG;
+		
 		if (p != null && p.peekNextStep() != null) {
 			Node.Point n = p.peekNextStep();
 			return findPath(n.x, n.y, z.target.getCenterX(), z.target.getCenterY());
@@ -27,8 +30,7 @@ public class ZombiePathFinder extends BiDirectionalPathFinder {
 		}
 	}
 	
-	public class ZDefiner extends AStarDefiner {
-		private static final int additionalBuildingG = 220;
+	private class ZDefiner extends AStarDefiner {
 
 		@Override
 		public boolean isValidNode(Node node, Node previous, NodeList nodeList) {
@@ -38,7 +40,9 @@ public class ZombiePathFinder extends BiDirectionalPathFinder {
 		@Override
 		public void setNodeStats(Node child, Node parent, Node finish) {
 			int g = calculateNewG(child, parent);
-			if (!managers.building.objectGrid.isOpen(child.x, child.y))
+			
+			boolean blockOpen = managers.building.objectGrid.isOpen(child.x, child.y);
+			if (!blockOpen)
 				g += additionalBuildingG;
 			
 			if (g >= child.g && child.g != 0)

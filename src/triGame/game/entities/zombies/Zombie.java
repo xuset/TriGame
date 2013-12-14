@@ -18,12 +18,9 @@ public class Zombie extends Entity {
 	private static final int hitBackDistance = 10;
 	private static final int ticksPerFindPath = 5;
 	
-	private double damage = -100; //damage per second
+	protected int additionalBuildingG = 220; //higher value, less likely to break through building.
 
 	Entity target;
-	private int lastFindPathTick = 0;
-	private int tickCount = 0;
-
 	long spawnTime = 0l;
 	int speed = 50;
 	
@@ -32,11 +29,14 @@ public class Zombie extends Entity {
 	private final ZombiePathFinder pathFinder;
 	private final ShopManager shop;
 	
+	private int lastFindPathTick = 0;
+	private int tickCount = 0;
+	
 	private int realSpeed = speed;
+	private double damage = -100; //damage per second
 	private Path path;
 	private Point lastTargetBlock = new Point(0, 0);
-	private int lastObjectGridModCount = 0;
-	
+	private int lastObjectGridModCount = 0;	
 	
 	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
 	
@@ -50,9 +50,18 @@ public class Zombie extends Entity {
 		this.shop = shop;
 	}
 	
-	void setMaxHealth(int max) {
-		int actual = (int) (max - getHealth());
-		modifyHealth(actual);
+	public void freeze(double speedChange) {
+		if (isServer)
+			realSpeed *= speedChange;
+	}
+	
+	public void hitByProjectile(int damage) {
+		modifyHealth(damage);
+		hitBack(hitBackDistance);
+		if (getHealth() <= 0) {
+			managers.dropPack.maybeDropPack(getCenterX(), getCenterY());
+			shop.addPoints(4);
+		}
 	}
 
 	@Override
@@ -67,7 +76,7 @@ public class Zombie extends Entity {
 			return;
 		
 		if (target == null || target.getHealth() <= 0 || target.removeRequested())
-			target = ZombieManager.DETERMINE_TARGET(managers);
+			target = ZombieManager.determineTarget(managers);
 		if (target == null)
 			return;
 		
@@ -75,6 +84,11 @@ public class Zombie extends Entity {
 			findPath();
 		move(frameDelta);
 		tickCount++;
+	}
+	
+	void setMaxHealth(int max) {
+		int actual = (int) (max - getHealth());
+		modifyHealth(actual);
 	}
 	
 	private boolean shouldFindNewPath() {
@@ -91,17 +105,16 @@ public class Zombie extends Entity {
 	}
 	
 	private void findPath() {
-		if (!pathFinder.findPath(path, this))
-			throw new RuntimeException("I dont know why this happened but it shouldnt have.");
-			//TODO remove this after enough time has passed. 
-		
-		path = pathFinder.buildPath();
+		if (pathFinder.findPath(path, this))
+			path = pathFinder.buildPath();
+		else
+			path = null;
 		lastTargetBlock.x = Params.roundToGrid(target.getCenterX());
 		lastTargetBlock.y = Params.roundToGrid(target.getCenterY());
 		lastObjectGridModCount = managers.building.objectGrid.getModCount();
 	}
 	
-	public void move(int frameDelta) {
+	private void move(int frameDelta) {
 		double distance = realSpeed * frameDelta / 1000.0;		
 		
 		if (path != null && path.peekNextStep() != null) {
@@ -123,11 +136,6 @@ public class Zombie extends Entity {
 		realSpeed = speed;
 	}
 	
-	public void freeze(double speedChange) {
-		if (isServer)
-			realSpeed *= speedChange;
-	}
-	
 	private boolean inflictDamage(Manager<?> manager, int frameDelta) {
 		Entity e = collidedWithFirst(manager.list);
 		if (e != null && e.getHealth() > 0) {
@@ -136,15 +144,6 @@ public class Zombie extends Entity {
 			return true;
 		}
 		return false;
-	}
-	
-	public void hitByProjectile(int damage) {
-		modifyHealth(damage);
-		hitBack(hitBackDistance);
-		if (getHealth() <= 0) {
-			managers.dropPack.maybeDropPack(getCenterX(), getCenterY());
-			shop.addPoints(4);
-		}
 	}
 	
 	private void hitBack(int distance) {

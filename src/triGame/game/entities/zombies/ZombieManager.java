@@ -73,7 +73,7 @@ public class ZombieManager extends Manager<Zombie> {
 	public Zombie createBoss(int roundNumber) {
 		final int speed = 30;
 		final long spawnDelay = 0;
-		int health = (roundNumber * roundNumber) * 20 * managers.person.list.size();
+		int health = (roundNumber * roundNumber) * 20;
 		
 		Building hq = managers.building.getHQ();
 		Point spawn = determineSpawnLocation(hq);
@@ -93,7 +93,7 @@ public class ZombieManager extends Manager<Zombie> {
 		spawnDelay = (spawnDelay < 0l) ? 0l : spawnDelay;
 		int health = (int) (90 + 2.5 * roundNumber);
 		
-		Entity target = DETERMINE_TARGET(managers);
+		Entity target = determineTarget(managers);
 		Point spawn = determineSpawnLocation(target);
 		
 		Zombie z = creator.create(spawn.x, spawn.y, this);
@@ -175,7 +175,7 @@ public class ZombieManager extends Manager<Zombie> {
 		}
 	}
 	
-	static Entity DETERMINE_TARGET(ManagerService managers) {
+	static Entity determineTarget(ManagerService managers) {
 		final int personWeight = 50;
 		Collection<Building> buildings = managers.building.interactives;
 		Collection<Person> persons = managers.person.list;
