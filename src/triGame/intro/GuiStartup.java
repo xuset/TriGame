@@ -136,7 +136,7 @@ public class GuiStartup {
 			return !contents.equals(myVersion);
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Error while contacting update site. " + e.getMessage());
 		}
 		return false;
 	}
