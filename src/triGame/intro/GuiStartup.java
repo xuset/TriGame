@@ -27,6 +27,9 @@ import triGame.intro.GameMode.MODES;
 public class GuiStartup {
 
 	public static void main(String[] args) throws IOException {
+		if (!System.getProperty("os.name").toLowerCase().contains("windows"))
+			System.setProperty("sun.java2d.opengl", "True");
+		
 		if (args.length != 0)
 			CmdStartup.main(args);
 		else {
