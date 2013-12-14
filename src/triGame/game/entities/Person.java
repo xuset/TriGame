@@ -20,6 +20,7 @@ import triGame.game.ManagerService;
 import triGame.game.Params;
 import triGame.game.entities.buildings.Building;
 import triGame.game.entities.buildings.types.TrapDoor;
+import triGame.game.entities.dropPacks.DropPack;
 import triGame.game.safeArea.SafeAreaBoard;
 
 public class Person extends Entity implements GameIntegratable{
@@ -88,14 +89,7 @@ public class Person extends Entity implements GameIntegratable{
 			}
 			
 			move(frameDelta);
-			double pickedUpHealth = managers.healthPack.grabHealth(attackbox);
-			if (pickedUpHealth > 0) {
-				double max = maxHealth - getHealth();
-				if (pickedUpHealth > max)
-					pickedUpHealth = max;
-				modifyHealth(pickedUpHealth);
-			}
-				
+			pickupDropPacks();
 		}
 	}
 
@@ -148,6 +142,17 @@ public class Person extends Entity implements GameIntegratable{
 						setX(getX() + 2 * -direction);
 				}
 			}
+		}
+	}
+	
+	private void pickupDropPacks() {
+		DropPack drop = managers.dropPack.grabAnyPacks(attackbox);
+		if (drop != null && drop.isHealthPack()) {
+			double pickedUpHealth = drop.pickup();
+			double max = maxHealth - getHealth();
+			if (pickedUpHealth > max)
+				pickedUpHealth = max;
+			modifyHealth(pickedUpHealth);
 		}
 	}
 	

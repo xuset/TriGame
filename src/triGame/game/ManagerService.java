@@ -4,12 +4,11 @@ import tSquare.game.entity.ManagerController;
 import tSquare.game.particles.ParticleController;
 import tSquare.system.PeripheralInput;
 import tSquare.util.PlaceHolder;
-import triGame.game.entities.HealthPack;
-import triGame.game.entities.HealthPack.HealthPackManager;
 import triGame.game.entities.PersonManager;
 import triGame.game.entities.PointWellManager;
 import triGame.game.entities.SpawnHoleManager;
 import triGame.game.entities.buildings.BuildingManager;
+import triGame.game.entities.dropPacks.DropPackManager;
 import triGame.game.entities.projectiles.ProjectileManager;
 import triGame.game.entities.zombies.ZombieManager;
 import triGame.game.safeArea.SafeAreaBoard;
@@ -22,7 +21,7 @@ public final class ManagerService {
 	public final PointWellManager pointWell;
 	public final SpawnHoleManager spawnHole;
 	public final ProjectileManager projectile;
-	public final HealthPack.HealthPackManager healthPack;
+	public final DropPackManager dropPack;
 	
 	/*
 	 * NOTES:
@@ -37,7 +36,7 @@ public final class ManagerService {
 			PlaceHolder<RoundHandler> phRoundHandler, long ownerId) {
 
 		spawnHole = new SpawnHoleManager(managerController);
-		healthPack = new HealthPackManager(managerController);
+		dropPack = new DropPackManager(managerController, shop);
 		pointWell = new PointWellManager(managerController, particleController);
 		projectile = new ProjectileManager(managerController, this);
 		person = new PersonManager(managerController, this, safeBoard, keyboard, ownerId);

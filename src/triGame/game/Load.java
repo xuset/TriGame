@@ -1,7 +1,5 @@
 package triGame.game;
 
-//import gameDev.paths.ObjectGrid;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -14,7 +12,6 @@ import tSquare.imaging.AnimatedSprite;
 import tSquare.imaging.ImageProccess;
 import tSquare.imaging.Sprite;
 import tSquare.system.Sound;
-import triGame.game.entities.HealthPack;
 import triGame.game.entities.Person;
 import triGame.game.entities.PointParticle;
 import triGame.game.entities.PointWell;
@@ -29,6 +26,7 @@ import triGame.game.entities.buildings.types.SmallTower;
 import triGame.game.entities.buildings.types.SteelBarrier;
 import triGame.game.entities.buildings.types.Tower;
 import triGame.game.entities.buildings.types.TrapDoor;
+import triGame.game.entities.dropPacks.DropPack;
 import triGame.game.entities.projectiles.Projectile;
 import triGame.game.entities.zombies.BossZombie;
 import triGame.game.entities.zombies.Zombie;
@@ -52,6 +50,7 @@ public abstract class Load {
 		spriteLightTower();
 		spritePointWell();
 		spriteHealthPack();
+		spritePointPack();
 		spriteSteelBarrier();
 		spriteFreezeTower();
 		Sound.add(Projectile.SOUND_ID);
@@ -231,21 +230,34 @@ public abstract class Load {
 		Sprite.add(PointWell.SPRITE_ID);
 	}
 	
-	private static void spriteHealthPack() {
-		if (Sprite.exists(HealthPack.SPRITE_ID))
-			return;
-		
+	private static BufferedImage createDropPack(Color background, Color foreground) {
 		BufferedImage image = new BufferedImage(24, 24, BufferedImage.TYPE_INT_RGB);
 		Graphics g = image.getGraphics();
 		g.setColor(Color.darkGray);
 		g.fillRect(0, 0, 24, 24);
-		g.setColor(Color.white);
+		g.setColor(background);
 		g.fillRect(3, 3, 18, 18);
-		g.setColor(Color.red);
+		g.setColor(foreground);
 		g.fillRect(10, 3, 4, 18);
 		g.fillRect(3, 10, 18, 4);
 		g.dispose();
-		Sprite.add(new Sprite(HealthPack.SPRITE_ID, image));
+		return image;
+	}
+	
+	private static void spriteHealthPack() {
+		if (Sprite.exists(DropPack.HealthInfo.SPRITE_ID))
+			return;
+		
+		BufferedImage image = createDropPack(Color.white, Color.red);
+		Sprite.add(new Sprite(DropPack.HealthInfo.SPRITE_ID, image));
+	}
+	
+	private static void spritePointPack() {
+		if (Sprite.exists(DropPack.PointInfo.SPRITE_ID))
+			return;
+		
+		BufferedImage image = createDropPack(Color.gray, Color.yellow);
+		Sprite.add(new Sprite(DropPack.PointInfo.SPRITE_ID, image));
 	}
 	
 	private static void spriteSteelBarrier() {

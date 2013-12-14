@@ -142,7 +142,7 @@ public class Zombie extends Entity {
 		modifyHealth(damage);
 		hitBack(hitBackDistance);
 		if (getHealth() <= 0) {
-			managers.healthPack.maybeDropHealth(getCenterX(), getCenterY());
+			managers.dropPack.maybeDropPack(getCenterX(), getCenterY());
 			shop.addPoints(4);
 		}
 	}
