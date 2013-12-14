@@ -56,7 +56,7 @@ public class TriGame extends Game{
 		shop = new ShopManager(300);
 		display = new Display(500, 500, "Attack of the Triangles! - " + (network.isServer ? "Server" : "Client"));
 		drawBoard = new DrawBoard(display.getWidth(), display.getHeight(), display);
-		gameBoard = new GameBoard(5000, 5000, drawBoard);
+		gameBoard = new GameBoard(Params.GAME_WIDTH, Params.GAME_HEIGHT, drawBoard);
 		
 		PlaceHolder<RoundHandler> phRoundHandler = new PlaceHolder<RoundHandler>();
 		
