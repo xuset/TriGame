@@ -15,17 +15,20 @@ public class PersonManager extends Manager<Person>{
 	private final SafeAreaBoard safeBoard;
 	private final PeripheralInput.Keyboard keyboard;
 	private final long ownerId;
+	private final boolean isServer;
 	
 	public final LocationCreator<Person> creator;
 	
 	public PersonManager(ManagerController controller, ManagerService managers,
-			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard, long ownerId) {
+			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard,
+			long ownerId, boolean isServer) {
 		
 		super(controller, HASH_MAP_KEY);
 		this.managers = managers;
 		this.safeBoard = safeBoard;
 		this.keyboard = keyboard;
 		this.ownerId = ownerId;
+		this.isServer = isServer;
 		
 		creator = new LocationCreator<Person>(HASH_MAP_KEY, controller.creator, 
 				new LocationCreator.IFace<Person>() {
@@ -33,7 +36,7 @@ public class PersonManager extends Manager<Person>{
 					public Person create(double x, double y, EntityKey key) {
 						return new Person(x, y, key, PersonManager.this.managers,
 								PersonManager.this.safeBoard, PersonManager.this.keyboard,
-								PersonManager.this.ownerId);
+								PersonManager.this.ownerId, PersonManager.this.isServer);
 					}
 				});
 	}

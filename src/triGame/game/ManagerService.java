@@ -39,7 +39,7 @@ public final class ManagerService {
 		dropPack = new DropPackManager(managerController, shop);
 		pointWell = new PointWellManager(managerController, particleController);
 		projectile = new ProjectileManager(managerController, this);
-		person = new PersonManager(managerController, this, safeBoard, keyboard, ownerId);
+		person = new PersonManager(managerController, this, safeBoard, keyboard, ownerId, isServer);
 		building = new BuildingManager(managerController, this, safeBoard, phRoundHandler, shop, particleController);
 		zombie = new ZombieManager(managerController, this, building, isServer, shop, particleController);
 	}

@@ -42,7 +42,8 @@ public class Person extends Entity implements GameIntegratable{
 	public boolean isDead() { return getHealth() <= 0; }
 	
 	Person(double x, double y, EntityKey key, ManagerService managers,
-			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard, long ownerIdL) {
+			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard,
+			long ownerIdL, boolean isServer) {
 		
 		super(SPRITE_ID, x, y, key);
 		this.managers = managers;
@@ -62,7 +63,10 @@ public class Person extends Entity implements GameIntegratable{
 		
 		if (owned()) {
 			ownerId.set(ownerIdL);
-			color.set(getRandomColor());
+			if (isServer)
+				color.set(Color.cyan.getRGB());
+			else
+				color.set(getRandomColor());
 			color.event.onChange(color, null);
 		}
 	}
