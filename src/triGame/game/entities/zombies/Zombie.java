@@ -97,7 +97,8 @@ public class Zombie extends Entity {
 		boolean playerMoved = !lastTargetBlock.isEqualTo(targetPosition);
 		boolean modCountChanged = managers.building.objectGrid.getModCount() != lastObjectGridModCount;
 		boolean refresh = lastFindPathTick + ticksPerFindPath < tickCount;
-		if (refresh && (playerMoved || modCountChanged)) {
+		boolean firstTime = tickCount == 0;
+		if (firstTime || (refresh && (playerMoved || modCountChanged))) {
 			lastFindPathTick = tickCount;
 			return true;
 		}
