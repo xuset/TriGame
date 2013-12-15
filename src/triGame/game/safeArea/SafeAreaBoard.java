@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
-import tSquare.imaging.ImageProccess;
+import tSquare.imaging.ImageProcess;
 import triGame.game.Params;
 import triGame.game.safeArea.Circle;
 
@@ -39,7 +39,7 @@ public class SafeAreaBoard implements GameIntegratable{
 		drawPointY = d[1];
 		drawPointWidth = d[2];
 		drawPointHeight = d[3];
-		areaImage = ImageProccess.createCompatiableImage(drawPointWidth, drawPointHeight);
+		areaImage = ImageProcess.createCompatiableImage(drawPointWidth, drawPointHeight);
 		Graphics2D g = (Graphics2D) areaImage.getGraphics();
 		g.setColor(fillColor);
 		g.fillRect(0, 0, drawPointWidth, drawPointHeight);

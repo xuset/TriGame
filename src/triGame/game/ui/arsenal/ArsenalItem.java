@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-import tSquare.imaging.ImageProccess;
+import tSquare.imaging.ImageProcess;
 import tSquare.util.Observer;
 import triGame.game.entities.LocManCreator;
 import triGame.game.shopping.ShopItem;
@@ -106,6 +106,6 @@ public class ArsenalItem extends JPanel{
 	private BufferedImage scale(BufferedImage img) {
 		double scaleX = ITEM_SIZE / img.getWidth();
 		double scaleY = ITEM_SIZE / img.getHeight();
-		return ImageProccess.scale(img, scaleX, scaleY);
+		return ImageProcess.scale(img, scaleX, scaleY);
 	}
 }

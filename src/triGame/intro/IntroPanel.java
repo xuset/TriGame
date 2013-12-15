@@ -17,7 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import tSquare.imaging.ImageProccess;
+import tSquare.imaging.ImageProcess;
 import triGame.game.Params;
 
 class IntroPanel {
@@ -34,7 +34,7 @@ class IntroPanel {
 	private boolean newerVersion = false;
 	
 	IntroPanel(JPanel firstPanel) {
-		lblImage = new JLabel(new ImageIcon(ImageProccess.loadImage("media/MainScreen.png")));
+		lblImage = new JLabel(new ImageIcon(ImageProcess.loadImage("media/MainScreen.png")));
 		
 		frame.setPreferredSize(new Dimension(600, 400));
 		frame.setTitle("Attack of the Triangles!");

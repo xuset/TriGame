@@ -9,7 +9,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import tSquare.imaging.AnimatedSprite;
-import tSquare.imaging.ImageProccess;
+import tSquare.imaging.ImageProcess;
 import tSquare.imaging.Sprite;
 import tSquare.system.Sound;
 import triGame.game.entities.Person;
@@ -113,7 +113,7 @@ public abstract class Load {
 		g.setColor(Color.gray);
 		g.fillRect(5, 5, 40, 40);
 		g.dispose();
-		image = ImageProccess.createCompatiableImage(image);
+		image = ImageProcess.createCompatiableImage(image);
 		Sprite.add(new Sprite(Barrier.INFO.spriteId, image));
 	}
 	
@@ -127,7 +127,7 @@ public abstract class Load {
 		g.setColor(Color.black);
 		g.fillRect(46, 0, 8, 50);
 		g.dispose();
-		Sprite.add(new Sprite(Tower.INFO.spriteId, ImageProccess.scale(image, 0.5, 0.5)));
+		Sprite.add(new Sprite(Tower.INFO.spriteId, ImageProcess.scale(image, 0.5, 0.5)));
 	}
 	
 	private static void spriteSmallTower() {
@@ -140,7 +140,7 @@ public abstract class Load {
 		g.setColor(Color.yellow);
 		g.fillRect(46, 0, 8, 75);
 		g.dispose();
-		Sprite.add(new Sprite(SmallTower.INFO.spriteId, ImageProccess.scale(image, 0.5, 0.5)));
+		Sprite.add(new Sprite(SmallTower.INFO.spriteId, ImageProcess.scale(image, 0.5, 0.5)));
 		
 	}
 	

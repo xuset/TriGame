@@ -11,7 +11,7 @@ import tSquare.game.DrawBoard;
 import tSquare.game.GameIntegratable;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
-import tSquare.imaging.ImageProccess;
+import tSquare.imaging.ImageProcess;
 
 
 public class TiledBackground implements GameIntegratable{
@@ -66,10 +66,10 @@ public class TiledBackground implements GameIntegratable{
 				drawBoardHeight / Params.BLOCK_SIZE + 1) + 1; 
 		
 		if (IS_VOLATILE_IMAGE)
-			backgroundImage = ImageProccess.createVolatileImage(
+			backgroundImage = ImageProcess.createVolatileImage(
 					width * Params.BLOCK_SIZE, height * Params.BLOCK_SIZE);
 		else
-			backgroundImage = ImageProccess.createCompatiableImage(
+			backgroundImage = ImageProcess.createCompatiableImage(
 					width * Params.BLOCK_SIZE, height * Params.BLOCK_SIZE);
 		
 		Graphics2D backImageg = (Graphics2D) backgroundImage.getGraphics();
