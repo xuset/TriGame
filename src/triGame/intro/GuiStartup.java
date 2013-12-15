@@ -33,10 +33,18 @@ public class GuiStartup {
 		if (args.length != 0)
 			CmdStartup.main(args);
 		else {
-			TriGame game = new TriGame(new GuiStartup().gatherPlayers());
-			game.startGame();
-			game.shutdown();
+			try {
+				TriGame game = new TriGame(new GuiStartup().gatherPlayers());
+				game.startGame();
+				game.shutdown();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				ErrorWindow ew = new ErrorWindow(ex);
+				ew.waitForDisposal();
+				System.exit(1);
+			}
 		}
+		System.exit(0);
 	}
 	
 	private GuiStartup() {
