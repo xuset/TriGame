@@ -1,7 +1,7 @@
 package triGame.intro;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -24,16 +24,16 @@ import objectIO.netObject.NetFunctionEvent;
 import objectIO.netObject.ObjController;
 import tSquare.system.Network;
 
-public class Lobby extends JPanel{
+class Lobby extends JPanel{
 	private static final long serialVersionUID = 2236815803494900637L;
 	
-	private JPanel pnlMain = new JPanel();
-	private JLabel lblSize = new JLabel();
-	private JButton btnStart = new JButton("Start game");
-	private JLabel lblHostInfo = new JLabel();
-	private ObjController netController;
-	private NetFunction startFunc;
-	private Network network;
+	private final JPanel pnlMain = new JPanel();
+	private final JLabel lblSize = new JLabel();
+	private final JButton btnStart = new JButton("Start game");
+	private final JLabel lblHostInfo = new JLabel();
+	private final ObjController netController;
+	private final NetFunction startFunc;
+	private final Network network;
 	private boolean started = false;
 	
 	Lobby(Network net) {
@@ -55,9 +55,15 @@ public class Lobby extends JPanel{
 		add(pnlMain);
 	}
 	
+	void waitForPlayers() {
+		while (started == false) {
+			try { Thread.sleep(10); } catch(Exception ex) { }
+		}
+	}
+	
 	private void hosting(Network net) {
 		net.getServerInstance().event = connectionEvent;
-		btnStart.addMouseListener(startListener);
+		btnStart.addActionListener(startListener);
 		pnlMain.add(btnStart);
 		lblHostInfo.setText("Your ip:port = " + getIp() + ":" + net.getServerInstance().getPort());
 		lblHostInfo.setAlignmentX(CENTER_ALIGNMENT);
@@ -65,12 +71,6 @@ public class Lobby extends JPanel{
 	
 	private void joining() {
 		lblSize.setText("Waiting on host to start");
-	}
-	
-	void waitForPlayers() {
-		while (started == false) {
-			try { Thread.sleep(10); } catch(Exception ex) { }
-		}
 	}
 	
 	private void shutdown() {
@@ -94,17 +94,13 @@ public class Lobby extends JPanel{
 		public void returnedFunc(MarkupMsg args, Connection c) { }
 	};
 	
-	private MouseListener startListener = new MouseListener() {
+	private ActionListener startListener = new ActionListener() {
 		@Override
-		public void mouseClicked(MouseEvent arg0) {
+		public void actionPerformed(ActionEvent e) {
 			startFunc.sendCall(new MarkupMsg(), Connection.BROADCAST_CONNECTION);
 			network.flush();
 			shutdown();
 		}
-		public void mouseEntered(MouseEvent arg0) { }
-		public void mouseExited(MouseEvent arg0) { }
-		public void mousePressed(MouseEvent arg0) { }
-		public void mouseReleased(MouseEvent arg0) { }
 	};
 	
 	private ConnectionEvent connectionEvent = new ConnectionEvent() {

@@ -1,28 +1,27 @@
 package triGame.intro;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class GameMode extends JPanel{
+class GameMode extends JPanel{
+	enum Modes { SOLO, HOST, JOIN }
 	private static final long serialVersionUID = 4135487615630400457L;
 
-	private JButton btnSolo = new JButton("Solo");
-	private JButton btnHost = new JButton("Host");
-	private JButton btnJoin = new JButton("Join");
-	private MODES chosen = null;
+	private final JButton btnSolo = new JButton("Solo");
+	private final JButton btnHost = new JButton("Host");
+	private final JButton btnJoin = new JButton("Join");
+	private Modes chosen = null;
 	
-	public static enum MODES { SOLO, HOST, JOIN }
-	
-	public GameMode() {
-		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		btnSolo.addMouseListener(soloListener);
-		btnHost.addMouseListener(hostListener);
-		btnJoin.addMouseListener(joinListener);
+	GameMode() {
+		
+		btnSolo.addActionListener(soloListener);
+		btnHost.addActionListener(hostListener);
+		btnJoin.addActionListener(joinListener);
+		
 		add(Box.createHorizontalGlue());
 		add(btnSolo);
 		add(Box.createHorizontalGlue());
@@ -32,43 +31,31 @@ public class GameMode extends JPanel{
 		add(Box.createHorizontalGlue());
 	}
 	
-	public MODES getGameMode() {
+	Modes getGameMode() {
 		while (chosen == null) {
 			try { Thread.sleep(10); } catch (Exception ex) { }
 		}
 		return chosen;
 	}
 	
-	private MouseListener soloListener = new MouseListener() {
+	private ActionListener soloListener = new ActionListener() {
 		@Override
-		public void mouseClicked(MouseEvent arg0) {
-			chosen = MODES.SOLO;
+		public void actionPerformed(ActionEvent e) {
+			chosen = Modes.SOLO;
 		}
-		public void mouseEntered(MouseEvent arg0) { }
-		public void mouseExited(MouseEvent arg0) { }
-		public void mousePressed(MouseEvent arg0) { }
-		public void mouseReleased(MouseEvent arg0) { }
 	};
 	
-	private MouseListener hostListener = new MouseListener() {
+	private ActionListener hostListener = new ActionListener() {
 		@Override
-		public void mouseClicked(MouseEvent arg0) {
-			chosen = MODES.HOST;
+		public void actionPerformed(ActionEvent e) {
+			chosen = Modes.HOST;
 		}
-		public void mouseEntered(MouseEvent arg0) { }
-		public void mouseExited(MouseEvent arg0) { }
-		public void mousePressed(MouseEvent arg0) { }
-		public void mouseReleased(MouseEvent arg0) { }
 	};
 	
-	private MouseListener joinListener = new MouseListener() {
+	private ActionListener joinListener = new ActionListener() {
 		@Override
-		public void mouseClicked(MouseEvent arg0) {
-			chosen = MODES.JOIN;
+		public void actionPerformed(ActionEvent e) {
+			chosen = Modes.JOIN;
 		}
-		public void mouseEntered(MouseEvent arg0) { }
-		public void mouseExited(MouseEvent arg0) { }
-		public void mousePressed(MouseEvent arg0) { }
-		public void mouseReleased(MouseEvent arg0) { }
 	};
 }

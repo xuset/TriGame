@@ -14,53 +14,50 @@ import javax.swing.JTextField;
 
 import tSquare.math.IdGenerator;
 import tSquare.system.Network;
-import triGame.intro.GameMode.MODES;
+import triGame.intro.GameMode.Modes;
 
 public class AddressInfo extends JPanel{
 	private static final long serialVersionUID = 7521351042232726261L;
 	
-	private JLabel lblHint = new JLabel();
-	private JLabel lblError = new JLabel();
-	private JPanel pnlInput = new JPanel();
-	private JTextField txtAddress = new JTextField();
-	private JButton btnConnect = new JButton();
+	private final JLabel lblHint = new JLabel();
+	private final JLabel lblError = new JLabel();
+	private final JPanel pnlInput = new JPanel();
+	private final JTextField txtAddress = new JTextField();
+	private final JButton btnConnect = new JButton();
+	private final boolean hosting;
 	
 	private Network network = null;
-	private boolean hosting;
 	
-	AddressInfo(MODES mode) {
-		switch(mode) {
-		case SOLO:
-			construct(true);
-			txtAddress.setText("3000");
-			conctListener.mouseClicked(null);
-			break;
-		case HOST:
-			construct(true);
-			break;
-		case JOIN:
-			construct(false);
-			break;
-		}
-	}
-	
-	private void construct(boolean hosting) {
-		this.hosting = hosting;
+	AddressInfo(Modes mode) {
+		hosting = (mode == Modes.HOST || mode == Modes.SOLO);
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		lblHint.setAlignmentX(CENTER_ALIGNMENT);
 		lblError.setForeground(Color.red);
 		lblError.setAlignmentX(CENTER_ALIGNMENT);
 		txtAddress.setPreferredSize(new Dimension(200, 20));
 		btnConnect.addMouseListener(conctListener);
+		
 		add(lblHint);
 		add(lblError);
 		pnlInput.add(txtAddress);
 		pnlInput.add(btnConnect);
 		add(pnlInput);
+		
 		if (hosting)
 			hostSetup();
 		else
 			joinSetup();
+		
+		if (mode == Modes.SOLO)
+			conctListener.mouseClicked(null);
+	}
+	
+	Network getNetwork() {
+		while (network == null) {
+			try { Thread.sleep(10); } catch (Exception ex) { }
+		}
+		return network;
 	}
 	
 	private void hostSetup() {
@@ -120,12 +117,4 @@ public class AddressInfo extends JPanel{
 		else
 			lblError.setText("");
 	}
-	
-	Network getNetwork() {
-		while (network == null) {
-			try { Thread.sleep(10); } catch (Exception ex) { }
-		}
-		return network;
-	}
-
 }

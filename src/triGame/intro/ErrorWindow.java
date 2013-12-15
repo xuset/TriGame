@@ -25,7 +25,7 @@ class ErrorWindow {
 	
 	ErrorWindow(Exception ex) {
 		frame.setTitle("Attack of the Triangles!");
-		label.setText("<html><body style='width:300'>Oops. An error has occured. It would be appreciated if you would email me the contents at xuset1@gmail.com</body></html>");
+		label.setText("<html><body style='width:300; text-align:center;'>Oops. An error has occured. It would be appreciated if you would email me the contents at xuset1@gmail.com</body></html>");
 		
 		txtReport.setEditable(false);
 		populateTxtReport(ex);
@@ -63,11 +63,17 @@ class ErrorWindow {
 		frame.setVisible(true);
 	}
 	
+	void waitForDisposal() {
+		while (frame.isDisplayable()) {
+			try { Thread.sleep(10); } catch (Exception ex) { }
+		}
+	}
+	
 	private void populateTxtReport(Exception ex) {
-		txtReport.append("Erorr class: " + ex.toString());
+		txtReport.append("Erorr class: " + ex.toString() + "\r\n");
 		txtReport.append("Error message: " + ex.getMessage() + "\r\n");
 		txtReport.append("Local message: " + ex.getLocalizedMessage() + "\r\n");
-		txtReport.append("Stacktrace\r\n");
+		txtReport.append("Stacktrace:\r\n");
 		StackTraceElement stackFrames[] = ex.getStackTrace();
 		for (StackTraceElement st : stackFrames)
 			txtReport.append("   at " + st.getClassName() + "(" + st.getFileName() + ":" + st.getLineNumber() + ")\r\n");
@@ -77,12 +83,6 @@ class ErrorWindow {
 		txtReport.append("Java version: " + System.getProperty("java.runtime.version") + "\r\n");
 		txtReport.append("OpenGL: " + System.getProperty("sun.java2d.opengl") + "\r\n");
 		txtReport.append("D3D: " + System.getProperty("sun.java2d.d3d") + "\r\n");
-	}
-	
-	void waitForDisposal() {
-		while (frame.isDisplayable()) {
-			try { Thread.sleep(10); } catch (Exception ex) { }
-		}
 	}
 	
 	private void copyError() {
