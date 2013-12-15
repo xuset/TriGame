@@ -42,7 +42,7 @@ public class AnimatedSprite {
 			for (int rowI = 0; rowI < rows && count < total; rowI++) {
 				int x = columnI * widthPer;
 				int y = rowI * heightPer;
-				BufferedImage cropped = ImageProccess.crop(image, x, y, widthPer, heightPer);
+				BufferedImage cropped = ImageProcess.crop(image, x, y, widthPer, heightPer);
 				sprites[count] = new Sprite(url + count, cropped);
 				Sprite.add(sprites[count]);
 				count++;

@@ -14,7 +14,7 @@ import javax.imageio.ImageIO;
 
 //TODO [low] find better way to rotate images
 
-public class ImageProccess {
+public class ImageProcess {
 	
 	private static GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 	
@@ -65,7 +65,7 @@ public class ImageProccess {
 			if (f.exists() && f.isFile())
 				return ImageIO.read(f);
 			
-			URL stream = ImageProccess.class.getResource("/" + url);
+			URL stream = ImageProcess.class.getResource("/" + url);
 			if (stream == null) {
 				return null;
 			}

@@ -15,16 +15,16 @@ public class Sprite {
 	
 	public final int getWidth() { return image.getWidth(); }
 	public final int getHeight() { return image.getHeight(); }
-	public final BufferedImage createCopy() { return ImageProccess.createCompatiableImage(image); }
+	public final BufferedImage createCopy() { return ImageProcess.createCompatiableImage(image); }
 	
 	public Sprite(String url) {
-		BufferedImage img = ImageProccess.loadImage(url);
-		this.image = ImageProccess.createCompatiableImage(img);
+		BufferedImage img = ImageProcess.loadImage(url);
+		this.image = ImageProcess.createCompatiableImage(img);
 		this.url = url;
 	}
 	
 	public Sprite(String url, BufferedImage image) {
-		this.image = ImageProccess.createCompatiableImage(image);
+		this.image = ImageProcess.createCompatiableImage(image);
 		this.url = url;
 	}
 	

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import tSquare.game.GameBoard.ViewRect;
-import tSquare.imaging.ImageProccess;
+import tSquare.imaging.ImageProcess;
 
 public class PathDrawer implements PathDrawerI{
 	private static boolean imagesCreated = false;
@@ -78,7 +78,7 @@ public class PathDrawer implements PathDrawerI{
 	}
 	
 	private static BufferedImage createCircle(int diameter, Color c) {
-		BufferedImage img = ImageProccess.createCompatiableImage(diameter, diameter);
+		BufferedImage img = ImageProcess.createCompatiableImage(diameter, diameter);
 		Graphics g = img.getGraphics();
 		g.setColor(c);
 		g.fillOval(0, 0, diameter, diameter);
