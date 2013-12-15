@@ -76,7 +76,7 @@ class ErrorWindow {
 		txtReport.append("Stacktrace:\r\n");
 		StackTraceElement stackFrames[] = ex.getStackTrace();
 		for (StackTraceElement st : stackFrames)
-			txtReport.append("   at " + st.getClassName() + "(" + st.getFileName() + ":" + st.getLineNumber() + ")\r\n");
+			txtReport.append("   at " + st.getClassName() + "." + st.getMethodName() + "(" + st.getFileName() + ":" + st.getLineNumber() + ")\r\n");
 		txtReport.append("OS: " + System.getProperty("os.name") + "\r\n");
 		txtReport.append("OS version: " + System.getProperty("os.version") + "\r\n");
 		txtReport.append("OS arch: " + System.getProperty("os.arch") + "\r\n");
