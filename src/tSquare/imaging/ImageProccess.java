@@ -7,6 +7,10 @@ import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
+import java.io.File;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 //TODO [low] find better way to rotate images
 
@@ -51,5 +55,24 @@ public class ImageProccess {
 	
 	public static VolatileImage createVolatileImage(int width, int height) {
 		return gc.createCompatibleVolatileImage(width , height);
+	}
+	
+
+	
+	public static BufferedImage loadImage(String url) {
+		File f = new File(url);
+		try {
+			if (f.exists() && f.isFile())
+				return ImageIO.read(f);
+			
+			URL stream = ImageProccess.class.getResource("/" + url);
+			if (stream == null) {
+				return null;
+			}
+			return ImageIO.read(stream);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
 	}
 }

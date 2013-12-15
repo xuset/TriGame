@@ -5,11 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
-
-import javax.imageio.ImageIO;
 
 public class Sprite {
 	private static HashMap<String, Sprite> sprites = new HashMap<String, Sprite>();
@@ -22,7 +18,7 @@ public class Sprite {
 	public final BufferedImage createCopy() { return ImageProccess.createCompatiableImage(image); }
 	
 	public Sprite(String url) {
-		BufferedImage img = loadImage(url);
+		BufferedImage img = ImageProccess.loadImage(url);
 		this.image = ImageProccess.createCompatiableImage(img);
 		this.url = url;
 	}
@@ -45,23 +41,6 @@ public class Sprite {
 	public static Sprite add(Sprite s) {
 		sprites.put(s.url, s);
 		return s;
-	}
-	
-	private BufferedImage loadImage(String url) {
-		File f = new File(url);
-		try {
-			if (f.exists() && f.isFile())
-				return ImageIO.read(f);
-			
-			URL stream = getClass().getResource("/" + url);
-			if (stream == null) {
-				return null;
-			}
-			return ImageIO.read(stream);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
 	}
 	
 	public static Sprite get(String url) {
