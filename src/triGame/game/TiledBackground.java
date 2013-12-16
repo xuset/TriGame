@@ -15,7 +15,7 @@ import tSquare.imaging.ImageProcess;
 
 
 public class TiledBackground implements GameIntegratable{
-	public static final boolean IS_VOLATILE_IMAGE = true;
+	public static final boolean IS_VOLATILE_IMAGE = false;
 	
 	private int x;
 	private int y;
