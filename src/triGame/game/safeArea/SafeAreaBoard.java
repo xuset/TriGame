@@ -111,7 +111,7 @@ public class SafeAreaBoard implements GameIntegratable{
 		
 		int rightFill = (viewX + viewWidth) - (drawPointX + drawPointWidth);
 		if (rightFill > 0)
-			g.fillRect(drawPointX + drawPointWidth - viewX - 1, 0, rightFill, viewHeight);
+			g.fillRect(drawPointX + drawPointWidth - viewX, 0, rightFill, viewHeight);
 		
 		int topFill = drawPointY - viewY;
 		if (topFill > 0)
