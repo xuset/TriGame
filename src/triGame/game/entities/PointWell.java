@@ -15,13 +15,17 @@ public class PointWell extends Entity {
 	private int pointsLeft;
 	
 	public boolean takePoints(int amount) {
+		if (isEmpty())
+			return false;
+		
 		pointsLeft -= amount;
 		int index = pointsLeft / (startingPoints / particles.length);
 		if (particleCount.get() != index) {
 			particleCount.set(index);
+			objClass.update();
 			particleCount.event.onChange(particleCount, null);
 		}
-		return pointsLeft > 0;
+		return !isEmpty();
 	}
 	
 	public boolean isEmpty() { return pointsLeft <= 0; }
@@ -38,13 +42,13 @@ public class PointWell extends Entity {
 				if (index < 0 ||particles[index] == null)
 					return;
 				
-				particles[var.get()].setExpired();
-				particles[var.get()] = null;
+				particles[index].setExpired();
+				particles[index] = null;
 			}
 			
 		};
 		
-		startingPoints = pointsLeft = (int) (Math.random() * 500 + 2500);
+		startingPoints = pointsLeft = (int) (Math.random() * 500 + 0);
 		for (int i = 0; i < particles.length; i++) {
 			particles[i] = new PointParticle.Hovering((int) getCenterX(), (int) getCenterY());
 			pc.addParticle(particles[i]);
