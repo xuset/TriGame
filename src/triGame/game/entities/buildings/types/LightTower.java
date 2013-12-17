@@ -14,13 +14,13 @@ public class LightTower extends Building {
 	public static final BuildingInfo INFO = new BuildingInfo(
 			"media/LightTower.png",	//spriteId
 			"lightTower",			//Creator hash map key
-			250,					//visibilityRadius
+			500,					//visibilityRadius
 			"Just extends the playable area so you can easily expand your empire",
 			new ShopItem("Light Tower", 80),
 			true,   //has a healthBar
 			false,  //has an UpgradeManager
 			true,   //is interactive
-			10,     //zombie target selection weight
+			2,     //zombie target selection weight
 			100     //max health
 	);
 
