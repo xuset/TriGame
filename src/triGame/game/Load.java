@@ -21,6 +21,7 @@ import triGame.game.entities.buildings.types.Barrier;
 import triGame.game.entities.buildings.types.FreezeTower;
 import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.entities.buildings.types.LightTower;
+import triGame.game.entities.buildings.types.MortorTower;
 import triGame.game.entities.buildings.types.PointCollector;
 import triGame.game.entities.buildings.types.SmallTower;
 import triGame.game.entities.buildings.types.SteelBarrier;
@@ -53,6 +54,7 @@ public abstract class Load {
 		spritePointPack();
 		spriteSteelBarrier();
 		spriteFreezeTower();
+		spriteMortorTower();
 		Sound.add(Projectile.SOUND_ID);
 		AnimatedSprite.ADD(Wall.CRACKS_SPRITE_ID, new AnimatedSprite(Wall.CRACKS_SPRITE_ID, 1, 3, 3));
 	}
@@ -266,5 +268,9 @@ public abstract class Load {
 	
 	private static void spriteFreezeTower() {
 		Sprite.add(FreezeTower.INFO.spriteId);
+	}
+	
+	private static void spriteMortorTower() {
+		Sprite.add(MortorTower.INFO.spriteId);
 	}
 }

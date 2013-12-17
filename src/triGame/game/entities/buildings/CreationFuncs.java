@@ -15,6 +15,7 @@ import triGame.game.entities.buildings.types.Barrier;
 import triGame.game.entities.buildings.types.FreezeTower;
 import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.entities.buildings.types.LightTower;
+import triGame.game.entities.buildings.types.MortorTower;
 import triGame.game.entities.buildings.types.PointCollector;
 import triGame.game.entities.buildings.types.PointCollectorCreator;
 import triGame.game.entities.buildings.types.SmallTower;
@@ -33,7 +34,8 @@ final class CreationFuncs {
 		FreezeTower.INFO,
 		SmallTower.INFO,
 		PointCollector.INFO,
-		Tower.INFO
+		Tower.INFO,
+		MortorTower.INFO
 	};
 	
 	public final ArrayList<BuildingCreator> creators = new ArrayList<BuildingCreator>();
@@ -67,6 +69,7 @@ final class CreationFuncs {
 		creators.add(new BuildingCreator(SteelBarrier.INFO, bm, mc.creator, managers, steelFunc));
 		creators.add(new BuildingCreator(TrapDoor.INFO, bm, mc.creator, managers, trapDoorFunc));
 		creators.add(new BuildingCreator(FreezeTower.INFO, bm, mc.creator, managers, freezeFunc));
+		creators.add(new BuildingCreator(MortorTower.INFO, bm, mc.creator, managers, mortorFunc));
 	}
 	
 	
@@ -143,6 +146,13 @@ final class CreationFuncs {
 		@Override
 		public FreezeTower create(double x, double y, EntityKey key) {
 			return new FreezeTower(x, y, particle, managers, key);
+		}
+	};
+	
+	private final LocationCreator.IFace<MortorTower> mortorFunc = new IFace<MortorTower>() {
+		@Override
+		public MortorTower create(double x, double y, EntityKey key) {
+			return new MortorTower(x, y, particle, managers, key);
 		}
 	};
 }

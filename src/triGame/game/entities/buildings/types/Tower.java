@@ -3,6 +3,7 @@ package triGame.game.entities.buildings.types;
 
 import java.util.ArrayList;
 
+import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
 import tSquare.math.Point;
@@ -28,6 +29,8 @@ public class Tower extends Building {
 	@Override
 	public int getVisibilityRadius() { return rangeUpgrade.getValue(); }
 	
+	protected int getFireRate() { return fireRateUpgrade.getValue(); }
+	
 	public Tower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
 		this(x, y, pc, managers, INFO, key);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 50);
@@ -46,6 +49,40 @@ public class Tower extends Building {
 		super(info.spriteId, x, y, pc, info, key);
 		this.managers = managers;
 	}
+
+	@Override
+	public void performLogic(int frameDelta) {
+		ArrayList<Zombie> zombies = managers.zombie.list;
+		if (!owned() || zombies.size() == 0)
+			return;
+		Entity target = targetEntity(); //TODO do not need to search every frame.
+		shootAtTarget(target);
+		super.performLogic(frameDelta);
+	}
+	
+	protected void shootAtTarget(Entity target) {
+		if (target == null)
+			return;
+		
+		double dist = Point.distance(getCenterX(), getCenterY(), target.getX(), target.getY());
+		if (dist < getVisibilityRadius()) {
+			this.setAngle(Point.degrees(this.getCenterX(), this.getCenterY(),target.getCenterX(), target.getCenterY()));
+			this.shoot();
+		}
+	}
+	
+	protected Entity targetEntity() {
+		Zombie shortestZombie = null;
+		int shortestDistance = Integer.MAX_VALUE;
+		for (Zombie z : managers.zombie.list) {
+			int dist = (int) Point.distance(getCenterX(), getCenterY(), z.getX(), z.getY());
+			if (dist < shortestDistance) {
+				shortestDistance = dist;
+				shortestZombie = z;
+			}
+		}
+		return shortestZombie;
+	}
 	
 	private void shoot() {
 		if (lastShot + fireRateUpgrade.getValue()  < System.currentTimeMillis()) {
@@ -55,27 +92,6 @@ public class Tower extends Building {
 			managers.projectile.towerCreate((int) getCenterX(), (int) getCenterY(), getAngle(), tSpeed, damageUpgrade.getValue());
 			lastShot = System.currentTimeMillis();
 		}
-	}
-
-	@Override
-	public void performLogic(int frameDelta) {
-		ArrayList<Zombie> zombies = managers.zombie.list;
-		if (!owned() || zombies.size() == 0)
-			return;
-		Zombie shortestZombie = null;
-		int shortestDistance = Integer.MAX_VALUE;
-		for (Zombie z : zombies) {
-			int dist = (int) Point.distance(getCenterX(), getCenterY(), z.getX(), z.getY());
-			if (dist < shortestDistance) {
-				shortestDistance = dist;
-				shortestZombie = z;
-			}
-		}
-		if (shortestDistance < rangeUpgrade.getValue()) {
-			this.setAngle(Point.degrees(this.getCenterX(), this.getCenterY(),shortestZombie.getCenterX(), shortestZombie.getCenterY()));
-			this.shoot();
-		}
-		super.performLogic(frameDelta);
 	}
 	
 	public static final BuildingInfo INFO = new BuildingInfo(

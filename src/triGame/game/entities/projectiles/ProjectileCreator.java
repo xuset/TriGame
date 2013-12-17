@@ -13,12 +13,10 @@ class ProjectileCreator extends Creator<Projectile> {
 			double angle, int speed, int damage,
 			boolean noBuildingCollisions, EntityKey key); }
 	
-	public final static String HASH_MAP_KEY = "projectile";
-	
 	private final ICreate iCreate;
 
-	public ProjectileCreator(CreationHandler handler, ICreate iCreate) {
-		super(HASH_MAP_KEY, handler);
+	public ProjectileCreator(CreationHandler handler, String hashKey, ICreate iCreate) {
+		super(hashKey, handler);
 		this.iCreate = iCreate;
 	}
 	

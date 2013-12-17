@@ -13,11 +13,11 @@ public class Projectile extends Entity {
 	public static final String SPRITE_ID = "projectile";
 	public static final String SOUND_ID = "media/Pistol_Shot.wav";
 	
-	private final ManagerService managers;
 	private final boolean noBuildingCollisions;
 	private final Sound fireSound = Sound.get(SOUND_ID);
-	
-	private int speed, damage;
+
+	protected final ManagerService managers;
+	protected final int speed, damage;
 
 	protected Projectile(String sSpriteId, double startX, double startY,
 			double angle, int speed, int damage, boolean noBuildingCollisions,
