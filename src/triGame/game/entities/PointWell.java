@@ -48,7 +48,7 @@ public class PointWell extends Entity {
 			
 		};
 		
-		startingPoints = pointsLeft = (int) (Math.random() * 500 + 0);
+		startingPoints = pointsLeft = (int) (Math.random() * 500 + 2500);
 		for (int i = 0; i < particles.length; i++) {
 			particles[i] = new PointParticle.Hovering((int) getCenterX(), (int) getCenterY());
 			pc.addParticle(particles[i]);
