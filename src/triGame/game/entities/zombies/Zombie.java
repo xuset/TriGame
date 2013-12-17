@@ -32,7 +32,7 @@ public class Zombie extends Entity {
 	private int lastFindPathTick = 0;
 	private int tickCount = 0;
 	
-	private int realSpeed = speed;
+	private double realSpeed = speed;
 	private double damage = -100; //damage per second
 	private Path path;
 	private Point lastTargetBlock = new Point(0, 0);
