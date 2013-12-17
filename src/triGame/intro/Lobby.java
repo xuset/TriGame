@@ -1,5 +1,6 @@
 package triGame.intro;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.Inet4Address;
@@ -44,8 +45,9 @@ class Lobby extends JPanel{
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		displaySize(net.hub.getAllConnections().size());
+		pnlMain.add(Box.createHorizontalGlue());
 		pnlMain.add(lblSize);
-		pnlMain.add(Box.createHorizontalStrut(20));
+		pnlMain.add(Box.createHorizontalGlue());
 		if (net.isServer)
 			hosting(net);
 		else
@@ -57,6 +59,10 @@ class Lobby extends JPanel{
 	
 	void waitForPlayers() {
 		while (started == false) {
+			if (!network.isServer && !network.getClientInstance().isConnectedToServer()) {
+				lblSize.setForeground(Color.red);
+				lblSize.setText("Disconnected from host!");
+			}
 			try { Thread.sleep(10); } catch(Exception ex) { }
 		}
 	}

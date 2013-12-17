@@ -65,7 +65,7 @@ public class PointCollector extends Building {
 			true,   //has a healthBar
 			true,   //has an UpgradeManager
 			true,   //is interactive
-			10,     //zombie target selection weight
+			1,     //zombie target selection weight
 			100     //max health
 	);
 

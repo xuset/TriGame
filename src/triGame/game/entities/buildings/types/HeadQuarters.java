@@ -21,7 +21,7 @@ public class HeadQuarters extends Building {
 			true,   //has a healthBar
 			false,  //has an UpgradeManager
 			true,   //is interactive
-			10,     //zombie target selection weight
+			20,     //zombie target selection weight
 			1500     //max health
 	);
 

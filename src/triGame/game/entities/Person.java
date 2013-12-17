@@ -35,7 +35,7 @@ public class Person extends Entity implements GameIntegratable{
 	private final NetVar.nLong ownerId;
 	private final NetVar.nInt color;
 	
-	private int realSpeed = 0;
+	private double realSpeed = 0;
 	
 	long getOwnerId() { return ownerId.get(); }
 	
@@ -161,8 +161,8 @@ public class Person extends Entity implements GameIntegratable{
 	}
 	
 	private int getRandomColor() {
-		int r = (int) (100 + Math.random() * 150);
-		int g = (int) (100 + Math.random() * 100);
+		int r = (int) (150 + Math.random() * 100);
+		int g = (int) (100 + Math.random() * 150);
 		int b = (int) (100 + Math.random() * 150);
 		Color myColor = new Color(r, g, b);
 		return myColor.getRGB();
@@ -203,7 +203,7 @@ public class Person extends Entity implements GameIntegratable{
 			setAngle(0);
 		}
 		if (up || down || left || right)
-			moveForward(realSpeed * frameDelta / 1000);
+			moveForward(realSpeed * frameDelta / 1000.0);
 		realSpeed = speed;
 	}
 	
