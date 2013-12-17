@@ -8,16 +8,16 @@ import tSquare.game.entity.EntityKey;
 import triGame.game.ManagerService;
 import triGame.game.entities.zombies.Zombie;
 
-public class MortorProjectile extends Projectile {
-	public static final String SPRITE_ID = "media/MortorProjectile.png";
-	private static final long explodedTime = 700;
+public class MortarProjectile extends Projectile {
+	public static final String SPRITE_ID = "media/MortarProjectile.png";
+	private static final long explodedTime = 300;
 	
 	private boolean collided = false;
 	private long explodeStarted = 0;
 	
-	public int splashRadius = 100;
+	public int splashRadius = 50;
 	
-	protected MortorProjectile(String sSpriteId, double startX, double startY,
+	protected MortarProjectile(String sSpriteId, double startX, double startY,
 			double angle, int speed, int damage,
 			ManagerService managers, EntityKey key) {
 		
@@ -27,18 +27,17 @@ public class MortorProjectile extends Projectile {
 	
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
-		if (!collided) {
+		if (collided) {
+			double ratio = (System.currentTimeMillis() - explodeStarted + 0.0) / explodedTime;
+			if (ratio > 1)
+				remove();
+			
+			int radius = (int) (ratio * splashRadius);
+			g.setColor(Color.orange);
+			g.drawOval((int) (getX() - radius - rect.getX()), (int) (getY() - radius - rect.getY()), radius * 2, radius * 2);
+		} else {
 			super.draw(g, rect);
-			return;
 		}
-		
-		double ratio = (System.currentTimeMillis() - explodeStarted + 0.0) / explodedTime;
-		if (ratio > 1)
-			remove();
-		
-		int radius = (int) (ratio * splashRadius);
-		g.setColor(Color.orange);
-		g.drawOval((int) (getX() - radius), (int) (getY() - radius), radius * 2, radius * 2);
 	}
 	
 	@Override

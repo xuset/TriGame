@@ -49,7 +49,7 @@ public class ProjectileManager extends Manager<Projectile> {
 		@Override
 		public Projectile create(String spriteId, int x, int y, double angle,
 				int speed, int damage, boolean noBCollisions, EntityKey key) {
-			return null;
+			return new MortarProjectile(spriteId, x, y, angle, speed, damage, managers, key);
 		}
 	};
 

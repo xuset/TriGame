@@ -15,7 +15,7 @@ import triGame.game.entities.buildings.types.Barrier;
 import triGame.game.entities.buildings.types.FreezeTower;
 import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.entities.buildings.types.LightTower;
-import triGame.game.entities.buildings.types.MortorTower;
+import triGame.game.entities.buildings.types.MortarTower;
 import triGame.game.entities.buildings.types.PointCollector;
 import triGame.game.entities.buildings.types.PointCollectorCreator;
 import triGame.game.entities.buildings.types.SmallTower;
@@ -35,7 +35,7 @@ final class CreationFuncs {
 		SmallTower.INFO,
 		PointCollector.INFO,
 		Tower.INFO,
-		MortorTower.INFO
+		MortarTower.INFO
 	};
 	
 	public final ArrayList<BuildingCreator> creators = new ArrayList<BuildingCreator>();
@@ -69,7 +69,7 @@ final class CreationFuncs {
 		creators.add(new BuildingCreator(SteelBarrier.INFO, bm, mc.creator, managers, steelFunc));
 		creators.add(new BuildingCreator(TrapDoor.INFO, bm, mc.creator, managers, trapDoorFunc));
 		creators.add(new BuildingCreator(FreezeTower.INFO, bm, mc.creator, managers, freezeFunc));
-		creators.add(new BuildingCreator(MortorTower.INFO, bm, mc.creator, managers, mortorFunc));
+		creators.add(new BuildingCreator(MortarTower.INFO, bm, mc.creator, managers, mortarFunc));
 	}
 	
 	
@@ -149,10 +149,10 @@ final class CreationFuncs {
 		}
 	};
 	
-	private final LocationCreator.IFace<MortorTower> mortorFunc = new IFace<MortorTower>() {
+	private final LocationCreator.IFace<MortarTower> mortarFunc = new IFace<MortarTower>() {
 		@Override
-		public MortorTower create(double x, double y, EntityKey key) {
-			return new MortorTower(x, y, particle, managers, key);
+		public MortarTower create(double x, double y, EntityKey key) {
+			return new MortarTower(x, y, particle, managers, key);
 		}
 	};
 }

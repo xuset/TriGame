@@ -21,7 +21,7 @@ import triGame.game.entities.buildings.types.Barrier;
 import triGame.game.entities.buildings.types.FreezeTower;
 import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.entities.buildings.types.LightTower;
-import triGame.game.entities.buildings.types.MortorTower;
+import triGame.game.entities.buildings.types.MortarTower;
 import triGame.game.entities.buildings.types.PointCollector;
 import triGame.game.entities.buildings.types.SmallTower;
 import triGame.game.entities.buildings.types.SteelBarrier;
@@ -271,6 +271,6 @@ public abstract class Load {
 	}
 	
 	private static void spriteMortorTower() {
-		Sprite.add(MortorTower.INFO.spriteId);
+		Sprite.add(MortarTower.INFO.spriteId);
 	}
 }

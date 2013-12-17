@@ -7,18 +7,18 @@ import tSquare.math.Point;
 import triGame.game.ManagerService;
 import triGame.game.shopping.ShopItem;
 
-public class MortorTower extends Tower {
+public class MortarTower extends Tower {
 	
 	private final long shootDelay = 800;
 	private final int speed = 400;
-	private final int damage = 90;
+	private final int damage = -100;
 	
 	private long lastShootTime = 0;
 	
 	@Override
 	public int getVisibilityRadius() { return INFO.visibilityRadius; }
 
-	public MortorTower(double x, double y, ParticleController pc,
+	public MortarTower(double x, double y, ParticleController pc,
 			ManagerService managers, EntityKey key) {
 		
 		super(x, y, pc, managers, INFO, key);
@@ -37,15 +37,16 @@ public class MortorTower extends Tower {
 			int y = (int) getCenterY();
 			
 			managers.projectile.mortorCreate(x, y, angle, speed, damage);
+			lastShootTime = System.currentTimeMillis();
 		}
 	}
 
 	public static final BuildingInfo INFO = new BuildingInfo(
-			"media/MortorTower.png",    //spriteId
-			"mortorTower",    //Creator hash map key
+			"media/MortarTower.png",    //spriteId
+			"mortarTower",    //Creator hash map key
 			200,        //visibilityRadius
-			"'BOOM,' says the mortor tower.",
-			new ShopItem("Mortor tower", 500),
+			"'BOOM,' says the mortar tower.",
+			new ShopItem("Mortar tower", 500),
 			true,    //has a healthBar
 			false,    //has an UpgradeManager
 			true,   //is interactive
