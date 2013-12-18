@@ -14,6 +14,7 @@ import triGame.game.entities.buildings.Building.BuildingInfo;
 import triGame.game.entities.buildings.types.Barrier;
 import triGame.game.entities.buildings.types.FreezeTower;
 import triGame.game.entities.buildings.types.HeadQuarters;
+import triGame.game.entities.buildings.types.HealthTower;
 import triGame.game.entities.buildings.types.LightTower;
 import triGame.game.entities.buildings.types.MortarTower;
 import triGame.game.entities.buildings.types.PointCollector;
@@ -35,7 +36,8 @@ final class CreationFuncs {
 		SmallTower.INFO,
 		PointCollector.INFO,
 		Tower.INFO,
-		MortarTower.INFO
+		MortarTower.INFO,
+		HealthTower.INFO
 	};
 	
 	public final ArrayList<BuildingCreator> creators = new ArrayList<BuildingCreator>();
@@ -70,6 +72,7 @@ final class CreationFuncs {
 		creators.add(new BuildingCreator(TrapDoor.INFO, bm, mc.creator, managers, trapDoorFunc));
 		creators.add(new BuildingCreator(FreezeTower.INFO, bm, mc.creator, managers, freezeFunc));
 		creators.add(new BuildingCreator(MortarTower.INFO, bm, mc.creator, managers, mortarFunc));
+		creators.add(new BuildingCreator(HealthTower.INFO, bm, mc.creator, managers, hpTowerFunc));
 	}
 	
 	
@@ -153,6 +156,13 @@ final class CreationFuncs {
 		@Override
 		public MortarTower create(double x, double y, EntityKey key) {
 			return new MortarTower(x, y, particle, managers, key);
+		}
+	};
+	
+	private final LocationCreator.IFace<HealthTower> hpTowerFunc = new IFace<HealthTower>() {
+		@Override
+		public HealthTower create(double x, double y, EntityKey key) {
+			return new HealthTower(x, y, particle, managers, key);
 		}
 	};
 }
