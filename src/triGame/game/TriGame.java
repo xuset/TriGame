@@ -50,7 +50,7 @@ public class TriGame extends Game{
 		safeBoard = new SafeAreaBoard();
 		gameOver = new GameOver();
 		input = new PeripheralInput();
-		shop = new ShopManager(300);
+		shop = new ShopManager(30000);
 		display = new Display(500, 500, "Attack of the Triangles! - " + (network.isServer ? "Server" : "Client"));
 		drawBoard = new DrawBoard(display.getWidth(), display.getHeight(), display);
 		gameBoard = new GameBoard(Params.GAME_WIDTH, Params.GAME_HEIGHT, drawBoard);
