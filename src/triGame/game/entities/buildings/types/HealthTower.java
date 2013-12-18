@@ -3,8 +3,11 @@ package triGame.game.entities.buildings.types;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import objectIO.connections.Connection;
+import objectIO.netObject.NetVar;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
+import tSquare.game.particles.Particle;
 import tSquare.game.particles.ParticleController;
 import tSquare.math.Point;
 import triGame.game.ManagerService;
@@ -13,14 +16,16 @@ import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeItem;
 
 public class HealthTower extends Building {
-	private static final double elapsedDrawTime = 2000;
-	private static final double regenerateScale = 1.0 / 10.0;
+	private static final double elapsedDrawTime = 1000;
+	private static final double regenerateScale = 1.0 / 15.0;
 	private static final double spinSpeed = 15;
 
 	private final ManagerService managers;
 	private final UpgradeItem rateUpgrade;
 	private final UpgradeItem rangeUpgrade;
 	private final UpgradeItem powerUpgrade;
+	private final NetVar.nInt rangeValue;
+	private final NetVar.nBool drawRegeneration;
 	
 	private long lastRegeneration = 0;
 	private long drawTimeStarted = 0;
@@ -33,9 +38,19 @@ public class HealthTower extends Building {
 		
 		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.managers = managers;
-		rateUpgrade = new UpgradeItem(new ShopItem("Regeneration rate", 200), 3, 4000, -2000);
-		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 200), 3, INFO.visibilityRadius, 50);
+		
+		rateUpgrade = new UpgradeItem(new ShopItem("Regeneration rate", 200), 3, 12000, -2000);
+		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 200), 3, INFO.visibilityRadius, 25);
 		powerUpgrade = new UpgradeItem(new ShopItem("Healing power", 200), 3, 1, 1);
+		upgrades.addUpgrade(rateUpgrade);
+		upgrades.addUpgrade(rangeUpgrade);
+		upgrades.addUpgrade(powerUpgrade);
+		
+		rangeValue = new NetVar.nInt(rangeUpgrade.getValue(), "range", objClass);
+		drawRegeneration = new NetVar.nBool(false, "drawRegeneration", objClass);
+		drawRegeneration.event = new OnRegenerateChange();
+		
+		pc.addParticle(new HealthParticle());
 	}
 
 	@Override
@@ -44,6 +59,8 @@ public class HealthTower extends Building {
 		
 		if (!owned())
 			return;
+		
+		rangeValue.set(rangeUpgrade.getValue());
 		
 		final long nextRegeneration = lastRegeneration + rateUpgrade.getValue();
 		final double centerX = getCenterX();
@@ -57,29 +74,24 @@ public class HealthTower extends Building {
 			}
 			lastRegeneration = System.currentTimeMillis();
 		}
+		
+		if (System.currentTimeMillis() > nextRegeneration - elapsedDrawTime) {
+			if (!drawRegeneration.get()) {
+				drawRegeneration.set(true);
+				drawRegeneration.event.onChange(drawRegeneration, null);
+			}
+		} else
+			drawRegeneration.set(false);
 	}
 	
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
 		super.draw(g, rect);
 
-		final long nextRegeneration = lastRegeneration + rateUpgrade.getValue();
-		if (System.currentTimeMillis() > nextRegeneration - elapsedDrawTime) {
-			if(drawTimeStarted == 0)
-				drawTimeStarted = System.currentTimeMillis();
-			
-			final double ratio = (System.currentTimeMillis() - drawTimeStarted) / elapsedDrawTime;
-			final int radius = (int) (rangeUpgrade.getValue() * ratio);
-			final int x = (int) (getCenterX() - rect.getX() - radius);
-			final int y = (int) (getCenterY() - rect.getY() - radius);
-			
-			g.setColor(Color.cyan);			
-			g.drawOval(x, y, radius * 2, radius * 2);
-			
+		if (drawRegeneration.get())
 			setAngle(getAngle() + spinSpeed);
-		} else {
-			drawTimeStarted = 0;
-		}
+		else
+			setAngle(0.0);
 	}
 	
 	private void increaseBuildingHealth(Building b) {
@@ -88,15 +100,44 @@ public class HealthTower extends Building {
 		b.modifyHealth(gains);
 	}
 	
+	private final class OnRegenerateChange implements NetVar.OnChange<Boolean> {
+		@Override
+		public void onChange(NetVar<Boolean> var, Connection c) {
+			drawTimeStarted = var.get() ? System.currentTimeMillis() : 0;
+		}
+	}
+	
+	private class HealthParticle extends Particle {
+
+		@Override
+		public void draw(int delta, Graphics2D g, ViewRect rect) {
+			if (!drawRegeneration.get())
+				return;
+				
+			final double ratio = (System.currentTimeMillis() - drawTimeStarted) / elapsedDrawTime;
+			final int radius = (int) (rangeValue.get() * ratio);
+			final int x = (int) (getCenterX() - rect.getX() - radius);
+			final int y = (int) (getCenterY() - rect.getY() - radius);
+			
+			g.setColor(Color.cyan);
+			g.drawOval(x, y, radius * 2, radius * 2);
+		}
+
+		@Override
+		public boolean isExpired() {
+			return HealthTower.this.removeRequested();
+		}
+		
+	}
 	
 	public static final BuildingInfo INFO = new BuildingInfo(
 			"media/HealthTower.png",    //spriteId
 			"healthTower",    //Creator hash map key
-			200,        //visibilityRadius
-			"Need help defending yourself from waves of undead triangles?",
+			76,        //visibilityRadius
+			"Regenerate a tower's health within it's range",
 			new ShopItem("Regenerator", 700),
 			true,   //has a healthBar
-			false,   //has an UpgradeManager
+			true,   //has an UpgradeManager
 			true,   //is interactive
 			10,     //zombie target selection weight
 			100     //max health
