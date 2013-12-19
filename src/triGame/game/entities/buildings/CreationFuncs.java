@@ -35,9 +35,9 @@ final class CreationFuncs {
 		FreezeTower.INFO,
 		SmallTower.INFO,
 		PointCollector.INFO,
+		HealthTower.INFO,
 		Tower.INFO,
-		MortarTower.INFO,
-		HealthTower.INFO
+		MortarTower.INFO
 	};
 	
 	public final ArrayList<BuildingCreator> creators = new ArrayList<BuildingCreator>();

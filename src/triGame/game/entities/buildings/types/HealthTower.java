@@ -39,9 +39,9 @@ public class HealthTower extends Building {
 		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.managers = managers;
 		
-		rateUpgrade = new UpgradeItem(new ShopItem("Regeneration rate", 200), 3, 12000, -2000);
-		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 200), 3, INFO.visibilityRadius, 25);
-		powerUpgrade = new UpgradeItem(new ShopItem("Healing power", 200), 3, 1, 1);
+		rateUpgrade = new UpgradeItem(new ShopItem("Regeneration rate", 100), 3, 12000, -2000);
+		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100), 3, INFO.visibilityRadius, 50);
+		powerUpgrade = new UpgradeItem(new ShopItem("Healing power", 100), 3, 1, 1);
 		upgrades.addUpgrade(rateUpgrade);
 		upgrades.addUpgrade(rangeUpgrade);
 		upgrades.addUpgrade(powerUpgrade);
@@ -133,9 +133,9 @@ public class HealthTower extends Building {
 	public static final BuildingInfo INFO = new BuildingInfo(
 			"media/HealthTower.png",    //spriteId
 			"healthTower",    //Creator hash map key
-			76,        //visibilityRadius
+			126,        //visibilityRadius
 			"Regenerate a tower's health within it's range",
-			new ShopItem("Regenerator", 700),
+			new ShopItem("Regenerator", 400),
 			true,   //has a healthBar
 			true,   //has an UpgradeManager
 			true,   //is interactive
