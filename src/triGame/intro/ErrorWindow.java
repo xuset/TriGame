@@ -25,9 +25,13 @@ class ErrorWindow {
 	
 	ErrorWindow(Exception ex) {
 		frame.setTitle("Attack of the Triangles!");
-		label.setText("<html><body style='width:300; text-align:center;'>Oops. An error has occured. It would be appreciated if you would email me the contents at xuset1@gmail.com</body></html>");
+		frame.setPreferredSize(new Dimension(600, 700));
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		label.setText("<html><body style='width:300; text-align:center;'>Oops. An error occured, and the game cannot be continued. Sorry about that. I would really like to fix this bug, and it would be appreciated if you would email me the contents at xuset1@gmail.com. </body></html>");
 		
 		txtReport.setEditable(false);
+		txtReport.setDragEnabled(true);
+		txtReport.setMaximumSize(new Dimension(570, 500));
 		populateTxtReport(ex);
 		
 		btnFile.addActionListener(new ActionListener() {
@@ -57,9 +61,7 @@ class ErrorWindow {
 		panel.add(btnFile);
 		panel.add(btnClose);
 		frame.add(panel);
-		frame.setPreferredSize(new Dimension(400, 600));
 		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 	}
 	
