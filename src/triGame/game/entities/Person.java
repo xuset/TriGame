@@ -36,10 +36,12 @@ public class Person extends Entity implements GameIntegratable{
 	private final NetVar.nInt color;
 	
 	private double realSpeed = 0;
+	private boolean moved = false;
 	
 	long getOwnerId() { return ownerId.get(); }
 	
 	public boolean isDead() { return getHealth() <= 0; }
+	public boolean didMove() { return moved; }
 	
 	Person(double x, double y, EntityKey key, ManagerService managers,
 			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard,
@@ -86,6 +88,7 @@ public class Person extends Entity implements GameIntegratable{
 	private boolean right;
 	@Override
 	public void performLogic(int frameDelta) {
+		moved = false;
 		if (owned() && !isDead()) {
 			if (!safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY())) {
 				moveToSafeArea(frameDelta);
@@ -202,8 +205,11 @@ public class Person extends Entity implements GameIntegratable{
 		} else if (right && !left) {
 			setAngle(0);
 		}
-		if (up || down || left || right)
+		
+		if (up || down || left || right) {
+			moved = true; //moved is reset to false every tick. 
 			moveForward(realSpeed * frameDelta / 1000.0);
+		}
 		realSpeed = speed;
 	}
 	

@@ -109,6 +109,9 @@ public class TriGame extends Game{
 		managerService.building.performLogic(frameDelta);
 		managerService.projectile.performLogic(frameDelta);
 		
+		if (player.didMove() || player.isDead())
+			ui.attacher.clearAttached();
+		
 		if (player.isDead() || player.removeRequested() || isGameOver) {
 			if (!managerService.building.interactives.isEmpty()) {
 				Building HQ = managerService.building.interactives.get(0);
