@@ -91,7 +91,8 @@ public class ZombieManager extends Manager<Zombie> {
 		speed = (speed > 350) ? 350 : speed;
 		long spawnDelay = initialSpawnDelay - 75 * roundNumber;
 		spawnDelay = (spawnDelay < 0l) ? 0l : spawnDelay;
-		int health = (int) (90.0 + 2.5 * roundNumber * managers.person.list.size() / 2.0);
+		final int players = managers.person.list.size();
+		int health = (int) ((roundNumber * roundNumber / 10.0)  + (players * roundNumber * 1.0) + 90.0);
 		
 		Entity target = determineTarget(managers);
 		Point spawn = determineSpawnLocation(target);
