@@ -1,5 +1,9 @@
 package triGame.game.entities.buildings.types;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+
+import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
@@ -39,6 +43,28 @@ public class MortarTower extends Tower {
 			
 			managers.projectile.mortarCreate((int) myX, (int) myY, angle, speed, damage);
 		}
+	}
+
+	private double squareRadius = 0;
+	private static final int totalSquares = 2;
+	private static final double maxSquareRadius = 10;
+	@Override
+	public void draw(Graphics2D g, ViewRect rect) {
+		super.draw(g, rect);
+		
+		final int drawX = (int) (getCenterX() - rect.getX());
+		final int drawY = (int) (getCenterY() - rect.getY());
+		
+		final double squareDelta = maxSquareRadius / totalSquares;
+		for (int i = 0; i < totalSquares; i++) {
+			int radius = (int) (squareRadius + i * squareDelta);
+			g.setColor(Color.orange);
+			g.drawRect(drawX - radius, drawY - radius, radius * 2  - 1, radius * 2 - 1);
+		}
+		
+		squareRadius += 1.0 / 3.0;
+		if (squareRadius > squareDelta)
+			squareRadius = 0;
 	}
 
 	public static final BuildingInfo INFO = new BuildingInfo(
