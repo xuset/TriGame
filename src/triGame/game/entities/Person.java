@@ -2,7 +2,6 @@ package triGame.game.entities;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -182,10 +181,10 @@ public class Person extends Entity implements GameIntegratable{
 	}
 	
 	private void move(int frameDelta) {
-		up = keyboard.isPressed(KeyEvent.VK_W);
-		down = keyboard.isPressed(KeyEvent.VK_S);
-		left = keyboard.isPressed(KeyEvent.VK_A);
-		right = keyboard.isPressed(KeyEvent.VK_D);
+		up = keyboard.isUpPressed();
+		down = keyboard.isDownPressed();
+		left = keyboard.isLeftPressed();
+		right = keyboard.isRightPressed();
 		if (up) {
 			if (left)
 				setAngle(135);
