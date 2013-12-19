@@ -14,7 +14,10 @@ import triGame.game.safeArea.SafeAreaBoard;
 
 abstract class Map {
 	public static void createRandomMap(final ManagerService service, final SafeAreaBoard safeBoard) {
-		service.building.getCreator(HeadQuarters.INFO).create(Params.GAME_WIDTH / 2 - 50, Params.GAME_HEIGHT / 2 - 50);
+		final int centerX = Params.GAME_WIDTH / 2;
+		final int centerY = Params.GAME_HEIGHT / 2;
+		service.building.getCreator(HeadQuarters.INFO).create(centerX - 50, centerY - 50);
+		service.pointWell.create(centerX - 500, centerY - 500);
 		
 		createSpawnHoles(service.building, service.spawnHole, safeBoard);
 		createPointWells(service.building, service.pointWell, service.spawnHole, safeBoard);
