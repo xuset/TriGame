@@ -1,13 +1,13 @@
 package triGame.game;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 
-import tSquare.game.DrawBoard;
 import tSquare.game.GameIntegratable;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
@@ -30,11 +30,11 @@ public class TiledBackground implements GameIntegratable{
 	 * @param drawBoard just needed to add Component listener for window resize
 	 * @param centerTo the player so the background can move with the player
 	 */
-	public TiledBackground(DrawBoard drawBoard, Entity centerTo) {
+	public TiledBackground(Component screen, Entity centerTo) {
 		this.centerTo = centerTo;
 		tileImage = createTileImage();
-		resizeImage(drawBoard.getWidth(), drawBoard.getHeight());
-		drawBoard.addComponentListener(new ComponentListener() {
+		resizeImage(screen.getWidth(), screen.getHeight());
+		screen.addComponentListener(new ComponentListener() {
 	        public void componentResized(ComponentEvent evt) {
 	        	resizeImage(evt.getComponent().getWidth(), evt.getComponent().getHeight());
 	        }

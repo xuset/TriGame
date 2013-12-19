@@ -71,7 +71,7 @@ public class TriGame extends Game{
 		}
 		gunManager = new GunManager(managerController, managerService, shop, input.keyboard);
 		player = managerService.person.create(gameBoard.getWidth() / 2 - 50, gameBoard.getHeight() / 2 -100);
-		background = new TiledBackground(drawBoard, player);
+		background = new TiledBackground(display, player);
 		drawBoard.addMouseListener(ui.attacher);
 		drawBoard.addKeyListener(input.keyboard);
 		drawBoard.addMouseMotionListener(input.mouse);
