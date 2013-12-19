@@ -11,14 +11,14 @@ public class ProjectileManager extends Manager<Projectile> {
 	public static final String HASH_MAP_KEY = "projectile";
 	
 	private final ProjectileCreator creator;
-	private final ProjectileCreator mortorCreator;
+	private final ProjectileCreator mortarCreator;
 	private final ManagerService managers;
 
 	public ProjectileManager(ManagerController controller, ManagerService managers) {
 		super(controller, HASH_MAP_KEY);
 		this.managers = managers;
 		creator = new ProjectileCreator(controller.creator, "proj", standardCreate);
-		mortorCreator = new ProjectileCreator(controller.creator, "mortProj", mortorCreate);
+		mortarCreator = new ProjectileCreator(controller.creator, "mortProj", mortarCreate);
 		creator.allowUpdates = false;
 	}
 	
@@ -32,8 +32,8 @@ public class ProjectileManager extends Manager<Projectile> {
 		return p;
 	}
 	
-	public Projectile mortorCreate(int x, int y, double angle, int speed, int damage) {
-		Projectile p = mortorCreator.create(MortarProjectile.SPRITE_ID, x, y, angle, speed, damage, true, this);
+	public Projectile mortarCreate(int x, int y, double angle, int speed, int damage) {
+		Projectile p = mortarCreator.create(MortarProjectile.SPRITE_ID, x, y, angle, speed, damage, true, this);
 		return p;
 	}
 	
@@ -45,7 +45,7 @@ public class ProjectileManager extends Manager<Projectile> {
 		}
 	};
 	
-	private final ProjectileCreator.ICreate mortorCreate = new ICreate() {
+	private final ProjectileCreator.ICreate mortarCreate = new ICreate() {
 		@Override
 		public Projectile create(String spriteId, int x, int y, double angle,
 				int speed, int damage, boolean noBCollisions, EntityKey key) {

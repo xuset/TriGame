@@ -8,9 +8,7 @@ import triGame.game.ManagerService;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeItem;
 
-public class MortarTower extends Tower {	
-	private long lastShootTime = 0;
-
+public class MortarTower extends Tower {
 	public MortarTower(double x, double y, ParticleController pc,
 			ManagerService managers, EntityKey key) {
 		
@@ -26,35 +24,31 @@ public class MortarTower extends Tower {
 	}
 	
 	@Override
-	protected void shootAtTarget(Entity target) {
-		final int fireRate = fireRateUpgrade.getValue();
-		final int range = rangeUpgrade.getValue();
-		
-		if (lastShootTime + fireRate > System.currentTimeMillis())
+	protected void shootAtTarget(Entity target) {		
+		if (target == null)
 			return;
 		
-		double dist = Point.distance(getCenterX(), getCenterY(), target.getX(), target.getY());
-		if (dist < range) {
-			
-			final double angle = Point.degrees(this.getCenterX(), this.getCenterY(),target.getCenterX(), target.getCenterY());
-			final int x = (int) getCenterX();
-			final int y = (int) getCenterY();
+		final double targetX = target.getCenterX(), targetY = target.getCenterY();
+		final double myX = getCenterX(), myY = getCenterY();
+		
+		final double dist = Point.distance(myX, myY, targetX, targetY);
+		if (dist < getVisibilityRadius()) {
+			final double angle = Point.degrees(myX, myY, targetX, targetY);
 			final int speed = accuracyUpgrade.getValue();
 			final int damage = damageUpgrade.getValue();
 			
-			managers.projectile.mortorCreate(x, y, angle, speed, damage);
-			lastShootTime = System.currentTimeMillis();
+			managers.projectile.mortarCreate((int) myX, (int) myY, angle, speed, damage);
 		}
 	}
 
 	public static final BuildingInfo INFO = new BuildingInfo(
-			"media/MortarTower.png",    //spriteId
-			"mortarTower",    //Creator hash map key
-			200,        //visibilityRadius
+			"media/MortarTower.png",  //spriteId
+			"mortarTower",            //Creator hash map key
+			200,                      //visibilityRadius
 			"'BOOM,' says the mortar tower.",
 			new ShopItem("Mortar tower", 500),
-			true,    //has a healthBar
-			true,    //has an UpgradeManager
+			true,   //has a healthBar
+			true,   //has an UpgradeManager
 			true,   //is interactive
 			15,     //zombie target selection weight
 			200     //max health

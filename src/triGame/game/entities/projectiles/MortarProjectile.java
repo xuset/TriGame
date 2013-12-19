@@ -10,33 +10,34 @@ import triGame.game.entities.zombies.Zombie;
 
 public class MortarProjectile extends Projectile {
 	public static final String SPRITE_ID = "media/MortarProjectile.png";
-	private static final long explodedTime = 300;
+	private static final double explodedTime = 300;
+	private static final int splashRadius = 50;
+	private static final double blowBackTime = 100;
+	private static final int blowBackRadius = 15;
 	
 	private boolean collided = false;
 	private long explodeStarted = 0;
-	
-	public int splashRadius = 50;
+	private long timeCreated = 0;
 	
 	protected MortarProjectile(String sSpriteId, double startX, double startY,
 			double angle, int speed, int damage,
 			ManagerService managers, EntityKey key) {
 		
 		super(sSpriteId, startX, startY, angle, speed, damage, true, managers, key);
-		
+		timeCreated = System.currentTimeMillis();
 	}
 	
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
+		final int drawX = (int) (getCenterX() - rect.getX());
+		final int drawY = (int) (getCenterY() - rect.getY());
+		
+		drawBlowBack(drawX, drawY, g);
+		
 		if (collided) {
-			double ratio = (System.currentTimeMillis() - explodeStarted + 0.0) / explodedTime;
-			if (ratio > 1)
+			drawExplosion(drawX, drawY, g);
+			if (System.currentTimeMillis() > explodeStarted + explodedTime)
 				remove();
-			
-			int radius = (int) (ratio * splashRadius);
-			g.setColor(Color.orange);
-			g.drawOval((int) (getCenterX() - radius - rect.getX()),
-					(int) (getCenterY() - radius - rect.getY()),
-					radius * 2, radius * 2);
 		} else {
 			super.draw(g, rect);
 		}
@@ -66,6 +67,24 @@ public class MortarProjectile extends Projectile {
 		
 		if (collided)
 			explodeStarted = System.currentTimeMillis();
+	}
+	
+	private void drawBlowBack(int drawX, int drawY, Graphics2D g) {
+		final double blowBackRatio = (System.currentTimeMillis() - timeCreated) / blowBackTime;
+		final int radius = (int) (blowBackRatio * blowBackRadius);
+		if (blowBackRatio < 1 && blowBackRatio > 0)
+			drawCircle(drawX, drawY, radius, Color.orange, g);
+	}
+	
+	private void drawExplosion(int drawX, int drawY, Graphics2D g) {
+		final double ratio = (System.currentTimeMillis() - explodeStarted) / explodedTime;		
+		final int radius = (int) (ratio * splashRadius);
+		drawCircle(drawX, drawY, radius, Color.orange, g);
+	}
+	
+	private void drawCircle(int x, int y, int radius, Color color, Graphics2D g) {
+		g.setColor(color);
+		g.drawOval(x - radius, y - radius, radius * 2, radius * 2);
 	}
 
 }

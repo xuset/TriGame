@@ -1,8 +1,6 @@
 
 package triGame.game.entities.buildings.types;
 
-import java.util.ArrayList;
-
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
@@ -24,12 +22,14 @@ public class Tower extends Building {
 	protected UpgradeItem damageUpgrade = null;
 	protected UpgradeItem accuracyUpgrade = null;
 	
-	private long lastShot = 0;
+	protected long lastShot = 0;
 	
 	@Override
 	public int getVisibilityRadius() { return rangeUpgrade.getValue(); }
 	
 	protected int getFireRate() { return fireRateUpgrade.getValue(); }
+	
+	protected boolean readyToFire() { return System.currentTimeMillis() >= lastShot + getFireRate(); }
 	
 	public Tower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
 		this(x, y, pc, managers, INFO, key);
@@ -37,7 +37,7 @@ public class Tower extends Building {
 		if (owned()) {
 			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, initialShootDelay, -50);
 			damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, initialDamage, -10);
-			accuracyUpgrade = new UpgradeItem(new ShopItem("Accuracy", 200), 3, 1, 1);
+			accuracyUpgrade = new UpgradeItem(new ShopItem("Accuracy", 200), 3, initialSpeed, 100);
 			upgrades.addUpgrade(rangeUpgrade);
 			upgrades.addUpgrade(fireRateUpgrade);
 			upgrades.addUpgrade(damageUpgrade);
@@ -52,11 +52,14 @@ public class Tower extends Building {
 
 	@Override
 	public void performLogic(int frameDelta) {
-		ArrayList<Zombie> zombies = managers.zombie.list;
-		if (!owned() || zombies.size() == 0)
+		if (!owned() || managers.zombie.list.isEmpty())
 			return;
-		Entity target = targetEntity(); //TODO do not need to search every frame.
-		shootAtTarget(target);
+		
+		if (readyToFire()) {
+			Entity target = targetEntity(); //TODO do not need to search every frame.
+			shootAtTarget(target);
+			lastShot = System.currentTimeMillis();
+		}
 		super.performLogic(frameDelta);
 	}
 	
@@ -64,10 +67,12 @@ public class Tower extends Building {
 		if (target == null)
 			return;
 		
-		double dist = Point.distance(getCenterX(), getCenterY(), target.getX(), target.getY());
+		final double targetX = target.getCenterX(), targetY = target.getCenterY();
+		
+		double dist = Point.distance(getCenterX(), getCenterY(), targetX, targetY);
 		if (dist < getVisibilityRadius()) {
-			this.setAngle(Point.degrees(this.getCenterX(), this.getCenterY(),target.getCenterX(), target.getCenterY()));
-			this.shoot();
+			turn(targetX, targetY);
+			shoot();
 		}
 	}
 	
@@ -85,13 +90,10 @@ public class Tower extends Building {
 	}
 	
 	private void shoot() {
-		if (lastShot + fireRateUpgrade.getValue()  < System.currentTimeMillis()) {
-			int tSpeed = initialSpeed;
-			if (accuracyUpgrade != null)
-				tSpeed += 100 * accuracyUpgrade.getValue();
-			managers.projectile.towerCreate((int) getCenterX(), (int) getCenterY(), getAngle(), tSpeed, damageUpgrade.getValue());
-			lastShot = System.currentTimeMillis();
-		}
+		int tSpeed = initialSpeed;
+		if (accuracyUpgrade != null)
+			tSpeed = accuracyUpgrade.getValue();
+		managers.projectile.towerCreate((int) getCenterX(), (int) getCenterY(), getAngle(), tSpeed, damageUpgrade.getValue());
 	}
 	
 	public static final BuildingInfo INFO = new BuildingInfo(
