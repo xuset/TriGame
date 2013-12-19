@@ -119,7 +119,7 @@ public class HealthTower extends Building {
 			final int x = (int) (getCenterX() - rect.getX() - radius);
 			final int y = (int) (getCenterY() - rect.getY() - radius);
 			
-			g.setColor(Color.cyan);
+			g.setColor(Color.green);
 			g.drawOval(x, y, radius * 2, radius * 2);
 		}
 
