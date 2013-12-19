@@ -34,7 +34,9 @@ public class MortarProjectile extends Projectile {
 			
 			int radius = (int) (ratio * splashRadius);
 			g.setColor(Color.orange);
-			g.drawOval((int) (getX() - radius - rect.getX()), (int) (getY() - radius - rect.getY()), radius * 2, radius * 2);
+			g.drawOval((int) (getCenterX() - radius - rect.getX()),
+					(int) (getCenterY() - radius - rect.getY()),
+					radius * 2, radius * 2);
 		} else {
 			super.draw(g, rect);
 		}
@@ -48,15 +50,13 @@ public class MortarProjectile extends Projectile {
 		moveForward(speed * frameDelta / 1000.0);
 		collided = checkBounds();
 		
-		
-		
 		Zombie zombie = collidedWithFirst(managers.zombie.list);
 		if (zombie != null) {
 			collided = true;
 
 			for (Zombie z : managers.zombie.list) {
-				double dx = z.getX() - getX();
-				double dy = z.getY() - getY();
+				double dx = z.getCenterX() - getCenterX();
+				double dy = z.getCenterY() - getCenterY();
 				
 				if (dx * dx + dy * dy < splashRadius * splashRadius) {
 					z.hitByProjectile(damage);
