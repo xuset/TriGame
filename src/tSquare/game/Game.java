@@ -7,8 +7,6 @@ import tSquare.game.entity.ManagerController;
 import tSquare.game.particles.ParticleController;
 import tSquare.system.Network;
 
-//TODO implement a timer based game loop
-
 public abstract class Game implements Runnable {
 	private static final int milliToNano = 1000000;
 	

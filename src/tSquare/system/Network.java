@@ -59,7 +59,7 @@ public class Network {
 		}
 	}
 	
-	public void disconnect() { //TODO add shutdown() method to Hub<>
+	public void disconnect() {
 		client.shutdown();
 		if (server != null)
 			server.shutdown();

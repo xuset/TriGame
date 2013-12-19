@@ -38,7 +38,7 @@ public class DrawBoard extends Canvas{
 		graphics.dispose();
 		graphics = null;
 		strategy.show();
-		Toolkit.getDefaultToolkit().sync(); //TODO what does this even do?
+		Toolkit.getDefaultToolkit().sync();
 		graphics = (Graphics2D) strategy.getDrawGraphics();
 	}
 	
