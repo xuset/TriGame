@@ -33,7 +33,7 @@ public class ProjectileManager extends Manager<Projectile> {
 	}
 	
 	public Projectile mortorCreate(int x, int y, double angle, int speed, int damage) {
-		Projectile p = mortorCreator.create(Projectile.SPRITE_ID, x, y, angle, speed, damage, true, this);
+		Projectile p = mortorCreator.create(MortarProjectile.SPRITE_ID, x, y, angle, speed, damage, true, this);
 		return p;
 	}
 	

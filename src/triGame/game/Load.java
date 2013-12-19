@@ -29,6 +29,7 @@ import triGame.game.entities.buildings.types.SteelBarrier;
 import triGame.game.entities.buildings.types.Tower;
 import triGame.game.entities.buildings.types.TrapDoor;
 import triGame.game.entities.dropPacks.DropPack;
+import triGame.game.entities.projectiles.MortarProjectile;
 import triGame.game.entities.projectiles.Projectile;
 import triGame.game.entities.zombies.BossZombie;
 import triGame.game.entities.zombies.Zombie;
@@ -57,6 +58,7 @@ public abstract class Load {
 		spriteFreezeTower();
 		spriteMortorTower();
 		spriteHealthTower();
+		Sprite.add(MortarProjectile.SPRITE_ID);
 		Sound.add(Projectile.SOUND_ID);
 		AnimatedSprite.ADD(Wall.CRACKS_SPRITE_ID, new AnimatedSprite(Wall.CRACKS_SPRITE_ID, 1, 3, 3));
 	}

@@ -9,8 +9,8 @@ import triGame.game.shopping.ShopItem;
 
 public class MortarTower extends Tower {
 	
-	private final long shootDelay = 800;
-	private final int speed = 400;
+	private final long shootDelay = 1500;
+	private final int speed = 250;
 	private final int damage = -100;
 	
 	private long lastShootTime = 0;
