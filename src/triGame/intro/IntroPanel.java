@@ -26,7 +26,7 @@ class IntroPanel {
 	private final JPanel pnlText = new JPanel();
 	private final JLabel lblNewer = new JLabel("");
 	private final JLabel lblImage;
-	private final JLabel lblAuthor = new JLabel("By: Austin Middleton");
+	private final JLabel lblAuthor = new JLabel("By: Austin Middleton (xuset1@gmail.com)");
 	private final JLabel lblWebsite = new JLabel("https://github.com/xuset/");
 	private final JLabel lblCopyright = new JLabel("© Copyright 2013 (not really... shhhh)");
 	private final JLabel lblLicense = new JLabel("Licensed under the GPLv2 (really)");
