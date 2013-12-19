@@ -10,8 +10,6 @@ import triGame.game.ManagerService;
 import triGame.game.Params;
 import triGame.game.shopping.ShopManager;
 
-//TODO prevent zombies humping persons upon collision
-
 public class Zombie extends Entity {
 	public static final String SPRITE_ID = "zombie";
 	public static final int MAX_ZOMBIES = 100;

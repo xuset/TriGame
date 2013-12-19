@@ -24,9 +24,6 @@ import triGame.game.safeArea.SafeAreaBoard;
 import triGame.game.shopping.ShopManager;
 import triGame.game.ui.UserInterface;
 
-
-//TODO create NetFunction to receive request for initial player spawn location and color
-
 public class TriGame extends Game{
 	private final Display display;
 	private final DrawBoard drawBoard;
