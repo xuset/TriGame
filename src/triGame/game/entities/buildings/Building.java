@@ -1,5 +1,6 @@
 package triGame.game.entities.buildings;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import tSquare.game.GameBoard.ViewRect;
@@ -8,6 +9,7 @@ import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
 import triGame.game.entities.HealthBar;
 import triGame.game.shopping.ShopItem;
+import triGame.game.shopping.UpgradeItem;
 import triGame.game.shopping.UpgradeManager;
 
 public abstract class Building extends Entity{
@@ -60,6 +62,37 @@ public abstract class Building extends Entity{
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
 		super.draw(g, rect);
+		drawUpgradeVisual( (getCenterX() - rect.getX()),
+				(getCenterY() - rect.getY()), g);
+	}
+	
+	private static final int upgrVisDistance = 18;
+	private static final int upgrVisRadius = 4;
+	private void drawUpgradeVisual(double drawX, double drawY, Graphics2D g) {
+		if (upgrades == null)
+			return;
+		
+		final int totalItems = upgrades.items.size();
+		final double angleDelta = 360.0 / totalItems;
+		int count = 0;
+		for (UpgradeItem item : upgrades.items) {
+			if (item.getUpgradeCount() == item.maxUpgrades) {
+				final double rads = Math.toRadians(angleDelta * count - getAngle() + 180);
+				final int itemX = (int) (drawX + Math.cos(rads) * upgrVisDistance);
+				final int itemY = (int) (drawY + Math.sin(rads) * upgrVisDistance);
+				drawUpgrVis(itemX, itemY, upgrVisRadius, g);
+			}
+			count++;
+		}
+	}
+	
+	private void drawUpgrVis(int x, int y, int r, Graphics2D g) {
+		final int border = 2;
+		g.setColor(Color.DARK_GRAY);
+		g.fillRect(x - r, y - r, r * 2, r * 2);
+		g.setColor(Color.white);
+		g.fillRect(x - r + border, y - r + border, 2 * (r - border), 2 * (r - border));
+
 	}
 	
 	public static class BuildingInfo{

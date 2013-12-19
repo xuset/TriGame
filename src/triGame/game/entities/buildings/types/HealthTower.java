@@ -91,7 +91,7 @@ public class HealthTower extends Building {
 		if (drawRegeneration.get())
 			setAngle(getAngle() + spinSpeed);
 		else
-			setAngle(0.0);
+			setAngle(90.0);
 	}
 	
 	private void increaseBuildingHealth(Building b) {
