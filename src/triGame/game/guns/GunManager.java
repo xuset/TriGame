@@ -54,7 +54,7 @@ public class GunManager implements GameIntegratable{
 	private void userShoot() {
 		switchGuns();
 		Person player = managers.person.getPlayer();
-		if (player == null || player.removeRequested())
+		if (player == null || player.isDead())
 			return;
 		
 		if (keyboard.isPressed(shootKey)) {

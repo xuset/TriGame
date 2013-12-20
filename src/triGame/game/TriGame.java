@@ -109,7 +109,7 @@ public class TriGame extends Game{
 		if (player.didMove() || player.isDead())
 			ui.attacher.clearAttached();
 		
-		if (player.isDead() || player.removeRequested() || isGameOver) {
+		if (player.isDead() || isGameOver) {
 			if (!managerService.building.interactives.isEmpty()) {
 				Building HQ = managerService.building.interactives.get(0);
 				gameBoard.centerViewWindowCordinates(HQ.getCenterX(), HQ.getCenterY());
