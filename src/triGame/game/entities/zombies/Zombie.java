@@ -50,7 +50,7 @@ public class Zombie extends Entity {
 	
 	public void freeze(double speedChange) {
 		if (isServer)
-			realSpeed *= speedChange;
+			realSpeed = speed * speedChange;
 	}
 	
 	public void hitByProjectile(int damage) {

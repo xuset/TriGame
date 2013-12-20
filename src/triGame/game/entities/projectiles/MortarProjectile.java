@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
+import tSquare.math.Point;
 import triGame.game.ManagerService;
 import triGame.game.entities.zombies.Zombie;
 
@@ -56,13 +57,12 @@ public class MortarProjectile extends Projectile {
 			collided = true;
 
 			for (Zombie z : managers.zombie.list) {
-				double dx = z.getCenterX() - getCenterX();
-				double dy = z.getCenterY() - getCenterY();
-				
-				if (dx * dx + dy * dy < splashRadius * splashRadius) {
-					z.hitByProjectile(damage);
-				}
+				double distance = Point.distance(getCenterX(), getCenterY(), z.getCenterX(), z.getCenterY());
+				double ratio = 1 - distance / splashRadius;
+				if (ratio > 0)
+					z.hitByProjectile((int) (ratio * damage));
 			}
+			
 		}
 		
 		if (collided)

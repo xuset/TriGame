@@ -77,7 +77,7 @@ public class Person extends Entity implements GameIntegratable{
 	}
 	
 	public void freeze(double speedDelta) {
-		realSpeed *= speedDelta;
+		realSpeed = speed * speedDelta;
 	}
 	
 	private boolean up;
