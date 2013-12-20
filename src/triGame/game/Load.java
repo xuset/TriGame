@@ -27,7 +27,6 @@ import triGame.game.entities.buildings.types.PointCollector;
 import triGame.game.entities.buildings.types.SmallTower;
 import triGame.game.entities.buildings.types.SteelBarrier;
 import triGame.game.entities.buildings.types.Tower;
-import triGame.game.entities.buildings.types.TrapDoor;
 import triGame.game.entities.dropPacks.DropPack;
 import triGame.game.entities.projectiles.MortarProjectile;
 import triGame.game.entities.projectiles.Projectile;
@@ -45,7 +44,6 @@ public abstract class Load {
 		spriteTower();
 		spriteSmallTower();
 		//spriteLaserTower();
-		spriteTrapDoor();
 		spriteProjectile();
 		spriteHQ();
 		spritePointParticle();
@@ -160,22 +158,6 @@ public abstract class Load {
 		g.dispose();
 		new Sprite(LaserTower.INFO.spriteId, image);
 	}*/
-	
-	private static void spriteTrapDoor() {
-		if (Sprite.exists(TrapDoor.INFO.spriteId))
-			return;
-		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setColor(Color.DARK_GRAY);
-		g.fillRect(0, 0, 50, 50);
-		g.setColor(Color.gray);
-		g.fillRect(5, 5, 40, 40);
-		g.setColor(Color.green);
-		g.fillRect(5, 20, 40, 10);
-		g.fillRect(20, 5, 10, 40);
-		g.dispose();
-		Sprite.add(new Sprite(TrapDoor.INFO.spriteId, image));
-	}
 	
 	private static void spriteProjectile() {
 		if (Sprite.exists(Projectile.SPRITE_ID))

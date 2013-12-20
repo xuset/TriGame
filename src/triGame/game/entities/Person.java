@@ -18,7 +18,6 @@ import triGame.game.Load;
 import triGame.game.ManagerService;
 import triGame.game.Params;
 import triGame.game.entities.buildings.Building;
-import triGame.game.entities.buildings.types.TrapDoor;
 import triGame.game.entities.dropPacks.DropPack;
 import triGame.game.safeArea.SafeAreaBoard;
 
@@ -116,9 +115,9 @@ public class Person extends Entity implements GameIntegratable{
 			setX(getX() + Math.cos(Math.toRadians(-getAngle())) * distance * -1);
 		else {
 			buildingCollisions();
-			if (numOfCollisions > 0 && (collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId)) {
+			if (numOfCollisions > 0) {
 				setX(getX() + Math.cos(Math.toRadians(-getAngle())) * distance * -1);
-				if (numOfCollisions == 1 && up == false && down == false && collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId) {
+				if (numOfCollisions == 1 && up == false && down == false) {
 					int direction = 1;
 					if (getCenterY() >= collidedBuilding.getCenterY())
 						direction = 1;
@@ -135,9 +134,9 @@ public class Person extends Entity implements GameIntegratable{
 			setY(getY() + Math.sin(Math.toRadians(-getAngle())) * distance * -1);
 		else {
 			buildingCollisions();
-			if (numOfCollisions > 0 && (collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId)) {
+			if (numOfCollisions > 0) {
 				setY(getY() + Math.sin(Math.toRadians(-getAngle())) * distance * -1);
-				if (numOfCollisions == 1 && left == false && right == false && collidedBuilding.getSpriteId() != TrapDoor.INFO.spriteId) {
+				if (numOfCollisions == 1 && left == false && right == false) {
 					int direction = 1;
 					if (getCenterX() >= collidedBuilding.getCenterX())
 						direction = 1;

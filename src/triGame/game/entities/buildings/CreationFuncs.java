@@ -22,7 +22,6 @@ import triGame.game.entities.buildings.types.PointCollectorCreator;
 import triGame.game.entities.buildings.types.SmallTower;
 import triGame.game.entities.buildings.types.SteelBarrier;
 import triGame.game.entities.buildings.types.Tower;
-import triGame.game.entities.buildings.types.TrapDoor;
 import triGame.game.shopping.ShopManager;
 
 final class CreationFuncs {
@@ -30,7 +29,6 @@ final class CreationFuncs {
 		HeadQuarters.INFO,
 		Barrier.INFO,
 		SteelBarrier.INFO,
-		TrapDoor.INFO,
 		LightTower.INFO,
 		FreezeTower.INFO,
 		SmallTower.INFO,
@@ -69,7 +67,6 @@ final class CreationFuncs {
 		creators.add(new BuildingCreator(Tower.INFO, bm, mc.creator, managers, towerFunc));
 		creators.add(new BuildingCreator(Barrier.INFO, bm, mc.creator, managers, barrierFunc));
 		creators.add(new BuildingCreator(SteelBarrier.INFO, bm, mc.creator, managers, steelFunc));
-		creators.add(new BuildingCreator(TrapDoor.INFO, bm, mc.creator, managers, trapDoorFunc));
 		creators.add(new BuildingCreator(FreezeTower.INFO, bm, mc.creator, managers, freezeFunc));
 		creators.add(new BuildingCreator(MortarTower.INFO, bm, mc.creator, managers, mortarFunc));
 		creators.add(new BuildingCreator(HealthTower.INFO, bm, mc.creator, managers, hpTowerFunc));
@@ -135,13 +132,6 @@ final class CreationFuncs {
 		@Override
 		public SteelBarrier create(double x, double y, EntityKey key) {
 			return new SteelBarrier(x, y, key);
-		}
-	};
-	
-	private final LocationCreator.IFace<TrapDoor> trapDoorFunc = new IFace<TrapDoor>() {
-		@Override
-		public TrapDoor create(double x, double y, EntityKey key) {
-			return new TrapDoor(x, y, managers, key);
 		}
 	};
 	
