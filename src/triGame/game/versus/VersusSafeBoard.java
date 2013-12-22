@@ -8,7 +8,7 @@ import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
 import triGame.game.SafeBoard;
 
-public class VersusSafeBoard extends SafeBoard {
+class VersusSafeBoard extends SafeBoard {
 	private Rectangle2D playableArea;
 	private final Rectangle2D bigArea;
 	

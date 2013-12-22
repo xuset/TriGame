@@ -14,7 +14,7 @@ public class ZombieTargeter {
 		zombies = null;
 	}
 	
-	public void setZombies(Collection<Zombie> zombies) {
+	public void setDependencies(Collection<Zombie> zombies) {
 		this.zombies = zombies;
 	}
 	

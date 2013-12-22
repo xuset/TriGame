@@ -17,22 +17,18 @@ import triGame.game.versus.VersusGameMode;
 public abstract class GameMode implements GameIntegratable {
 	public enum GameType { SURVIVAL, VERSUS }
 	
-	protected final boolean isServer;
-	
 	public int getRoundNumber() { return getGameRound().roundNumber.get(); }
 	public boolean isRoundGoing() { return getGameRound().roundOnGoing.get(); }
 	
-	public GameMode(boolean isServer) {
-		this.isServer = isServer;
-	}
 	
 	public static GameMode factoryCreator(GameType gameType, ShopManager shop,
 			ObjControllerI objc, boolean isServer, PeripheralInput.Keyboard keyboard) {
+		
 		switch (gameType) {
 		case SURVIVAL:
-			return new SurvivalGameMode(shop, objc, isServer, keyboard);
+			return new SurvivalGameMode(shop, isServer, objc, keyboard);
 		case VERSUS:
-			return new VersusGameMode(shop, objc, isServer, keyboard);
+			return new VersusGameMode(shop, isServer, objc, keyboard);
 		}
 		return null;
 	}

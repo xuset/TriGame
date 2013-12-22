@@ -15,7 +15,7 @@ import triGame.game.entities.buildings.BuildingCreator;
 import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.entities.buildings.types.StrongWall;
 
-class VersusMap {
+final class VersusMap {
 	static final int ZONE_SIZE = 20;
 	static final int OFFSET_BLOCK_X = ZONE_SIZE;
 	static final int OFFSET_BLOCK_Y = ZONE_SIZE;

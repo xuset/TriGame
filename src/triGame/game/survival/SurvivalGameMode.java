@@ -2,7 +2,6 @@ package triGame.game.survival;
 
 import objectIO.netObject.ObjControllerI;
 import tSquare.system.PeripheralInput;
-import tSquare.system.PeripheralInput.Keyboard;
 import tSquare.util.Observer;
 import triGame.game.GameMode;
 import triGame.game.GameRound;
@@ -19,16 +18,18 @@ import triGame.game.ui.UserInterface;
 
 public class SurvivalGameMode extends GameMode {
 	private ManagerService managers;
-	private final SurvivalSafeBoard safeBoard = new SurvivalSafeBoard();
-	private final ZombieMediator zombieHandler = new ZombieMediator();
-	private final ZombieTargeter zombieTargeter = new ZombieTargeter();
-	private final GameRound gameRound;
 	private final ShopManager shop;
+	private final SurvivalSafeBoard safeBoard;
+	private final ZombieHandler zombieHandler;
+	private final ZombieTargeter zombieTargeter;
+	private final SurvivalRound gameRound;
 
-	public SurvivalGameMode(ShopManager shop, ObjControllerI objController, boolean isServer, PeripheralInput.Keyboard keyboard) {
-		super(isServer);
+	public SurvivalGameMode(ShopManager shop, boolean isServer, ObjControllerI objController, PeripheralInput.Keyboard keyboard) {
 		this.shop = shop;
-		gameRound = new RoundMediator(objController, isServer, keyboard);
+		safeBoard = new SurvivalSafeBoard();
+		zombieTargeter = new ZombieTargeter();
+		gameRound = new SurvivalRound(objController, isServer, keyboard);
+		zombieHandler = new ZombieHandler(gameRound.onNewRound);
 		gameRound.onNewRound.watch(new OnNewRound());
 	}
 
@@ -41,39 +42,14 @@ public class SurvivalGameMode extends GameMode {
 
 	@Override protected void setDependencies(ManagerService managers, UserInterface ui) {
 		this.managers = managers;
-		zombieTargeter.setZombies(managers.zombie.list);
+		gameRound.setDependencies(managers);
+		zombieTargeter.setDependencies(managers.zombie.list);
+		zombieHandler.setDependencies(managers);
 	}
 
 	@Override
 	protected Person spawnInPlayer() {
 		return managers.person.create(Params.GAME_WIDTH / 2 - 50, Params.GAME_HEIGHT / 2 -100);
-	}
-
-	
-	private class ZombieMediator extends ZombieHandler {
-
-		@Override
-		protected ManagerService getManagers() {
-			return SurvivalGameMode.this.managers;
-		}
-
-		@Override
-		protected int getRoundNumber() {
-			return SurvivalGameMode.this.getRoundNumber();
-		}
-	}
-	
-	private class RoundMediator extends SurvivalRound {
-
-		public RoundMediator(ObjControllerI objController, boolean isServer,
-				Keyboard keyboard) {
-			super(objController, isServer, keyboard);
-		}
-
-		@Override
-		protected ManagerService getManagers() {
-			return managers;
-		}
 	}
 	
 	private class OnNewRound implements Observer.Change<Integer> {

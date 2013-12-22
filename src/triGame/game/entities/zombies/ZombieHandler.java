@@ -9,14 +9,38 @@ import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
 import tSquare.imaging.Sprite;
 import tSquare.math.Point;
+import tSquare.util.Observer;
 import triGame.game.ManagerService;
 import triGame.game.entities.Person;
 import triGame.game.entities.SpawnHole;
 import triGame.game.entities.buildings.Building;
 
-public abstract class ZombieHandler implements GameIntegratable{
-	protected abstract ManagerService getManagers();
-	protected abstract int getRoundNumber();
+public class ZombieHandler implements GameIntegratable{	
+	protected ManagerService managers;
+	protected int roundNumber = 0;
+	
+	//public ZombieHandler() {
+		
+	//}
+	
+	public ZombieHandler(Observer<Integer> roundNumber) {
+		new RoundObserver(roundNumber);
+	}
+	
+	public void setDependencies(ManagerService managers) {
+		this.managers = managers;
+	}
+	
+	private class RoundObserver implements Observer.Change<Integer> {
+		RoundObserver(Observer<Integer> ob) {
+			ob.watch(this);
+		}
+
+		@Override
+		public void observeChange(Integer t) {
+			roundNumber = t;
+		}
+	}
 	
 	private static final int maxSpawnDistance = 600;
 	private static final int maxBufferSize = 15;
@@ -30,7 +54,7 @@ public abstract class ZombieHandler implements GameIntegratable{
 			return new Point(0,0);
 		}
 		
-		ArrayList<SpawnHole> spawnHoles = getManagers().spawnHole.list;
+		ArrayList<SpawnHole> spawnHoles = managers.spawnHole.list;
 		SpawnHole[] buffer = new SpawnHole[maxBufferSize];
 		
 		int size = 0;
@@ -42,7 +66,7 @@ public abstract class ZombieHandler implements GameIntegratable{
 			}
 		}
 		if (size == 0) {
-			SpawnHole[] initials = getManagers().spawnHole.initialSpawnHoles;
+			SpawnHole[] initials = managers.spawnHole.initialSpawnHoles;
 			SpawnHole shortest = initials[0];
 			int shortestDistance = (int) Point.distance(shortest.getX(), shortest.getY(), target.getX(), target.getY());
 			for (SpawnHole sh : initials) {
@@ -64,8 +88,8 @@ public abstract class ZombieHandler implements GameIntegratable{
 
 	protected static final int personWeight = 50;
 	protected Entity findTarget(Zombie z) {
-		Collection<Building> buildings = getManagers().building.interactives;
-		Collection<Person> persons = getManagers().person.list;
+		Collection<Building> buildings = managers.building.interactives;
+		Collection<Person> persons = managers.person.list;
 		int totalWeights = sumAllWeights(z, buildings, persons);
 		int selected = (int) (Math.random() * totalWeights);
 		int sum = 0;
@@ -107,21 +131,18 @@ public abstract class ZombieHandler implements GameIntegratable{
 	}
 	
 	protected int determineHealth() {
-		int roundNumber = getRoundNumber();
-		int players = getManagers().person.list.size();
+		int players = managers.person.list.size();
 		int health = (int) ((roundNumber * roundNumber / 10.0)  + (players * roundNumber * 1.0) + 90.0);
 		return health;
 	}
 	
 	protected int determineSpeed() {
-		int roundNumber = getRoundNumber();
 		int speed = (int) (50 + 0.25 * roundNumber * roundNumber);
 		speed = (speed > 400) ? 400 : speed;
 		return speed;
 	}
 	
 	protected int determineSpawnDelay() {
-		int roundNumber = getRoundNumber();
 		int spawnDelay = 3000 - 75 * roundNumber;
 		spawnDelay = (spawnDelay < 0) ? 0 : spawnDelay;
 		return spawnDelay;

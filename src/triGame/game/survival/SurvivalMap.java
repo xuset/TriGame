@@ -14,7 +14,7 @@ import triGame.game.entities.buildings.types.Barrier;
 import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.survival.safeArea.SurvivalSafeBoard;
 
-public abstract class SurvivalMap {
+final class SurvivalMap {
 	public static void createRandomMap(final ManagerService service, final SurvivalSafeBoard safeBoard) {
 		final int centerX = Params.GAME_WIDTH / 2;
 		final int centerY = Params.GAME_HEIGHT / 2;

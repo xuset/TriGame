@@ -9,7 +9,7 @@ import triGame.intro.GameInfo;
 import triGame.intro.GameInfo.NetworkType;
 
 public class MultiplayerStartup {
-	private static final GameType gameType = GameType.VERSUS;
+	private static final GameType gameType = GameType.SURVIVAL;
 	
 	public static void main(String[] main) {
 		if (!System.getProperty("os.name").toLowerCase().contains("windows"))
