@@ -11,15 +11,15 @@ public class GuiStartup {
 		if (!System.getProperty("os.name").toLowerCase().contains("windows"))
 			System.setProperty("sun.java2d.opengl", "True");
 	
-		//ErrorHandler handler = new ErrorHandler(new ErrorHandler.Task() {
-		//	@Override public void run() {
+		ErrorHandler handler = new ErrorHandler(new ErrorHandler.Task() {
+			@Override public void run() {
 				TriGame game = new TriGame(GuiStartup.gatherPlayers());
 				game.startGame();
 				game.shutdown();
-		//	}
-		//});
+			}
+		});
 		
-		//handler.startTask();
+		handler.startTask();
 		System.exit(0);
 	}
 	

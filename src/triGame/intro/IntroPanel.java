@@ -42,7 +42,6 @@ class IntroPanel {
 		
 		pnlText.setLayout(new BoxLayout(pnlText, BoxLayout.Y_AXIS));
 		
-		lblNewer.setForeground(Color.red);
 		lblImage.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblAuthor.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblWebsite.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -57,6 +56,8 @@ class IntroPanel {
 		frame.add(container);		
 		reconstructContainer(firstPanel);
 		frame.setVisible(true);
+		
+		lblNewer.setText(addHtmlTags("Checking for updates..."));
 		
 		newVersionChecker = new Thread(setNewVersionLabel);
 		newVersionChecker.setName("Updater");
@@ -84,11 +85,19 @@ class IntroPanel {
 	
 	private void resetVersionLabel() {
 		if (newerVersion) {
-			lblNewer.setText("<html><body style='width:" +  frame.getWidth() +
-					";' ><div style='text-align:center; margin-left:auto;" +
-					" margin-right:auto;'>A newer version is available for " +
-					"download! https://github.com/xuset/TriGame/releases</div></body></html>");	
+			lblNewer.setForeground(Color.red);
+			lblNewer.setText(addHtmlTags("A newer version is available for download!" +
+					" https://github.com/xuset/TriGame/releases"));
+		} else {
+			lblNewer.setForeground(Color.black);
+			lblNewer.setText(addHtmlTags("You have the most recent version (v" + Params.VERSION + ")"));
 		}
+	}
+	
+	private String addHtmlTags(String message) {
+		return "<html><body style='width:" +  frame.getWidth() +
+				";' ><div style='text-align:center; margin-left:auto;" +
+				" margin-right:auto;'>" + message + "</div></body></html>";
 	}
 	
 	private final Runnable setNewVersionLabel = new Runnable() {
