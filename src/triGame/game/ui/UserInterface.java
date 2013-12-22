@@ -1,7 +1,6 @@
 package triGame.game.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 
 import javax.swing.JPanel;
 
@@ -15,9 +14,10 @@ import triGame.game.ui.upgrades.Upgrades;
 
 public class UserInterface {
 	private final JPanel pnlMain = new JPanel();
-	private final Component mainFocus;
 	private JPanelGetter selectedJPanel;
 	
+
+	public final FocusSurrender focus;
 	public final Arsenal arsenal;
 	public final Upgrades upgrades;
 	public final Attacher attacher;
@@ -25,11 +25,11 @@ public class UserInterface {
 	public UserInterface(Display display, DrawBoard drawBoard, ManagerService managers, ShopManager shop,
 			PeripheralInput.Mouse mouse) {
 		
-		mainFocus = drawBoard;
+		focus = new FocusSurrender(drawBoard);
 		pnlMain.setSize(display.getWidth(), 70);
 		attacher = new Attacher(managers, this, shop, mouse);
 		arsenal = new Arsenal(this, shop, attacher);
-		upgrades = new Upgrades(shop, this);
+		upgrades = new Upgrades(shop, focus);
 		display.add(pnlMain, BorderLayout.PAGE_END);
 		switchTo(arsenal);
 	}
@@ -37,7 +37,6 @@ public class UserInterface {
 	public void switchTo(JPanelGetter getter) {
 		pnlMain.removeAll();
 		pnlMain.add(getter.getJPanel());
-		//pnlMain.repaint();
 		pnlMain.updateUI();
 		selectedJPanel = getter;
 	}
@@ -46,9 +45,5 @@ public class UserInterface {
 		if (selectedJPanel == getter)
 			return true;
 		return false;
-	}
-	
-	public void giveupFocus() {
-		mainFocus.requestFocus();
 	}
 }

@@ -6,14 +6,13 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import triGame.game.shopping.ShopManager;
-import triGame.game.ui.UserInterface;
+import triGame.game.ui.FocusSurrender;
 
 public class ArsenalPanel{
 	
@@ -22,21 +21,21 @@ public class ArsenalPanel{
 	private final JLabel lblDescription = new JLabel("-", JLabel.CENTER);
 	private final JPanel panel;
 	private final ShopManager shop;
-	private final UserInterface ui;
+	private final FocusSurrender focusSurrender;
 
 	final JPanel pnlSplit;
 	
 	public final ArrayList<ArsenalGroup> groups = new ArrayList<ArsenalGroup>();
 	
-	public ArsenalPanel(ShopManager shop, UserInterface ui) {
-		this.ui = ui;
+	public ArsenalPanel(ShopManager shop, FocusSurrender focusSurrender) {
+		this.focusSurrender = focusSurrender;
 		this.shop = shop;
 		
 		pnlSplit = new JPanel();
 		pnlSplit.setLayout(new BoxLayout(pnlSplit, BoxLayout.Y_AXIS));
 		
 		panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		//panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		//panel.setAlignmentY(Component.CENTER_ALIGNMENT);
 		//panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
@@ -54,7 +53,7 @@ public class ArsenalPanel{
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			switchGroup(getNextGroup());
-			ui.giveupFocus();
+			focusSurrender.surrenderFocus();
 		}
 		public void mouseEntered(MouseEvent arg0) { }
 		public void mouseExited(MouseEvent arg0) { }
@@ -76,19 +75,8 @@ public class ArsenalPanel{
 		return null;
 	}
 	
-	public void addToArsenal(ArsenalGroup group, ArsenalItem aItem) {
-		if (groups.contains(group)) {
-			addArsenalItem(group, aItem);
-		} else {
-			groups.add(group);
-			addArsenalItem(group, aItem);
-		}
-		if (displayingGroup(group))
-			refreshDisplay();
-	}
-	
-	private void addArsenalItem(ArsenalGroup group, ArsenalItem item) {
-		group.items.add(item);
+	public void addArsenalItem(ArsenalGroup group, ArsenalItem item) {
+		group.addArsenalItem(item);
 		item.info.arsenalGroup = group;
 		item.observeShopPoints.observeChange(shop);
 		shop.observer().watch(item.observeShopPoints);
@@ -98,13 +86,7 @@ public class ArsenalPanel{
 		lblDescription.setText("-");
 		panel.removeAll();
 		panel.add(btnSwitch);
-		for (ArsenalItem aItem : displayedGroup.items) {
-			aItem.arsenalPanel = this;
-			if (aItem.visibile) {
-				panel.add(Box.createHorizontalStrut(20));
-				panel.add(aItem);
-			}
-		}
+		panel.add(displayedGroup.getJPanel());
 	}
 	
 	public void switchGroup(ArsenalGroup g) {
@@ -123,5 +105,5 @@ public class ArsenalPanel{
 		lblDescription.setText(text);
 	}
 	
-	void giveupFocus() { ui.giveupFocus(); }
+	void giveupFocus() { focusSurrender.surrenderFocus(); }
 }

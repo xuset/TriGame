@@ -1,17 +1,32 @@
 package triGame.game.ui.arsenal;
 
-import java.util.ArrayList;
+import javax.swing.Box;
+import javax.swing.JPanel;
 
-public class ArsenalGroup {
+import triGame.game.ui.JPanelGetter;
+
+public class ArsenalGroup implements JPanelGetter{
 	public static interface PurchaseEvent { void purchase(ArsenalItemInfo item); }
 	
 	public final String name;
-	
-	public final ArrayList<ArsenalItem> items = new ArrayList<ArsenalItem>();
+	public final JPanel panel = new JPanel();
 	public PurchaseEvent purchaseEvent = null;
 	
 	public ArsenalGroup(String name, PurchaseEvent purchaseEvent) {
 		this.name = name;
 		this.purchaseEvent = purchaseEvent;
+		panel.add(Box.createHorizontalGlue());
 	}
+	
+	public void addArsenalItem(ArsenalItem a) {
+		panel.add(a);
+		panel.add(Box.createHorizontalGlue());
+	}
+
+	@Override
+	public JPanel getJPanel() {
+		return panel;
+	}
+	
+	
 }

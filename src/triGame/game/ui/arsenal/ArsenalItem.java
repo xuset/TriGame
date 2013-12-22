@@ -31,13 +31,13 @@ public class ArsenalItem extends JPanel{
 	final ArsenalItemInfo info = new ArsenalItemInfo();
 	final JLabel lblMain;
 	JLabel lblPrice;
-	ArsenalPanel arsenalPanel = null;
+	final ArsenalPanel arsenalPanel;
 	
 	public boolean visibile = true;
 	
 	public ArsenalItemInfo getInfo() { return info; }
 	
-	private void construct(ShopItem item, JLabel main) {
+	private void construct(ShopItem item, JLabel main, String description) {
 		this.setSize((int) ITEM_SIZE, (int) ITEM_SIZE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		if (item.getCost() > 0)
@@ -49,25 +49,32 @@ public class ArsenalItem extends JPanel{
 		this.add(lblPrice);
 		info.shopItem = item;
 		info.arsenalItem = this;
+		info.description = description;
 		
 		main.setBorder(emptyBorder);
 		main.addMouseListener(lblMainEvent);
 	}
 	
-	public ArsenalItem(ShopItem item, BufferedImage image, int radius, LocManCreator<?> creator) {
+	public ArsenalItem(ShopItem item, BufferedImage image, int radius,
+			LocManCreator<?> creator, String description, ArsenalPanel arsenalPanel) {
+		
+		this.arsenalPanel = arsenalPanel;
 		lblMain = new  JLabel();
 		lblMain.setIcon(new ImageIcon(scale(image)));
 		info.isImagge = true;
 		info.image = image;
 		info.attachedItem = new Attacher.AttachedItem(image, radius, item, creator);
-		construct(item, lblMain);
+		construct(item, lblMain, description);
 	}
 	
-	public ArsenalItem(ShopItem item, String text, UpgradeManager upgradeManager) {
+	public ArsenalItem(ShopItem item, String text, String description, UpgradeManager upgradeManager,
+			ArsenalPanel arsenalPanel) {
+		
+		this.arsenalPanel = arsenalPanel;
 		info.upgradeManager = upgradeManager;
 		info.text = text;
 		lblMain = new JLabel(text, JLabel.CENTER);
-		construct(item, lblMain);
+		construct(item, lblMain, description);
 	}
 	
 	Observer.Change<ShopManager> observeShopPoints = new Observer.Change<ShopManager>() {

@@ -1,14 +1,15 @@
 package triGame.game.entities.zombies;
 
-public final class ZombieSpawner {
+public class ZombieSpawner {
 	private int zombiesToSpawn;
 	private long nextSpawnTime;
 	private long spawnDelta;
 	private boolean spawnBoss;
 	
-	public void startNewSpawnRound(int zombiesToSpawn, long spawnDelta, boolean boss) {
+	public void startNewSpawnRound(int zombiesToSpawn, long spawnDelta, boolean spawnBoss) {
 		this.zombiesToSpawn = zombiesToSpawn;
 		this.spawnDelta = spawnDelta;
+		this.spawnBoss = spawnBoss;
 	}
 	
 	public boolean finishedSpawn() { return zombiesToSpawn <= 0; }

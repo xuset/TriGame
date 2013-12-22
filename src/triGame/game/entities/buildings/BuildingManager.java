@@ -1,13 +1,11 @@
 package triGame.game.entities.buildings;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.Manager;
 import tSquare.game.entity.ManagerController;
 import tSquare.game.particles.ParticleController;
-import tSquare.imaging.Sprite;
 import tSquare.paths.ObjectGrid;
 import triGame.game.GameMode;
 import triGame.game.ManagerService;
@@ -16,7 +14,6 @@ import triGame.game.entities.buildings.Building.BuildingInfo;
 import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.shopping.ShopManager;
 import triGame.game.ui.UserInterface;
-import triGame.game.ui.arsenal.ArsenalItem;
 
 public class BuildingManager extends Manager<Building> {
 	public static final String HASH_MAP_KEY = "building";
@@ -59,10 +56,7 @@ public class BuildingManager extends Manager<Building> {
 	public void addItemsToUI(UserInterface ui) {
 		for (BuildingInfo info : CreationFuncs.INFOS) {
 			if (info.isShopable()) {
-				BufferedImage image = Sprite.get(info.spriteId).createCopy();
-				ArsenalItem item = new ArsenalItem(info.item, image, info.visibilityRadius, getCreator(info));
-				item.getInfo().description = info.description;
-				ui.arsenal.panel.addToArsenal(ui.arsenal.towerGroup, item);
+				ui.arsenal.addTower(info, getCreator(info));
 			}
 		}
 	}

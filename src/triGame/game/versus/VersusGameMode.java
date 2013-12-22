@@ -19,27 +19,33 @@ import triGame.game.entities.Person;
 import triGame.game.entities.buildings.Building;
 import triGame.game.entities.zombies.Zombie;
 import triGame.game.entities.zombies.ZombieHandler;
-import triGame.game.entities.zombies.ZombieSpawner;
 import triGame.game.entities.zombies.ZombieTargeter;
+import triGame.game.shopping.ShopManager;
+import triGame.game.ui.UserInterface;
 
 
 public class VersusGameMode extends GameMode {
-	private ManagerService managers;
-	private final VersusMap gameMap = new VersusMap();
+	private final ShopManager shop;
+	private final VersusMap gameMap;
 	private final VersusSafeBoard safeBoard;
 	private final VersusZombie zombieHandler;
 	private final VersusRound gameRound;
 	private final VersusTargeter zombieTargeter = new VersusTargeter();
+	
+	private ManagerService managers;
 	private Person player;
 	private boolean iAmAWinner = false;
 
-	public VersusGameMode(boolean isServer, ObjControllerI objController,
+	public VersusGameMode(ShopManager shop, ObjControllerI objController, boolean isServer, 
 			PeripheralInput.Keyboard keyboard) {
 		
 		super(isServer);
+		this.shop = shop;
+		gameMap = new VersusMap();
 		safeBoard = new VersusSafeBoard(gameMap.playableArea);
 		zombieHandler = new VersusZombie();
 		gameRound = new VersusRound(objController, keyboard);
+		
 		gameRound.onNewRound.watch(new RoundObserver());
 	}
 
@@ -50,9 +56,16 @@ public class VersusGameMode extends GameMode {
 	@Override public ZombieTargeter getZombieTargeter() { return zombieTargeter; }
 	@Override protected GameRound getGameRound() { return gameRound; }
 
-	@Override protected void setDependencies(ManagerService managers) {
+	@Override
+	protected void setDependencies(ManagerService managers, UserInterface ui) {
 		this.managers = managers;
 		zombieTargeter.setZombies(managers.zombie.list);
+		ui.arsenal.panel.groups.add(new ZombieUI(ui.focus, gameRound.spawner, shop));
+	}
+	
+	@Override
+	protected void onGameStart() {
+		gameMap.findAndSetHq(managers.building.list);
 	}
 	
 	@Override
@@ -75,6 +88,15 @@ public class VersusGameMode extends GameMode {
 		int opposingZone = (myZone == 0) ? 1 : 0;
 		return gameMap.isZoneHQDead(opposingZone, managers) &&
 				!gameMap.isZoneHQDead(myZone, managers);
+	}
+	
+	@Override
+	public void performLogic(int frameDelta) {
+		super.performLogic(frameDelta);
+		
+		gameRound.spawner.setPlayerZoneAndTargets(
+				gameMap.getZoneNumber(player),
+				gameMap.headQuarters );
 	}
 	
 	@Override
@@ -108,6 +130,18 @@ public class VersusGameMode extends GameMode {
 			return locations[index];
 		}
 		
+		int spawnZone = -1;
+		
+		@Override
+		protected Entity findTarget(Zombie z) {
+			if (z == null) {
+				spawnZone = (int) (Math.random() * 2);
+			}
+			Entity target =  super.findTarget(z);
+			spawnZone = -1;
+			return target;
+		}
+		
 		@Override
 		protected boolean isPersonValid(Person p, Zombie z) {
 			return sameZone(p, z) && super.isPersonValid(p, z);
@@ -119,8 +153,10 @@ public class VersusGameMode extends GameMode {
 		}
 		
 		private boolean sameZone(Entity a, Entity b) {
-			if (a == null || b == null)
-				return true;
+			int aZone = gameMap.getZoneNumber(a);
+			if (spawnZone != -1)
+				return spawnZone == aZone;
+			
 			return (gameMap.getZoneNumber(a) == gameMap.getZoneNumber(b));
 		}
 		
@@ -133,13 +169,14 @@ public class VersusGameMode extends GameMode {
 	
 	private class VersusRound extends GameRound {
 		private final PeripheralInput.Keyboard keyboard;
-		private final ZombieSpawner spawner = new ZombieSpawner();
+		private final VersusSpawner spawner;
 		private long nextRoundStartTime = 0;
 		private boolean gameStarted = false;
 
 		public VersusRound(ObjControllerI objController, PeripheralInput.Keyboard keyboard) {
 			super(objController);
 			this.keyboard = keyboard;
+			spawner = new VersusSpawner(objController);
 		}
 
 		@Override

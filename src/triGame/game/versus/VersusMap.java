@@ -2,6 +2,7 @@ package triGame.game.versus;
 
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.util.Collection;
 
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.LocationCreator;
@@ -22,9 +23,9 @@ class VersusMap {
 	final Rectangle2D missingWallZone = new Rectangle();
 	final Rectangle2D playableArea = new Rectangle();
 	final Rectangle2D[] playables = new Rectangle2D[2];
+	final Building[] headQuarters = new Building[2];
 	
 	private final Point[][] spawnLocations = new Point[2][3];
-	private final Building[] headQuarters = new Building[2];
 	private int zonesOnX, zonesOnY;
 	
 	VersusMap() {
@@ -44,9 +45,18 @@ class VersusMap {
 		);
 		
 		createPlayables();
+		
 	}
 	
-	void createPlayables() {
+	void findAndSetHq(Collection<Building> buildings) {
+		int index = 0;
+		for (Building b : buildings) {
+			if (b.info == HeadQuarters.INFO)
+				headQuarters[index++] = b;
+		}
+	}
+	
+	private void createPlayables() {
 		int y = OFFSET_BLOCK_Y * Params.BLOCK_SIZE;
 		int xZone0 = OFFSET_BLOCK_X * Params.BLOCK_SIZE;
 		int xZone1 = (OFFSET_BLOCK_X + ZONE_SIZE) * Params.BLOCK_SIZE;

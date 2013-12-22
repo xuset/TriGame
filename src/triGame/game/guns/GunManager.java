@@ -13,7 +13,6 @@ import triGame.game.ManagerService;
 import triGame.game.entities.Person;
 import triGame.game.shopping.ShopManager;
 import triGame.game.ui.UserInterface;
-import triGame.game.ui.arsenal.ArsenalItem;
 
 public class GunManager implements GameIntegratable{
 	private static final int shootKey = KeyEvent.VK_SPACE;
@@ -91,9 +90,7 @@ public class GunManager implements GameIntegratable{
 	public void addGunsToUI(UserInterface ui) {
 		for (AbstractGun gun : guns) {
 			if (gun.unlock != null) {
-				ArsenalItem gunItem = new ArsenalItem(gun.unlock, gun.name, gun.upgradeManager);
-				gunItem.getInfo().description = gun.description;
-				ui.arsenal.panel.addToArsenal(ui.arsenal.gunGroup, gunItem);
+				ui.arsenal.addGun(gun.unlock, gun.name, gun.description, gun.upgradeManager);
 			}
 		}
 	}

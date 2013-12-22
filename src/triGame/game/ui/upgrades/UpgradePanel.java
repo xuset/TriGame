@@ -22,12 +22,12 @@ import tSquare.util.Observer;
 import triGame.game.shopping.ShopManager;
 import triGame.game.shopping.UpgradeItem;
 import triGame.game.shopping.UpgradeManager;
-import triGame.game.ui.UserInterface;
+import triGame.game.ui.FocusSurrender;
 
 public class UpgradePanel extends JPanel{
 	private static final long serialVersionUID = 8498226293916709649L;
 	
-	private final UserInterface ui;
+	private final FocusSurrender focusSurrender;
 	private JButton btnBuy = new JButton("purchase");
 	private JLabel lblPrice = new JLabel("$0");
 	private JProgressBar pbProgress = new JProgressBar();
@@ -42,8 +42,8 @@ public class UpgradePanel extends JPanel{
 	private UpgradeManager upgradeManager = null;
 	private ShopManager shop;
 	
-	public UpgradePanel(ShopManager shop, UserInterface ui) {
-		this.ui = ui;
+	public UpgradePanel(ShopManager shop, FocusSurrender focusSurrender) {
+		this.focusSurrender = focusSurrender;
 		this.shop = shop;
 		shop.observer().watch(pointChange);
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -132,7 +132,7 @@ public class UpgradePanel extends JPanel{
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.SELECTED)
 				setAttribute((UpgradeItem) e.getItem());
-			ui.giveupFocus();
+			focusSurrender.surrenderFocus();
 		}
 	};
 	
@@ -143,7 +143,7 @@ public class UpgradePanel extends JPanel{
 				upgradeManager.upgrade(selectedAttribute, shop);
 				setAttribute(selectedAttribute);
 			}
-			ui.giveupFocus();
+			focusSurrender.surrenderFocus();
 		}
 		public void mouseEntered(MouseEvent arg0) { }
 		public void mouseExited(MouseEvent arg0) { }

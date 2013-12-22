@@ -11,6 +11,7 @@ import triGame.game.entities.zombies.ZombieHandler;
 import triGame.game.entities.zombies.ZombieTargeter;
 import triGame.game.shopping.ShopManager;
 import triGame.game.survival.SurvivalGameMode;
+import triGame.game.ui.UserInterface;
 import triGame.game.versus.VersusGameMode;
 
 public abstract class GameMode implements GameIntegratable {
@@ -31,7 +32,7 @@ public abstract class GameMode implements GameIntegratable {
 		case SURVIVAL:
 			return new SurvivalGameMode(shop, objc, isServer, keyboard);
 		case VERSUS:
-			return new VersusGameMode(isServer, objc, keyboard);
+			return new VersusGameMode(shop, objc, isServer, keyboard);
 		}
 		return null;
 	}
@@ -50,13 +51,17 @@ public abstract class GameMode implements GameIntegratable {
 		getGameRound().draw(g, rect);
 	}
 	
+	protected void onGameStart() {
+		
+	}
+	
 	public abstract boolean isGameOver();
 	public abstract SafeBoard getSafeBoard();
 	public abstract ZombieHandler getZombieHandler();
 	public abstract ZombieTargeter getZombieTargeter();
 	protected abstract void createMap();
 	protected abstract Person spawnInPlayer();
-	protected abstract void setDependencies(ManagerService managers);
+	protected abstract void setDependencies(ManagerService managers, UserInterface ui);
 	protected abstract GameRound getGameRound();
 	
 }

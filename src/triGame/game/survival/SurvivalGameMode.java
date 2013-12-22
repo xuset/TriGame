@@ -14,6 +14,7 @@ import triGame.game.entities.zombies.ZombieHandler;
 import triGame.game.entities.zombies.ZombieTargeter;
 import triGame.game.shopping.ShopManager;
 import triGame.game.survival.safeArea.SurvivalSafeBoard;
+import triGame.game.ui.UserInterface;
 
 
 public class SurvivalGameMode extends GameMode {
@@ -38,7 +39,7 @@ public class SurvivalGameMode extends GameMode {
 	@Override protected GameRound getGameRound() { return gameRound; }
 	@Override protected void createMap() { SurvivalMap.createRandomMap(managers, safeBoard); }
 
-	@Override protected void setDependencies(ManagerService managers) {
+	@Override protected void setDependencies(ManagerService managers, UserInterface ui) {
 		this.managers = managers;
 		zombieTargeter.setZombies(managers.zombie.list);
 	}
@@ -79,6 +80,8 @@ public class SurvivalGameMode extends GameMode {
 		@Override
 		public void observeChange(Integer roundNumber) {
 			if (roundNumber > 1) {
+				if (roundNumber % 10 == 0)
+					shop.addPoints(150);
 				Person player = managers.person.getPlayer();
 				if (player.isDead()) {
 					player.giveFullHealth();

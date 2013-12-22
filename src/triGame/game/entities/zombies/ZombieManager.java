@@ -71,14 +71,19 @@ public class ZombieManager extends Manager<Zombie> {
 	public Zombie createBoss() {
 		final int roundNumber = gameMode.getRoundNumber();
 		final int speed = 30;
-		final long spawnDelay = 0;
 		final int health = (roundNumber * roundNumber) * 15 * managers.person.list.size();
+		final Building hq = managers.building.getHQ();
 		
-		Building hq = managers.building.getHQ();
-		Point spawn = gameMode.getZombieHandler().setSpawnPoint(hq);
+		return createBoss(health, speed, hq);
+	}
+	
+	public Zombie createBoss(int health, int speed, Entity target) {
+		final long spawnDelay = 0;
+		final Point spawn = gameMode.getZombieHandler().setSpawnPoint(target);
 		
 		BossZombie boss = (BossZombie) bossCreator.create(spawn.x, spawn.y, this);
-		setAttributes(boss, speed, spawnDelay, hq, health, 40);
+		setAttributes(boss, speed, spawnDelay, target, health, 40);
+		
 		return boss;
 	}
 	
@@ -124,7 +129,6 @@ public class ZombieManager extends Manager<Zombie> {
 				PointParticle p = new PointParticle.Floating(var.intX(), var.intY(), time);
 				particles.addParticle(p);
 			}
-			shop.addPoints(200);
 		}
 		zombiesKilled++;
 		PointParticle p = new PointParticle.Floating((int) z.getCenterX(),(int)  z.getCenterY(), 800);

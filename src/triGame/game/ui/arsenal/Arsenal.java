@@ -9,6 +9,7 @@ import triGame.game.entities.LocManCreator;
 import triGame.game.entities.buildings.Building;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.ShopManager;
+import triGame.game.shopping.UpgradeManager;
 import triGame.game.ui.Attacher;
 import triGame.game.ui.JPanelGetter;
 import triGame.game.ui.UserInterface;
@@ -28,7 +29,7 @@ public class Arsenal implements JPanelGetter{
 		this.ui = ui;
 		this.shop = shop;
 		this.attacher = attacher;
-		panel = new ArsenalPanel(shop, ui);
+		panel = new ArsenalPanel(shop, ui.focus);
 		
 		ArsenalGroup.PurchaseEvent gunEvent = new ArsenalGroup.PurchaseEvent() {
 			@Override
@@ -58,17 +59,22 @@ public class Arsenal implements JPanelGetter{
 		
 		gunGroup = new ArsenalGroup("Guns", gunEvent);
 		towerGroup = new ArsenalGroup("Towers", towerEvent);
+		
+		panel.groups.add(gunGroup);
+		panel.groups.add(towerGroup);
 	}
 	
-	public void addToArsenal(Building.BuildingInfo info, LocManCreator<?> creator) {
-		addToArsenal(info.item, Sprite.get(info.spriteId).createCopy(), "-", info.visibilityRadius, towerGroup, creator);
+	public void addTower(Building.BuildingInfo info, LocManCreator<?> creator) {
+		addToArsenal(info.item, Sprite.get(info.spriteId).createCopy(), info.description, info.visibilityRadius, towerGroup, creator);
+	}
+	
+	public void addGun(ShopItem item, String name, String description, UpgradeManager upgrades) {
+		panel.addArsenalItem(gunGroup, new ArsenalItem(item, name, description, upgrades, panel));
 	}
 	
 	public void addToArsenal(ShopItem item, BufferedImage image, String description,
 			int radius, ArsenalGroup group, LocManCreator<?> creator) {
 		
-		ArsenalItem ai = new ArsenalItem(item, image, radius, creator);
-		ai.info.description = description;
-		panel.addToArsenal(group, ai);
+		panel.addArsenalItem(group, new ArsenalItem(item, image, radius, creator, description, panel));
 	}
 }

@@ -59,7 +59,7 @@ public class TriGame extends Game{
 		managerService = new ManagerService(managerController, input.keyboard,
 				shop, particleController, network.isServer, userId, gameMode);
 		ui = new UserInterface(display, drawBoard, managerService, shop, input.mouse);
-		gameMode.setDependencies(managerService);
+		gameMode.setDependencies(managerService, ui);
 		if (network.isServer) {
 			network.getServerInstance().accepter.stop();
 			gameMode.createMap();
@@ -83,6 +83,7 @@ public class TriGame extends Game{
 			network.objController.distributeRecievedUpdates();
 			try { Thread.sleep(10); } catch (Exception ex) { }
 		}
+		gameMode.onGameStart();
 	}
 
 	protected void logicLoop() {
@@ -91,12 +92,12 @@ public class TriGame extends Game{
 		
 		
 		if (!isGameOver) {
+			managerService.person.performLogic(frameDelta);
 			isGameOver = gameMode.isGameOver();
 			gunManager.performLogic(frameDelta);
 		}
 
 
-		managerService.person.performLogic(frameDelta);
 		managerService.dropPack.performLogic(frameDelta);
 		managerService.zombie.performLogic(frameDelta);
 		managerService.building.performLogic(frameDelta);
