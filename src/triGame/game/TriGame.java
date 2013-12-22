@@ -12,10 +12,12 @@ import tSquare.game.DrawBoard;
 import tSquare.game.Game;
 import tSquare.game.GameBoard;
 import tSquare.game.GameBoard.ViewRect;
+import tSquare.imaging.Sprite;
 import tSquare.system.Display;
 import tSquare.system.PeripheralInput;
 import tSquare.util.PopUp;
 import triGame.game.entities.Person;
+import triGame.game.entities.PointParticle;
 import triGame.game.entities.buildings.Building;
 import triGame.game.guns.GunManager;
 import triGame.game.shopping.ShopManager;
@@ -179,10 +181,12 @@ public class TriGame extends Game{
 		g.fillRoundRect(ix -10, iy - 13, iw, ih, 15, 15);
 		g.setColor(Color.LIGHT_GRAY);
 		g.setFont(statFont);
-		g.drawString("$" + shop.getPointCount(), ix, iy);
+		g.drawString("  " + shop.getPointCount(), ix, iy);
 		g.drawString("Round " + gameMode.getRoundNumber(), ix, iy + 1 * 15);
 		g.drawString("Killed " + managerService.zombie.getZombiesKilled() + " zombies", ix, iy + 2 * 15);
 		g.drawString(getCurrentFps() + "FPS", ix, iy + 3 * 15);
+		Sprite point = Sprite.get(PointParticle.SPRITE_ID);
+		point.draw(ix, iy - 8, g);
 	}
 	
 	public void shutdown() {
