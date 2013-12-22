@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.particles.Particle;
-import tSquare.game.particles.ParticleController;
 import tSquare.util.Observer;
 import triGame.game.entities.PointParticle;
 

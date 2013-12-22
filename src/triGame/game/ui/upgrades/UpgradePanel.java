@@ -2,10 +2,10 @@ package triGame.game.ui.upgrades;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -49,7 +49,7 @@ public class UpgradePanel extends JPanel{
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		pnlAttribute.setBorder(bdrAttribute);
 		pnlAttribute.setLayout(new BoxLayout(pnlAttribute, BoxLayout.X_AXIS));
-		btnBuy.addMouseListener(btnListener);
+		btnBuy.addActionListener(btnListener);
 		cmbList.addItemListener(cmbListener);
 		JPanel pnlCombo = new JPanel();
 		add(lblImage);
@@ -136,18 +136,14 @@ public class UpgradePanel extends JPanel{
 		}
 	};
 	
-	private MouseListener btnListener = new MouseListener() {
+	private ActionListener btnListener = new ActionListener() {
 		@Override
-		public void mouseClicked(MouseEvent arg0) {
+		public void actionPerformed(ActionEvent e) {
+			focusSurrender.surrenderFocus();
 			if (selectedAttribute != null && shop.canPurchase(selectedAttribute.shopItem)) {
 				upgradeManager.upgrade(selectedAttribute, shop);
 				setAttribute(selectedAttribute);
-			}
-			focusSurrender.surrenderFocus();
+			}			
 		}
-		public void mouseEntered(MouseEvent arg0) { }
-		public void mouseExited(MouseEvent arg0) { }
-		public void mousePressed(MouseEvent arg0) { }
-		public void mouseReleased(MouseEvent arg0) { }
 	};
 }
