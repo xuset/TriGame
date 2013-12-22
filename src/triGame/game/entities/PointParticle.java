@@ -29,6 +29,41 @@ public abstract class PointParticle extends SpriteParticle{
 		
 	}
 	
+	public static class Flying extends PointParticle {
+		private static final int speed = 100;
+		private final double angle, distance;
+		private final long startTime;
+
+		public Flying(int x, int y, double angle, double distance) {
+			super(x, y);
+			this.angle = angle;
+			this.distance = distance;
+			startTime = System.currentTimeMillis();
+		}
+
+		@Override
+		protected void setXY(int delta) {
+			long time = System.currentTimeMillis() - startTime;
+			double currentDist = speed * time / 1000.0;
+			x = (int) (startX + Math.cos(angle) * currentDist);
+			y = (int) (startY + Math.sin(angle) * currentDist);
+		}
+		
+		@Override
+		public boolean isExpired() {
+			int dx = startX - x;
+			int dy = startY - y;
+			return (dx * dx + dy * dy > distance * distance);
+		}
+		
+		@Override
+		public void draw(int frameDelta, Graphics2D g, ViewRect rect) {
+			setXY(frameDelta);
+			sprite.draw(x, y, g);
+		}
+		
+	}
+	
 	public static class Floating extends PointParticle {
 		public int height = 35, width = 8;
 

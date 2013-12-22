@@ -20,6 +20,7 @@ import triGame.game.entities.Person;
 import triGame.game.entities.PointParticle;
 import triGame.game.entities.buildings.Building;
 import triGame.game.guns.GunManager;
+import triGame.game.shopping.ShopDrawer;
 import triGame.game.shopping.ShopManager;
 import triGame.game.ui.UserInterface;
 import triGame.intro.GameInfo;
@@ -30,6 +31,7 @@ public class TriGame extends Game{
 	private final GameBoard gameBoard;
 	private final PeripheralInput input;
 	private final ShopManager shop;
+	private final ShopDrawer shopDrawer;
 	private final GameOver gameOver;
 	
 	private final TiledBackground background;
@@ -49,6 +51,7 @@ public class TriGame extends Game{
 		gameOver = new GameOver();
 		input = new PeripheralInput();
 		shop = new ShopManager(300);
+		shopDrawer = new ShopDrawer(shop.observer());
 		display = new Display(500, 500, "Attack of the Triangles! - " + (network.isServer ? "Server" : "Client"));
 		drawBoard = new DrawBoard(display.getWidth(), display.getHeight(), display);
 		gameBoard = new GameBoard(Params.GAME_WIDTH, Params.GAME_HEIGHT, drawBoard);
@@ -117,7 +120,6 @@ public class TriGame extends Game{
 			gameBoard.centerViewWindowCordinates(player.getCenterX(), player.getCenterY());
 			background.centerTo = player;
 		}
-		
 		gameMode.performLogic(frameDelta);
 	}
 	
@@ -160,13 +162,14 @@ public class TriGame extends Game{
 		managerService.person.draw(g, rect);
 		gameMode.getSafeBoard().draw(g, rect);
 		gameMode.draw(g, rect);
-		ui.attacher.draw(g, rect);
 		particleController.draw(g, rect);
+		ui.attacher.draw(g, rect);
 		
 		if (isGameOver)
 			gameOver.draw(g, rect);
 		
 		drawStats();
+		shopDrawer.draw(getDelta(), g, rect);
 		drawBoard.exportToScreen();
 	}
 	
