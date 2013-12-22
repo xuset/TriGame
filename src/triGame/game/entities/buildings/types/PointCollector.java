@@ -6,9 +6,8 @@ import java.awt.Graphics2D;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
-import tSquare.util.PlaceHolder;
+import triGame.game.GameMode;
 import triGame.game.ManagerService;
-import triGame.game.RoundHandler;
 import triGame.game.entities.PointParticle;
 import triGame.game.entities.PointWell;
 import triGame.game.entities.buildings.Building;
@@ -20,15 +19,15 @@ public class PointCollector extends Building {
 	private final PointParticle.Floating particle;
 	private final ShopManager shop;
 	private final int pointAddFrequency;
-	private final PlaceHolder<RoundHandler> phRoundHandler;
+	private final GameMode gameMode;
 	private final PointWell pointWell;
 	
 
 	public PointCollector(double x, double y, ManagerService managers, ParticleController pc,
-			ShopManager shop, PlaceHolder<RoundHandler> phRoundHandler, EntityKey key) {
+			ShopManager shop, GameMode gameMode, EntityKey key) {
 		
 		super(INFO.spriteId, x, y, pc, INFO, key);
-		this.phRoundHandler = phRoundHandler;
+		this.gameMode = gameMode;
 		this.shop = shop;
 		pointAddFrequency = 333;
 		particle = new PointParticle.Floating((int) getCenterX(), (int) getCenterY(), pointAddFrequency);
@@ -47,7 +46,7 @@ public class PointCollector extends Building {
 	public void draw(Graphics2D g, ViewRect rect) {
 		super.draw(g, rect);
 		
-		if (phRoundHandler.get().isRoundOnGoing() && !pointWell.isEmpty()) {
+		if (gameMode.isRoundGoing() && !pointWell.isEmpty()) {
 			particle.draw(lastFrameDelta, g, rect);
 			if (owned() && particle.isExpired() && pointWell.takePoints(1)) {
 				particle.reset();

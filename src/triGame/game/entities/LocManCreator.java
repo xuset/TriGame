@@ -26,6 +26,10 @@ public class  LocManCreator <T extends Entity> extends LocationCreator<T> {
 			return super.create(x, y, manager);
 		return null;
 	}
+	
+	public T forceCreate(double x, double y, Manager<T> manager) {
+		return super.create(x, y, manager);
+	}
 
 	public boolean isValidLocation(double x, double y) {
 		return true;

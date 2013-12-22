@@ -8,15 +8,16 @@ import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
 import tSquare.math.Point;
-import triGame.game.ManagerService;
+import triGame.game.entities.projectiles.ProjectileManager;
+import triGame.game.entities.zombies.ZombieTargeter;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeItem;
 
 public class MortarTower extends Tower {
 	public MortarTower(double x, double y, ParticleController pc,
-			ManagerService managers, EntityKey key) {
+			ZombieTargeter targeter, ProjectileManager projectile, EntityKey key) {
 		
-		super(x, y, pc, managers, INFO, key);
+		super(x, y, pc, targeter, projectile, INFO, key);
 		fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, 1500, -150);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100), 3, INFO.visibilityRadius, 75);
 		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, -100, -15);
@@ -41,7 +42,7 @@ public class MortarTower extends Tower {
 			final int speed = accuracyUpgrade.getValue();
 			final int damage = damageUpgrade.getValue();
 			
-			managers.projectile.mortarCreate((int) myX, (int) myY, angle, speed, damage);
+			projectile.mortarCreate((int) myX, (int) myY, angle, speed, damage);
 		}
 	}
 

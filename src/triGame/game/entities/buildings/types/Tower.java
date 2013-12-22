@@ -5,9 +5,10 @@ import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
 import tSquare.math.Point;
-import triGame.game.ManagerService;
 import triGame.game.entities.buildings.Building;
+import triGame.game.entities.projectiles.ProjectileManager;
 import triGame.game.entities.zombies.Zombie;
+import triGame.game.entities.zombies.ZombieTargeter;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeItem;
 
@@ -16,7 +17,9 @@ public class Tower extends Building {
 	private static final int initialShootDelay = 500;
 	private static final int initialDamage = -35;
 	
-	protected final ManagerService managers;
+	protected final ProjectileManager projectile;
+	protected final ZombieTargeter zombieTargeter;
+	
 	protected UpgradeItem rangeUpgrade = null;
 	protected UpgradeItem fireRateUpgrade = null;
 	protected UpgradeItem damageUpgrade = null;
@@ -31,8 +34,9 @@ public class Tower extends Building {
 	
 	protected boolean readyToFire() { return System.currentTimeMillis() >= lastShot + getFireRate(); }
 	
-	public Tower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
-		this(x, y, pc, managers, INFO, key);
+	public Tower(double x, double y, ParticleController pc, ZombieTargeter zombieTargeter,
+			ProjectileManager projectile, EntityKey key) {
+		this(x, y, pc, zombieTargeter, projectile, INFO, key);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 50);
 		if (owned()) {
 			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, initialShootDelay, -50);
@@ -45,18 +49,21 @@ public class Tower extends Building {
 		}
 	}
 	
-	protected Tower(double x, double y, ParticleController pc, ManagerService managers, BuildingInfo info, EntityKey key) {
+	protected Tower(double x, double y, ParticleController pc, ZombieTargeter zombieTargeter,
+			ProjectileManager projectile, BuildingInfo info, EntityKey key) {
+		
 		super(info.spriteId, x, y, pc, info, key);
-		this.managers = managers;
+		this.projectile = projectile;
+		this.zombieTargeter = zombieTargeter;
 	}
 
 	@Override
 	public void performLogic(int frameDelta) {
-		if (!owned() || managers.zombie.list.isEmpty())
+		if (!owned() || !zombieTargeter.canTargetZombies())
 			return;
 		
 		if (readyToFire()) {
-			Entity target = targetEntity(); //TODO do not need to search every frame.
+			Zombie target = zombieTargeter.targetZombie(getCenterX(), getCenterY());
 			shootAtTarget(target);
 			lastShot = System.currentTimeMillis();
 		}
@@ -76,24 +83,11 @@ public class Tower extends Building {
 		}
 	}
 	
-	protected Entity targetEntity() {
-		Zombie shortestZombie = null;
-		int shortestDistance = Integer.MAX_VALUE;
-		for (Zombie z : managers.zombie.list) {
-			int dist = (int) Point.distance(getCenterX(), getCenterY(), z.getX(), z.getY());
-			if (dist < shortestDistance) {
-				shortestDistance = dist;
-				shortestZombie = z;
-			}
-		}
-		return shortestZombie;
-	}
-	
 	private void shoot() {
 		int tSpeed = initialSpeed;
 		if (accuracyUpgrade != null)
 			tSpeed = accuracyUpgrade.getValue();
-		managers.projectile.towerCreate((int) getCenterX(), (int) getCenterY(), getAngle(), tSpeed, damageUpgrade.getValue());
+		projectile.towerCreate((int) getCenterX(), (int) getCenterY(), getAngle(), tSpeed, damageUpgrade.getValue());
 	}
 	
 	public static final BuildingInfo INFO = new BuildingInfo(

@@ -20,10 +20,12 @@ import objectIO.connections.sockets.p2pServer.server.ConnectionEvent;
 import objectIO.connections.sockets.p2pServer.server.P2PServer;
 import objectIO.connections.sockets.p2pServer.server.ServerConnection;
 import objectIO.markupMsg.MarkupMsg;
+import objectIO.markupMsg.MsgAttribute;
 import objectIO.netObject.NetFunction;
 import objectIO.netObject.NetFunctionEvent;
 import objectIO.netObject.ObjController;
 import tSquare.system.Network;
+import triGame.game.GameMode.GameType;
 
 class Lobby extends JPanel{
 	private static final long serialVersionUID = 2236815803494900637L;
@@ -35,21 +37,23 @@ class Lobby extends JPanel{
 	private final ObjController netController;
 	private final NetFunction startFunc;
 	private final Network network;
+	private final GameInfo gameInfo;
 	private boolean started = false;
 	
-	Lobby(Network net) {
-		network = net;
-		netController = new ObjController(net.hub);
-		new Thread(netController).start();
+	Lobby(GameInfo gameInfo) {
+		this.gameInfo = gameInfo;
+		network = gameInfo.network;
+		netController = new ObjController(network.hub);
 		startFunc = new NetFunction(netController, "start", startEvent);
+		new Thread(netController).start();
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		displaySize(net.hub.getAllConnections().size());
+		displaySize(network.hub.getAllConnections().size());
 		pnlMain.add(Box.createHorizontalGlue());
 		pnlMain.add(lblSize);
 		pnlMain.add(Box.createHorizontalGlue());
-		if (net.isServer)
-			hosting(net);
+		if (network.isServer)
+			hosting();
 		else
 			joining();
 		add(lblHostInfo);
@@ -67,11 +71,11 @@ class Lobby extends JPanel{
 		}
 	}
 	
-	private void hosting(Network net) {
-		net.getServerInstance().event = connectionEvent;
+	private void hosting() {
+		network.getServerInstance().event = connectionEvent;
 		btnStart.addActionListener(startListener);
 		pnlMain.add(btnStart);
-		lblHostInfo.setText("Your ip:port = " + getIp() + ":" + net.getServerInstance().getPort());
+		lblHostInfo.setText("Your ip:port = " + getIp() + ":" + network.getServerInstance().getPort());
 		lblHostInfo.setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
@@ -94,6 +98,9 @@ class Lobby extends JPanel{
 	private NetFunctionEvent startEvent = new NetFunctionEvent() {
 		@Override
 		public MarkupMsg calledFunc(MarkupMsg args, Connection c) {
+			int ordinal = args.getAttribute("Gametype").getInt();
+			GameType type = GameType.values()[ordinal];
+			gameInfo.mode = type;
 			shutdown();
 			return null;
 		}
@@ -103,7 +110,9 @@ class Lobby extends JPanel{
 	private ActionListener startListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			startFunc.sendCall(new MarkupMsg(), Connection.BROADCAST_CONNECTION);
+			MarkupMsg msg = new MarkupMsg();
+			msg.addAttribute(new MsgAttribute("Gametype").set(gameInfo.mode.ordinal()));
+			startFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
 			network.flush();
 			shutdown();
 		}

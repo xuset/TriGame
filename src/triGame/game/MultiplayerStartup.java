@@ -4,9 +4,16 @@ import java.io.IOException;
 
 import tSquare.math.IdGenerator;
 import tSquare.system.Network;
+import triGame.game.GameMode.GameType;
+import triGame.intro.GameInfo;
+import triGame.intro.GameInfo.NetworkType;
 
 public class MultiplayerStartup {
+	private static final GameType gameType = GameType.SURVIVAL;
+	
 	public static void main(String[] main) {
+		if (!System.getProperty("os.name").toLowerCase().contains("windows"))
+			System.setProperty("sun.java2d.opengl", "True");
 		new Server();
 		new Client();
 
@@ -21,7 +28,8 @@ public class MultiplayerStartup {
 			try {
 				Network network = Network.startupServer(3000);
 				network.waitForClientsToConnect(1, Integer.MAX_VALUE);
-				TriGame g = new TriGame(network);
+				GameInfo info = new GameInfo(network, gameType, NetworkType.HOST);
+				TriGame g = new TriGame(info);
 				g.startGame();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -37,7 +45,8 @@ public class MultiplayerStartup {
 		public void run() {
 			try {
 				Network network = Network.connectToServer("127.0.0.1", 3000, IdGenerator.getNext());
-				TriGame g = new TriGame(network);
+				GameInfo info = new GameInfo(network, gameType, NetworkType.JOIN);
+				TriGame g = new TriGame(info);
 				g.startGame();
 			} catch (IOException e) {
 				e.printStackTrace();

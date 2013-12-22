@@ -9,13 +9,11 @@ import tSquare.game.entity.ManagerController;
 import tSquare.game.particles.ParticleController;
 import tSquare.imaging.Sprite;
 import tSquare.paths.ObjectGrid;
-import tSquare.util.PlaceHolder;
+import triGame.game.GameMode;
 import triGame.game.ManagerService;
 import triGame.game.Params;
-import triGame.game.RoundHandler;
 import triGame.game.entities.buildings.Building.BuildingInfo;
 import triGame.game.entities.buildings.types.HeadQuarters;
-import triGame.game.safeArea.SafeAreaBoard;
 import triGame.game.shopping.ShopManager;
 import triGame.game.ui.UserInterface;
 import triGame.game.ui.arsenal.ArsenalItem;
@@ -23,7 +21,7 @@ import triGame.game.ui.arsenal.ArsenalItem;
 public class BuildingManager extends Manager<Building> {
 	public static final String HASH_MAP_KEY = "building";
 	
-	private final SafeAreaBoard safeBoard;
+	private final GameMode gameMode;
 	private final CreationFuncs creators;
 	public final ObjectGrid objectGrid;
 	public final ArrayList<Building> interactives;
@@ -31,21 +29,20 @@ public class BuildingManager extends Manager<Building> {
 	public BuildingCreator getCreator(BuildingInfo info) { return creators.getCreator(info); }
 
 	public BuildingManager(ManagerController mc, ManagerService managers,
-			SafeAreaBoard safeBoard, PlaceHolder<RoundHandler> phRoundHandler,
-			ShopManager shop, ParticleController particle) {
+			GameMode gameMode, ShopManager shop, ParticleController particle) {
 		
 		super(mc, HASH_MAP_KEY);
-		this.safeBoard = safeBoard;
+		this.gameMode = gameMode;
 		interactives = new ArrayList<Building>();
 		objectGrid = new ObjectGrid(Params.GAME_WIDTH, Params.GAME_HEIGHT,
 				Params.BLOCK_SIZE, Params.BLOCK_SIZE);
-		creators = new CreationFuncs(this, mc, managers, phRoundHandler, shop, particle);
+		creators = new CreationFuncs(this, mc, managers, gameMode, shop, particle);
 	}
 	
 	@Override
 	protected void onRemove(Entity e) {
 		objectGrid.turnOffRectangle(e.getX(), e.getY(), e.getWidth(), e.getHeight());
-		safeBoard.removeVisibility(e);
+		gameMode.getSafeBoard().removeVisibility(e);
 		if (((Building) e).isInteractive())
 			interactives.remove(e);
 	}
@@ -54,7 +51,7 @@ public class BuildingManager extends Manager<Building> {
 	protected void onAdd(Building b) {
 		objectGrid.turnOnRectangle(b.getX(), b.getY(), b.getWidth(), b.getHeight());
 		if (b.getVisibilityRadius() > 0)
-			safeBoard.addVisibilityForEntity(b, b.getVisibilityRadius());
+			gameMode.getSafeBoard().addVisibilityForEntity(b, b.getVisibilityRadius());
 		if (b.isInteractive())
 			interactives.add(b);
 	}
@@ -73,9 +70,18 @@ public class BuildingManager extends Manager<Building> {
 	public Building getHQ() {
 		if (list.isEmpty())
 			return null;
-		Building b = list.get(0);
-		if (b.info == HeadQuarters.INFO)
-			return b;
+		for (Building b : list) {
+			if (b.info == HeadQuarters.INFO)
+				return b;
+		}
+		return null;
+	}
+	
+	public Building getByLocation(double x, double y) {
+		for (Building b : list) {
+			if (b.getX() == x && b.getY() == y)
+				return b;
+		}
 		return null;
 	}
 }

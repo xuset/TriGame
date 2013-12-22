@@ -23,6 +23,7 @@ public class Zombie extends Entity {
 	int speed = 50;
 	
 	private final ManagerService managers;
+	private final ZombieHandler zombieHandler;
 	private final boolean isServer;
 	private final ZombiePathFinder pathFinder;
 	private final ShopManager shop;
@@ -39,10 +40,12 @@ public class Zombie extends Entity {
 	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
 	
 	public Zombie(String spriteId, double x, double y, ManagerService managers,
-			boolean isServer, ZombiePathFinder pathFinder, ShopManager shop, EntityKey key) {
+			ZombieHandler zombieHandler, boolean isServer, ZombiePathFinder pathFinder,
+			ShopManager shop, EntityKey key) {
 		
 		super(spriteId, x, y, key);
 		this.managers = managers;
+		this.zombieHandler = zombieHandler;
 		this.isServer = isServer;
 		this.pathFinder = pathFinder;
 		this.shop = shop;
@@ -74,9 +77,11 @@ public class Zombie extends Entity {
 			return;
 		
 		if (target == null || target.getHealth() <= 0 || target.removeRequested())
-			target = ZombieManager.determineTarget(managers);
-		if (target == null)
+			target = zombieHandler.findTarget(this);
+		if (target == null) {
+			remove();
 			return;
+		}
 		
 		if (shouldFindNewPath())
 			findPath();

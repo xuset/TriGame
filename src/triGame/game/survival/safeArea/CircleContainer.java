@@ -1,4 +1,4 @@
-package triGame.game.safeArea;
+package triGame.game.survival.safeArea;
 
 
 import java.util.Iterator;

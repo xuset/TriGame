@@ -5,14 +5,14 @@ import tSquare.game.entity.LocationCreator;
 import tSquare.game.entity.Manager;
 import tSquare.game.entity.ManagerController;
 import tSquare.system.PeripheralInput;
+import triGame.game.GameMode;
 import triGame.game.ManagerService;
-import triGame.game.safeArea.SafeAreaBoard;
 
 public class PersonManager extends Manager<Person>{
 	public static final String HASH_MAP_KEY = "person";
 	
 	private final ManagerService managers;
-	private final SafeAreaBoard safeBoard;
+	private final GameMode gameMode;
 	private final PeripheralInput.Keyboard keyboard;
 	private final long ownerId;
 	private final boolean isServer;
@@ -20,12 +20,12 @@ public class PersonManager extends Manager<Person>{
 	public final LocationCreator<Person> creator;
 	
 	public PersonManager(ManagerController controller, ManagerService managers,
-			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard,
+			GameMode gameMode, PeripheralInput.Keyboard keyboard,
 			long ownerId, boolean isServer) {
 		
 		super(controller, HASH_MAP_KEY);
 		this.managers = managers;
-		this.safeBoard = safeBoard;
+		this.gameMode = gameMode;
 		this.keyboard = keyboard;
 		this.ownerId = ownerId;
 		this.isServer = isServer;
@@ -35,7 +35,7 @@ public class PersonManager extends Manager<Person>{
 					@Override
 					public Person create(double x, double y, EntityKey key) {
 						return new Person(x, y, key, PersonManager.this.managers,
-								PersonManager.this.safeBoard, PersonManager.this.keyboard,
+								PersonManager.this.gameMode.getSafeBoard(), PersonManager.this.keyboard,
 								PersonManager.this.ownerId, PersonManager.this.isServer);
 					}
 				});

@@ -1,4 +1,4 @@
-package triGame.game.safeArea;
+package triGame.game.survival.safeArea;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -7,15 +7,15 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import tSquare.game.GameBoard.ViewRect;
-import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
 import tSquare.imaging.ImageProcess;
 import triGame.game.Params;
-import triGame.game.safeArea.Circle;
+import triGame.game.SafeBoard;
+import triGame.game.survival.safeArea.Circle;
 
 
 
-public class SafeAreaBoard implements GameIntegratable{
+public class SurvivalSafeBoard extends SafeBoard{
 	private CircleContainer circleChart = new CircleContainer();
 	private BufferedImage areaImage;
 	private Color fillColor = Color.black;
@@ -25,7 +25,7 @@ public class SafeAreaBoard implements GameIntegratable{
 	private int drawPointHeight;
 	
 	private final int initialRadius = 600;
-	public SafeAreaBoard() {
+	public SurvivalSafeBoard() {
 		int firstX = Params.GAME_WIDTH / 2;
 		int firstY = Params.GAME_HEIGHT / 2;
 		circleChart.addCircle(firstX, firstY, initialRadius, null);

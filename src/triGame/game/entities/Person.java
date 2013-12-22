@@ -17,9 +17,9 @@ import tSquare.system.PeripheralInput;
 import triGame.game.Load;
 import triGame.game.ManagerService;
 import triGame.game.Params;
+import triGame.game.SafeBoard;
 import triGame.game.entities.buildings.Building;
 import triGame.game.entities.dropPacks.DropPack;
-import triGame.game.safeArea.SafeAreaBoard;
 
 public class Person extends Entity implements GameIntegratable{
 	public static final String SPRITE_ID = "person";
@@ -27,7 +27,7 @@ public class Person extends Entity implements GameIntegratable{
 	
 	private final int speed = 300;
 	private final ManagerService managers;
-	private final SafeAreaBoard safeBoard;
+	private final SafeBoard safeBoard;
 	private final PeripheralInput.Keyboard keyboard;
 	private final HealthBar healthBar;
 	private final NetVar.nLong ownerId;
@@ -38,11 +38,11 @@ public class Person extends Entity implements GameIntegratable{
 	
 	long getOwnerId() { return ownerId.get(); }
 	
-	public boolean isDead() { return getHealth() <= 0; }
+	public boolean isDead() { return getHealth() <= 0 || removeRequested(); }
 	public boolean didMove() { return moved; }
 	
 	Person(double x, double y, EntityKey key, ManagerService managers,
-			SafeAreaBoard safeBoard, PeripheralInput.Keyboard keyboard,
+			SafeBoard safeBoard, PeripheralInput.Keyboard keyboard,
 			long ownerIdL, boolean isServer) {
 		
 		super(SPRITE_ID, x, y, key);
@@ -176,7 +176,7 @@ public class Person extends Entity implements GameIntegratable{
 			moveTo.set(hq.getX(), hq.getY());
 		
 		turn(moveTo);
-		super.moveForward(300 * frameDelta / 1000.0);
+		super.moveForward(400 * frameDelta / 1000.0);
 	}
 	
 	private void move(int frameDelta) {

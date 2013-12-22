@@ -17,11 +17,10 @@ public class BossZombie extends Zombie {
 	private final NetVar.nInt maxHealth;
 	private final ShopManager shop;
 
-	public BossZombie(double x, double y, ManagerService managers,
+	public BossZombie(double x, double y, ManagerService managers, ZombieHandler zombieHandler,
 			boolean isServer, ZombiePathFinder pathFinder, ShopManager shop, EntityKey key) {
 		
-		super(SPRITE_ID, x, y, managers, isServer, pathFinder, shop, key);
-		additionalBuildingG = 40;
+		super(SPRITE_ID, x, y, managers, zombieHandler, isServer, pathFinder, shop, key);
 		this.shop = shop;
 		healthBar = new HealthBar(this);
 		maxHealth = new NetVar.nInt(100, "maxHealth", objClass);

@@ -26,6 +26,7 @@ import triGame.game.entities.buildings.types.MortarTower;
 import triGame.game.entities.buildings.types.PointCollector;
 import triGame.game.entities.buildings.types.SmallTower;
 import triGame.game.entities.buildings.types.SteelBarrier;
+import triGame.game.entities.buildings.types.StrongWall;
 import triGame.game.entities.buildings.types.Tower;
 import triGame.game.entities.dropPacks.DropPack;
 import triGame.game.entities.projectiles.MortarProjectile;
@@ -57,6 +58,7 @@ public abstract class Load {
 		spriteMortorTower();
 		spriteHealthTower();
 		Sprite.add(MortarProjectile.SPRITE_ID);
+		spriteStrongWall();
 		Sound.add(Projectile.SOUND_ID);
 		AnimatedSprite.ADD(Wall.CRACKS_SPRITE_ID, new AnimatedSprite(Wall.CRACKS_SPRITE_ID, 1, 3, 3));
 	}
@@ -254,6 +256,20 @@ public abstract class Load {
 	
 	private static void spriteFreezeTower() {
 		Sprite.add(FreezeTower.INFO.spriteId);
+	}
+	
+	private static void spriteStrongWall() {
+		if (Sprite.exists(StrongWall.INFO.spriteId))
+			return;
+		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = (Graphics2D) image.getGraphics();
+		g.setColor(Color.DARK_GRAY);
+		g.fillRect(0, 0, 50, 50);
+		g.setColor(Color.black);
+		g.fillRect(5, 5, 40, 40);
+		g.dispose();
+		image = ImageProcess.createCompatiableImage(image);
+		Sprite.add(new Sprite(StrongWall.INFO.spriteId, image));
 	}
 	
 	private static void spriteMortorTower() {

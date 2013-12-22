@@ -13,16 +13,14 @@ import tSquare.game.Game;
 import tSquare.game.GameBoard;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.system.Display;
-import tSquare.system.Network;
 import tSquare.system.PeripheralInput;
-import tSquare.util.PlaceHolder;
 import tSquare.util.PopUp;
 import triGame.game.entities.Person;
 import triGame.game.entities.buildings.Building;
 import triGame.game.guns.GunManager;
-import triGame.game.safeArea.SafeAreaBoard;
 import triGame.game.shopping.ShopManager;
 import triGame.game.ui.UserInterface;
+import triGame.intro.GameInfo;
 
 public class TriGame extends Game{
 	private final Display display;
@@ -30,44 +28,42 @@ public class TriGame extends Game{
 	private final GameBoard gameBoard;
 	private final PeripheralInput input;
 	private final ShopManager shop;
-	private final SafeAreaBoard safeBoard;
 	private final GameOver gameOver;
 	
 	private final TiledBackground background;
 	private final ManagerService managerService;
+	private final GameMode gameMode;
 	private final GunManager gunManager;
-	private final RoundHandler roundHandler;
 	private final UserInterface ui;
 	private final Person player;
 
 	private boolean isGameOver = false;
 	
-	public TriGame(Network network) {
-		super(network);
+	public TriGame(GameInfo gameInfo) {
+		super(gameInfo.getNetwork());
 		NetVar.nBool startGame = new NetVar.nBool(false, "start", network.objController);
 		Load.sprites();
 
-		safeBoard = new SafeAreaBoard();
 		gameOver = new GameOver();
 		input = new PeripheralInput();
-		shop = new ShopManager(30000);
+		shop = new ShopManager(300);
 		display = new Display(500, 500, "Attack of the Triangles! - " + (network.isServer ? "Server" : "Client"));
 		drawBoard = new DrawBoard(display.getWidth(), display.getHeight(), display);
 		gameBoard = new GameBoard(Params.GAME_WIDTH, Params.GAME_HEIGHT, drawBoard);
+	
+		gameMode = GameMode.factoryCreator(gameInfo.getGameType(),
+				shop, network.objController, network.isServer, input.keyboard);
 		
-		PlaceHolder<RoundHandler> phRoundHandler = new PlaceHolder<RoundHandler>();
-		
-		managerService = new ManagerService(managerController, safeBoard, input.keyboard,
-				shop, particleController, network.isServer, phRoundHandler, userId);
+		managerService = new ManagerService(managerController, input.keyboard,
+				shop, particleController, network.isServer, userId, gameMode);
 		ui = new UserInterface(display, drawBoard, managerService, shop, input.mouse);
-		roundHandler = new RoundHandler(managerService, input.keyboard, drawBoard,
-				network.objController, network.isServer, shop);
+		gameMode.setDependencies(managerService);
 		if (network.isServer) {
 			network.getServerInstance().accepter.stop();
-			Map.createRandomMap(managerService, safeBoard);
+			gameMode.createMap();
 		}
 		gunManager = new GunManager(managerController, managerService, shop, input.keyboard);
-		player = managerService.person.create(gameBoard.getWidth() / 2 - 50, gameBoard.getHeight() / 2 -100);
+		player = gameMode.spawnInPlayer();
 		background = new TiledBackground(display, player);
 		drawBoard.addMouseListener(ui.attacher);
 		drawBoard.addKeyListener(input.keyboard);
@@ -77,7 +73,6 @@ public class TriGame extends Game{
 		gunManager.addGunsToUI(ui);
 		ui.arsenal.panel.switchGroup(ui.arsenal.towerGroup);
 		display.pack();
-		phRoundHandler.set(roundHandler);
 		network.getClientInstance().conEvent = connectionEvent;
 		if (network.isServer) {
 			startGame.set(true);
@@ -94,13 +89,12 @@ public class TriGame extends Game{
 		
 		
 		if (!isGameOver) {
-			roundHandler.performLogic(frameDelta);
-			isGameOver = (managerService.building.getHQ() == null);
-			managerService.person.performLogic(frameDelta);
+			isGameOver = gameMode.isGameOver();
 			gunManager.performLogic(frameDelta);
 		}
 
 
+		managerService.person.performLogic(frameDelta);
 		managerService.dropPack.performLogic(frameDelta);
 		managerService.zombie.performLogic(frameDelta);
 		managerService.building.performLogic(frameDelta);
@@ -120,6 +114,8 @@ public class TriGame extends Game{
 			gameBoard.centerViewWindowCordinates(player.getCenterX(), player.getCenterY());
 			background.centerTo = player;
 		}
+		
+		gameMode.performLogic(frameDelta);
 	}
 	
 	private final ConnectionEvent connectionEvent = new ConnectionEvent() {
@@ -158,10 +154,10 @@ public class TriGame extends Game{
 		managerService.projectile.draw(g, rect);
 		managerService.zombie.draw(g, rect);
 		managerService.dropPack.draw(g, rect);
-		safeBoard.draw(g, rect);
 		managerService.person.draw(g, rect);
+		gameMode.getSafeBoard().draw(g, rect);
+		gameMode.draw(g, rect);
 		ui.attacher.draw(g, rect);
-		roundHandler.draw(g, rect);
 		particleController.draw(g, rect);
 		
 		if (isGameOver)
@@ -184,7 +180,7 @@ public class TriGame extends Game{
 		g.setColor(Color.LIGHT_GRAY);
 		g.setFont(statFont);
 		g.drawString("$" + shop.getPointCount(), ix, iy);
-		g.drawString("Round " + roundHandler.getRoundNumber(), ix, iy + 1 * 15);
+		g.drawString("Round " + gameMode.getRoundNumber(), ix, iy + 1 * 15);
 		g.drawString("Killed " + managerService.zombie.getZombiesKilled() + " zombies", ix, iy + 2 * 15);
 		g.drawString(getCurrentFps() + "FPS", ix, iy + 3 * 15);
 	}

@@ -2,7 +2,8 @@ package triGame.game.entities.buildings.types;
 
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
-import triGame.game.ManagerService;
+import triGame.game.entities.projectiles.ProjectileManager;
+import triGame.game.entities.zombies.ZombieTargeter;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeItem;
 
@@ -11,8 +12,10 @@ public class SmallTower extends Tower {
 	private static final int initialShootDelay = 500;
 	private static final int initialDamage = -15;
 	
-	public SmallTower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
-		super(x, y, pc, managers, INFO, key);
+	public SmallTower(double x, double y, ParticleController pc, 
+			ZombieTargeter targeter, ProjectileManager projectile, EntityKey key) {
+		
+		super(x, y, pc, targeter, projectile, INFO, key);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100),3, INFO.visibilityRadius, 50);
 		if (owned()) {
 			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 50), 3, initialShootDelay, -50);

@@ -7,9 +7,9 @@ import tSquare.game.entity.LocationCreator;
 import tSquare.game.entity.LocationCreator.IFace;
 import tSquare.game.entity.ManagerController;
 import tSquare.game.particles.ParticleController;
-import tSquare.util.PlaceHolder;
+import triGame.game.GameMode;
 import triGame.game.ManagerService;
-import triGame.game.RoundHandler;
+import triGame.game.SafeBoard;
 import triGame.game.entities.buildings.Building.BuildingInfo;
 import triGame.game.entities.buildings.types.Barrier;
 import triGame.game.entities.buildings.types.FreezeTower;
@@ -21,11 +21,14 @@ import triGame.game.entities.buildings.types.PointCollector;
 import triGame.game.entities.buildings.types.PointCollectorCreator;
 import triGame.game.entities.buildings.types.SmallTower;
 import triGame.game.entities.buildings.types.SteelBarrier;
+import triGame.game.entities.buildings.types.StrongWall;
 import triGame.game.entities.buildings.types.Tower;
+import triGame.game.entities.zombies.ZombieTargeter;
 import triGame.game.shopping.ShopManager;
 
 final class CreationFuncs {
 	public static final BuildingInfo[] INFOS = new BuildingInfo[] {
+		StrongWall.INFO,
 		HeadQuarters.INFO,
 		Barrier.INFO,
 		SteelBarrier.INFO,
@@ -40,9 +43,10 @@ final class CreationFuncs {
 	
 	public final ArrayList<BuildingCreator> creators = new ArrayList<BuildingCreator>();
 	private final ManagerService managers;
-	private final PlaceHolder<RoundHandler> phRoundHandler;
+	private final GameMode gameMode;
 	private final ShopManager shop;
 	private final ParticleController particle;
+	private final ZombieTargeter targeter;
 	
 	public BuildingCreator getCreator(BuildingInfo info) {
 		for (BuildingCreator c : creators) {
@@ -53,23 +57,27 @@ final class CreationFuncs {
 	}
 	
 	public CreationFuncs(BuildingManager bm, ManagerController mc, ManagerService managers,
-			PlaceHolder<RoundHandler> phRoundHandler, ShopManager shop, ParticleController particle) {
+			GameMode gameMode, ShopManager shop, ParticleController particle) {
 		
 		this.managers = managers;
-		this.phRoundHandler = phRoundHandler;
+		this.gameMode = gameMode;
 		this.shop = shop;
 		this.particle = particle;
+		targeter = gameMode.getZombieTargeter();
 		
-		creators.add(new BuildingCreator(HeadQuarters.INFO, bm, mc.creator, managers, headQuartersFunc));
-		creators.add(new BuildingCreator(LightTower.INFO, bm, mc.creator, managers, lightTowerFunc));
-		creators.add(new PointCollectorCreator(PointCollector.INFO, bm, mc.creator, managers, pointCollectorFunc));
-		creators.add(new BuildingCreator(SmallTower.INFO, bm, mc.creator, managers, smallTowerFunc));
-		creators.add(new BuildingCreator(Tower.INFO, bm, mc.creator, managers, towerFunc));
-		creators.add(new BuildingCreator(Barrier.INFO, bm, mc.creator, managers, barrierFunc));
-		creators.add(new BuildingCreator(SteelBarrier.INFO, bm, mc.creator, managers, steelFunc));
-		creators.add(new BuildingCreator(FreezeTower.INFO, bm, mc.creator, managers, freezeFunc));
-		creators.add(new BuildingCreator(MortarTower.INFO, bm, mc.creator, managers, mortarFunc));
-		creators.add(new BuildingCreator(HealthTower.INFO, bm, mc.creator, managers, hpTowerFunc));
+		SafeBoard sb = gameMode.getSafeBoard();
+		
+		creators.add(new BuildingCreator(StrongWall.INFO, bm, sb, mc.creator, managers, strongFunc));
+		creators.add(new BuildingCreator(HeadQuarters.INFO, bm, sb, mc.creator, managers, headQuartersFunc));
+		creators.add(new BuildingCreator(LightTower.INFO, bm, sb, mc.creator, managers, lightTowerFunc));
+		creators.add(new PointCollectorCreator(PointCollector.INFO, bm, sb, mc.creator, managers, pointCollectorFunc));
+		creators.add(new BuildingCreator(SmallTower.INFO, bm, sb, mc.creator, managers, smallTowerFunc));
+		creators.add(new BuildingCreator(Tower.INFO, bm, sb, mc.creator, managers, towerFunc));
+		creators.add(new BuildingCreator(Barrier.INFO, bm, sb, mc.creator, managers, barrierFunc));
+		creators.add(new BuildingCreator(SteelBarrier.INFO, bm, sb, mc.creator, managers, steelFunc));
+		creators.add(new BuildingCreator(FreezeTower.INFO, bm, sb, mc.creator, managers, freezeFunc));
+		creators.add(new BuildingCreator(MortarTower.INFO, bm, sb, mc.creator, managers, mortarFunc));
+		creators.add(new BuildingCreator(HealthTower.INFO, bm, sb, mc.creator, managers, hpTowerFunc));
 	}
 	
 	
@@ -98,7 +106,7 @@ final class CreationFuncs {
 
 		@Override
 		public PointCollector create(double x, double y, EntityKey key) {
-			return new PointCollector(x, y, managers, particle, shop, phRoundHandler, key);
+			return new PointCollector(x, y, managers, particle, shop, gameMode, key);
 		}
 		
 	};
@@ -107,7 +115,7 @@ final class CreationFuncs {
 
 		@Override
 		public SmallTower create(double x, double y, EntityKey key) {
-			return new SmallTower(x, y, particle, managers, key);
+			return new SmallTower(x, y, particle, targeter, managers.projectile, key);
 		}
 		
 	};
@@ -116,7 +124,7 @@ final class CreationFuncs {
 
 		@Override
 		public Tower create(double x, double y, EntityKey key) {
-			return new Tower(x, y, particle, managers, key);
+			return new Tower(x, y, particle, targeter, managers.projectile, key);
 		}
 		
 	};
@@ -145,7 +153,7 @@ final class CreationFuncs {
 	private final LocationCreator.IFace<MortarTower> mortarFunc = new IFace<MortarTower>() {
 		@Override
 		public MortarTower create(double x, double y, EntityKey key) {
-			return new MortarTower(x, y, particle, managers, key);
+			return new MortarTower(x, y, particle, targeter, managers.projectile, key);
 		}
 	};
 	
@@ -153,6 +161,13 @@ final class CreationFuncs {
 		@Override
 		public HealthTower create(double x, double y, EntityKey key) {
 			return new HealthTower(x, y, particle, managers, key);
+		}
+	};
+	
+	private final LocationCreator.IFace<StrongWall> strongFunc = new IFace<StrongWall>() {
+		@Override
+		public StrongWall create(double x, double y, EntityKey key) {
+			return new StrongWall(x, y, key);
 		}
 	};
 }
