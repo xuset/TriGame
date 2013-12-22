@@ -48,11 +48,8 @@ public abstract class Manager<T extends Entity> implements GameIntegratable{
 		for (Iterator<T> it = list.iterator(); it.hasNext();) {
 			Entity e = it.next();
 			if (e.removeRequested()) {
-				creationHandler.removeOnNetwork(e, this);
 				it.remove();
-				e.objClass.remove();
-				e.onRemoved();
-				onRemove(e);
+				handleRemove(e);
 			} else {
 				e.performLogic(frameDelta);
 				e.sendUpdates();
@@ -65,5 +62,24 @@ public abstract class Manager<T extends Entity> implements GameIntegratable{
 		for (Entity e : list) {
 			e.draw(g, rect);
 		}
+	}
+	
+	public final void updateList() {
+		for (Iterator<T> it = list.iterator(); it.hasNext();) {
+			Entity e = it.next();
+			if (e.removeRequested()) {
+				it.remove();
+				handleRemove(e);
+			} else {
+				e.sendUpdates();
+			}
+		}
+	}
+	
+	private void handleRemove(Entity e) {
+		creationHandler.removeOnNetwork(e, this);
+		e.objClass.remove();
+		e.onRemoved();
+		onRemove(e);
 	}
 }
