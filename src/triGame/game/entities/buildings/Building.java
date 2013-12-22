@@ -8,6 +8,7 @@ import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.ParticleController;
 import triGame.game.entities.HealthBar;
+import triGame.game.entities.buildings.types.HeadQuarters;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.UpgradeItem;
 import triGame.game.shopping.UpgradeManager;
@@ -34,7 +35,7 @@ public abstract class Building extends Entity{
 		
 		upgrades = (info.isUpgradable) ? new UpgradeManager() : null;
 		
-		if (healthBar != null && pc != null)
+		if (healthBar != null && pc != null && (owned() || info == HeadQuarters.INFO))
 			pc.addParticle(healthBar);
 
 		visibilityRadius = info.visibilityRadius;
