@@ -11,6 +11,7 @@ import triGame.game.entities.zombies.ZombieHandler;
 class VersusZombie extends ZombieHandler{
 	private final VersusMap gameMap;
 	private int spawnZone = -1;
+	private boolean flop = false;
 	
 	VersusZombie(VersusMap gameMap, Observer<Integer> roundNumber) {
 		super(roundNumber);
@@ -28,7 +29,8 @@ class VersusZombie extends ZombieHandler{
 	@Override
 	protected Entity findTarget(Zombie z) {
 		if (z == null) {
-			spawnZone = (int) (Math.random() * 2);
+			spawnZone = (flop) ? 1 : 0;
+			flop = !flop;
 		}
 		Entity target =  super.findTarget(z);
 		spawnZone = -1;
