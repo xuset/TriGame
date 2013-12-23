@@ -26,6 +26,7 @@ public class VersusGameMode extends GameMode {
 	private final VersusZombie zombieHandler;
 	private final VersusRound gameRound;
 	private final VersusTargeter zombieTargeter = new VersusTargeter();
+	private final IsGameOver entireGameOver = new IsGameOver();
 	
 	private ManagerService managers;
 	private Person player;
@@ -37,7 +38,7 @@ public class VersusGameMode extends GameMode {
 		this.shop = shop;
 		gameMap = new VersusMap();
 		safeBoard = new VersusSafeBoard(gameMap.playableArea);
-		gameRound = new VersusRound(objController, isServer, keyboard, gameMap);
+		gameRound = new VersusRound(objController, isServer, keyboard, gameMap, entireGameOver);
 		zombieHandler = new VersusZombie(gameMap, gameRound.onNewRound);
 		
 		gameRound.onNewRound.watch(new RoundObserver());
@@ -57,6 +58,10 @@ public class VersusGameMode extends GameMode {
 		gameRound.spawner.setPlayerZoneAndTargets(
 				gameMap.getZoneNumber(player),
 				gameMap.headQuarters );
+		if (didLoose())
+			isGameOver.value = true;
+		if (gameMap.headQuarters[0].removeRequested() && gameMap.headQuarters[1].removeRequested())
+			entireGameOver.value = true;
 	}
 	
 	@Override
@@ -119,6 +124,10 @@ public class VersusGameMode extends GameMode {
 		protected boolean isValidZombie(double x, double y, Zombie z) {
 			return (gameMap.getZoneNumber(x, y) == gameMap.getZoneNumber(z));
 		}
+	}
+	
+	class EntireGameOver {
+		public boolean value = false;
 	}
 
 }

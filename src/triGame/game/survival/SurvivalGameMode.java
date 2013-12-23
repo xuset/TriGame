@@ -28,19 +28,26 @@ public class SurvivalGameMode extends GameMode {
 		this.shop = shop;
 		safeBoard = new SurvivalSafeBoard();
 		zombieTargeter = new ZombieTargeter();
-		gameRound = new SurvivalRound(objController, isServer, keyboard);
+		gameRound = new SurvivalRound(objController, isServer, keyboard, isGameOver);
 		zombieHandler = new ZombieHandler(gameRound.onNewRound);
 		gameRound.onNewRound.watch(new OnNewRound());
 	}
 
-	@Override public boolean isGameOver() { return (managers.building.getHQ() == null); }
 	@Override public SafeBoard getSafeBoard() { return safeBoard; }
 	@Override public ZombieHandler getZombieHandler() { return zombieHandler; }
 	@Override public ZombieTargeter getZombieTargeter() { return zombieTargeter; }
 	@Override protected GameRound getGameRound() { return gameRound; }
 	@Override protected void createMap() { SurvivalMap.createRandomMap(managers, safeBoard); }
+	
+	@Override
+	public void performLogic(int frameDelta) {
+		super.performLogic(frameDelta);
+		if (managers.building.getHQ() == null)
+			isGameOver.value = true;
+	}
 
-	@Override protected void setDependencies(ManagerService managers, UserInterface ui) {
+	@Override
+	protected void setDependencies(ManagerService managers, UserInterface ui) {
 		this.managers = managers;
 		gameRound.setDependencies(managers);
 		zombieTargeter.setDependencies(managers.zombie.list);

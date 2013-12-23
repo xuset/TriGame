@@ -17,8 +17,11 @@ import triGame.game.versus.VersusGameMode;
 public abstract class GameMode implements GameIntegratable {
 	public enum GameType { SURVIVAL, VERSUS }
 	
+	protected final IsGameOver isGameOver = new IsGameOver();
+	
 	public int getRoundNumber() { return getGameRound().roundNumber.get(); }
 	public boolean isRoundGoing() { return getGameRound().roundOnGoing.get(); }
+	public boolean isGameOver() { return isGameOver.value; }
 	
 	
 	public static GameMode factoryCreator(GameType gameType, ShopManager shop,
@@ -51,7 +54,6 @@ public abstract class GameMode implements GameIntegratable {
 		
 	}
 	
-	public abstract boolean isGameOver();
 	public abstract SafeBoard getSafeBoard();
 	public abstract ZombieHandler getZombieHandler();
 	public abstract ZombieTargeter getZombieTargeter();
@@ -59,5 +61,9 @@ public abstract class GameMode implements GameIntegratable {
 	protected abstract Person spawnInPlayer();
 	protected abstract void setDependencies(ManagerService managers, UserInterface ui);
 	protected abstract GameRound getGameRound();
+
+	public class IsGameOver {
+		public boolean value = false;
+	}
 	
 }

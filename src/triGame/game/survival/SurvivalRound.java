@@ -11,18 +11,23 @@ import triGame.game.GameRound;
 import triGame.game.ManagerService;
 import triGame.game.entities.zombies.ZombieManager;
 import triGame.game.entities.zombies.ZombieSpawner;
+import triGame.game.GameMode.IsGameOver;
 
 class SurvivalRound extends GameRound {
 	private final boolean isServer;
 	private final PeripheralInput.Keyboard keyboard;
 	private final ZombieSpawner zombieSpawner = new ZombieSpawner();
+	private final IsGameOver isGameOver;
 	
 	private ManagerService managers;
 
-	public SurvivalRound(ObjControllerI objController, boolean isServer, PeripheralInput.Keyboard keyboard) {
+	public SurvivalRound(ObjControllerI objController, boolean isServer,
+			PeripheralInput.Keyboard keyboard, IsGameOver isGameOver) {
+		
 		super(objController);
 		this.isServer = isServer;
 		this.keyboard = keyboard;
+		this.isGameOver = isGameOver;
 	}
 	
 	public void setDependencies(ManagerService managers) {
@@ -42,7 +47,7 @@ class SurvivalRound extends GameRound {
 	
 	@Override
 	protected void handleRoundNotOnGoing() {
-		if (isServer && keyboard.isPressed(KeyEvent.VK_ENTER)) {
+		if (isServer && !isGameOver.value && keyboard.isPressed(KeyEvent.VK_ENTER)) {
 			int next = getRoundNumber() + 1;
 			setRound(next);
 		}
@@ -51,7 +56,7 @@ class SurvivalRound extends GameRound {
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
 		super.draw(g, rect);
-		if (isServer && !isRoundOnGoing())
+		if (isServer && !isRoundOnGoing() && !isGameOver.value)
 			Draw.drawEnterToStart(g, rect);
 	}
 	

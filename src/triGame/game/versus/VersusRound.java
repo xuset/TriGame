@@ -7,6 +7,7 @@ import objectIO.netObject.ObjControllerI;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.system.PeripheralInput;
 import triGame.game.Draw;
+import triGame.game.GameMode.IsGameOver;
 import triGame.game.GameRound;
 import triGame.game.ManagerService;
 
@@ -15,6 +16,7 @@ class VersusRound extends GameRound {
 	private final PeripheralInput.Keyboard keyboard;
 	private final boolean isServer;
 	private final VersusMap gameMap;
+	private final IsGameOver isGameOver;
 	
 	private long nextRoundStartTime = 0;
 	private boolean gameStarted = false;
@@ -23,12 +25,13 @@ class VersusRound extends GameRound {
 	final VersusSpawner spawner;
 
 	VersusRound(ObjControllerI objController, boolean isServer,
-			PeripheralInput.Keyboard keyboard, VersusMap gameMap) {
+			PeripheralInput.Keyboard keyboard, VersusMap gameMap, IsGameOver isGameOver) {
 		
 		super(objController);
 		this.isServer = isServer;
 		this.keyboard = keyboard;
 		this.gameMap = gameMap;
+		this.isGameOver = isGameOver;
 		spawner = new VersusSpawner(objController);
 	}
 	
@@ -67,7 +70,7 @@ class VersusRound extends GameRound {
 		
 		if (nextRoundStartTime == 0)
 			nextRoundStartTime = System.currentTimeMillis() + 5000;
-		if (gameStarted && nextRoundStartTime < System.currentTimeMillis())
+		if (gameStarted && !isGameOver.value && nextRoundStartTime < System.currentTimeMillis())
 			setRound(getRoundNumber() + 1);
 		if (!gameStarted && keyboard.isPressed(KeyEvent.VK_ENTER)) {
 			gameStarted = true;
