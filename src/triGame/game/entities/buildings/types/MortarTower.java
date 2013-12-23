@@ -20,7 +20,7 @@ public class MortarTower extends Tower {
 		super(x, y, pc, targeter, projectile, INFO, key);
 		fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, 1500, -150);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100), 3, INFO.visibilityRadius, 75);
-		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, -100, -15);
+		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, -232, -15);
 		accuracyUpgrade = new UpgradeItem(new ShopItem("Accuracy", 100), 3, 250, 80);
 		upgrades.addUpgrade(fireRateUpgrade);
 		upgrades.addUpgrade(rangeUpgrade);
