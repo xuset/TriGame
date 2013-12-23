@@ -38,7 +38,7 @@ public class Arsenal implements JPanelGetter{
 					Arsenal.this.ui.switchTo(Arsenal.this.ui.upgrades);
 					Arsenal.this.ui.upgrades.set(info.upgradeManager, info.text);
 				} else if (Arsenal.this.shop.purchase(info.shopItem)){
-					info.arsenalItem.lblPrice.setText("");
+					info.arsenalItem.removePrice();
 					info.description = "Click to choose upgrades";
 				}
 			}

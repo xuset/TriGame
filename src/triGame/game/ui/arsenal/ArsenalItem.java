@@ -14,8 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import tSquare.imaging.ImageProcess;
+import tSquare.imaging.Sprite;
 import tSquare.util.Observer;
 import triGame.game.entities.LocManCreator;
+import triGame.game.entities.PointParticle;
 import triGame.game.shopping.ShopItem;
 import triGame.game.shopping.ShopManager;
 import triGame.game.shopping.UpgradeManager;
@@ -40,10 +42,14 @@ public class ArsenalItem extends JPanel{
 	private void construct(ShopItem item, JLabel main, String description) {
 		this.setSize((int) ITEM_SIZE, (int) ITEM_SIZE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		if (item.getCost() > 0)
-			lblPrice = new JLabel("$" + item.getCost(), JLabel.CENTER);
-		else
+		setBackground(new Color(205, 205, 205));
+		if (item.getCost() > 0) {
+			lblPrice = new JLabel("" + item.getCost());
+			lblPrice.setIcon(new ImageIcon(Sprite.get(PointParticle.SPRITE_ID).image));
+			
+		} else {
 			lblPrice = new JLabel("");
+		}
 		this.setAlignmentX(Component.CENTER_ALIGNMENT);
 		this.add(main);
 		this.add(lblPrice);
@@ -51,7 +57,7 @@ public class ArsenalItem extends JPanel{
 		info.arsenalItem = this;
 		info.description = description;
 		
-		main.setBorder(emptyBorder);
+		setBorder(emptyBorder);
 		main.addMouseListener(lblMainEvent);
 	}
 	
@@ -77,6 +83,11 @@ public class ArsenalItem extends JPanel{
 		construct(item, lblMain, description);
 	}
 	
+	public void removePrice() {
+		lblPrice.setText("");
+		lblPrice.setIcon(null);
+	}
+	
 	Observer.Change<ShopManager> observeShopPoints = new Observer.Change<ShopManager>() {
 		@Override
 		public void observeChange(ShopManager t) {
@@ -97,13 +108,13 @@ public class ArsenalItem extends JPanel{
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			lblMain.setBorder(selectedBorder);
+			setBorder(selectedBorder);
 			arsenalPanel.displayDescription(info.description);
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			lblMain.setBorder(emptyBorder);
+			setBorder(emptyBorder);
 			arsenalPanel.displayDescription("-");
 		}
 		public void mousePressed(MouseEvent e) { }

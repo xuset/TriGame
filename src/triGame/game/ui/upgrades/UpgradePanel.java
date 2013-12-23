@@ -18,7 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.TitledBorder;
 
+import tSquare.imaging.Sprite;
 import tSquare.util.Observer;
+import triGame.game.entities.PointParticle;
 import triGame.game.shopping.ShopManager;
 import triGame.game.shopping.UpgradeItem;
 import triGame.game.shopping.UpgradeManager;
@@ -29,7 +31,7 @@ public class UpgradePanel extends JPanel{
 	
 	private final FocusSurrender focusSurrender;
 	private JButton btnBuy = new JButton("purchase");
-	private JLabel lblPrice = new JLabel("$0");
+	private JLabel lblPrice = new JLabel("0");
 	private JProgressBar pbProgress = new JProgressBar();
 	private JPanel pnlAttribute = new JPanel();
 	private TitledBorder bdrAttribute = BorderFactory.createTitledBorder("");
@@ -61,6 +63,10 @@ public class UpgradePanel extends JPanel{
 		pnlAttribute.add(lblPrice);
 		pnlAttribute.add(btnBuy);
 		add(pnlAttribute);
+		lblPrice.setIcon(new ImageIcon(Sprite.get(PointParticle.SPRITE_ID).image));
+		lblPrice.setOpaque(true);
+		lblPrice.setBackground(Color.LIGHT_GRAY);
+		lblPrice.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 	}
 	
 	public void set(UpgradeManager manager,  String text) {
@@ -88,7 +94,7 @@ public class UpgradePanel extends JPanel{
 	}
 	
 	private void setAttribute(UpgradeItem upgrade) {
-		lblPrice.setText("$" + upgrade.shopItem.getCost());
+		lblPrice.setText("" + upgrade.shopItem.getCost());
 		if (shop.getPointCount() < upgrade.shopItem.getCost())
 			lblPrice.setForeground(Color.red);
 		else
@@ -106,7 +112,7 @@ public class UpgradePanel extends JPanel{
 	}
 	
 	private void clearAttribute() {
-		lblPrice.setText("$0");
+		lblPrice.setText("0");
 		lblPrice.setForeground(Color.black);
 		pbProgress.setValue(0);
 		bdrAttribute.setTitle("Upgrade");
