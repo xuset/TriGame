@@ -79,7 +79,7 @@ public class VersusGameMode extends GameMode {
 		gameRound.setDependencies(managers);
 		zombieHandler.setDependencies(managers);
 		zombieTargeter.setDependencies(managers.zombie.list);
-		ui.arsenal.panel.groups.add(new ZombieUI(ui.focus, gameRound.spawner, shop));
+		ui.arsenal.panel.groups.add(new ZombieUI(ui.focus, gameRound.spawner, shop,	ui.arsenal.panel));
 	}
 	
 	@Override

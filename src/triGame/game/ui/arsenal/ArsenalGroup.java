@@ -22,6 +22,10 @@ public class ArsenalGroup implements JPanelGetter{
 		panel.add(a);
 		panel.add(Box.createHorizontalGlue());
 	}
+	
+	protected void onSwitchTo(ArsenalPanel arseanlPanel) {
+		
+	}
 
 	@Override
 	public JPanel getJPanel() {

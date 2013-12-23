@@ -8,14 +8,16 @@ import triGame.game.GameMode.GameType;
 import triGame.intro.GameInfo;
 import triGame.intro.GameInfo.NetworkType;
 
-public class MultiplayerStartup {
-	private static final GameType gameType = GameType.SURVIVAL;
+public class DevStartup {
+	private static final GameType gameType = GameType.VERSUS;
+	private static final boolean multiplayer = false;
 	
 	public static void main(String[] main) {
 		if (!System.getProperty("os.name").toLowerCase().contains("windows"))
 			System.setProperty("sun.java2d.opengl", "True");
 		new Server();
-		new Client();
+		if (multiplayer)
+			new Client();
 
 	}
 	
@@ -27,7 +29,8 @@ public class MultiplayerStartup {
 		public void run() {
 			try {
 				Network network = Network.startupServer(3000);
-				network.waitForClientsToConnect(1, Integer.MAX_VALUE);
+				if (multiplayer)
+					network.waitForClientsToConnect(1, Integer.MAX_VALUE);
 				GameInfo info = new GameInfo(network, gameType, NetworkType.HOST);
 				TriGame g = new TriGame(info);
 				g.startGame();

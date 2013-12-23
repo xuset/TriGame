@@ -31,7 +31,7 @@ public class ArsenalItem extends JPanel{
 	final ArsenalItemInfo info = new ArsenalItemInfo();
 	final JLabel lblMain;
 	JLabel lblPrice;
-	final ArsenalPanel arsenalPanel;
+	private final ArsenalPanel arsenalPanel;
 	
 	public boolean visibile = true;
 	

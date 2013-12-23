@@ -93,6 +93,7 @@ public class ArsenalPanel{
 		displayedGroup = g;
 		btnSwitch.setText(getNextGroup().name);
 		refreshDisplay();
+		displayedGroup.onSwitchTo(this);
 	}
 	
 	public boolean displayingGroup(ArsenalGroup g) {
@@ -101,7 +102,7 @@ public class ArsenalPanel{
 		return false;
 	}
 	
-	void displayDescription(String text) {
+	public void displayDescription(String text) {
 		lblDescription.setText(text);
 	}
 	

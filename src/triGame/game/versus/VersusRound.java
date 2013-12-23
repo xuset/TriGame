@@ -32,7 +32,7 @@ class VersusRound extends GameRound {
 		this.keyboard = keyboard;
 		this.gameMap = gameMap;
 		this.isGameOver = isGameOver;
-		spawner = new VersusSpawner(objController);
+		spawner = new VersusSpawner(objController, isServer);
 	}
 	
 	void setDependencies(ManagerService managers) {
