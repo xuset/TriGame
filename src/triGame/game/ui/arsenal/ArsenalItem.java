@@ -58,7 +58,7 @@ public class ArsenalItem extends JPanel{
 		info.description = description;
 		
 		setBorder(emptyBorder);
-		main.addMouseListener(lblMainEvent);
+		addMouseListener(itemMouseEvent);
 	}
 	
 	public ArsenalItem(ShopItem item, BufferedImage image, int radius,
@@ -98,7 +98,7 @@ public class ArsenalItem extends JPanel{
 		}
 	};
 
-	private MouseListener lblMainEvent = new MouseListener() {
+	private MouseListener itemMouseEvent = new MouseListener() {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			info.arsenalGroup.purchaseEvent.purchase(info);

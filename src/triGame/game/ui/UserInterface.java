@@ -29,7 +29,7 @@ public class UserInterface {
 		pnlMain.setSize(display.getWidth(), 70);
 		attacher = new Attacher(managers, this, shop, mouse);
 		arsenal = new Arsenal(this, shop, attacher);
-		upgrades = new Upgrades(shop, focus);
+		upgrades = new Upgrades(shop, this);
 		display.add(pnlMain, BorderLayout.PAGE_END);
 		switchTo(arsenal);
 	}

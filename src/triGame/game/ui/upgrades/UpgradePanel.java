@@ -24,49 +24,58 @@ import triGame.game.entities.PointParticle;
 import triGame.game.shopping.ShopManager;
 import triGame.game.shopping.UpgradeItem;
 import triGame.game.shopping.UpgradeManager;
-import triGame.game.ui.FocusSurrender;
+import triGame.game.ui.UserInterface;
 
 public class UpgradePanel extends JPanel{
 	private static final long serialVersionUID = 8498226293916709649L;
 	
-	private final FocusSurrender focusSurrender;
-	private JButton btnBuy = new JButton("purchase");
-	private JLabel lblPrice = new JLabel("0");
-	private JProgressBar pbProgress = new JProgressBar();
-	private JPanel pnlAttribute = new JPanel();
-	private TitledBorder bdrAttribute = BorderFactory.createTitledBorder("");
-	//private JComboBox<String> cmbList = new JComboBox<String>(); 	//for Java 7
+	private final UserInterface ui;
+	private final JButton btnBuy = new JButton("purchase");
+	private final JLabel lblPrice = new JLabel("0");
+	private final JProgressBar pbProgress = new JProgressBar();
+	private final JPanel pnlAttribute = new JPanel();
+	private final TitledBorder bdrAttribute = BorderFactory.createTitledBorder("");
 	@SuppressWarnings("rawtypes")
-	private JComboBox cmbList = new JComboBox(); 					//for java 6
-	private JLabel lblImage = new JLabel();
+	private final JComboBox cmbList = new JComboBox(); // for java 6
+	private final JLabel lblImage = new JLabel();
 	
 	private UpgradeItem selectedAttribute = null;
 	private UpgradeManager upgradeManager = null;
 	private ShopManager shop;
 	
-	public UpgradePanel(ShopManager shop, FocusSurrender focusSurrender) {
-		this.focusSurrender = focusSurrender;
+	public UpgradePanel(ShopManager shop, UserInterface ui) {
 		this.shop = shop;
-		shop.observer().watch(pointChange);
+		this.ui = ui;
+		
+		shop.observer().watch(new PointObserver());
+		
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		pnlAttribute.setBorder(bdrAttribute);
-		pnlAttribute.setLayout(new BoxLayout(pnlAttribute, BoxLayout.X_AXIS));
-		btnBuy.addActionListener(btnListener);
-		cmbList.addItemListener(cmbListener);
-		JPanel pnlCombo = new JPanel();
-		add(lblImage);
-		pnlCombo.add(cmbList);
-		add(pnlCombo);
-		add(Box.createHorizontalGlue());
-		pnlAttribute.add(pbProgress);
-		pnlAttribute.add(Box.createHorizontalStrut(15));
-		pnlAttribute.add(lblPrice);
-		pnlAttribute.add(btnBuy);
-		add(pnlAttribute);
+		btnBuy.addActionListener(new PurchaseListener());
+		cmbList.addItemListener(new ComboListener());
+		
 		lblPrice.setIcon(new ImageIcon(Sprite.get(PointParticle.SPRITE_ID).image));
 		lblPrice.setOpaque(true);
 		lblPrice.setBackground(Color.LIGHT_GRAY);
 		lblPrice.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new BackListener());
+		
+		JPanel pnlCombo = new JPanel();
+		pnlCombo.add(cmbList);
+		
+		pnlAttribute.setBorder(bdrAttribute);
+		pnlAttribute.setLayout(new BoxLayout(pnlAttribute, BoxLayout.X_AXIS));
+		pnlAttribute.add(pbProgress);
+		pnlAttribute.add(Box.createHorizontalStrut(15));
+		pnlAttribute.add(lblPrice);
+		pnlAttribute.add(btnBuy);
+		
+		add(btnBack);
+		add(lblImage);
+		add(pnlCombo);
+		add(Box.createHorizontalGlue());
+		add(pnlAttribute);
 	}
 	
 	public void set(UpgradeManager manager,  String text) {
@@ -120,7 +129,7 @@ public class UpgradePanel extends JPanel{
 		selectedAttribute = null;
 	}
 	
-	private Observer.Change<ShopManager> pointChange = new Observer.Change<ShopManager>() {
+	private class PointObserver implements Observer.Change<ShopManager> {
 		@Override
 		public void observeChange(ShopManager t) {
 			if (selectedAttribute != null) {
@@ -133,23 +142,31 @@ public class UpgradePanel extends JPanel{
 		}
 	};
 	
-	private ItemListener cmbListener = new ItemListener() {
+	private class ComboListener implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if (e.getStateChange() == ItemEvent.SELECTED)
 				setAttribute((UpgradeItem) e.getItem());
-			focusSurrender.surrenderFocus();
+			ui.focus.surrenderFocus();
 		}
 	};
 	
-	private ActionListener btnListener = new ActionListener() {
+	private class PurchaseListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			focusSurrender.surrenderFocus();
+			ui.focus.surrenderFocus();
 			if (selectedAttribute != null && shop.canPurchase(selectedAttribute.shopItem)) {
 				upgradeManager.upgrade(selectedAttribute, shop);
 				setAttribute(selectedAttribute);
 			}			
 		}
 	};
+	
+	private class BackListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			ui.switchTo(ui.arsenal);
+			ui.focus.surrenderFocus();
+		}
+	}
 }
