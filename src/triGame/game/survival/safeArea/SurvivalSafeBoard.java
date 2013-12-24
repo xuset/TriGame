@@ -82,11 +82,12 @@ public class SurvivalSafeBoard extends SafeBoard{
 	
 	public boolean insideSafeArea(int x, int y, int width, int height) {
 		int[][] points = new int[][] { {x, y} , {x + width, y} , {x, y + height} , {x + width, y + height} };
+		boolean atLeastOneTrue = false;
 		for (int[] p : points) {
-			if (circleChart.isInsideACircle(p[0], p[1]) == false)
-				return false;
+			if (circleChart.isInsideACircle(p[0], p[1]))
+				atLeastOneTrue = true;
 		}
-		return true;
+		return atLeastOneTrue;
 	}
 
 	@Override

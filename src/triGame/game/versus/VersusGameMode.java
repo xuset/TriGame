@@ -54,10 +54,6 @@ public class VersusGameMode extends GameMode {
 	@Override
 	public void performLogic(int frameDelta) {
 		super.performLogic(frameDelta);
-		
-		gameRound.spawner.setPlayerZoneAndTargets(
-				gameMap.getZoneNumber(player),
-				gameMap.headQuarters );
 		if (didLoose())
 			isGameOver.value = true;
 		if (gameMap.headQuarters[0].removeRequested() && gameMap.headQuarters[1].removeRequested())
@@ -109,13 +105,35 @@ public class VersusGameMode extends GameMode {
 				!gameMap.isZoneHQDead(myZone, managers);
 	}
 	
+	private void onZoneFinalize() {
+		if (player.hitbox.intersects(gameMap.missingWallZone)) {
+			double sign = (player.getCenterX() > gameMap.missingWallZone.getCenterX()) ? 1 : -1;
+			double dist = sign * (gameMap.missingWallZone.getWidth());
+			player.setX(player.getX() + dist);
+		}
+		
+		int playerZone = gameMap.getZoneNumber(player);
+		safeBoard.setPlayableArea(gameMap.playables[playerZone]);
+		
+		gameRound.spawner.setPlayerZoneAndTargets(
+				gameMap.getZoneNumber(player),
+				gameMap.headQuarters );
+	}
+	
+	private void onRoundStart() {
+		if (player.isDead() && !didLoose())
+			player.giveFullHealth();
+		else if (getRoundNumber() != 1)
+			shop.addPoints(65);
+	}
+	
 	private class RoundObserver implements Observer.Change<Integer> {
 		@Override
 		public void observeChange(Integer round) {
-			if (round == 1) {
-				int playerZone = gameMap.getZoneNumber(player);
-				safeBoard.setPlayableArea(gameMap.playables[playerZone]);
-			}
+			if (round == 1)
+				onZoneFinalize();
+			onRoundStart();
+			
 		}
 	}
 	
@@ -125,9 +143,4 @@ public class VersusGameMode extends GameMode {
 			return (gameMap.getZoneNumber(x, y) == gameMap.getZoneNumber(z));
 		}
 	}
-	
-	class EntireGameOver {
-		public boolean value = false;
-	}
-
 }

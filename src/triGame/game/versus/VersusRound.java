@@ -12,6 +12,7 @@ import triGame.game.GameRound;
 import triGame.game.ManagerService;
 
 class VersusRound extends GameRound {
+	private static final int roundDelay = 2000;
 
 	private final PeripheralInput.Keyboard keyboard;
 	private final boolean isServer;
@@ -69,7 +70,7 @@ class VersusRound extends GameRound {
 			return;
 		
 		if (nextRoundStartTime == 0)
-			nextRoundStartTime = System.currentTimeMillis() + 5000;
+			nextRoundStartTime = System.currentTimeMillis() + roundDelay;
 		if (gameStarted && !isGameOver.value && nextRoundStartTime < System.currentTimeMillis())
 			setRound(getRoundNumber() + 1);
 		if (!gameStarted && keyboard.isPressed(KeyEvent.VK_ENTER)) {

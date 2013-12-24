@@ -23,6 +23,7 @@ public class SurvivalGameMode extends GameMode {
 	private final ZombieHandler zombieHandler;
 	private final ZombieTargeter zombieTargeter;
 	private final SurvivalRound gameRound;
+	private Person player;
 
 	public SurvivalGameMode(ShopManager shop, boolean isServer, ObjControllerI objController, PeripheralInput.Keyboard keyboard) {
 		this.shop = shop;
@@ -56,7 +57,8 @@ public class SurvivalGameMode extends GameMode {
 
 	@Override
 	protected Person spawnInPlayer() {
-		return managers.person.create(Params.GAME_WIDTH / 2 - 50, Params.GAME_HEIGHT / 2 -100);
+		player = managers.person.create(Params.GAME_WIDTH / 2 - 50, Params.GAME_HEIGHT / 2 -100);
+		return player;
 	}
 	
 	private class OnNewRound implements Observer.Change<Integer> {
@@ -65,8 +67,7 @@ public class SurvivalGameMode extends GameMode {
 			if (roundNumber > 1) {
 				if (roundNumber % 10 == 0)
 					shop.addPoints(150);
-				Person player = managers.person.getPlayer();
-				if (player.isDead()) {
+				if (player.isDead() && !isGameOver()) {
 					player.giveFullHealth();
 				} else {
 					shop.addPoints(50);
