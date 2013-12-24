@@ -4,7 +4,7 @@ TriGame is a 2D Java game. You play as blue triangle and fight off the evil red 
 
 Downloads
 ---------
-The download link for the beta v1.1.0 release. https://github.com/xuset/TriGame/releases/download/v1.1.0/TriGame.jar
+The download link for the beta v1.2.0 release. https://github.com/xuset/TriGame/releases/download/v1.2.0/TriGame.jar
 
 ### Screenshots
 ![alt tag](https://raw.github.com/xuset/TriGame/master/Screenshot2.png)
