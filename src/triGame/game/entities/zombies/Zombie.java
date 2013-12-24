@@ -39,6 +39,8 @@ public class Zombie extends Entity {
 	
 	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
 	
+	public boolean isAlive() { return getHealth() > 0; }
+	
 	public Zombie(String spriteId, double x, double y, ManagerService managers,
 			ZombieHandler zombieHandler, boolean isServer, ZombiePathFinder pathFinder,
 			ShopManager shop, EntityKey key) {
@@ -57,11 +59,13 @@ public class Zombie extends Entity {
 	}
 	
 	public void hitByProjectile(int damage) {
-		modifyHealth(damage);
 		hitBack(hitBackDistance);
-		if (getHealth() <= 0) {
-			managers.dropPack.maybeDropPack(getCenterX(), getCenterY());
-			shop.addPoints(4);
+		if (isAlive()) {
+			modifyHealth(damage);
+			if (!isAlive()) {
+				managers.dropPack.maybeDropPack(getCenterX(), getCenterY());
+				shop.addPoints(4);
+			}
 		}
 	}
 
