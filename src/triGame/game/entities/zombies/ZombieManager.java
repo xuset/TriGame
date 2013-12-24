@@ -74,15 +74,15 @@ public class ZombieManager extends Manager<Zombie> {
 		final int health = (roundNumber * roundNumber) * 15 * managers.person.list.size();
 		final Building hq = managers.building.getHQ();
 		
-		return createBoss(health, speed, hq);
+		return createBoss(health, speed, hq, 40);
 	}
 	
-	public Zombie createBoss(int health, int speed, Entity target) {
+	public Zombie createBoss(int health, int speed, Entity target, int buildingG) {
 		final long spawnDelay = 0;
 		final Point spawn = gameMode.getZombieHandler().setSpawnPoint(target);
 		
 		BossZombie boss = (BossZombie) bossCreator.create(spawn.x, spawn.y, this);
-		setAttributes(boss, speed, spawnDelay, target, health, 40);
+		setAttributes(boss, speed, spawnDelay, target, health, buildingG);
 		
 		return boss;
 	}

@@ -62,7 +62,7 @@ class VersusSpawner extends ZombieSpawner {
 				MarkupMsg bossAttrib = spawnQueue.poll();
 				int health = initialHealth + bossAttrib.getAttribute("health").getInt();
 				int speed = initialSpeed + bossAttrib.getAttribute("speed").getInt();
-				zombies.createBoss(health, speed, bossTargets[zone]);
+				zombies.createBoss(health, speed, bossTargets[zone], VersusZombie.ZOMBIE_BUILDING_G);
 				nextSpawn = System.currentTimeMillis() + delayBetweenBossSpawns;
 			}
 		}

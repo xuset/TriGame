@@ -9,6 +9,7 @@ import triGame.game.entities.zombies.Zombie;
 import triGame.game.entities.zombies.ZombieHandler;
 
 class VersusZombie extends ZombieHandler{
+	static final int ZOMBIE_BUILDING_G = 80;
 	private final VersusMap gameMap;
 	private int spawnZone = -1;
 	private boolean flop = false;
@@ -57,6 +58,6 @@ class VersusZombie extends ZombieHandler{
 	
 	@Override
 	protected int determinePathBuildingG() {
-		return 80;
+		return ZOMBIE_BUILDING_G;
 	}
 }
