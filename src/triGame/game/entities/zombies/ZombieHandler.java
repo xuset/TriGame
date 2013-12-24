@@ -19,10 +19,6 @@ public class ZombieHandler implements GameIntegratable{
 	protected ManagerService managers;
 	protected int roundNumber = 0;
 	
-	//public ZombieHandler() {
-		
-	//}
-	
 	public ZombieHandler(Observer<Integer> roundNumber) {
 		new RoundObserver(roundNumber);
 	}

@@ -58,7 +58,8 @@ class VersusRound extends GameRound {
 	@Override
 	protected int getZombiesPerRound() {
 		int number = roundNumber.get();
-		return ((number * number) / 10 + number);
+		int players = managers.person.list.size();
+		return ((number * number) / 10 + number) * players;
 	}
 
 	@Override

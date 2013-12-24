@@ -17,7 +17,7 @@ class VersusSpawner extends ZombieSpawner {
 	private final boolean isServer;
 	private final BossSpawner bossSpawners[] = new BossSpawner[2];
 	private Entity[] bossTargets = null;
-	private int bossSpawnZone = -1;
+	private int bossSpawnZone = 0;
 	
 	VersusSpawner(ObjControllerI objController, boolean isServer) {
 		bossSpawners[0] = new BossSpawner(0, objController);

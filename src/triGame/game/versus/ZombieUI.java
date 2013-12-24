@@ -90,6 +90,7 @@ class ZombieUI extends ArsenalGroup{
 			int price = getCost();
 			lblPrice.setText(price + "");
 			setPriceColor();
+			focus.surrenderFocus();
 		}
 	}
 	
