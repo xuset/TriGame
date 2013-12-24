@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import triGame.game.Params;
+
 class ErrorWindow {
 	private final JFrame frame = new JFrame();
 	private final JPanel panel = new JPanel();
@@ -75,16 +77,18 @@ class ErrorWindow {
 		txtReport.append("Erorr class: " + ex.toString() + "\r\n");
 		txtReport.append("Error message: " + ex.getMessage() + "\r\n");
 		txtReport.append("Local message: " + ex.getLocalizedMessage() + "\r\n");
-		txtReport.append("Stacktrace:\r\n");
-		StackTraceElement stackFrames[] = ex.getStackTrace();
-		for (StackTraceElement st : stackFrames)
-			txtReport.append("   at " + st.getClassName() + "." + st.getMethodName() + "(" + st.getFileName() + ":" + st.getLineNumber() + ")\r\n");
+		txtReport.append("TriGame version: " + Params.VERSION + "\r\n");
 		txtReport.append("OS: " + System.getProperty("os.name") + "\r\n");
 		txtReport.append("OS version: " + System.getProperty("os.version") + "\r\n");
 		txtReport.append("OS arch: " + System.getProperty("os.arch") + "\r\n");
 		txtReport.append("Java version: " + System.getProperty("java.runtime.version") + "\r\n");
 		txtReport.append("OpenGL: " + System.getProperty("sun.java2d.opengl") + "\r\n");
 		txtReport.append("D3D: " + System.getProperty("sun.java2d.d3d") + "\r\n");
+		txtReport.append("Stacktrace:\r\n");
+		StackTraceElement stackFrames[] = ex.getStackTrace();
+		for (StackTraceElement st : stackFrames)
+			txtReport.append("   at " + st.getClassName() + "." + st.getMethodName() + "(" + st.getFileName() + ":" + st.getLineNumber() + ")\r\n");
+		
 	}
 	
 	private void copyError() {
