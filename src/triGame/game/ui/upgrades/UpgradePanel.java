@@ -72,9 +72,11 @@ public class UpgradePanel extends JPanel{
 		pnlAttribute.add(btnBuy);
 		
 		add(btnBack);
+		add(Box.createHorizontalStrut(10));
 		add(lblImage);
+		add(Box.createHorizontalStrut(10));
 		add(pnlCombo);
-		add(Box.createHorizontalGlue());
+		add(Box.createHorizontalStrut(10));
 		add(pnlAttribute);
 	}
 	
