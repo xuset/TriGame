@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import objectIO.connections.Connection;
 import objectIO.netObject.NetVar;
+import objectIO.netObject.ObjControllerI;
 import tSquare.game.GameIntegratable;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
@@ -30,8 +31,8 @@ public class Person extends Entity implements GameIntegratable{
 	private final SafeBoard safeBoard;
 	private final PeripheralInput.Keyboard keyboard;
 	private final HealthBar healthBar;
-	private final NetVar.nLong ownerId;
-	private final NetVar.nInt color;
+	private NetVar.nLong ownerId;
+	private NetVar.nInt color;
 	
 	private double realSpeed = 0;
 	private boolean moved = false;
@@ -50,16 +51,6 @@ public class Person extends Entity implements GameIntegratable{
 		this.safeBoard = safeBoard;
 		this.keyboard = keyboard;
 		healthBar = new HealthBar(this);
-		ownerId = new NetVar.nLong(0l, "ownerId", objClass);
-		
-		color = new NetVar.nInt(0, "color", objClass);
-		color.event = new NetVar.OnChange<Integer>() {
-			@Override public void onChange(NetVar<Integer> var, Connection c) {
-				Color color = new Color(var.get());
-				BufferedImage personImage = Load.triangleImage(color);
-				sprite = new Sprite("", personImage);
-			}
-		};
 		
 		if (owned()) {
 			ownerId.set(ownerIdL);
@@ -71,6 +62,21 @@ public class Person extends Entity implements GameIntegratable{
 		}
 	}
 	
+	@Override
+	protected void setNetObjects(ObjControllerI objClass) {
+		super.setNetObjects(objClass);
+
+		ownerId = new NetVar.nLong(0l, "ownerId", objClass);
+		color = new NetVar.nInt(0, "color", objClass);
+		color.event = new NetVar.OnChange<Integer>() {
+			@Override public void onChange(NetVar<Integer> var, Connection c) {
+				Color color = new Color(var.get());
+				BufferedImage personImage = Load.triangleImage(color);
+				sprite = new Sprite("", personImage);
+			}
+		};
+	}
+
 	public void giveFullHealth() {
 		double toAdd = maxHealth - getHealth();
 		modifyHealth(toAdd);

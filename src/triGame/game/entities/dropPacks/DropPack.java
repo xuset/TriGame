@@ -1,20 +1,36 @@
 package triGame.game.entities.dropPacks;
 
+import objectIO.netObject.NetVar;
+import objectIO.netObject.ObjControllerI;
+import objectIO.netObject.NetVar.nInt;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 
-public class DropPack extends Entity {	
-	private final long timeToLive;
-	private final int valueToGive;
+public class DropPack extends Entity {
 	private final long timeSpawned;
 
-	public DropPack(String sSpriteId, double startX, double startY,
-			int valueToGive, long timeToLive, EntityKey key) {
+	private NetVar.nInt valueToGive;
+	private NetVar.nInt timeToLive;
+	
+
+	DropPack(String sSpriteId, double startX, double startY,
+			int valueToGive, int timeToLive) {
 		
-		super(sSpriteId, startX, startY, key);
-		this.timeToLive = timeToLive;
-		this.valueToGive = valueToGive;
+		super(sSpriteId, startX, startY);
 		timeSpawned = System.currentTimeMillis();
+		this.timeToLive.set(timeToLive);
+		this.valueToGive.set(valueToGive);
+	}
+	
+	DropPack(EntityKey key) {
+		super(key);
+		timeSpawned = System.currentTimeMillis();
+	}
+	
+	@Override
+	protected void setNetObjects(ObjControllerI objClass) {
+		timeToLive = new nInt(0, "timeToLive", objClass);
+		valueToGive = new nInt(0, "valueToGive", objClass);
 	}
 	
 	public boolean isHealthPack() {
@@ -27,21 +43,21 @@ public class DropPack extends Entity {
 	
 	@Override
 	public void performLogic(int frameDelta) {
-		if (timeSpawned + timeToLive < System.currentTimeMillis())
+		if (timeSpawned + timeToLive.get() < System.currentTimeMillis())
 			remove();
 	}
 	
 	public int pickup() {
 		if (!removeRequested()) {
 			remove();
-			return valueToGive;
+			return valueToGive.get();
 		}
 		return 0;
 	}
 	
 	public static abstract class PackInfo {
-		abstract int getReturnValue();
-		abstract long getTimeToLive();
+		abstract int getValueToGive();
+		abstract int getTimeToLive();
 		abstract String getSpriteId();
 		abstract boolean shouldDropPack();
 	}
@@ -50,17 +66,17 @@ public class DropPack extends Entity {
 		public static final String SPRITE_ID = "HealthPack";
 		private static final int minHealth = 20;
 		private static final int maxHealth = 60;
-		private static final long maxTimeAlive = 35000;
-		private static final long minTimeAlive = 20000;
+		private static final int maxTimeAlive = 35000;
+		private static final int minTimeAlive = 20000;
 		
 		String getSpriteId() { return SPRITE_ID; }
 		
-		int getReturnValue() {
+		int getValueToGive() {
 			return ((int) (Math.random() * (maxHealth - minHealth)) + minHealth);
 		}
 		
-		long getTimeToLive() {
-			return ((long) (Math.random() * (maxTimeAlive - minTimeAlive)) + minTimeAlive);
+		int getTimeToLive() {
+			return ((int) (Math.random() * (maxTimeAlive - minTimeAlive)) + minTimeAlive);
 		}
 		
 		boolean shouldDropPack() { return (0.02 > Math.random()); }
@@ -70,17 +86,17 @@ public class DropPack extends Entity {
 		public static final String SPRITE_ID = "PointPack";
 		private static final int minPoints = 40;
 		private static final int maxPoints = 120;
-		private static final long maxTimeAlive = 15000;
-		private static final long minTimeAlive = 6000;
+		private static final int maxTimeAlive = 15000;
+		private static final int minTimeAlive = 6000;
 		
 		String getSpriteId() { return SPRITE_ID; }
 		
-		int getReturnValue() {
+		int getValueToGive() {
 			return ((int) (Math.random() * (maxPoints - minPoints)) + minPoints);
 		}
 		
-		long getTimeToLive() {
-			return ((long) (Math.random() * (maxTimeAlive - minTimeAlive)) + minTimeAlive);
+		int getTimeToLive() {
+			return ((int) (Math.random() * (maxTimeAlive - minTimeAlive)) + minTimeAlive);
 		}
 		
 		boolean shouldDropPack() { return (0.01 > Math.random()); }

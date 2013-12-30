@@ -3,9 +3,10 @@ package triGame.game.entities.zombies;
 import java.awt.Graphics2D;
 
 import tSquare.game.GameBoard.ViewRect;
+import tSquare.game.entity.Creator;
+import tSquare.game.entity.Creator.CreateFunc;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
-import tSquare.game.entity.LocationCreator;
 import tSquare.game.entity.Manager;
 import tSquare.game.entity.ManagerController;
 import tSquare.game.particles.ParticleController;
@@ -23,8 +24,8 @@ public class ZombieManager extends Manager<Zombie> {
 	
 	private int zombiesKilled = 0;
 
-	final LocationCreator<Zombie> creator;
-	final LocationCreator<Zombie> bossCreator;
+	private final Creator<Zombie> zombieCreator;
+	private final Creator<BossZombie> bossCreator;
 	private final ManagerService managers;
 	private final GameMode gameMode;
 	private final ZombiePathFinder pathFinder;
@@ -46,29 +47,11 @@ public class ZombieManager extends Manager<Zombie> {
 		this.managers = managers;
 		this.shop = shop;
 		pathFinder = new ZombiePathFinder(managers, buildingManager);
-		
-		creator = new LocationCreator<Zombie>(HASH_MAP_KEY, controller.creator, 
-				new LocationCreator.IFace<Zombie>() {
-					@Override
-					public Zombie create(double x, double y, EntityKey key) {
-						ZombieManager m = ZombieManager.this;
-						return new Zombie(Zombie.SPRITE_ID, x, y, m.managers,
-								m.gameMode.getZombieHandler(), m.isServer, m.pathFinder, m.shop, key);
-					}
-				});
-		
-		bossCreator = new LocationCreator<Zombie>("BossCreator", controller.creator,
-				new LocationCreator.IFace<Zombie>() {
-					@Override
-					public Zombie create(double x, double y, EntityKey key) {
-						ZombieManager m = ZombieManager.this;
-						return new BossZombie(x, y, m.managers, m.gameMode.getZombieHandler(),
-								m.isServer, m.pathFinder, m.shop, key);
-					}
-				});
+		zombieCreator = new Creator<Zombie>("Zombie", controller.creator, new ZombieCreateFunc());
+		bossCreator = new Creator<BossZombie>("BossZombie", controller.creator, new BossCreateFunc());
 	}
 	
-	public Zombie createBoss() {
+	public BossZombie createBoss() {
 		final int roundNumber = gameMode.getRoundNumber();
 		final int speed = 30;
 		final int health = (roundNumber * roundNumber) * 15 * managers.person.list.size();
@@ -77,17 +60,14 @@ public class ZombieManager extends Manager<Zombie> {
 		return createBoss(health, speed, hq, 40);
 	}
 	
-	public Zombie createBoss(int health, int speed, Entity target, int buildingG) {
+	public BossZombie createBoss(int health, int speed, Entity target, int buildingG) {
 		final long spawnDelay = 0;
 		final Point spawn = gameMode.getZombieHandler().setSpawnPoint(target);
 		
-		BossZombie boss = (BossZombie) bossCreator.create(spawn.x, spawn.y, this);
-		setAttributes(boss, speed, spawnDelay, target, health, buildingG);
-		
-		return boss;
+		return createBoss(spawn.x, spawn.y, target, spawnDelay, speed, buildingG, health);
 	}
 	
-	public Zombie create() {
+	public Zombie createZombie() {
 		Entity target = gameMode.getZombieHandler().findTarget(null);
 		if (target == null)
 			return null;
@@ -97,20 +77,29 @@ public class ZombieManager extends Manager<Zombie> {
 		int buildingG = gameMode.getZombieHandler().determinePathBuildingG();
 		Point spawn = gameMode.getZombieHandler().setSpawnPoint(target);
 		
-		Zombie z = creator.create(spawn.x, spawn.y, this);
-		setAttributes(z, speed, spawnDelay, target, health, buildingG);
-		return z;
-		
+		return createZombie(spawn.x, spawn.y, target, spawnDelay, speed, buildingG, health);
 	}
 	
-	private void setAttributes(Zombie z, int speed, long spawnDelay,
-			Entity target, int health, int buildingG) {	
+	public Zombie createZombie(double x, double y, Entity target, long spawnDelay,
+			int speed, int buildingG, int maxHealth) {
 		
-		z.target = target;
-		z.spawnTime = spawnDelay;
-		z.speed = speed;
-		z.additionalBuildingG = buildingG;
-		z.setMaxHealth(health);
+		Zombie z = new Zombie(Zombie.SPRITE_ID, x, y, target, spawnDelay, speed,
+				buildingG, maxHealth, managers, gameMode.getZombieHandler(),
+				isServer, pathFinder, shop, null);
+		add(z);
+		zombieCreator.createOnNetwork(z, this);
+		return z;
+	}
+	
+	public BossZombie createBoss(double x, double y, Entity target, long spawnDelay,
+			int speed, int buildingG, int maxHealth) {
+		
+		BossZombie z = new BossZombie(x, y, target, spawnDelay, speed,
+				buildingG, maxHealth, managers, gameMode.getZombieHandler(),
+				isServer, pathFinder, shop, null);
+		add(z);
+		bossCreator.createOnNetwork(z, this);
+		return z;
 	}
 	
 	@Override
@@ -133,5 +122,17 @@ public class ZombieManager extends Manager<Zombie> {
 		zombiesKilled++;
 		PointParticle p = new PointParticle.Floating((int) z.getCenterX(),(int)  z.getCenterY(), 800);
 		particles.addParticle(p);
+	}
+	
+	private class ZombieCreateFunc implements CreateFunc<Zombie> {
+		@Override public Zombie create(EntityKey key) {
+			return new Zombie(managers, shop, key);
+		}
+	}
+	
+	private class BossCreateFunc implements CreateFunc<BossZombie> {
+		@Override public BossZombie create(EntityKey key) {
+			return new BossZombie(managers, shop, key);
+		}
 	}
 }

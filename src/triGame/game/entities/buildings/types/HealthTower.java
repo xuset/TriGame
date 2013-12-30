@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 
 import objectIO.connections.Connection;
 import objectIO.netObject.NetVar;
+import objectIO.netObject.ObjControllerI;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.Particle;
@@ -24,8 +25,8 @@ public class HealthTower extends Building {
 	private final UpgradeItem rateUpgrade;
 	private final UpgradeItem rangeUpgrade;
 	private final UpgradeItem powerUpgrade;
-	private final NetVar.nInt rangeValue;
-	private final NetVar.nBool drawRegeneration;
+	private NetVar.nInt rangeValue;
+	private NetVar.nBool drawRegeneration;
 	
 	private long lastRegeneration = 0;
 	private long drawTimeStarted = 0;
@@ -46,11 +47,14 @@ public class HealthTower extends Building {
 		upgrades.addUpgrade(rangeUpgrade);
 		upgrades.addUpgrade(powerUpgrade);
 		
-		rangeValue = new NetVar.nInt(rangeUpgrade.getValue(), "range", objClass);
+		pc.addParticle(new HealthParticle());
+	}
+	
+	@Override
+	protected void setNetObjects(ObjControllerI objClass) {
+		rangeValue = new NetVar.nInt(INFO.visibilityRadius, "range", objClass);
 		drawRegeneration = new NetVar.nBool(false, "drawRegeneration", objClass);
 		drawRegeneration.event = new OnRegenerateChange();
-		
-		pc.addParticle(new HealthParticle());
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import tSquare.game.entity.EntityKey;
 import tSquare.game.entity.LocationCreator;
-import tSquare.game.entity.LocationCreator.IFace;
+import tSquare.game.entity.LocationCreator.LocationFunc;
 import tSquare.game.entity.ManagerController;
 import tSquare.game.particles.ParticleController;
 import triGame.game.GameMode;
@@ -84,90 +84,174 @@ final class CreationFuncs {
 	
 
 	
-	private final LocationCreator.IFace<HeadQuarters>headQuartersFunc = new IFace<HeadQuarters>() {
-
-		@Override
+	private final LocationCreator.LocationFunc<HeadQuarters>headQuartersFunc = new LocationFunc<HeadQuarters>() {
 		public HeadQuarters create(double x, double y, EntityKey key) {
 			return new HeadQuarters(x, y, particle, key);
 		}
+
+		@Override
+		public HeadQuarters create(EntityKey key) {
+			return create(0, 0, key);
+		}
+
+		@Override
+		public HeadQuarters create(double x, double y) {
+			return create(x, y, null);
+		}
 		
 	};
 	
-	private final LocationCreator.IFace<LightTower> lightTowerFunc = new IFace<LightTower>() {
-
-		@Override
+	private final LocationCreator.LocationFunc<LightTower> lightTowerFunc = new LocationFunc<LightTower>() {
 		public LightTower create(double x, double y, EntityKey key) {
 			return new LightTower(x, y, particle, key);
 		}
+
+		@Override
+		public LightTower create(EntityKey key) {
+			return create(0, 0, key);
+		}
+
+		@Override
+		public LightTower create(double x, double y) {
+			return create(x, y, null);
+		}
 		
 	};
 	
-	private final LocationCreator.IFace<PointCollector> pointCollectorFunc = new IFace<PointCollector>() {
-
-		@Override
+	private final LocationCreator.LocationFunc<PointCollector> pointCollectorFunc = new LocationFunc<PointCollector>() {
 		public PointCollector create(double x, double y, EntityKey key) {
 			return new PointCollector(x, y, managers, particle, shop, gameMode, key);
 		}
+
+		@Override
+		public PointCollector create(EntityKey key) {
+			return create(0, 0, key);
+		}
+
+		@Override
+		public PointCollector create(double x, double y) {
+			return create(x, y, null);
+		}
 		
 	};
 	
-	private final LocationCreator.IFace<SmallTower> smallTowerFunc = new IFace<SmallTower>() {
-
-		@Override
+	private final LocationCreator.LocationFunc<SmallTower> smallTowerFunc = new LocationFunc<SmallTower>() {
 		public SmallTower create(double x, double y, EntityKey key) {
 			return new SmallTower(x, y, particle, targeter, managers.projectile, key);
 		}
+
+		@Override
+		public SmallTower create(EntityKey key) {
+			return create(0, 0, key);
+		}
+
+		@Override
+		public SmallTower create(double x, double y) {
+			return create(x, y, null);
+		}
 		
 	};
 	
-	private final LocationCreator.IFace<Tower> towerFunc = new IFace<Tower>() {
-
-		@Override
+	private final LocationCreator.LocationFunc<Tower> towerFunc = new LocationFunc<Tower>() {
 		public Tower create(double x, double y, EntityKey key) {
 			return new Tower(x, y, particle, targeter, managers.projectile, key);
 		}
+
+		@Override
+		public Tower create(EntityKey key) {
+			return create(0, 0, key);
+		}
+
+		@Override
+		public Tower create(double x, double y) {
+			return create(x, y, null);
+		}
 		
 	};
 	
-	private final LocationCreator.IFace<Barrier> barrierFunc = new IFace<Barrier>() {
+	private final LocationCreator.LocationFunc<Barrier> barrierFunc = new LocationFunc<Barrier>() {
 		@Override
-		public Barrier create(double x, double y, EntityKey key) {
-			return new Barrier(x, y, key);
+		public Barrier create(EntityKey key) {
+			return new Barrier(0, 0, key);
+		}
+
+		@Override
+		public Barrier create(double x, double y) {
+			return new Barrier(x, y, null);
 		}
 	};
 	
-	private final LocationCreator.IFace<SteelBarrier> steelFunc = new IFace<SteelBarrier>() {
+	private final LocationCreator.LocationFunc<SteelBarrier> steelFunc = new LocationFunc<SteelBarrier>() {
 		@Override
-		public SteelBarrier create(double x, double y, EntityKey key) {
-			return new SteelBarrier(x, y, key);
+		public SteelBarrier create(EntityKey key) {
+			return new SteelBarrier(0, 0, key);
+		}
+
+		@Override
+		public SteelBarrier create(double x, double y) {
+			return new SteelBarrier(x, y, null);
 		}
 	};
 	
-	private final LocationCreator.IFace<FreezeTower> freezeFunc = new IFace<FreezeTower>() {
-		@Override
+	private final LocationCreator.LocationFunc<FreezeTower> freezeFunc = new LocationFunc<FreezeTower>() {
 		public FreezeTower create(double x, double y, EntityKey key) {
 			return new FreezeTower(x, y, particle, managers, key);
 		}
+
+		@Override
+		public FreezeTower create(EntityKey key) {
+			return create(0, 0, key);
+		}
+
+		@Override
+		public FreezeTower create(double x, double y) {
+			return create(x, y, null);
+		}
 	};
 	
-	private final LocationCreator.IFace<MortarTower> mortarFunc = new IFace<MortarTower>() {
-		@Override
+	private final LocationCreator.LocationFunc<MortarTower> mortarFunc = new LocationFunc<MortarTower>() {
 		public MortarTower create(double x, double y, EntityKey key) {
 			return new MortarTower(x, y, particle, targeter, managers.projectile, key);
 		}
-	};
-	
-	private final LocationCreator.IFace<HealthTower> hpTowerFunc = new IFace<HealthTower>() {
+
 		@Override
-		public HealthTower create(double x, double y, EntityKey key) {
-			return new HealthTower(x, y, particle, managers, key);
+		public MortarTower create(EntityKey key) {
+			return create(0, 0, key);
+		}
+
+		@Override
+		public MortarTower create(double x, double y) {
+			return create(x, y, null);
 		}
 	};
 	
-	private final LocationCreator.IFace<StrongWall> strongFunc = new IFace<StrongWall>() {
+	private final LocationCreator.LocationFunc<HealthTower> hpTowerFunc = new LocationFunc<HealthTower>() {
+		
+		public HealthTower create(double x, double y, EntityKey key) {
+			return new HealthTower(x, y, particle, managers, key);
+		}
+		
 		@Override
-		public StrongWall create(double x, double y, EntityKey key) {
-			return new StrongWall(x, y, key);
+		public HealthTower create(double x, double y) {
+			return create(x, y, null);
+		}
+		
+		@Override
+		public HealthTower create(EntityKey key) {
+			return create(0, 0, key);
+		}
+	};
+	
+	private final LocationCreator.LocationFunc<StrongWall> strongFunc = new LocationFunc<StrongWall>() {
+
+		@Override
+		public StrongWall create(EntityKey key) {
+			return new StrongWall(0, 0, key);
+		}
+
+		@Override
+		public StrongWall create(double x, double y) {
+			return new StrongWall(x, y, null);
 		}
 	};
 }

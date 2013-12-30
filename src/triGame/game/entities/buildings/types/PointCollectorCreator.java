@@ -17,7 +17,7 @@ public class PointCollectorCreator extends BuildingCreator {
 
 	public PointCollectorCreator(BuildingInfo info, BuildingManager manager,
 			SafeBoard safeBoard, CreationHandler ch, ManagerService managers,
-			tSquare.game.entity.LocationCreator.IFace<? extends Building> iFace) {
+			LocationFunc<? extends Building> iFace) {
 		
 		super(info, manager, safeBoard, ch, managers, iFace);
 		this.managers = managers;

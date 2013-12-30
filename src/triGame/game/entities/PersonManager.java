@@ -2,6 +2,7 @@ package triGame.game.entities;
 
 import tSquare.game.entity.EntityKey;
 import tSquare.game.entity.LocationCreator;
+import tSquare.game.entity.LocationCreator.LocationFunc;
 import tSquare.game.entity.Manager;
 import tSquare.game.entity.ManagerController;
 import tSquare.system.PeripheralInput;
@@ -30,15 +31,7 @@ public class PersonManager extends Manager<Person>{
 		this.ownerId = ownerId;
 		this.isServer = isServer;
 		
-		creator = new LocationCreator<Person>(HASH_MAP_KEY, controller.creator, 
-				new LocationCreator.IFace<Person>() {
-					@Override
-					public Person create(double x, double y, EntityKey key) {
-						return new Person(x, y, key, PersonManager.this.managers,
-								PersonManager.this.gameMode.getSafeBoard(), PersonManager.this.keyboard,
-								PersonManager.this.ownerId, PersonManager.this.isServer);
-					}
-				});
+		creator = new LocationCreator<Person>(HASH_MAP_KEY, controller.creator, new PersonCreate());
 	}
 	
 	public Person getPlayer() {
@@ -59,5 +52,24 @@ public class PersonManager extends Manager<Person>{
 				return p;
 		}
 		return null;
+	}
+	
+	private class PersonCreate implements LocationFunc<Person> {
+		
+		private Person create(double x, double y, EntityKey key) {
+			return new Person(x, y, key, PersonManager.this.managers,
+					PersonManager.this.gameMode.getSafeBoard(), PersonManager.this.keyboard,
+					PersonManager.this.ownerId, PersonManager.this.isServer);
+		}
+		
+		@Override
+		public Person create(double x, double y) {
+			return create(x, y, null);
+		}
+
+		@Override
+		public Person create(EntityKey key) {
+			return create(0, 0, key);
+		}
 	}
 }

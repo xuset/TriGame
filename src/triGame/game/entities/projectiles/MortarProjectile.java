@@ -20,11 +20,15 @@ public class MortarProjectile extends Projectile {
 	private long explodeStarted = 0;
 	private long timeCreated = 0;
 	
-	protected MortarProjectile(String sSpriteId, double startX, double startY,
-			double angle, int speed, int damage,
-			ManagerService managers, EntityKey key) {
+	protected MortarProjectile(double startX, double startY,
+			double angle, int speed, int damage, ManagerService managers) {
 		
-		super(sSpriteId, startX, startY, angle, speed, damage, true, managers, key);
+		super(SPRITE_ID, startX, startY, angle, speed, damage, true, managers);
+		timeCreated = System.currentTimeMillis();
+	}
+	
+	protected MortarProjectile(EntityKey key) {
+		super(key);
 		timeCreated = System.currentTimeMillis();
 	}
 	
@@ -49,8 +53,11 @@ public class MortarProjectile extends Projectile {
 		if (collided)
 			return;
 		
-		moveForward(speed * frameDelta / 1000.0);
+		moveForward(speed.get() * frameDelta / 1000.0);
 		collided = checkBounds();
+		
+		if (!owned())
+			return;
 		
 		Zombie zombie = collidedWithFirst(managers.zombie.list);
 		if (zombie != null) {
@@ -60,7 +67,7 @@ public class MortarProjectile extends Projectile {
 				double distance = Point.distance(getCenterX(), getCenterY(), z.getCenterX(), z.getCenterY());
 				double ratio = 1 - distance / splashRadius;
 				if (ratio > 0)
-					z.hitByProjectile((int) (ratio * damage));
+					z.hitByProjectile((int) (ratio * damage.get()));
 			}
 			
 		}

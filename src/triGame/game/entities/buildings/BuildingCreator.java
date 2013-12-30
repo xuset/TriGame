@@ -14,7 +14,7 @@ public class BuildingCreator extends LocManCreator<Building> {
 	private final SafeBoard safeBoard;
 
 	public BuildingCreator(BuildingInfo info, BuildingManager manager, SafeBoard safeBoard,
-			CreationHandler ch, ManagerService managers, IFace<? extends Building> iFace) {
+			CreationHandler ch, ManagerService managers, LocationFunc<? extends Building> iFace) {
 		
 		super(info.identifier, ch, manager, iFace);
 		this.managers = managers;

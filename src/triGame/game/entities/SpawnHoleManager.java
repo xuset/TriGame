@@ -18,18 +18,14 @@ public class SpawnHoleManager extends Manager<SpawnHole>{
 	public SpawnHoleManager(ManagerController controller) {
 		super(controller, HASH_MAP_KEY);
 		objectGrid = new ObjectGrid(Params.GAME_WIDTH, Params.GAME_HEIGHT, Params.BLOCK_SIZE, Params.BLOCK_SIZE);
-		
-		creator = new LocationCreator<SpawnHole>(HASH_MAP_KEY, controller.creator, 
-				new LocationCreator.IFace<SpawnHole>() {
-					@Override
-					public SpawnHole create(double x, double y, EntityKey key) {
-						return new SpawnHole(x, y, SpawnHoleManager.this, key);
-					}
-				});
+		creator = new LocationCreator<SpawnHole>(HASH_MAP_KEY, controller.creator, new SpawnCreate());
 	}
 	
 	public SpawnHole create(int x, int y) {
-		return creator.create(x, y, this);
+		SpawnHole sh = new SpawnHole(x, y);
+		add(sh);
+		creator.createOnNetwork(sh, this);
+		return sh;
 	}
 
 	@Override
@@ -40,6 +36,18 @@ public class SpawnHoleManager extends Manager<SpawnHole>{
 	@Override
 	protected void onRemove(Entity spawnHole) {
 		objectGrid.turnOffBlock(spawnHole.getX(), spawnHole.getY());
+	}
+	
+	private class SpawnCreate implements LocationCreator.LocationFunc<SpawnHole> {
+		@Override
+		public SpawnHole create(EntityKey key) {
+			return new SpawnHole(key);
+		}
+
+		@Override
+		public SpawnHole create(double x, double y) {
+			return new SpawnHole(x, y);
+		}
 	}
 
 }

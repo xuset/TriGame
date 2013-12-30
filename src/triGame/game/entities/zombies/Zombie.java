@@ -1,5 +1,7 @@
 package triGame.game.entities.zombies;
 
+import objectIO.netObject.NetVar;
+import objectIO.netObject.ObjControllerI;
 import tSquare.game.entity.Entity;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.entity.Manager;
@@ -16,12 +18,10 @@ public class Zombie extends Entity {
 	private static final int hitBackDistance = 10;
 	private static final int ticksPerFindPath = 5;
 	
-	protected int additionalBuildingG = 220; //higher value, less likely to break through building.
+	protected final int additionalBuildingG;//higher value, less likely to break through building.
 
-	Entity target;
-	long spawnTime = 0l;
-	int speed = 50;
-	
+	private final long spawnTime;
+	private final int speed;
 	private final ManagerService managers;
 	private final ZombieHandler zombieHandler;
 	private final boolean isServer;
@@ -30,32 +30,54 @@ public class Zombie extends Entity {
 	
 	private int lastFindPathTick = 0;
 	private int tickCount = 0;
-	
-	private double realSpeed = speed;
+
+	private Entity target;
+	private double realSpeed;
 	private double damage = -100; //damage per second
 	private Path path;
 	private Point lastTargetBlock = new Point(0, 0);
-	private int lastObjectGridModCount = 0;	
+	private int lastObjectGridModCount = 0;
 	
-	private boolean isSpawning() { return spawnTime > System.currentTimeMillis(); }
+	private NetVar.nBool isSpawning;
 	
+	private boolean isSpawning() { return isSpawning.get(); }
+	Entity getTarget() { return target; }
 	public boolean isAlive() { return getHealth() > 0; }
 	
-	public Zombie(String spriteId, double x, double y, ManagerService managers,
-			ZombieHandler zombieHandler, boolean isServer, ZombiePathFinder pathFinder,
-			ShopManager shop, EntityKey key) {
+	Zombie(ManagerService managers, ShopManager shop, EntityKey key) { //for clients
+		super(key);
+		this.shop = shop;
+		this.managers = managers;
+		target = null;
+		zombieHandler = null;
+		pathFinder = null;
+		speed = 50;
+		isServer = false;
+		spawnTime = 0;
+		additionalBuildingG = 0;
+		realSpeed = speed;
+	}
+	
+	Zombie(String spriteId, double x, double y, Entity target, long spawnDelay, int speed, int buildingG, double maxHealth, 
+			ManagerService managers, ZombieHandler zombieHandler, boolean isServer, ZombiePathFinder pathFinder,
+			ShopManager shop, EntityKey key) { //for server
 		
 		super(spriteId, x, y, key);
+		this.target = target;
+		this.speed = speed;
+		this.additionalBuildingG = buildingG;
 		this.managers = managers;
 		this.zombieHandler = zombieHandler;
 		this.isServer = isServer;
 		this.pathFinder = pathFinder;
 		this.shop = shop;
+		spawnTime = System.currentTimeMillis() + spawnDelay;
+		health.set(maxHealth);
 	}
 	
+	
 	public void freeze(double speedChange) {
-		if (isServer)
-			realSpeed = speed * speedChange;
+		realSpeed = speed * speedChange;
 	}
 	
 	public void hitByProjectile(int damage) {
@@ -71,6 +93,7 @@ public class Zombie extends Entity {
 
 	@Override
 	public void performLogic(int frameDelta) {
+		realSpeed = speed;
 		if (!isServer)
 			return;
 		
@@ -79,6 +102,8 @@ public class Zombie extends Entity {
 		
 		if (System.currentTimeMillis() < spawnTime)
 			return;
+		else
+			isSpawning.set(false);
 		
 		if (target == null || target.getHealth() <= 0 || target.removeRequested())
 			target = zombieHandler.findTarget(this);
@@ -93,9 +118,9 @@ public class Zombie extends Entity {
 		tickCount++;
 	}
 	
-	void setMaxHealth(int max) {
-		int actual = (int) (max - getHealth());
-		modifyHealth(actual);
+	@Override
+	protected void setNetObjects(ObjControllerI objClass) {
+		isSpawning = new NetVar.nBool(true, "isSpawning", objClass);
 	}
 	
 	private boolean shouldFindNewPath() {
@@ -141,7 +166,6 @@ public class Zombie extends Entity {
 				inflictDamage(managers.building, frameDelta);
 			}
 		}
-		realSpeed = speed;
 	}
 	
 	private boolean inflictDamage(Manager<?> manager, int frameDelta) {

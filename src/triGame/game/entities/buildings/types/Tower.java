@@ -87,7 +87,7 @@ public class Tower extends Building {
 		int tSpeed = initialSpeed;
 		if (accuracyUpgrade != null)
 			tSpeed = accuracyUpgrade.getValue();
-		projectile.towerCreate((int) getCenterX(), (int) getCenterY(), getAngle(), tSpeed, damageUpgrade.getValue());
+		projectile.create((int) getCenterX(), (int) getCenterY(), getAngle(), tSpeed, damageUpgrade.getValue(), true);
 	}
 	
 	public static final BuildingInfo INFO = new BuildingInfo(

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import objectIO.netObject.NetVar;
+import objectIO.netObject.ObjControllerI;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.EntityKey;
 import tSquare.game.particles.Particle;
@@ -20,8 +21,8 @@ public class FreezeTower extends Building {
 	private final ManagerService managers;
 	private final UpgradeItem rangeUpgrade;
 	private final UpgradeItem powerUpgrade;
-	private final NetVar.nInt rangeValue;
-	private final NetVar.nInt powerValue;
+	private NetVar.nInt rangeValue;
+	private NetVar.nInt powerValue;
 
 	@Override public int getVisibilityRadius() { return rangeValue.get(); }
 	
@@ -30,8 +31,7 @@ public class FreezeTower extends Building {
 	public FreezeTower(double x, double y, ParticleController pc, ManagerService managers, EntityKey key) {
 		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.managers = managers;
-		rangeValue = new NetVar.nInt(INFO.visibilityRadius, "rangeValue", objClass);
-		powerValue = new NetVar.nInt(1, "powerValue", objClass);
+		
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 75),3, INFO.visibilityRadius, 25);
 		powerUpgrade = new UpgradeItem(new ShopItem("Power", 50),3, 1, 1);
 		upgrades.addUpgrade(rangeUpgrade);
@@ -39,6 +39,14 @@ public class FreezeTower extends Building {
 		pc.addParticle(new RadiusParticle());
 	}
 	
+	@Override
+	protected void setNetObjects(ObjControllerI objClass) {
+		super.setNetObjects(objClass);
+		
+		rangeValue = new NetVar.nInt(INFO.visibilityRadius, "rangeValue", objClass);
+		powerValue = new NetVar.nInt(1, "powerValue", objClass);
+	}
+
 	@Override
 	public void performLogic(int frameDelta) {
 		if (owned()) {

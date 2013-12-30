@@ -9,7 +9,7 @@ public class  LocManCreator <T extends Entity> extends LocationCreator<T> {
 
 	private final Manager<T> manager;
 	public LocManCreator(String classId, CreationHandler handler,
-			Manager<T> manager, LocationCreator.IFace<? extends T> func) {
+			Manager<T> manager, LocationFunc<? extends T> func) {
 		
 		super(classId, handler, func);
 		this.manager = manager;

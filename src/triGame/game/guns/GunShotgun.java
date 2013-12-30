@@ -47,7 +47,7 @@ public class GunShotgun extends AbstractGun {
 		for (int i = 0; i < bursts; i++) {
 			double relativeAngle = deltaAngle * (i + 1 - (bursts + 1) / 2.0);
 			double angle = player.getAngle() + relativeAngle;
-			projManager.create(x, y, angle, initialSpeed, damageUpgrade.getValue());
+			projManager.create(x, y, angle, initialSpeed, damageUpgrade.getValue(), false);
 		}
 	}
 	

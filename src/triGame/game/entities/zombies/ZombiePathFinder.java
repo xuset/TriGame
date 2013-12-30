@@ -21,12 +21,14 @@ class ZombiePathFinder extends BiDirectionalPathFinder {
 	
 	boolean findPath(Path p, Zombie z) {
 		additionalBuildingG = z.additionalBuildingG;
+		double targetX =  z.getTarget().getCenterX();
+		double targetY = z.getTarget().getCenterY();
 		
 		if (p != null && p.peekNextStep() != null) {
 			Node.Point n = p.peekNextStep();
-			return findPath(n.x, n.y, z.target.getCenterX(), z.target.getCenterY());
+			return findPath(n.x, n.y, targetX, targetY);
 		} else {
-			return findPath(z.getCenterX(), z.getCenterY(), z.target.getCenterX(), z.target.getCenterY());
+			return findPath(z.getCenterX(), z.getCenterY(), targetX, targetY);
 		}
 	}
 	

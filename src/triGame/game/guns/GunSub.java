@@ -40,7 +40,7 @@ public class GunSub extends AbstractGun {
 		int y = (int) player.getCenterY();
 		double angle = player.getAngle();
 		
-		projManager.create(x, y, angle, initialSpeed, damageUpgrade.getValue());
+		projManager.create(x, y, angle, initialSpeed, damageUpgrade.getValue(), false);
 	}
 
 	private Observer.Change<UpgradeItem> fireRateObserve = new Observer.Change<UpgradeItem>() {

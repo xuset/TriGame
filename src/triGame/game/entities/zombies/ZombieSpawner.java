@@ -20,7 +20,7 @@ public class ZombieSpawner {
 			if (spawnBoss)
 				zombies.createBoss();
 			else
-				zombies.create();
+				zombies.createZombie();
 			zombiesToSpawn--;
 			nextSpawnTime = System.currentTimeMillis() + spawnDelta;
 		}		
