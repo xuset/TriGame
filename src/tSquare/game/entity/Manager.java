@@ -9,11 +9,12 @@ import tSquare.game.GameIntegratable;
 import tSquare.game.entity.Entity;
 
 
-public abstract class Manager<T extends Entity> implements GameIntegratable{
+public class Manager<T extends Entity> implements GameIntegratable{
 	private String hashMapKey;
 	private final CreationHandler creationHandler;
 
 	public final ArrayList<T> list;
+	public boolean updatesAllowed = true;
 	
 	protected void onRemove(Entity e) { }
 	protected void onAdd(T t) { }
@@ -39,6 +40,8 @@ public abstract class Manager<T extends Entity> implements GameIntegratable{
 	
 	public final boolean add(T t) {
 		boolean r = list.add(t);
+		if (updatesAllowed)
+			t.syncWithController(creationHandler.objController);
 		onAdd(t);
 		return r;
 	}
@@ -76,10 +79,9 @@ public abstract class Manager<T extends Entity> implements GameIntegratable{
 		}
 	}
 	
-	private void handleRemove(Entity e) {
+	private final void handleRemove(Entity e) {
 		creationHandler.removeOnNetwork(e, this);
-		e.objClass.remove();
-		e.onRemoved();
+		e.handleRemove();
 		onRemove(e);
 	}
 }

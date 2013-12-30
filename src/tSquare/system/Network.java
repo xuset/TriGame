@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 import objectIO.connections.Hub;
+import objectIO.connections.OfflineHub;
 import objectIO.connections.sockets.p2pServer.client.ClientHub;
 import objectIO.connections.sockets.p2pServer.server.P2PServer;
 import objectIO.netObject.ObjController;
+import objectIO.netObject.ObjControllerI;
+import objectIO.netObject.OfflineObjController;
 
 public class Network {
 	public final Hub<?> hub;
-	public final ObjController objController;
+	public final ObjControllerI objController;
 	public final long userId;
 	public final boolean isServer;
 	
@@ -19,6 +22,13 @@ public class Network {
 	
 	private ClientHub client = null;
 	public ClientHub getClientInstance() { return client; }
+	
+	private Network() {
+		isServer = true;
+		userId = 3l;
+		hub = new OfflineHub(userId);
+		objController = new OfflineObjController();
+	}
 	
 	private Network(Hub<?> hub, long userId, boolean isServer) {
 		this.hub = hub;
@@ -46,6 +56,10 @@ public class Network {
 		Network n = new Network(server, hub, 3l);
 		n.client = hub;
 		return n;
+	}
+	
+	public static Network createOffline() {
+		return new Network();
 	}
 	
 	public boolean waitForClientsToConnect(int numOfClients, int wait) {

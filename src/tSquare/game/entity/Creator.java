@@ -1,28 +1,26 @@
 package tSquare.game.entity;
 
-import objectIO.markupMsg.MarkupMsg;
-import tSquare.math.IdGenerator;
-
-public abstract class Creator<T extends Entity> {
-	private final CreationHandler handler;
+public class Creator<T extends Entity> {
+	public static interface CreateFunc<T extends Entity> { T create(EntityKey key); }
 	
+	private final CreationHandler handler;
+
+	protected final CreateFunc<? extends T> createFunc;
 	protected final String classId;
 	
 	public boolean createOnNetwork = true;
-	public boolean allowUpdates = true;
 	
-	protected abstract T parseMsg(MarkupMsg msg, EntityKey key);
-	
-	public Creator(String classId, CreationHandler handler) {
-		handler.activateCreator(classId, this);
+	public Creator(String classId, CreationHandler handler, CreateFunc<? extends T> createFunc) {
 		this.classId = classId;
 		this.handler = handler;
+		this.createFunc = createFunc;
+		handler.activateCreator(this);
 	}
 	
 	@SuppressWarnings("unchecked") //just don't add something your'e not supposed to.
-	protected final Entity createFromMsg(MarkupMsg msg, EntityKey key) {
-		T t = parseMsg(msg, key);
-		localCreate(t, (Manager<T>) key.manager);
+	protected Entity createFromMsg(EntityKey key, Manager<?> manager) {
+		T t = createFunc.create(key);
+		localCreate(t, (Manager<T>) manager);
 		return t;
 	}
 	
@@ -32,21 +30,16 @@ public abstract class Creator<T extends Entity> {
 		}
 	}
 	
-	protected final void networkCreate(EntityKey key, MarkupMsg args) {
-		if (createOnNetwork)
-			handler.createOnNetwork(key, args, this);
+	protected final void networkCreate(Entity e, Manager<?> manager) {
+		if (createOnNetwork && !e.isCreatedOnNetwork()) {
+			handler.createOnNetwork(e, this, manager);
+		}
 	}
 	
-	protected final EntityKey getNewKey(Manager<T> manager) {
-		EntityKey key = new EntityKey();
-		key.manager = manager;
-		key.id = IdGenerator.getNext();
-		key.allowUpdates = allowUpdates;
-		key.owned = true;
-		if (allowUpdates && createOnNetwork)
-			key.objController = handler.objController;
-		else
-			key.objController = null;
-		return key;
+	public final <E extends T> void createOnNetwork(E e, Manager<?> manager) {
+		if (!e.isCreatedOnNetwork()) {
+			handler.createOnNetwork(e, this, manager);
+		}
+		
 	}
 }

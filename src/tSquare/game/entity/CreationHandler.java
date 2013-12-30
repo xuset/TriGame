@@ -7,7 +7,7 @@ import objectIO.markupMsg.MarkupMsg;
 import objectIO.markupMsg.MsgAttribute;
 import objectIO.netObject.NetFunction;
 import objectIO.netObject.NetFunctionEvent;
-import objectIO.netObject.ObjController;
+import objectIO.netObject.ObjControllerI;
 import tSquare.util.HashMapKeyCollision;
 
 public final class CreationHandler {
@@ -16,29 +16,33 @@ public final class CreationHandler {
 	private final NetFunction createFunc;
 	private final NetFunction removeFunc;
 	
-	final ObjController objController;
+	final ObjControllerI objController;
 	
-	public CreationHandler(ObjController objController, ManagerController managerController) {
+	public CreationHandler(ObjControllerI objController, ManagerController managerController) {
 		this.objController = objController;
 		this.managerController = managerController;
 		createFunc = new NetFunction(objController, "createEntity", createEvent);
 		removeFunc = new NetFunction(objController, "removeEntity", removeEvent);
 	}
 	
-	void activateCreator(String classId, Creator<?> c) {
-		if (creators.containsKey(classId))
-			throw new HashMapKeyCollision(classId + " has already been used");
-		creators.put(classId, c);
+	void activateCreator(Creator<?> c) {
+		if (creators.containsKey(c.classId))
+			throw new HashMapKeyCollision(c.classId + " has already been used");
+		creators.put(c.classId, c);
 	}
 	
-	void createOnNetwork(EntityKey key, MarkupMsg args, Creator<?> c) {
-		String managerKey = (key.manager == null) ?	"null" : key.manager.getHashMapKey();
+	void createOnNetwork(Entity e, Creator<?> c, Manager<?> manager) {
+		String managerKey = (manager == null) ?	"null" : manager.getHashMapKey();
 		MarkupMsg msg = new MarkupMsg();
-		msg.addAttribute(new MsgAttribute("id").set(key.id));
+		msg.addAttribute(new MsgAttribute("id").set(e.id));
 		msg.addAttribute(new MsgAttribute("creator").set(c.classId));
 		msg.addAttribute(new MsgAttribute("manager").set(managerKey));
-		msg.addAttribute(new MsgAttribute("allowUpdates").set(key.allowUpdates));
-		msg.child.add(args);
+		msg.addAttribute(new MsgAttribute("allowUpdates").set(e.isUpdatesAllowed()));
+		
+		MarkupMsg initialValues = e.createToMsg();
+		if (initialValues != null)
+			msg.child.add(initialValues);
+		
 		createFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
 	}
 	
@@ -51,20 +55,16 @@ public final class CreationHandler {
 	
 	private NetFunctionEvent createEvent = new NetFunctionEvent() {
 		public MarkupMsg calledFunc(MarkupMsg msg, Connection c) {
-			
+			String managerKey = msg.getAttribute("manager").getString();
 			String creatorKey = msg.getAttribute("creator").getString();
 			Creator<?> creator = creators.get(creatorKey);
 
-			EntityKey key = new EntityKey();
-			String managerKey = msg.getAttribute("manager").getString();
+			boolean allowUpdates = msg.getAttribute("allowUpdates").getBool();
+			long id = msg.getAttribute("id").getLong();
+			MarkupMsg initialValue = msg.child.get(0);
+			EntityKey key = EntityKey.createFromExisting(id, allowUpdates, initialValue);
 			
-			key.id = msg.getAttribute("id").getLong();
-			key.manager = managerController.getManager(managerKey);
-			key.objController = objController;
-			key.allowUpdates = msg.getAttribute("allowUpdates").getBool();
-			key.owned = false;
-			
-			creator.createFromMsg(msg.child.get(0), key);
+			creator.createFromMsg(key, managerController.getManager(managerKey));
 			return null;
 		}
 		

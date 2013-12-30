@@ -16,7 +16,7 @@ import tSquare.system.Display;
 import tSquare.system.Network;
 import tSquare.system.PeripheralInput;
 
-public class Main {
+public class DemoStartup {
 
 	public static void main(String[] args) {
 		new Server();
@@ -76,7 +76,8 @@ public class Main {
 					player.moveForward(-1 * distance);
 			}
 			
-			double scale = player.getScaleX();
+			double oldScale = player.getScaleX();
+			double scale = oldScale;
 			if (scallingUp)
 				scale += 0.3 * this.getDelta() / 1000;
 			else
@@ -86,6 +87,9 @@ public class Main {
 			if (scale < 1)
 				scallingUp = true;
 			player.setScale(scale, scale);
+			if (player.collided(manager.list))
+				player.setScale(oldScale, oldScale);
+			manager.updateList();
 		}
 
 		@Override
@@ -104,7 +108,7 @@ public class Main {
 			g.setColor(c);
 			g.fillOval(0, 0, 70, 70);
 			g.dispose();
-			return new Sprite(name, image);
+			return Sprite.add(new Sprite(name, image));
 		}
 	}
 	

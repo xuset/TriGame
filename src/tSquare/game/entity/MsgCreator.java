@@ -4,24 +4,20 @@ import objectIO.markupMsg.MarkupMsg;
 
 public class MsgCreator<T extends Entity> extends Creator<T> {
 	
-	public static interface IFace<T> { T create(MarkupMsg msg, EntityKey key); }
-	
-	private final IFace<T> func;
-
-	public MsgCreator(String classId, CreationHandler handler, IFace<T> func) {
-		super(classId, handler);
-		this.func = func;
+	public static interface MsgFunc<T extends Entity> extends CreateFunc<T> {
+		T create(MarkupMsg msg);
 	}
+	
+	private final MsgFunc<? extends T> func;
 
-	@Override
-	protected T parseMsg(MarkupMsg msg, EntityKey key) {
-		return func.create(msg, key);
+	public MsgCreator(String classId, CreationHandler handler, MsgFunc<? extends T> func) {
+		super(classId, handler, func);
+		this.func = func;
 	}
 	
 	public T create(MarkupMsg msg, Manager<T> manager) {
-		EntityKey key = getNewKey(manager);
-		networkCreate(key, msg);
-		T t = func.create(msg, key);
+		T t = func.create(msg);
+		networkCreate(t, manager);
 		localCreate(t, manager);
 		return t;
 	}

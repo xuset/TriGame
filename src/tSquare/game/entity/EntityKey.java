@@ -1,28 +1,21 @@
 package tSquare.game.entity;
 
-import objectIO.netObject.ObjController;
+import objectIO.markupMsg.MarkupMsg;
 
 public final class EntityKey {
-	public Manager<?> manager;
-	public boolean allowUpdates = true;
-	ObjController objController = null;
-	long id;
-	boolean owned = false;
+	final boolean allowUpdates;
+	final long id;
+	final boolean owned;
+	final MarkupMsg initialValues;
 	
-	public boolean isOwned() { return owned; }
-	
-	EntityKey(Manager<?> manager, long id) {
-		this(manager, id, false, null);
-	}
-	
-	EntityKey(Manager<?> manager, long id, boolean allowUpdates, ObjController objController) {
-		this.manager = manager;
-		this.id = id;
+	private EntityKey(boolean owned, boolean allowUpdates, long id, MarkupMsg initialValues) {
+		this.owned = owned;
 		this.allowUpdates = allowUpdates;
-		this.objController = objController;
+		this.id = id;
+		this.initialValues = initialValues;
 	}
 	
-	EntityKey() {
-		
+	static EntityKey createFromExisting(long id, boolean allowUpdates, MarkupMsg initialValues) {
+		return new EntityKey(false, allowUpdates, id, initialValues);
 	}
 }

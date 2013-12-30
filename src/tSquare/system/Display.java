@@ -24,6 +24,7 @@ public class Display extends JFrame{
 		widthPixels = width;
 		heightPixels = height;
 		//this.setUndecorated(true);
+		//com.apple.eawt.FullScreenUtilities.setWindowCanFullScreen(this,true);
 		this.setTitle(title);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(width, height);

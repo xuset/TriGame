@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import objectIO.netObject.ObjController;
+import objectIO.netObject.ObjControllerI;
 import tSquare.game.GameIntegratable;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.entity.Entity;
@@ -16,7 +16,7 @@ public final class ManagerController implements GameIntegratable{
 	
 	public final CreationHandler creator;
 	
-	public ManagerController(ObjController objController) {
+	public ManagerController(ObjControllerI objController) {
 		creator = new CreationHandler(objController, this);
 	}
 	

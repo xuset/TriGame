@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import objectIO.connections.Connection;
+import objectIO.markupMsg.MarkupMsg;
 import objectIO.netObject.NetClass;
 import objectIO.netObject.NetVar;
-import objectIO.netObject.ObjController;
-import objectIO.netObject.OfflineClass;
+import objectIO.netObject.ObjControllerI;
 import tSquare.game.GameIntegratable;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.imaging.Sprite;
@@ -19,12 +19,11 @@ import tSquare.math.Point;
 
 public class Entity implements GameIntegratable{
 	private boolean removed = false;
+	private boolean createdOnNetwork = false;
 	private final boolean owned;
-	
-	final long id;
+	private final NetClass objClass;
 	
 	protected Sprite sprite;
-	protected NetClass objClass;
 	protected NetVar.nDouble x;
 	protected NetVar.nDouble y;
 	protected NetVar.nDouble angle;
@@ -33,43 +32,22 @@ public class Entity implements GameIntegratable{
 	protected NetVar.nString spriteId;
 	protected NetVar.nDouble health;
 
-	public final boolean allowUpdates;
+	public final long id;
 	public CollisionBox hitbox;
 	public CollisionBox attackbox;
 	public boolean visible = true;
 	public boolean collidable = true;
 	
-	private Entity(String stringSpriteId, double startX, double startY, long id,
-			ObjController objCtr, boolean allowUpdates, boolean owned) {
-		if (!allowUpdates || objCtr == null)
-			objClass = new OfflineClass();
-		else
-			objClass = new NetClass(objCtr, "" + id, 17);
-		assignVars(stringSpriteId, startX, startY, objClass);
+	private Entity(String sSpriteId, double startX, double startY, long id,
+			boolean owned, MarkupMsg initialValues) {
+		
 		this.id = id;
-		this.allowUpdates = allowUpdates;
 		this.owned = owned;
-	}
-	
-	protected Entity(String sSpriteId, double startX, double startY) {
-		this(sSpriteId, startX, startY,
-				IdGenerator.getNext(),
-				null,
-				false,
-				true);
-	}
-	
-	protected Entity(String sSpriteId, double startX, double startY, ObjController objCtr) {
-		this(sSpriteId, startX, startY, IdGenerator.getNext(), objCtr, true, true);
-	}
-	
-	public Entity(String sSpriteId, double startX, double startY, EntityKey key) {
-		this(sSpriteId, startX, startY, key.id, key.objController, key.allowUpdates, key.owned);
-	}
-	
-	private void assignVars(String sSpriteId, double startX, double startY, NetClass cls) {
-		objClass = cls;
-		sprite = Sprite.add(sSpriteId);
+		createdOnNetwork = !owned;
+		
+		objClass = new NetClass(null, "" + id, 17);
+		
+		sprite = Sprite.get(sSpriteId);
 		x = new NetVar.nDouble(startX, "x", objClass);
 		y = new NetVar.nDouble(startY, "y", objClass);
 		angle = new NetVar.nDouble(90.0, "a", objClass);
@@ -77,16 +55,36 @@ public class Entity implements GameIntegratable{
 		scaleY = new NetVar.nDouble(1.0, "scaleY", objClass);
 		spriteId = new NetVar.nString(sSpriteId, "spriteId", objClass);
 		health = new NetVar.nDouble(100.0, "hlth", objClass);
-		hitbox = new CollisionBox(CollisionBox.Type.Hitbox, this);
-		attackbox = new CollisionBox(CollisionBox.Type.AttackBox, this);
+		hitbox = new CollisionBox(CollisionBox.Type.Hitbox, this, objClass);
+		attackbox = new CollisionBox(CollisionBox.Type.AttackBox, this, objClass);
 		spriteId.event = spriteIdEvent;
+		
+		setNetObjects(objClass);
+		if (initialValues != null)
+			objClass.setValue(initialValues);
+	}
+	
+	public Entity(String sSpriteId, double startX, double startY, EntityKey key) {
+		this(sSpriteId, startX, startY,
+				key == null ? IdGenerator.getNext() : key.id,
+				key == null ? true : key.owned,
+				key == null ? null : key.initialValues);
+	}
+	
+	public Entity(String sSpriteId, double startX, double startY) {
+		this(sSpriteId, startX, startY, null);
+	}
+	
+	public Entity(EntityKey key) {
+		this("", 0, 0, key);
+	}
+	
+	protected void setNetObjects(ObjControllerI objClass) {
 		
 	}
 	
-	public static Entity createOffline(String spriteId, int x, int y) {
-		return new Entity(spriteId, x, y, IdGenerator.getNext(), null, false, true);
-	}
-	
+	public final boolean isUpdatesAllowed() { return objClass.isSynced(); }
+	public final boolean isCreatedOnNetwork() { return createdOnNetwork; }
 	public final String getSpriteId() { return spriteId.get(); }
 	public final double getX() { return x.get(); }
 	public final double getY() { return y.get(); }
@@ -114,7 +112,7 @@ public class Entity implements GameIntegratable{
 	private NetVar.OnChange<String> spriteIdEvent = new NetVar.OnChange<String>() {
 		@Override
 		public void onChange(NetVar<String> var, Connection c) {
-			sprite = Sprite.add(var.get());
+			sprite = Sprite.get(var.get());
 		}
 	};
 	
@@ -155,6 +153,10 @@ public class Entity implements GameIntegratable{
 	public double modifyHealth(double delta) {
 		health.set(health.get() + delta);
 		return health.get();
+	}
+	
+	public void setHealth(double newHealth) {
+		health.set(newHealth);
 	}
 	
 	public boolean isOnScreen(ViewRect rect) {
@@ -243,13 +245,33 @@ public class Entity implements GameIntegratable{
 	@Override
 	public void performLogic(int frameDelta) { }
 	
-	void sendUpdates() {
+	protected void sendUpdates() {
 		objClass.update();
 	}
 	
-	public void onRemoved() { }
+	final MarkupMsg createToMsg() {
+		MarkupMsg msg = toMarkupMsg();
+		objClass.clearUpdateBuffer();
+		createdOnNetwork = true;
+		return msg;
+	}
+	
+	protected void onRemoved() { }
+	
+	public MarkupMsg toMarkupMsg() {
+		return objClass.getValue();
+	}
 	
 	public void remove() {
 		removed = true;
+	}
+	
+	final void handleRemove() {
+		objClass.remove();
+		onRemoved();
+	}
+	
+	final void syncWithController(ObjControllerI objController) {
+		objClass.setController(objController);
 	}
 }

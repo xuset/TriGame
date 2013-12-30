@@ -2,6 +2,7 @@ package tSquare.game.entity;
 
 import java.awt.geom.Rectangle2D;
 
+import objectIO.netObject.NetClass;
 import objectIO.netObject.NetVar;
 
 public final class CollisionBox extends Rectangle2D {
@@ -14,16 +15,16 @@ public final class CollisionBox extends Rectangle2D {
 	public NetVar.nDouble offsetX2;
 	public NetVar.nDouble offsetY2;
 	
-	CollisionBox(Type type, Entity e) {
-		this(type.name(), e);
+	CollisionBox(Type type, Entity e, NetClass objClass) {
+		this(type.name(), e, objClass);
 	}
 	
-	private CollisionBox(String name, Entity e) {
+	private CollisionBox(String name, Entity e, NetClass objClass) {
 		entity = e;
-		offsetX1 = new NetVar.nDouble(0.0, name + "x1", e.objClass);
-		offsetY1 = new NetVar.nDouble(0.0, name + "y1", e.objClass);
-		offsetX2 = new NetVar.nDouble(0.0, name + "x2", e.objClass);
-		offsetY2 = new NetVar.nDouble(0.0, name + "y2", e.objClass);
+		offsetX1 = new NetVar.nDouble(0.0, name + "x1", objClass);
+		offsetY1 = new NetVar.nDouble(0.0, name + "y1", objClass);
+		offsetX2 = new NetVar.nDouble(0.0, name + "x2", objClass);
+		offsetY2 = new NetVar.nDouble(0.0, name + "y2", objClass);
 	}
 	
 	public final void setOffsetCorners(double x1, double y1, double x2, double y2) {
