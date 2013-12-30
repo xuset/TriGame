@@ -58,7 +58,6 @@ public class Person extends Entity implements GameIntegratable{
 				color.set(Color.cyan.getRGB());
 			else
 				color.set(getRandomColor());
-			color.event.onChange(color, null);
 		}
 	}
 	
@@ -68,13 +67,13 @@ public class Person extends Entity implements GameIntegratable{
 
 		ownerId = new NetVar.nLong(0l, "ownerId", objClass);
 		color = new NetVar.nInt(0, "color", objClass);
-		color.event = new NetVar.OnChange<Integer>() {
+		color.setEvent(true, new NetVar.OnChange<Integer>() {
 			@Override public void onChange(NetVar<Integer> var, Connection c) {
 				Color color = new Color(var.get());
 				BufferedImage personImage = Load.triangleImage(color);
 				sprite = new Sprite("", personImage);
 			}
-		};
+		});
 	}
 
 	public void giveFullHealth() {

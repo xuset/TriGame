@@ -41,8 +41,8 @@ class VersusRound extends GameRound {
 	}
 
 	@Override
-	public void setRound(int round) {
-		super.setRound(round);
+	protected void onRoundStart() {
+		super.onRoundStart();
 		spawner.startNewSpawnRound(getZombiesPerRound(), getZombieSpawnDelta(), false);
 	}
 	

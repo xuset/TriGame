@@ -61,9 +61,9 @@ class SurvivalRound extends GameRound {
 	}
 	
 	@Override
-	public void setRound(int round) {
-		super.setRound(round);
-		if (round % 10 == 0)
+	protected void onRoundStart() {
+		super.onRoundStart();
+		if (getRoundNumber() % 10 == 0)
 			zombieSpawner.startNewSpawnRound(1, 0, true);
 		else
 			zombieSpawner.startNewSpawnRound(getZombiesPerRound(), getZombieSpawnDelta(), false);

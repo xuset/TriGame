@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 
 import objectIO.connections.Connection;
 import objectIO.netObject.NetVar;
+import objectIO.netObject.NetVar.OnChange;
 import objectIO.netObject.ObjControllerI;
 import tSquare.game.GameBoard.ViewRect;
 import tSquare.game.GameIntegratable;
@@ -27,12 +28,7 @@ public abstract class GameRound implements GameIntegratable{
 	public GameRound(ObjControllerI objController) {
 		roundNumber = new NetVar.nInt(0, "roundNumber", objController);
 		roundOnGoing = new NetVar.nBool(false, "roundOngoing", objController);
-		roundNumber.event = new NetVar.OnChange<Integer>() {
-			@Override
-			public void onChange(NetVar<Integer> var, Connection c) {
-				setRound(var.get());
-			}
-		};
+		roundNumber.setEvent(true, new RoundChangeEvent());
 	}
 	
 	protected void handleRoundNotOnGoing() {
@@ -43,11 +39,9 @@ public abstract class GameRound implements GameIntegratable{
 		
 	}
 	
-	public void setRound(int round) {
+	public final void setRound(int round) {
 		roundNumber.set(round);
 		roundOnGoing.set(true);
-		timeNumberDrawStarted = System.currentTimeMillis();
-		onNewRound.notifyWatchers(roundNumber.get());
 	}
 
 	@Override
@@ -61,5 +55,18 @@ public abstract class GameRound implements GameIntegratable{
 	@Override
 	public void draw(Graphics2D g, ViewRect rect) {
 		Draw.drawRoundNumber(g, rect, roundNumber.get(), System.currentTimeMillis() - timeNumberDrawStarted, totalNumberDrawTime);
+	}
+	
+	protected void onRoundStart() {
+		
+	}
+	
+	private class RoundChangeEvent implements OnChange<Integer> {
+		@Override
+		public void onChange(NetVar<Integer> var, Connection c) {
+			timeNumberDrawStarted = System.currentTimeMillis();
+			onNewRound.notifyWatchers(roundNumber.get());
+			onRoundStart();
+		}
 	}
 }

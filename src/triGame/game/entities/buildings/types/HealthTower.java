@@ -54,7 +54,7 @@ public class HealthTower extends Building {
 	protected void setNetObjects(ObjControllerI objClass) {
 		rangeValue = new NetVar.nInt(INFO.visibilityRadius, "range", objClass);
 		drawRegeneration = new NetVar.nBool(false, "drawRegeneration", objClass);
-		drawRegeneration.event = new OnRegenerateChange();
+		drawRegeneration.setEvent(true, new OnRegenerateChange());
 	}
 
 	@Override
@@ -82,7 +82,6 @@ public class HealthTower extends Building {
 		if (System.currentTimeMillis() > nextRegeneration - elapsedDrawTime) {
 			if (!drawRegeneration.get()) {
 				drawRegeneration.set(true);
-				drawRegeneration.event.onChange(drawRegeneration, null);
 			}
 		} else
 			drawRegeneration.set(false);

@@ -25,7 +25,6 @@ public class PointWell extends Entity {
 		if (particleCount.get() != index) {
 			particleCount.set(index);
 			sendUpdates();
-			particleCount.event.onChange(particleCount, null);
 		}
 		return !isEmpty();
 	}
@@ -45,7 +44,7 @@ public class PointWell extends Entity {
 	@Override
 	protected void setNetObjects(ObjControllerI objClass) {
 		particleCount = new NetVar.nInt(maxParticles, "pcount", objClass);
-		particleCount.event = new NetVar.OnChange<Integer>() {
+		particleCount.setEvent(true, new NetVar.OnChange<Integer>() {
 			@Override
 			public void onChange(NetVar<Integer> var, Connection c) {
 				int index = var.get();
@@ -55,7 +54,7 @@ public class PointWell extends Entity {
 				particles[index].setExpired();
 				particles[index] = null;
 			}
-		};
+		});
 	}
 
 }
