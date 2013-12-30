@@ -57,7 +57,7 @@ public class Entity implements GameIntegratable{
 		health = new NetVar.nDouble(100.0, "hlth", objClass);
 		hitbox = new CollisionBox(CollisionBox.Type.Hitbox, this, objClass);
 		attackbox = new CollisionBox(CollisionBox.Type.AttackBox, this, objClass);
-		spriteId.event = spriteIdEvent;
+		spriteId.setEvent(true, new OnSpriteIdChange());
 		
 		setNetObjects(objClass);
 		if (initialValues != null)
@@ -105,16 +105,15 @@ public class Entity implements GameIntegratable{
 	public final boolean owned() { return owned; }
 	
 	public void setSprite(String spriteId) {
-		sprite = Sprite.add(spriteId);
 		this.spriteId.set(spriteId);
 	}
 	
-	private NetVar.OnChange<String> spriteIdEvent = new NetVar.OnChange<String>() {
+	private class OnSpriteIdChange implements NetVar.OnChange<String> {
 		@Override
 		public void onChange(NetVar<String> var, Connection c) {
-			sprite = Sprite.get(var.get());
+			sprite = Sprite.add(var.get());
 		}
-	};
+	}
 	
 	public void setAngle(double degrees) 	{ this.angle.set(degrees); }
 	public void setX(double x) 				{ this.x.set(x);}
