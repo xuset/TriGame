@@ -49,11 +49,13 @@ class VersusZombie extends ZombieHandler{
 	}
 	
 	private boolean sameZone(Entity a, Entity b) {
-		int aZone = gameMap.getZoneNumber(a);
-		if (spawnZone != -1)
-			return spawnZone == aZone;
-		
-		return (gameMap.getZoneNumber(a) == gameMap.getZoneNumber(b));
+		if (a != null && b != null) {
+			return (gameMap.getZoneNumber(a) == gameMap.getZoneNumber(b));
+		} else if(a != null && spawnZone != -1) {
+			return gameMap.getZoneNumber(a) == spawnZone;
+		}
+		System.err.println("Error in sameZone(Entity, Entity):VersusZombie.java. a is null and the spawn zone is not set");
+		return false;
 	}
 	
 	@Override
