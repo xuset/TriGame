@@ -25,8 +25,8 @@ import triGame.game.ui.arsenal.ArsenalGroup;
 import triGame.game.ui.arsenal.ArsenalPanel;
 
 class ZombieUI extends ArsenalGroup{
-	private static final int maxSpeed = 50, maxHealth = 500;
-	private static final double pricePerSpeed = 150.0/maxSpeed, pricePerHealth = 150.0/maxHealth;
+	private static final int maxSpeed = 60, maxHealth = 3000;
+	private static final double pricePerSpeed = 150.0/maxSpeed, pricePerHealth = 600.0/maxHealth;
 	
 	private final JLabel lblImage;
 	private final JLabel lblPrice;
