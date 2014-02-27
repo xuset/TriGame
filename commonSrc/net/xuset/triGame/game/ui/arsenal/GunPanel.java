@@ -14,7 +14,7 @@ import net.xuset.triGame.game.shopping.ShopItem;
 import net.xuset.triGame.game.shopping.ShopManager;
 import net.xuset.triGame.game.shopping.UpgradeManager;
 
-public class GunPanel extends UiForm {
+public class GunPanel extends UiForm{
 	private final GunType gunType;
 	private final ShopItem item;
 	@SuppressWarnings("unused") //will be needed later but not now
@@ -42,6 +42,7 @@ public class GunPanel extends UiForm {
 	}
 	
 	public GunType getGunType() { return gunType; }
+	
 	public boolean hasPurchased() { return shop.hasPurchased(item); }
 	
 	public void setSelected(boolean isSelected) {

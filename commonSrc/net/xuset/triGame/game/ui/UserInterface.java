@@ -13,7 +13,7 @@ import net.xuset.tSquare.util.Observer.Change;
 import net.xuset.triGame.game.PointConverter;
 import net.xuset.triGame.game.entities.buildings.Building;
 import net.xuset.triGame.game.entities.buildings.BuildingGetter;
-import net.xuset.triGame.game.settings.SettingsContainer;
+import net.xuset.triGame.game.settings.Settings;
 import net.xuset.triGame.game.shopping.ShopManager;
 import net.xuset.triGame.game.ui.arsenal.ArsenalForm;
 import net.xuset.triGame.game.ui.arsenal.ArsenalForm.ArsenalItemAdder;
@@ -40,7 +40,7 @@ public class UserInterface implements GameDrawable {
 	public ArsenalItemAdder getArsenalItemAdder() { return arsenalItemAdder; }
 
 	public UserInterface(InputHolder input, PointConverter pointConverter,
-			ShopManager shop, BuildingGetter buildingGetter, SettingsContainer settings) {
+			ShopManager shop, BuildingGetter buildingGetter, Settings settings) {
 		
 		this.pointConverter = pointConverter;
 		this.buildingGetter = buildingGetter;
@@ -56,7 +56,7 @@ public class UserInterface implements GameDrawable {
 		UiBorderLayout layout = new UiBorderLayout(controller.getForm());
 		controller.getForm().setLayout(layout);
 		layout.add(baseForm, UiBorderLayout.BorderPosition.SOUTH);
-		gameInput = new GameInput(settings, input, layout);
+		gameInput = new GameInput(settings, input, arsenalForm.arsenalInput, layout);
 		
 		arsenalItemAdder = arsenalForm.itemAdder;
 		

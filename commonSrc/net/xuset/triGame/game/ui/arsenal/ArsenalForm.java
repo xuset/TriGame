@@ -13,6 +13,7 @@ import net.xuset.triGame.game.guns.GunType;
 import net.xuset.triGame.game.shopping.ShopItem;
 import net.xuset.triGame.game.shopping.ShopManager;
 import net.xuset.triGame.game.shopping.UpgradeManager;
+import net.xuset.triGame.game.ui.gameInput.IGunInput;
 
 public class ArsenalForm extends UiForm {
 	private final UiButton btnSwitch;
@@ -20,6 +21,7 @@ public class ArsenalForm extends UiForm {
 	private int selectedForm = 0;
 
 	public final ArsenalItemAdder itemAdder;
+	public final IGunInput arsenalInput;
 	
 	public ArsenalForm(BuildingAttacher attacher, ShopManager shop) {
 		getLayout().setOrientation(Axis.X_AXIS);
@@ -32,6 +34,7 @@ public class ArsenalForm extends UiForm {
 		BuildingForm bForm = new BuildingForm(attacher, shop);
 		formContainer[0] = bForm;
 		GunForm gForm = new GunForm(shop);
+		arsenalInput = gForm;
 		formContainer[1] = gForm;
 		itemAdder = new ArsenalItemAdder(bForm, gForm);
 		

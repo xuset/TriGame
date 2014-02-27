@@ -4,25 +4,23 @@ import net.xuset.tSquare.system.input.InputHolder;
 import net.xuset.tSquare.ui.layout.UiBorderLayout;
 import net.xuset.triGame.game.guns.GunType;
 import net.xuset.triGame.game.settings.Settings;
-import net.xuset.triGame.game.settings.SettingsContainer;
-import net.xuset.triGame.game.settings.SettingsItem;
 
 public class GameInput implements IGameInput{
-	private final SettingsContainer settings;
+	private final Settings settings;
 	private final InputHolder input;
 	
 	private final CombinePlayer playerInput;
 	private final CombineGun gunInput;
 	private final CombineRound roundInput;
 
-	public GameInput(SettingsContainer settings, InputHolder input,
-			UiBorderLayout layout) {
+	public GameInput(Settings settings, InputHolder input,
+			IGunInput gunArsenalInput, UiBorderLayout layout) {
 		
 		this.settings = settings;
 		this.input = input;
 		
 		playerInput = new CombinePlayer(layout);
-		gunInput = new CombineGun(layout);
+		gunInput = new CombineGun(layout, gunArsenalInput);
 		roundInput = new CombineRound(layout);
 	}
 
@@ -55,11 +53,7 @@ public class GameInput implements IGameInput{
 	}
 	
 	private boolean isUiTouchOn() {
-		//TODO redo settings so this can be avoided
-		@SuppressWarnings("unchecked")
-		SettingsItem<Boolean> item = (SettingsItem<Boolean>) settings.getItem(
-				Settings.DRAW_UI_TOUCH_CONTROLS);
-		return item.getValue();
+		return settings.drawUiTouch;
 	}
 	
 	private class CombinePlayer implements IPlayerInput {
@@ -108,10 +102,13 @@ public class GameInput implements IGameInput{
 	private class CombineGun implements IGunInput {
 		private final UiShootInput touchGun;
 		private final KeyboardGunInput keyboardGun;
+		private final IGunInput gunArsenalInput;
+		private boolean keyboardsChange = true;
 		
 		//TODO add support for changing guns within arsenal gun form.
 		
-		private CombineGun(UiBorderLayout layout) {
+		private CombineGun(UiBorderLayout layout, IGunInput gunArsenalInput) {
+			this.gunArsenalInput = gunArsenalInput;
 			touchGun = new UiShootInput();
 			keyboardGun = new KeyboardGunInput(input.getKeyboard());
 			layout.add(touchGun, UiBorderLayout.BorderPosition.EAST);
@@ -128,12 +125,23 @@ public class GameInput implements IGameInput{
 
 		@Override
 		public boolean changeGunRequested() {
-			return keyboardGun.changeGunRequested();
+			if (keyboardGun.changeGunRequested()) {
+				keyboardsChange = true;
+				return true;
+			} else if (gunArsenalInput.changeGunRequested()) {
+				keyboardsChange = false;
+				return true;
+			}
+			
+			return false;
 		}
 
 		@Override
 		public GunType getCurrentGunType() {
-			return keyboardGun.getCurrentGunType();
+			if (keyboardsChange)
+				return keyboardGun.getCurrentGunType();
+			else
+				return gunArsenalInput.getCurrentGunType();
 		}
 		
 	}

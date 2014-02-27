@@ -15,7 +15,7 @@ import net.xuset.triGame.game.entities.TriangleSpriteCreator;
 import net.xuset.triGame.game.entities.buildings.Building;
 import net.xuset.triGame.game.entities.buildings.BuildingGetter;
 import net.xuset.triGame.game.guns.GunManager;
-import net.xuset.triGame.game.settings.SettingsContainer;
+import net.xuset.triGame.game.settings.Settings;
 import net.xuset.triGame.game.settings.SettingsFactory;
 import net.xuset.triGame.game.shopping.ShopDrawer;
 import net.xuset.triGame.game.shopping.ShopManager;
@@ -32,7 +32,7 @@ public class TriGame extends Game{
 	private final GameGrid gameGrid;
 	private final TiledBackground background;
 	private final int blockSize = 50; //px
-	private final SettingsContainer settings;
+	private final Settings settings;
 	
 	private final ManagerService managerService;
 	private final GameMode gameMode;

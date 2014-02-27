@@ -1,5 +1,9 @@
 package net.xuset.triGame.game.settings;
 
-public enum Settings {
-	DRAW_UI_TOUCH_CONTROLS
+public class Settings {
+	public boolean drawUiTouch = false;
+	
+	Settings() {
+		
+	}
 }
