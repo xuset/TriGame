@@ -28,6 +28,8 @@ public class SoundFactory implements ISoundFactory{
 			e.printStackTrace();
 		} catch (UnsupportedAudioFileException e) {
 			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
 		}
 		
 		return null;
