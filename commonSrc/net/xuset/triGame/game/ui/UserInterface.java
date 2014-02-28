@@ -31,7 +31,7 @@ public class UserInterface implements GameDrawable {
 	private final PointConverter pointConverter;
 	private BuildingGetter buildingGetter;
 	
-	private final IGameInput gameInput;
+	private final GameInput gameInput;
 	
 	private final ArsenalForm arsenalForm;
 	private final UpgradeForm upgradeForm;
@@ -45,7 +45,7 @@ public class UserInterface implements GameDrawable {
 		this.pointConverter = pointConverter;
 		this.buildingGetter = buildingGetter;
 		
-		attacher = new BuildingAttacher(input.getMouse(), pointConverter, shop);
+		attacher = new BuildingAttacher(input.getMouse(), pointConverter, shop, new CollidesWithUI());
 		controller = new UiController(input.getMouse());
 		baseForm = new BaseForm();
 		arsenalForm = new ArsenalForm(attacher, shop);
@@ -94,6 +94,12 @@ public class UserInterface implements GameDrawable {
 			}
 		}
 		
+	}
+	
+	public class CollidesWithUI {
+		public boolean isColliding(float x, float y) {
+			return gameInput.contains(x, y) || baseForm.contains(x, y);
+		}
 	}
 	
 }

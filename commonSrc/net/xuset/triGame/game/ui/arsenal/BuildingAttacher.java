@@ -12,25 +12,33 @@ import net.xuset.triGame.game.PointConverter;
 import net.xuset.triGame.game.entities.LocManCreator;
 import net.xuset.triGame.game.shopping.ShopItem;
 import net.xuset.triGame.game.shopping.ShopManager;
+import net.xuset.triGame.game.ui.UserInterface.CollidesWithUI;
 
 public class BuildingAttacher implements GameDrawable{
 	private final PointConverter pointConverter;
 	private final ShopManager shop;
+	private final CollidesWithUI collisionChecker;
 	
 	private LocManCreator<?> creator;
 	private IImage image;
 	private ShopItem shopItem;
 	private boolean attached = false;
 	
+	private int realX = 0, realY = 0;
 	private double mouseX = 0, mouseY = 0;
 	private boolean shouldPurchase = false;
 	
 	
-	public BuildingAttacher(IMouseListener ml, PointConverter pointConverter, ShopManager shop) {
+	public BuildingAttacher(IMouseListener ml, PointConverter pointConverter,
+			ShopManager shop, CollidesWithUI collisionChecker) {
+		
 		this.shop = shop;
 		this.pointConverter = pointConverter;
+		this.collisionChecker = collisionChecker;
 		ml.watch(new MouseObserver());
 	}
+	
+	public boolean isAttached() { return attached; }
 	
 	public void attach(ShopItem shopItem, LocManCreator<?> c, IImage image,
 			double mouseX, double mouseY) {
@@ -63,8 +71,9 @@ public class BuildingAttacher implements GameDrawable{
 	private boolean canPlace() {
 		double x = pointConverter.screenToGameX(mouseX);
 		double y = pointConverter.screenToGameY(mouseY);
-		return creator.isValidLocation(x, y) &&
-				shop.canPurchase(shopItem);
+		return shop.canPurchase(shopItem) &&
+				!collisionChecker.isColliding(realX, realY) &&
+				creator.isValidLocation(x, y);
 	}
 	
 	@Override
@@ -91,6 +100,8 @@ public class BuildingAttacher implements GameDrawable{
 			if (t.action == MouseAction.DRAG || t.action == MouseAction.MOVE) {
 				mouseX = pointConverter.gameToScreenX((int) pointConverter.screenToGameX(t.x));
 				mouseY = pointConverter.gameToScreenY((int) pointConverter.screenToGameY(t.y));
+				realX = t.x;
+				realY = t.y;
 			}
 			
 			if (attached && t.action == MouseAction.RELEASE) {

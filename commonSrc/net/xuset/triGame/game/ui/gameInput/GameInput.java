@@ -23,6 +23,13 @@ public class GameInput implements IGameInput{
 		gunInput = new CombineGun(layout, gunArsenalInput);
 		roundInput = new CombineRound(layout);
 	}
+	
+	public boolean contains(float x, float y) {
+		return  (settings.drawUiTouch &&
+				(playerInput.touchPlayer.contains(x, y) ||
+				gunInput.touchGun.contains(x, y) ||
+				roundInput.touchRound.contains(x, y)));
+	}
 
 	@Override
 	public IGunInput getGunInput() {
