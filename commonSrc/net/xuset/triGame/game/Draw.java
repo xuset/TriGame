@@ -80,19 +80,36 @@ public final class Draw {
 	private static final IFont statFont = new TsFont("Arial", 12, TsTypeFace.BOLD);
 	private static final TsColor statBackGround = new TsColor(30, 30, 30, 150);
 	public static void drawStats(int points, int round, int killed, int fps, IGraphics g) {
-		final int ix = 10;
-		final int iy = 13;
-		final int iw = 110;
-		final int ih = 70;
-		g.setColor(statBackGround);
-		g.fillRoundedRect(ix -10, iy - 13, iw, ih, 15, 15);
-		g.setColor(TsColor.lightGray);
+		final float gutter = 10.0f;
+		final String[] strings = new String[] {
+				"  " + points,
+				"Round " + round,
+				"Killed " + killed + " zombies",
+				fps + "FPS",
+		};
+		
 		g.setFont(statFont);
-		g.drawText(ix, iy, "  " + points);
-		g.drawText(ix, iy + 1 * 15, "Round " + round);
-		g.drawText(ix, iy + 2 * 15, "Killed " + killed + " zombies");
-		g.drawText(ix, iy + 3 * 15, fps + "FPS");
-		Sprite point = Sprite.get(PointParticle.SPRITE_ID);
-		point.draw(ix, iy - 8, g);
+		
+		float stringHeight = g.getTextHeight();
+		float stringWidth = g.getTextWidth(strings[0]);
+		for (String s : strings) {
+			float w = g.getTextWidth(s);
+			if (w > stringWidth)
+				stringWidth = w;
+		}
+
+		g.setColor(statBackGround);
+		g.fillRoundedRect(gutter, gutter,
+				stringWidth + 2 * gutter,
+				stringHeight * strings.length + gutter,
+				15, 15);
+		
+
+		g.setColor(TsColor.lightGray);
+		for (int i = 0; i < strings.length; i++)
+			g.drawText(2 * gutter, 2 * gutter + (stringHeight) * i + stringHeight / 2, strings[i]);
+		
+		Sprite pointParticle = Sprite.get(PointParticle.SPRITE_ID);
+		pointParticle.draw(2 * gutter, 2 * gutter, g);
 	}
 }
