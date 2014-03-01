@@ -84,6 +84,8 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 		
 		g.setColor(TsColor.rgba(64, 64, 64, 128));
 		g.fillOval(x, y, diam, diam);
+		g.setColor(TsColor.white);
+		g.drawOval(x, y, diam, diam);
 	}
 	
 	private void drawUiFinger(IGraphics g) {
