@@ -1,27 +1,25 @@
 package net.xuset.triGame.game.ui.gameInput;
 
-import net.xuset.tSquare.system.input.InputHolder;
+import net.xuset.tSquare.system.input.keyboard.IKeyListener;
 import net.xuset.tSquare.ui.layout.UiBorderLayout;
 import net.xuset.triGame.game.guns.GunType;
 import net.xuset.triGame.game.settings.Settings;
 
 public class GameInput implements IGameInput{
 	private final Settings settings;
-	private final InputHolder input;
 	
 	private final CombinePlayer playerInput;
 	private final CombineGun gunInput;
 	private final CombineRound roundInput;
 
-	public GameInput(Settings settings, InputHolder input,
+	public GameInput(Settings settings, IKeyListener keyboard,
 			IGunInput gunArsenalInput, UiBorderLayout layout) {
 		
 		this.settings = settings;
-		this.input = input;
 		
-		playerInput = new CombinePlayer(layout);
-		gunInput = new CombineGun(layout, gunArsenalInput);
-		roundInput = new CombineRound(layout);
+		playerInput = new CombinePlayer(layout, keyboard);
+		gunInput = new CombineGun(layout, keyboard, gunArsenalInput);
+		roundInput = new CombineRound(layout, keyboard);
 	}
 	
 	public boolean contains(float x, float y) {
@@ -68,9 +66,9 @@ public class GameInput implements IGameInput{
 		private final KeyboardPlayerInput keyboardPlayer;
 		private boolean keyboardsTurn = true;
 		
-		private CombinePlayer(UiBorderLayout layout) {
+		private CombinePlayer(UiBorderLayout layout, IKeyListener keyboard) {
 			touchPlayer = new UiPlayerInput();
-			keyboardPlayer = new KeyboardPlayerInput(input.getKeyboard());
+			keyboardPlayer = new KeyboardPlayerInput(keyboard);
 			layout.add(touchPlayer, UiBorderLayout.BorderPosition.WEST);
 		}
 
@@ -114,10 +112,12 @@ public class GameInput implements IGameInput{
 		
 		//TODO add support for changing guns within arsenal gun form.
 		
-		private CombineGun(UiBorderLayout layout, IGunInput gunArsenalInput) {
+		private CombineGun(UiBorderLayout layout, IKeyListener keyboard,
+				IGunInput gunArsenalInput) {
+			
 			this.gunArsenalInput = gunArsenalInput;
 			touchGun = new UiShootInput();
-			keyboardGun = new KeyboardGunInput(input.getKeyboard());
+			keyboardGun = new KeyboardGunInput(keyboard);
 			layout.add(touchGun, UiBorderLayout.BorderPosition.EAST);
 		}
 
@@ -157,9 +157,9 @@ public class GameInput implements IGameInput{
 		private final UiRoundInput touchRound;
 		private final KeyboardRoundInput keyboardRound;
 		
-		private CombineRound(UiBorderLayout layout) {
+		private CombineRound(UiBorderLayout layout, IKeyListener keyboard) {
 			touchRound = new UiRoundInput();
-			keyboardRound = new KeyboardRoundInput(input.getKeyboard());
+			keyboardRound = new KeyboardRoundInput(keyboard);
 			layout.add(touchRound, UiBorderLayout.BorderPosition.NORTH);
 		}
 		

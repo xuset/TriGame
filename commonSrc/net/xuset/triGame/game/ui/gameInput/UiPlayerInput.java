@@ -8,7 +8,7 @@ import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiComponent;
 
 public class UiPlayerInput extends UiComponent implements IPlayerInput{
-	private static final float initSize = 200;
+	private static final float initSize = 250;
 
 	private final double movementThreshold = 0.05;
 	private final IPointW uiMoveCenter = new Point();
@@ -46,7 +46,8 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 				
 				if (temp < movementThreshold)
 					temp = 0.0;
-				else
+				temp *= 2;
+				if (temp > 1.0)
 					temp = 1.0;
 				
 				moveCoEfficient = temp;

@@ -1,5 +1,6 @@
 package net.xuset.triGame.game.ui.arsenal;
 
+
 import net.xuset.tSquare.game.GameDrawable;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.IImage;
@@ -29,22 +30,20 @@ public class BuildingAttacher implements GameDrawable{
 	private boolean shouldPurchase = false;
 	
 	
-	public BuildingAttacher(IMouseListener ml, PointConverter pointConverter,
+	public BuildingAttacher(IMouseListener mouse, PointConverter pointConverter,
 			ShopManager shop, CollidesWithUI collisionChecker) {
 		
 		this.shop = shop;
 		this.pointConverter = pointConverter;
 		this.collisionChecker = collisionChecker;
-		ml.watch(new MouseObserver());
+		
+		mouse.watch(new MouseObserver());
 	}
 	
 	public boolean isAttached() { return attached; }
 	
-	public void attach(ShopItem shopItem, LocManCreator<?> c, IImage image,
-			double mouseX, double mouseY) {
+	public void attach(ShopItem shopItem, LocManCreator<?> c, IImage image) {
 		
-		this.mouseX = mouseX;
-		this.mouseY = mouseY;
 		creator = c;
 		this.image = image;
 		this.shopItem = shopItem;
@@ -92,9 +91,8 @@ public class BuildingAttacher implements GameDrawable{
 			g.setColor(TsColor.red);
 		g.drawRect((int) mouseX, (int) mouseY, image.getWidth(), image.getHeight());
 	}
-	
-	private class MouseObserver implements Change<TsMouseEvent> {
 
+	private class MouseObserver implements Change<TsMouseEvent> {
 		@Override
 		public void observeChange(TsMouseEvent t) {
 			if (t.action == MouseAction.DRAG || t.action == MouseAction.MOVE) {
@@ -108,6 +106,5 @@ public class BuildingAttacher implements GameDrawable{
 				shouldPurchase = true;
 			}
 		}
-		
 	}
 }

@@ -20,6 +20,7 @@ public class BuildingPanel extends UiForm {
 	private final IImage img;
 	private final BuildingAttacher attacher;
 	private final UiLabel lblPrice;
+	private boolean canPurchase = true;
 	
 	private long clickTime = 0l;
 	
@@ -36,20 +37,22 @@ public class BuildingPanel extends UiForm {
 		UiLabel lblImage = new UiLabel();
 		lblImage.setImage(img);
 		lblPrice = new UiLabel("$" + shopItem.getCost());
-		resetLblPriceColor(shop);
 		
 		getLayout().setOrientation(Axis.Y_AXIS);
 		getLayout().setAlignment(Axis.X_AXIS, Alignment.CENTER);
 		getLayout().add(lblImage);
 		getLayout().add(lblPrice);
+		
+		canPurchase = shop.canPurchase(shopItem);
+		resetLblPriceColor();
 	}
 
 	@Override
 	protected void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
 		
-		if (e.action == MouseAction.PRESS) {
-			attacher.attach(shopItem, creator, img, e.x, e.y);
+		if (canPurchase && e.action == MouseAction.PRESS) {
+			attacher.attach(shopItem, creator, img);
 			clickTime = System.currentTimeMillis();
 		}
 	}
@@ -60,17 +63,15 @@ public class BuildingPanel extends UiForm {
 		super.draw(g);
 	}
 	
-	private void resetLblPriceColor(ShopManager shop) {
-		if (shop.getPointCount() < shopItem.getCost())
-			lblPrice.setForeground(TsColor.red);
-		else
-			lblPrice.setForeground(TsColor.black);
+	private void resetLblPriceColor() {
+		lblPrice.setForeground(canPurchase ? TsColor.black : TsColor.red);
 	}
 	
 	private class ShopObserver implements Change<ShopManager> {
 		@Override
 		public void observeChange(ShopManager t) {
-			resetLblPriceColor(t);
+			canPurchase = t.canPurchase(shopItem);
+			resetLblPriceColor();
 		}
 	}
 }

@@ -10,7 +10,7 @@ import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.triGame.game.guns.GunType;
 
 public class UiShootInput extends UiComponent implements IGunInput{
-	private static final int initSize = 100;
+	private static final int initSize = 125;
 	
 	private final IPointW buttonCenter = new Point();
 	private int buttonRadius = 0;

@@ -1,6 +1,5 @@
 package net.xuset.triGame.game.ui;
 
-import net.xuset.tSquare.game.GameDrawable;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.Sprite;
 import net.xuset.tSquare.system.input.InputHolder;
@@ -22,7 +21,7 @@ import net.xuset.triGame.game.ui.gameInput.GameInput;
 import net.xuset.triGame.game.ui.gameInput.IGameInput;
 import net.xuset.triGame.game.ui.upgrades.UpgradeForm;
 
-public class UserInterface implements GameDrawable {
+public class UserInterface {
 	private final UiController controller;
 	private final ArsenalItemAdder arsenalItemAdder;
 	private final BaseForm baseForm;
@@ -44,9 +43,10 @@ public class UserInterface implements GameDrawable {
 		
 		this.pointConverter = pointConverter;
 		this.buildingGetter = buildingGetter;
-		
-		attacher = new BuildingAttacher(input.getMouse(), pointConverter, shop, new CollidesWithUI());
+
 		controller = new UiController(input.getMouse());
+		attacher = new BuildingAttacher(input.getMouse(),
+				pointConverter, shop, new CollidesWithUI());
 		baseForm = new BaseForm();
 		arsenalForm = new ArsenalForm(attacher, shop);
 		upgradeForm = new UpgradeForm(shop);
@@ -56,7 +56,8 @@ public class UserInterface implements GameDrawable {
 		UiBorderLayout layout = new UiBorderLayout(controller.getForm());
 		controller.getForm().setLayout(layout);
 		layout.add(baseForm, UiBorderLayout.BorderPosition.SOUTH);
-		gameInput = new GameInput(settings, input, arsenalForm.arsenalInput, layout);
+		gameInput = new GameInput(settings, input.getKeyboard(),
+				arsenalForm.arsenalInput, layout);
 		
 		arsenalItemAdder = arsenalForm.itemAdder;
 		
@@ -68,8 +69,8 @@ public class UserInterface implements GameDrawable {
 		baseForm.getLayout().add(f);
 	}
 	
-	@Override
-	public void draw(IGraphics g) {
+	public void draw(IGraphics g, int blockSize) {
+		controller.setScale(blockSize / 50.0f);
 		controller.draw(g);
 		attacher.draw(g);
 	}
@@ -98,6 +99,8 @@ public class UserInterface implements GameDrawable {
 	
 	public class CollidesWithUI {
 		public boolean isColliding(float x, float y) {
+			x /= controller.getScale();
+			y /= controller.getScale();
 			return gameInput.contains(x, y) || baseForm.contains(x, y);
 		}
 	}
