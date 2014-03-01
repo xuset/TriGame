@@ -18,8 +18,6 @@ public class AndroidGraphics implements IGraphics {
 	private final Paint paint;
 	private final IRectangleR view;
 	
-	private IFont font;
-	
 	public AndroidGraphics(Bitmap bitmap) {
 		this(new Canvas(bitmap));
 	}
@@ -123,31 +121,21 @@ public class AndroidGraphics implements IGraphics {
 
 	@Override
 	public void setFont(IFont font) {
-		this.font = font;
+		Typeface tf = translateToTypeface(font);
+		paint.setTextSize(font.getSize());
+		paint.setTypeface(tf);
 	}
 
 	@Override
 	public void drawText(float x, float y, String text) {
-		Typeface tf = translateToTypeface(font);
 		paint.setStyle(Paint.Style.FILL);
-		paint.setTextSize(font.getSize());
-		paint.setTypeface(tf);
 		canvas.drawText(text, x, y, paint);
 	}
 
 	@Override
 	public float getTextWidth(String text) {
-		//TODO is a new paint instance really needed?
-		
-		Typeface tf = translateToTypeface(font);
-		Paint paint = new Paint();
-		paint.setTextSize(font.getSize());
-		paint.setTypeface(tf);
-		
 		return paint.measureText(text);
 	}
-	
-
 	
 	@Override
 	public float getTextHeight() {
