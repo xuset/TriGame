@@ -10,12 +10,8 @@ import net.xuset.triGame.game.TriGame;
 import net.xuset.triGame.game.GameInfo.NetworkType;
 import net.xuset.triGame.game.GameMode.GameType;
 
-
-import net.xuset.triGame.R;
-
 import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
 import android.view.SurfaceView;
 
 public class MainActivity extends Activity {
@@ -34,13 +30,6 @@ public class MainActivity extends Activity {
 		new AndroidGame(drawBoard);
 //		Demo d = new Demo(drawBoard);
 //		d.start();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
 	}
 	
 	private class AndroidGame extends Thread {

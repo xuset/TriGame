@@ -16,6 +16,7 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 	private double moveAngle = Math.PI/2;
 	private double moveCoEfficient = 0.0;
 	private boolean isMoving = false;
+	private long lastMoveTime = 0l;
 	
 	public UiPlayerInput() {
 		super(0, 0, initSize, initSize);
@@ -51,6 +52,7 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 					temp = 1.0;
 				
 				moveCoEfficient = temp;
+				lastMoveTime = System.currentTimeMillis();
 			}
 			break;
 		default:
@@ -111,6 +113,8 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 
 	@Override
 	public double getMoveCoEfficient() {
+		if (lastMoveTime + 250 < System.currentTimeMillis())
+			moveCoEfficient = 0;
 		return moveCoEfficient;
 	}
 
