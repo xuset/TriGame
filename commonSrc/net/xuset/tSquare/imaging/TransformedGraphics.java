@@ -182,4 +182,14 @@ public class TransformedGraphics implements IGraphics{
 	protected float transformY(float y) {
 		return (float) (y - getView().getY());
 	}
+
+	@Override
+	public float getWidthUnits(IImage image) {
+		return g.getWidthUnits(image);
+	}
+
+	@Override
+	public float getHeightUnits(IImage image) {
+		return g.getHeightUnits(image);
+	}
 }

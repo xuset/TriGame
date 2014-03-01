@@ -29,4 +29,14 @@ public class AndroidImage implements IImage {
 		return new AndroidGraphics(bitmap);
 	}
 
+	@Override
+	public float getWidth(IGraphics g) {
+		return g.getWidthUnits(this);
+	}
+
+	@Override
+	public float getHeight(IGraphics g) {
+		return g.getHeightUnits(this);
+	}
+
 }

@@ -24,4 +24,14 @@ public class AwtImage implements IImage {
 		return new AwtGraphics(bufferedImg.getGraphics(), getWidth(), getHeight());
 	}
 
+	@Override
+	public float getWidth(IGraphics g) {
+		return g.getWidthUnits(this);
+	}
+
+	@Override
+	public float getHeight(IGraphics g) {
+		return g.getHeightUnits(this);
+	}
+
 }

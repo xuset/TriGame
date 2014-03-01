@@ -92,7 +92,7 @@ public class Demo {
 		}
 		
 		private UiController createUI() {
-			UiController ui = new UiController();
+			UiController ui = new UiController(drawBoard.createInputListener().getMouse());
 			UiForm form = ui.getForm();
 			
 			UiComponent lblHello = new UiButton("Hello");

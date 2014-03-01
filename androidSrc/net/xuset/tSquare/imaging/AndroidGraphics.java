@@ -216,4 +216,14 @@ public class AndroidGraphics implements IGraphics {
 		return Typeface.create(font.getName(), style);
 	}
 
+	@Override
+	public float getWidthUnits(IImage image) {
+		return image.getWidth();
+	}
+
+	@Override
+	public float getHeightUnits(IImage image) {
+		return image.getHeight();
+	}
+
 }

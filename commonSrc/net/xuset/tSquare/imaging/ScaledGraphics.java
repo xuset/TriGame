@@ -7,16 +7,25 @@ public class ScaledGraphics implements IGraphics {
 	private final IGraphics g;
 	private final float scale;
 	private final IRectangleR view;
+	private boolean scaleImages = false;
 	
 	public ScaledGraphics(IGraphics g, float scale) {
+		this(g, scale, false);
+	}
+	
+	public ScaledGraphics(IGraphics g, float scale, boolean scaleImages) {
 		this.g = g;
 		this.scale = scale;
+		this.scaleImages = scaleImages;
 		view = new Rectangle(
 				g.getView().getX() / scale,
 				g.getView().getY() / scale,
 				g.getView().getWidth() / scale,
 				g.getView().getHeight() / scale);
 	}
+	
+	public boolean isScalingImages() { return scaleImages; }
+	public void setScaleImages(boolean scaleImages) { this.scaleImages = scaleImages; }
 
 	@Override
 	public void drawImage(IImage image, float dx, float dy, float dw, float dh, float sx,
@@ -33,10 +42,14 @@ public class ScaledGraphics implements IGraphics {
 
 	@Override
 	public void drawImage(IImage image, float x, float y) {
-		g.drawImage(
-				image,
-				(x * scale),
-				(y * scale));
+		if (scaleImages) {
+			drawImage(image,
+					x, y, image.getWidth(), image.getHeight(),
+					0, 0, image.getWidth(), image.getHeight());
+		} else {
+			g.drawImage(image,
+					(x * scale), (y * scale));
+		}
 	}
 
 	@Override
@@ -191,6 +204,16 @@ public class ScaledGraphics implements IGraphics {
 	@Override
 	public IRectangleR getView() {
 		return view;
+	}
+
+	@Override
+	public float getWidthUnits(IImage image) {
+		return image.getHeight() / scale;
+	}
+
+	@Override
+	public float getHeightUnits(IImage image) {
+		return image.getHeight() / scale;
 	}
 
 }

@@ -185,5 +185,15 @@ public class WindowGraphics implements IGraphics{
 	public IRectangleR getView() {
 		return subView;
 	}
+
+	@Override
+	public float getWidthUnits(IImage image) {
+		return g.getWidthUnits(image);
+	}
+
+	@Override
+	public float getHeightUnits(IImage image) {
+		return g.getHeightUnits(image);
+	}
 	
 }

@@ -15,7 +15,7 @@ public class UiLabel extends UiComponent {
 	private float hGap = 2.0f, vGap = 2.0f;
 	
 	public UiLabel() {
-		super(0, 0, 30, 30);
+		super(0, 0, 0, 0);
 	}
 	
 	public UiLabel(String text) {
@@ -41,10 +41,7 @@ public class UiLabel extends UiComponent {
 	public TsColor getShadowColor() { return shadowColor; }
 	
 	public IImage getImage() { return image; }
-	public void setImage(IImage i) {
-		image = i;
-		setSize(i.getWidth(), i.getHeight());
-	}
+	public void setImage(IImage i) { image = i; }
 
 	@Override
 	public void draw(IGraphics g) {
@@ -71,7 +68,7 @@ public class UiLabel extends UiComponent {
 		float textY = drawY + g.getTextHeight() / 4;
 		
 		if (image != null)
-			textY += image.getHeight();
+			textY += image.getHeight(g);
 		
 		g.setAntiAlias(true);
 		if (isDrawingShadow()) {
@@ -87,9 +84,10 @@ public class UiLabel extends UiComponent {
 	private void drawImage(IGraphics g, float drawX, float drawY) {
 		if (image == null)
 			return;
+		
 		g.drawImage(image,
-				drawX - image.getWidth() / 2,
-				drawY - image.getHeight() / 2);
+				drawX - image.getWidth(g) / 2,
+				drawY - image.getHeight(g) / 2);
 	}
 	
 	private void calcDimensions(IGraphics g) {
@@ -101,9 +99,10 @@ public class UiLabel extends UiComponent {
 			h += g.getTextHeight();
 		}
 		
-		if (image != null) {
-			w = Math.max(w, image.getWidth() + 2 * getHorizontalGap());
-			h += image.getHeight();
+		
+		if (image != null) {		
+			w = Math.max(w, image.getWidth(g) + 2 * getHorizontalGap());
+			h += image.getHeight(g);
 			if (text != null && !text.equals(""))
 				h += getVerticleGap();
 		}

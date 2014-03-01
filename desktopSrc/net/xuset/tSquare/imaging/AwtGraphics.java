@@ -26,7 +26,7 @@ public class AwtGraphics implements IGraphics {
 			float sx, float sy, float sw, float sh) {
 		g.drawImage(
 				((AwtImage) image).bufferedImg,
-				(int) dx, (int) dy, (int) (dx + dw), (int) (dx + dh),
+				(int) dx, (int) dy, (int) (dx + dw), (int) (dy + dh),
 				(int) sx, (int) sy, (int) (sx + sw), (int) (sy + sh),
 				null);
 	}
@@ -189,6 +189,16 @@ public class AwtGraphics implements IGraphics {
 				(int) (y + h));
 		
 		g.fillPolygon(p);
+	}
+
+	@Override
+	public float getWidthUnits(IImage image) {
+		return image.getWidth();
+	}
+
+	@Override
+	public float getHeightUnits(IImage image) {
+		return image.getHeight();
 	}
 
 }

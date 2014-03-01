@@ -29,6 +29,9 @@ public interface IGraphics {
 	void setAntiAlias(boolean antiAlias);
 	boolean isAntiAliasOn();
 	
+	float getWidthUnits(IImage image);
+	float getHeightUnits(IImage image);
+	
 	void clear();
 	void dispose();
 	IRectangleR getView();

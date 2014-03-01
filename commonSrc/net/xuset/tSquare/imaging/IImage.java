@@ -4,4 +4,6 @@ public interface IImage {
 	int getWidth();
 	int getHeight();
 	IGraphics getGraphics();
+	float getWidth(IGraphics g);
+	float getHeight(IGraphics g);
 }
