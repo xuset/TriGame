@@ -13,12 +13,12 @@ import net.xuset.triGame.game.PointConverter;
 import net.xuset.triGame.game.entities.LocManCreator;
 import net.xuset.triGame.game.shopping.ShopItem;
 import net.xuset.triGame.game.shopping.ShopManager;
-import net.xuset.triGame.game.ui.UserInterface.CollidesWithUI;
+import net.xuset.triGame.game.ui.UiCollisionDetector;
 
 public class BuildingAttacher implements GameDrawable{
 	private final PointConverter pointConverter;
 	private final ShopManager shop;
-	private final CollidesWithUI collisionChecker;
+	private final UiCollisionDetector collisionChecker;
 	
 	private LocManCreator<?> creator;
 	private IImage image;
@@ -31,7 +31,7 @@ public class BuildingAttacher implements GameDrawable{
 	
 	
 	public BuildingAttacher(IMouseListener mouse, PointConverter pointConverter,
-			ShopManager shop, CollidesWithUI collisionChecker) {
+			ShopManager shop, UiCollisionDetector collisionChecker) {
 		
 		this.shop = shop;
 		this.pointConverter = pointConverter;
@@ -71,7 +71,7 @@ public class BuildingAttacher implements GameDrawable{
 		double x = pointConverter.screenToGameX(mouseX);
 		double y = pointConverter.screenToGameY(mouseY);
 		return shop.canPurchase(shopItem) &&
-				!collisionChecker.isColliding(realX, realY) &&
+				!collisionChecker.isCollidingWith(realX, realY) &&
 				creator.isValidLocation(x, y);
 	}
 	

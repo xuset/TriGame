@@ -24,13 +24,13 @@ public class UpgradeForm extends UiForm {
 			panels[i] = new UpgradePanel(shop);
 	}
 	
-	public void setUpgrade(Sprite s, UpgradeManager uManager) {
+	void setUpgrade(Sprite s, UpgradeManager uManager) {
 		lblName.setImage(s.createCopy());
 		lblName.setText("");
 		setUpgradePanels(uManager);
 	}
 	
-	public void setUpgrade(String name, UpgradeManager uManager) {
+	void setUpgrade(String name, UpgradeManager uManager) {
 		lblName.setText(name);
 		lblName.setImage(null);
 		setUpgradePanels(uManager);

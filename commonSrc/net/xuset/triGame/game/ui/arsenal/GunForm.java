@@ -9,15 +9,18 @@ import net.xuset.triGame.game.shopping.ShopItem;
 import net.xuset.triGame.game.shopping.ShopManager;
 import net.xuset.triGame.game.shopping.UpgradeManager;
 import net.xuset.triGame.game.ui.gameInput.IGunInput;
+import net.xuset.triGame.game.ui.upgrades.UiUpgrades;
 
 public class GunForm extends ArsenalSubForm implements IGunInput{
 	private final ShopManager shop;
+	private final UiUpgrades uiUpgrades;
 	private GunType selectedGun = null;
 	private boolean requestGunChange = false;
 	
-	public GunForm(ShopManager shop) {
+	public GunForm(ShopManager shop, UiUpgrades uiUpgrades) {
 		super("Guns");
 		this.shop = shop;
+		this.uiUpgrades = uiUpgrades;
 		getLayout().setOrientation(Axis.X_AXIS);
 	}
 	
@@ -44,14 +47,14 @@ public class GunForm extends ArsenalSubForm implements IGunInput{
 				selected = gp;
 		}
 		
-		if (selected != null) {
+		if (selected != null)
 			setSelectedGunPanel(selected);
-			//TODO somehow implement a IGunInput
-		}
 	}
 	
 	private void setSelectedGunPanel(GunPanel selected) {
 		requestGunChange = true;
+		if (selectedGun == selected.getGunType())
+			uiUpgrades.showUpgrades(selected.getGunName(), selected.getGunUpgradeManager());
 		selectedGun = selected.getGunType();
 		for (int i = 0; i < getLayout().getComponentCount(); i++) {
 			GunPanel gp = (GunPanel) getLayout().getComponent(i);

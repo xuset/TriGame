@@ -15,7 +15,7 @@ public class UiTrashCan extends UiComponent {
 	private final IImage image;
 
 	public UiTrashCan(BuildingAttacher attacher) {
-		super(0, 0, 30, 60);
+		super(0, 0, 0, 0);
 		this.attacher = attacher;
 		getBorder().setColor(TsColor.red);
 		getBorder().setVisibility(true);
@@ -23,11 +23,11 @@ public class UiTrashCan extends UiComponent {
 		IImage rawImg = Sprite.get(SPRITE_ID).createCopy();
 		double sx = 80.0 / rawImg.getWidth(), sy = 80.0 / rawImg.getHeight();
 		image = ImageFactory.instance.createScaled(rawImg, sx, sy);
-		setSize(image.getWidth(), image.getHeight());
 	}
 	
 	@Override
 	public void draw(IGraphics g) {
+		setSize(image.getWidth(g), image.getHeight(g));
 		setVisibile(attacher.isAttached());
 		super.draw(g);
 		if (!isVisible())

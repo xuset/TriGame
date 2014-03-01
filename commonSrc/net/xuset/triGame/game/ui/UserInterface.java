@@ -1,16 +1,11 @@
 package net.xuset.triGame.game.ui;
 
 import net.xuset.tSquare.imaging.IGraphics;
-import net.xuset.tSquare.imaging.Sprite;
 import net.xuset.tSquare.system.input.InputHolder;
-import net.xuset.tSquare.system.input.mouse.MouseAction;
-import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiController;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.layout.UiBorderLayout;
-import net.xuset.tSquare.util.Observer.Change;
 import net.xuset.triGame.game.PointConverter;
-import net.xuset.triGame.game.entities.buildings.Building;
 import net.xuset.triGame.game.entities.buildings.BuildingGetter;
 import net.xuset.triGame.game.settings.Settings;
 import net.xuset.triGame.game.shopping.ShopManager;
@@ -19,39 +14,37 @@ import net.xuset.triGame.game.ui.arsenal.ArsenalForm.ArsenalItemAdder;
 import net.xuset.triGame.game.ui.arsenal.BuildingAttacher;
 import net.xuset.triGame.game.ui.gameInput.GameInput;
 import net.xuset.triGame.game.ui.gameInput.IGameInput;
+import net.xuset.triGame.game.ui.upgrades.BuildingUpgradeSetter;
+import net.xuset.triGame.game.ui.upgrades.UiUpgrades;
 import net.xuset.triGame.game.ui.upgrades.UpgradeForm;
 
-public class UserInterface {
+public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 	private final UiController controller;
-	private final ArsenalItemAdder arsenalItemAdder;
 	private final BaseForm baseForm;
-	
+
 	private final BuildingAttacher attacher;
-	private final PointConverter pointConverter;
-	private BuildingGetter buildingGetter;
-	
-	private final GameInput gameInput;
-	
 	private final ArsenalForm arsenalForm;
 	private final UpgradeForm upgradeForm;
+
+	private final ArsenalItemAdder arsenalItemAdder;
+	private final GameInput gameInput;
 	
 	public IGameInput getGameInput() { return gameInput; }
 	public ArsenalItemAdder getArsenalItemAdder() { return arsenalItemAdder; }
 
 	public UserInterface(InputHolder input, PointConverter pointConverter,
 			ShopManager shop, BuildingGetter buildingGetter, Settings settings) {
-		
-		this.pointConverter = pointConverter;
-		this.buildingGetter = buildingGetter;
 
 		controller = new UiController(input.getMouse());
 		attacher = new BuildingAttacher(input.getMouse(),
-				pointConverter, shop, new CollidesWithUI());
+				pointConverter, shop, (UiCollisionDetector) this);
 		baseForm = new BaseForm();
-		arsenalForm = new ArsenalForm(attacher, shop);
 		upgradeForm = new UpgradeForm(shop);
+		UiUpgrades upgrades = new UiUpgrades(upgradeForm, (UiFormSwitcher) this);
+		arsenalForm = new ArsenalForm(attacher, shop, upgrades);
 
-		input.getMouse().watch(new MouseObserver());
+		input.getMouse().watch(new BuildingUpgradeSetter(buildingGetter, pointConverter,
+				(UiFormSwitcher) this, upgrades, (UiCollisionDetector) this));
 
 		UiBorderLayout layout = new UiBorderLayout(controller.getForm());
 		controller.getForm().setLayout(layout);
@@ -61,7 +54,19 @@ public class UserInterface {
 		
 		arsenalItemAdder = arsenalForm.itemAdder;
 		
-		switchView(arsenalForm);
+		switchView(UiFormTypes.ARSENAL);
+	}
+	
+	@Override
+	public void switchView(UiFormTypes f) {
+		switch(f) {
+		case ARSENAL:
+			switchView(arsenalForm);
+			return;
+		case UPGRADES:
+			switchView(upgradeForm);
+			return;
+		}
 	}
 	
 	private void switchView(UiForm f) {
@@ -75,34 +80,12 @@ public class UserInterface {
 		attacher.draw(g);
 	}
 	
-	private class MouseObserver implements Change<TsMouseEvent> {
-
-		@Override
-		public void observeChange(TsMouseEvent t) {
-			if (t.action != MouseAction.RELEASE)
-				return;
-			double gameX = (int) pointConverter.screenToGameX(t.x);
-			double gameY = (int) pointConverter.screenToGameY(t.y);
-			
-			//TODO this may cause a concurrentModificationException 
-			Building b = buildingGetter.getByLocation(gameX, gameY);
-			if (b != null && b.upgrades != null) {
-				Sprite s = Sprite.get(b.getSpriteId());
-				upgradeForm.setUpgrade(s, b.upgrades);
-				switchView(upgradeForm);
-			} else {
-				switchView(arsenalForm);
-			}
-		}
-		
-	}
-	
-	public class CollidesWithUI {
-		public boolean isColliding(float x, float y) {
-			x /= controller.getScale();
-			y /= controller.getScale();
-			return gameInput.contains(x, y) || baseForm.contains(x, y);
-		}
+	@Override
+	public boolean isCollidingWith(float x, float y) {
+		x /= controller.getScale();
+		y /= controller.getScale();
+		//TODO maybe you dont need gameInput?
+		return gameInput.contains(x, y) || baseForm.contains(x, y);
 	}
 	
 }

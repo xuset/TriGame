@@ -48,8 +48,10 @@ public class UpgradePanel extends UiForm {
 	private class OnBuyMouseEvent implements Change<TsMouseEvent> {
 		@Override
 		public void observeChange(TsMouseEvent t) {
-			if (t.action == MouseAction.PRESS)
+			if (t.action == MouseAction.PRESS) {
 				uManager.upgrade(uItem, shop);
+				setUpgrade(uItem, uManager);
+			}
 		}
 	}
 }

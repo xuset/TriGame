@@ -17,7 +17,6 @@ import net.xuset.triGame.game.shopping.UpgradeManager;
 public class GunPanel extends UiForm{
 	private final GunType gunType;
 	private final ShopItem item;
-	@SuppressWarnings("unused") //will be needed later but not now
 	private final UpgradeManager upgrades;
 	private final ShopManager shop;
 	private final UiLabel lblPrice = new UiLabel();
@@ -41,7 +40,11 @@ public class GunPanel extends UiForm{
 		getLayout().add(lblPrice);
 	}
 	
+	public UpgradeManager getGunUpgradeManager() { return upgrades; }
+	
 	public GunType getGunType() { return gunType; }
+	
+	public String getGunName() { return item.getName(); }
 	
 	public boolean hasPurchased() { return shop.hasPurchased(item); }
 	
