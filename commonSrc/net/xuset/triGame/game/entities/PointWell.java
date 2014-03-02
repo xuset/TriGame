@@ -11,6 +11,7 @@ import net.xuset.tSquare.game.particles.ParticleController;
 public class PointWell extends Entity {
 	public static final String SPRITE_ID = "media/PointWell.png";
 	private static final int maxParticles = 5;
+	private static final int initialPoints = 2750;
 	
 	private final PointParticle.Hovering[] particles = new PointParticle.Hovering[maxParticles];
 	private NetVar.nInt particleCount;
@@ -22,9 +23,9 @@ public class PointWell extends Entity {
 			return false;
 		
 		pointsLeft -= amount;
-		int index = pointsLeft / (startingPoints / particles.length);
-		if (particleCount.get() != index) {
-			particleCount.set(index);
+		int count = getParticleCount();
+		if (particleCount.get() != count) {
+			particleCount.set(count);
 			sendUpdates();
 		}
 		return !isEmpty();
@@ -35,7 +36,7 @@ public class PointWell extends Entity {
 	protected PointWell(double startX, double startY, ParticleController pc, EntityKey key) {
 		super(SPRITE_ID, startX, startY, key);
 		
-		startingPoints = pointsLeft = (int) (Math.random() * 500 + 2500);
+		startingPoints = pointsLeft = initialPoints;
 		for (int i = 0; i < particles.length; i++) {
 			particles[i] = new PointParticle.Hovering(getCenterX(), getCenterY());
 			pc.addParticle(particles[i]);
@@ -48,14 +49,33 @@ public class PointWell extends Entity {
 		particleCount.setEvent(true, new NetVar.OnChange<Integer>() {
 			@Override
 			public void onChange(NetVar<Integer> var, Connection c) {
-				int index = var.get();
-				if (index < 0 || particles == null || particles[index] == null)
+				int count = var.get();
+				if (particles == null)
 					return;
 				
-				particles[index].setExpired();
-				particles[index] = null;
+				for (int i = particles.length - 1; i >= count && i >= 0; i++) {
+					if (particles[i] == null)
+						continue;
+					particles[i].setExpired();
+					particles[i] = null;
+				}
+				
+				int est = estimateMaxPoints(count + 1);
+				if (pointsLeft > est)
+					pointsLeft = est;
+				if (count <= 0)
+					pointsLeft = 0;
+				
 			}
 		});
+	}
+	
+	private int estimateMaxPoints(int particleCount) {
+		return particleCount * (startingPoints / particles.length);
+	}
+	
+	private int getParticleCount() {
+		return pointsLeft / (startingPoints / particles.length);
 	}
 
 }
