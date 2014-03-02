@@ -39,7 +39,7 @@ public class HealthTower extends Building {
 		super(INFO.spriteId, x, y, pc, INFO, key);
 		this.managers = managers;
 		
-		rateUpgrade = new UpgradeItem(new ShopItem("Regeneration rate", 100), 3, 2000, -2000);
+		rateUpgrade = new UpgradeItem(new ShopItem("Regeneration rate", 100), 3, 12000, -2000);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100), 3, INFO.visibilityRadius, 1);
 		powerUpgrade = new UpgradeItem(new ShopItem("Healing power", 100), 3, 1, 1);
 		upgrades.addUpgrade(rateUpgrade);

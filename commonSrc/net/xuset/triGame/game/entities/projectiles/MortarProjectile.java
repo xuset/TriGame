@@ -4,7 +4,6 @@ import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.point.PointR;
-import net.xuset.tSquare.math.rect.IRectangleR;
 import net.xuset.triGame.game.GameGrid;
 import net.xuset.triGame.game.ManagerService;
 import net.xuset.triGame.game.entities.zombies.Zombie;
@@ -13,9 +12,9 @@ import net.xuset.triGame.game.entities.zombies.Zombie;
 public class MortarProjectile extends Projectile {
 	public static final String SPRITE_ID = "media/MortarProjectile.png";
 	private static final double explodedTime = 300;
-	private static final int splashRadius = 50;
+	private static final double splashRadius = 1.0;
 	private static final double blowBackTime = 100;
-	private static final int blowBackRadius = 15;
+	private static final double blowBackRadius = 15/50.0;
 	
 	private boolean collided = false;
 	private long explodeStarted = 0;
@@ -35,14 +34,10 @@ public class MortarProjectile extends Projectile {
 	
 	@Override
 	public void draw(IGraphics g) {
-		IRectangleR rect = g.getView();
-		final int drawX = (int) (getCenterX() - rect.getX());
-		final int drawY = (int) (getCenterY() - rect.getY());
-		
-		drawBlowBack(drawX, drawY, g);
+		drawBlowBack(getCenterX(), getCenterY(), g);
 		
 		if (collided) {
-			drawExplosion(drawX, drawY, g);
+			drawExplosion(getCenterX(), getCenterY(), g);
 			if (System.currentTimeMillis() > explodeStarted + explodedTime)
 				remove();
 		} else {
@@ -79,22 +74,25 @@ public class MortarProjectile extends Projectile {
 			explodeStarted = System.currentTimeMillis();
 	}
 	
-	private void drawBlowBack(int drawX, int drawY, IGraphics g) {
+	private void drawBlowBack(double drawX, double drawY, IGraphics g) {
 		final double blowBackRatio = (System.currentTimeMillis() - timeCreated) / blowBackTime;
-		final int radius = (int) (blowBackRatio * blowBackRadius);
+		final double radius = blowBackRatio * blowBackRadius;
 		if (blowBackRatio < 1 && blowBackRatio > 0)
 			drawCircle(drawX, drawY, radius, TsColor.orange, g);
 	}
 	
-	private void drawExplosion(int drawX, int drawY, IGraphics g) {
+	private void drawExplosion(double drawX, double drawY, IGraphics g) {
 		final double ratio = (System.currentTimeMillis() - explodeStarted) / explodedTime;		
-		final int radius = (int) (ratio * splashRadius);
+		final double radius = ratio * splashRadius;
 		drawCircle(drawX, drawY, radius, TsColor.orange, g);
 	}
 	
-	private void drawCircle(int x, int y, int radius, TsColor color, IGraphics g) {
+	private void drawCircle(double x, double y, double radius, TsColor color, IGraphics g) {
 		g.setColor(color);
-		g.drawOval(x - radius, y - radius, radius * 2, radius * 2);
+		float leftX = (float) (x - radius);
+		float topY = (float) (y - radius);
+		float diam = (float) (radius * 2);
+		g.drawOval(leftX, topY, diam, diam);
 	}
 
 }
