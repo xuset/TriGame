@@ -11,9 +11,9 @@ import net.xuset.triGame.game.entities.PointParticle;
 
 
 public class ShopDrawer {
-	private static final int particlesPerPoints = 4;
+	private static final int particlesPerPoints = 1;
 	private static final int particleSpawnDelay = 10;
-	private static final double drawX = 1 / 5.0, drawY = 1 / 10.0;
+	private static final double drawX = 2/5.0f, drawY = 2/5.0f;
 	
 	private final ArrayList<Particle> particles = new ArrayList<Particle>(50);
 	
@@ -44,7 +44,7 @@ public class ShopDrawer {
 		if (particlesToSpawn > 0 && nextParticleSpawn < System.currentTimeMillis()) {
 
 			double angle = Math.random() * Math.PI * 2;
-			particles.add(new PointParticle.Flying(drawX, drawY, angle, 50));
+			particles.add(new PointParticle.Flying(drawX, drawY, angle, 2));
 			particlesToSpawn--;
 			nextParticleSpawn = System.currentTimeMillis() + particleSpawnDelay;
 		}

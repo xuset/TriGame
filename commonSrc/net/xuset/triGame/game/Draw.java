@@ -60,11 +60,18 @@ public final class Draw {
 				standardFont, TsColor.black, 45, g);
 	}
 
-	private static final IFont gameOverFont = new TsFont("Arial", 70, TsTypeFace.BOLD);
+	private static final IFont gameOverFont = new TsFont("Arial", 70/50.f, TsTypeFace.BOLD);
 	private static final TsColor gameOverColor = new TsColor(255,0,0);
 	public static void drawGameOver(IGraphics g) {
-		int centerY = (int) (g.getView().getHeight() / 2 - 10);
-		Draw.drawXCenteredText("GAME  OVER!", gameOverColor, gameOverFont, TsColor.black, centerY, g);
+		g.setFont(gameOverFont);
+		String text = "GAME  OVER!";
+		float textWidth = g.getTextWidth(text);
+		float x = (float) (g.getView().getCenterX() - textWidth/2);
+		float y = (float) (g.getView().getCenterY());
+		g.setColor(TsColor.black);
+		g.drawText(x + 2/50.0f, y + 2/50.0f, text);
+		g.setColor(gameOverColor);
+		g.drawText(x, y, text);
 	}
 	
 	public static void drawXCenteredText(String text, TsColor color, IFont font,
@@ -88,10 +95,10 @@ public final class Draw {
 		g.drawText(x - 2, y + 2, text);
 	}
 
-	private static final IFont statFont = new TsFont("Arial", 12, TsTypeFace.BOLD);
+	private static final IFont statFont = new TsFont("Arial", 12/50.0f, TsTypeFace.BOLD);
 	private static final TsColor statBackGround = new TsColor(30, 30, 30, 150);
 	public static void drawStats(int points, int round, int killed, int fps, IGraphics g) {
-		final float gutter = 10.0f;
+		final float gutter = 1/5.0f;
 		final String[] strings = new String[] {
 				"  " + points,
 				"Round " + round,
@@ -113,7 +120,7 @@ public final class Draw {
 		g.fillRoundedRect(gutter, gutter,
 				stringWidth + 2 * gutter,
 				stringHeight * strings.length + gutter,
-				15, 15);
+				15/50.f, 15/50.f);
 		
 
 		g.setColor(TsColor.lightGray);

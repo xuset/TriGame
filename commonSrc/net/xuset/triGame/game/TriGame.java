@@ -173,12 +173,11 @@ public class TriGame extends Game{
 		ui.draw(g, blockSize);
 		
 		if (isGameOver)
-			Draw.drawGameOver(g);
+			Draw.drawGameOver(scaleG);
 		
 		Draw.drawStats(shop.getPointCount(), gameMode.getRoundNumber(),
-				managerService.zombie.getZombiesKilled(), getCurrentFps(),
-				new ScaledGraphics(g, blockSize/50.0f));
-		shopDrawer.draw(getDelta(), g);
+				managerService.zombie.getZombiesKilled(), getCurrentFps(), scaleG);
+		shopDrawer.draw(getDelta(), scaleG);
 		drawBoard.flushScreen();
 	}
 	

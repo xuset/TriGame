@@ -26,12 +26,7 @@ public abstract class PointParticle extends SpriteParticle{
 	}
 	
 	public static class Flying extends PointParticle {
-		/*
-		 * This class is set up to NOT use a scaled or transformed graphics instance for
-		 * drawing. using the normal scaled and transformed graphics instance for drawing
-		 * will produce unexpected results.
-		 */
-		private static final int speed = 75;
+		private static final double speed = 1.5;
 		private final double angle, distance;
 		private final long startTime;
 
