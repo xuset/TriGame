@@ -24,16 +24,20 @@ public final class Draw {
 				roundStartFont, TsColor.black, 45, g);
 	}
 
-	private static final TsFont roundNumberFont = new TsFont("Arial", 30, TsTypeFace.BOLD);
+	private static final TsFont roundNumberFont = new TsFont("Arial", 60/50.0f, TsTypeFace.BOLD);
 	public static void drawRoundNumber(IGraphics g, int number, long timeDiff, long totalTime) {
 		if (timeDiff > totalTime)
 			return;
-		
+		IRectangleR view = g.getView();
 		String message = "ROUND " + number;
 		double visibility = Math.max(0, -Math.abs( (timeDiff - totalTime/2.0) / (totalTime/2.0) ) + 1);
-		TsColor color = new TsColor(255, 20, 20, (int) (255 * visibility));
-		int y = (int) (g.getView().getHeight() / 2);
-		drawXCenteredText(message, color, roundNumberFont, null, y, g);
+		TsColor color = new TsColor(230, 20, 20, (int) (255 * visibility));
+		g.setFont(roundNumberFont);
+		float y = (float) (view.getCenterY() - g.getTextHeight()/4);
+		float x = (float) (view.getCenterX() - g.getTextWidth(message)/2);
+
+		g.setColor(color);
+		g.drawText(x, y, message);
 	}
 	
 	private static final IFont youWinFont = new TsFont("Arial", 30, TsTypeFace.BOLD);
@@ -64,17 +68,24 @@ public final class Draw {
 	}
 	
 	public static void drawXCenteredText(String text, TsColor color, IFont font,
-			TsColor shadow, int y, IGraphics g) {
+			TsColor shadow, float y, IGraphics g) {
 		IRectangleR rect = g.getView();
-		
 		g.setFont(font);
 		float messageWidth = g.getTextWidth(text);
+		float x = (float) ((rect.getWidth() - messageWidth) / 2);
+		drawText(text, color, font, shadow, x, y, g);
+	}
+	
+	public static void drawText(String text, TsColor color, IFont font, TsColor shadow,
+			float x, float y, IGraphics g) {
+		
+		g.setFont(font);
 		if (shadow != null) {
 			g.setColor(shadow);
-			g.drawText((int) ((rect.getWidth() - messageWidth) / 2), y, text);
+			g.drawText(x, y, text);
 		}
 		g.setColor(color);
-		g.drawText((int) ((rect.getWidth() - messageWidth) / 2 - 2), y + 2, text);
+		g.drawText(x - 2, y + 2, text);
 	}
 
 	private static final IFont statFont = new TsFont("Arial", 12, TsTypeFace.BOLD);
