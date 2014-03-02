@@ -34,7 +34,8 @@ public final class CreationHandler {
 	}
 	
 	void createOnNetwork(Entity e, Creator<?> c, Manager<?> manager) {
-		String managerKey = (manager == null) ?	"null" : manager.getHashMapKey();
+		assert(e != null && c != null && manager != null);
+		String managerKey = manager.getHashMapKey();
 		MarkupMsg msg = new MarkupMsg();
 		msg.addAttribute(new MsgAttribute("id").set(e.id));
 		msg.addAttribute(new MsgAttribute("creator").set(c.classId));

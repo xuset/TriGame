@@ -31,6 +31,8 @@ public class Creator<T extends Entity> {
 	}
 	
 	protected final void networkCreate(Entity e, Manager<?> manager) {
+		if (manager == null)
+			throw new IllegalArgumentException("Manager cannot be null");
 		if (createOnNetwork && !e.isCreatedOnNetwork()) {
 			handler.createOnNetwork(e, this, manager);
 		}
