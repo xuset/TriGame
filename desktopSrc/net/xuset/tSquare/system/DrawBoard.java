@@ -59,8 +59,10 @@ public class DrawBoard implements IDrawBoard{
 	    	strategy = canvas.getBufferStrategy();
 			canvas.requestFocus();
 		}
-
-		graphics = strategy.getDrawGraphics();
+		if (getWidth() <= 0 || getHeight() <= 0)
+			graphics = null;
+		else
+			graphics = strategy.getDrawGraphics();
 	}
 
 	@Override
