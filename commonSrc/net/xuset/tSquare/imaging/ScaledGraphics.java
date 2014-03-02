@@ -216,4 +216,9 @@ public class ScaledGraphics implements IGraphics {
 		return image.getHeight() / scale;
 	}
 
+	@Override
+	public void setErase(boolean erase) {
+		g.setErase(erase);
+	}
+
 }

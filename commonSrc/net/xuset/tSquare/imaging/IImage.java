@@ -6,4 +6,5 @@ public interface IImage {
 	IGraphics getGraphics();
 	float getWidth(IGraphics g);
 	float getHeight(IGraphics g);
+	Object getBackend();
 }

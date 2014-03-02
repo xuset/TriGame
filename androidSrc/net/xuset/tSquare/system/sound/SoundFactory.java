@@ -12,7 +12,7 @@ public class SoundFactory implements ISoundFactory {
 
 	@Override
 	public ISound loadSound(String url) {
-		IFile f = FileFactory.instance.open(url);
+		IFile f = new FileFactory().open(url);
 		if (f != null)
 			loadSound(f);
 		return null;

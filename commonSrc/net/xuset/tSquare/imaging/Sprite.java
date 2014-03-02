@@ -12,11 +12,11 @@ public class Sprite {
 	
 	public final float getWidth() { return (image.getWidth() * scaleFactor); }
 	public final float getHeight() { return (image.getHeight() * scaleFactor); }
-	public final IImage createCopy() { return ImageFactory.instance.createCopy(image); }
+	public final IImage createCopy() { return new ImageFactory().createCopy(image); }
 	
 	public Sprite(String url) {
 		this.url = url;
-		image = ImageFactory.instance.loadImage(url);
+		image = new ImageFactory().loadImage(url);
 		scaleFactor = 1.0f;
 	}
 	

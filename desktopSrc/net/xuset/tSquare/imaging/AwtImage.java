@@ -3,7 +3,7 @@ package net.xuset.tSquare.imaging;
 import java.awt.image.BufferedImage;
 
 public class AwtImage implements IImage {
-	public final BufferedImage bufferedImg;
+	private final BufferedImage bufferedImg;
 	
 	AwtImage(BufferedImage image) {
 		this.bufferedImg = image;
@@ -32,6 +32,11 @@ public class AwtImage implements IImage {
 	@Override
 	public float getHeight(IGraphics g) {
 		return g.getHeightUnits(this);
+	}
+	
+	@Override
+	public BufferedImage getBackend() {
+		return bufferedImg;
 	}
 
 }

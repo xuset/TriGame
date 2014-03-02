@@ -113,7 +113,7 @@ public class MultiplayerDemo {
 		}
 		
 		private Sprite createCircle(String name, Color c) {
-			IImage image = ImageFactory.instance.createEmpty(70, 70);
+			IImage image = new ImageFactory().createEmpty(70, 70);
 			IGraphics g = image.getGraphics();
 			g.setColor(c.getRGB());
 			g.drawRect(0, 0, 70, 70);

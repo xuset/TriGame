@@ -3,7 +3,7 @@ package net.xuset.tSquare.imaging;
 import android.graphics.Bitmap;
 
 public class AndroidImage implements IImage {
-	final Bitmap bitmap;
+	private final Bitmap bitmap;
 	
 	public AndroidImage(Bitmap bitmap) {
 		this.bitmap = bitmap;
@@ -37,6 +37,11 @@ public class AndroidImage implements IImage {
 	@Override
 	public float getHeight(IGraphics g) {
 		return g.getHeightUnits(this);
+	}
+
+	@Override
+	public Bitmap getBackend() {
+		return bitmap;
 	}
 
 }

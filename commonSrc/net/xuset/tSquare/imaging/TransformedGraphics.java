@@ -192,4 +192,9 @@ public class TransformedGraphics implements IGraphics{
 	public float getHeightUnits(IImage image) {
 		return g.getHeightUnits(image);
 	}
+
+	@Override
+	public void setErase(boolean erase) {
+g.setErase(true);
+	}
 }

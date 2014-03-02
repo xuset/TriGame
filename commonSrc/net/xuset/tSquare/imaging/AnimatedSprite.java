@@ -24,11 +24,13 @@ public class AnimatedSprite {
 	
 	public AnimatedSprite(String url, int rows, int columns, int total) {
 		sprites = new Sprite[total];
-		IImage img = ImageFactory.instance.loadImage(url);
+		IImageFactory imgF = new ImageFactory();
+		IImage img = imgF.loadImage(url);
 		this.total = createContents(url, img, rows, columns, total);
 	}
 	
 	private int createContents(String url, IImage image, int rows, int columns, int total) {
+		IImageFactory imgFactory = new ImageFactory();
 		int widthPer = image.getWidth() / columns;
 		int heightPer = image.getHeight() / rows;
 		int count = 0;
@@ -37,7 +39,7 @@ public class AnimatedSprite {
 			for (int rowI = 0; rowI < rows && count < total; rowI++) {
 				int x = columnI * widthPer;
 				int y = rowI * heightPer;
-				IImage cropped = ImageFactory.instance.createCropped(image, x, y, widthPer, heightPer);
+				IImage cropped = imgFactory.createCropped(image, x, y, widthPer, heightPer);
 				sprites[count] = new Sprite(url + count, cropped, 1.0f);
 				Sprite.add(sprites[count]);
 				count++;

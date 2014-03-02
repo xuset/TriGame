@@ -103,7 +103,7 @@ public class Demo {
 		}
 		
 		private IImage createSprite() {
-			IImage sprite = ImageFactory.instance.createEmpty(100, 100);
+			IImage sprite = new ImageFactory().createEmpty(100, 100);
 			IGraphics g = sprite.getGraphics();
 			g.setColor(TsColor.darkGray);
 			g.fillTriangle(0, 0, 100, 100);

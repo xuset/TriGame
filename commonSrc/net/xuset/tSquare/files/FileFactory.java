@@ -3,7 +3,7 @@ package net.xuset.tSquare.files;
 import java.io.File;
 
 public class FileFactory implements IFileFactory {
-	public static final IFileFactory instance = new FileFactory();
+	//public static final IFileFactory instance = new FileFactory();
 	
 	public FileFactory() {
 		

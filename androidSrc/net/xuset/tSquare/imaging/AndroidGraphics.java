@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -33,13 +35,15 @@ public class AndroidGraphics implements IGraphics {
 			float sy, float sw, float sh) {
 		Rect dst = new Rect((int) dx, (int) dy, (int) (dx + dw), (int) (dy + dh));
 		Rect src = new Rect((int) sx, (int) sy, (int) (sx + sw), (int) (sy + sh));
-		canvas.drawBitmap(((AndroidImage) image).bitmap, src, dst, paint);
+		Bitmap bmp = (Bitmap) image.getBackend();
+		canvas.drawBitmap(bmp, src, dst, paint);
 	}
 
 	@Override
 	public void drawImage(IImage image, float x, float y) {
 		//TODO maybe the paint style should be swtiched back to Paint.Sytle.FILL?
-		canvas.drawBitmap(((AndroidImage) image).bitmap, x, y, paint);
+		Bitmap bmp = (Bitmap) image.getBackend();
+		canvas.drawBitmap(bmp, x, y, paint);
 	}
 
 	@Override
@@ -47,7 +51,8 @@ public class AndroidGraphics implements IGraphics {
 		Matrix matrix = new Matrix();
 		matrix.setRotate((float) Math.toDegrees(-radians + Math.PI/2), image.getWidth() / 2, image.getHeight() / 2);
 		matrix.postTranslate(x, y);
-		canvas.drawBitmap(((AndroidImage) image).bitmap, matrix, null);
+		Bitmap bmp = (Bitmap) image.getBackend();
+		canvas.drawBitmap(bmp, matrix, null);
 	}
 
 	@Override
@@ -212,6 +217,11 @@ public class AndroidGraphics implements IGraphics {
 	@Override
 	public float getHeightUnits(IImage image) {
 		return image.getHeight();
+	}
+
+	@Override
+	public void setErase(boolean erase) {
+		paint.setXfermode(erase ? new PorterDuffXfermode(PorterDuff.Mode.CLEAR) : null);
 	}
 
 }

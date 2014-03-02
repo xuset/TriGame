@@ -85,7 +85,7 @@ public class PathDrawer implements PathDrawerI{
 	}
 	
 	private static IImage createCircle(int diameter, TsColor c) {
-		IImage img = ImageFactory.instance.createEmpty(diameter, diameter);
+		IImage img = new ImageFactory().createEmpty(diameter, diameter);
 		IGraphics g = img.getGraphics();
 		g.setColor(c);
 		g.fillOval(0, 0, diameter, diameter);

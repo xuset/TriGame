@@ -1,5 +1,6 @@
 package net.xuset.tSquare.imaging;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -7,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 import net.xuset.tSquare.math.rect.IRectangleR;
 import net.xuset.tSquare.math.rect.Rectangle;
@@ -24,8 +26,9 @@ public class AwtGraphics implements IGraphics {
 	@Override
 	public void drawImage(IImage image, float dx, float dy, float dw, float dh,
 			float sx, float sy, float sw, float sh) {
-		g.drawImage(
-				((AwtImage) image).bufferedImg,
+		
+		BufferedImage buff = (BufferedImage) image.getBackend();
+		g.drawImage(buff,
 				(int) dx, (int) dy, (int) (dx + dw), (int) (dy + dh),
 				(int) sx, (int) sy, (int) (sx + sw), (int) (sy + sh),
 				null);
@@ -33,8 +36,8 @@ public class AwtGraphics implements IGraphics {
 
 	@Override
 	public void drawImage(IImage image, float x, float y) {
-		g.drawImage(
-				((AwtImage) image).bufferedImg,
+		BufferedImage buff = (BufferedImage) image.getBackend();
+		g.drawImage(buff,
 				(int) x, (int) y,
 				null);
 	}
@@ -47,9 +50,9 @@ public class AwtGraphics implements IGraphics {
 		AffineTransform at = new AffineTransform();
 		at.setToRotation(-radians + Math.PI/2, x + (image.getWidth() / 2), y + (image.getHeight() / 2));
 		g2d.setTransform(at);
-		
-		g2d.drawImage(
-				((AwtImage) image).bufferedImg,
+
+		BufferedImage buff = (BufferedImage) image.getBackend();
+		g2d.drawImage(buff,
 				(int) x, (int) y,
 				null);
 		
@@ -199,6 +202,12 @@ public class AwtGraphics implements IGraphics {
 	@Override
 	public float getHeightUnits(IImage image) {
 		return image.getHeight();
+	}
+
+	@Override
+	public void setErase(boolean erase) {
+		((Graphics2D) g).setComposite(erase ?
+				AlphaComposite.Clear : AlphaComposite.SrcOver);
 	}
 
 }

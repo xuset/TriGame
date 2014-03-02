@@ -29,6 +29,8 @@ public interface IGraphics {
 	void setAntiAlias(boolean antiAlias);
 	boolean isAntiAliasOn();
 	
+	void setErase(boolean erase);
+	
 	float getWidthUnits(IImage image);
 	float getHeightUnits(IImage image);
 	
