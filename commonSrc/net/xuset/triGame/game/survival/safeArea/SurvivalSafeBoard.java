@@ -1,6 +1,8 @@
 package net.xuset.triGame.game.survival.safeArea;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.imaging.IGraphics;
+import net.xuset.tSquare.imaging.IImage;
+import net.xuset.tSquare.imaging.IImageFactory;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.rect.IRectangleR;
 import net.xuset.triGame.game.SafeBoard;
@@ -10,15 +12,17 @@ import net.xuset.triGame.game.SafeBoard;
 
 public class SurvivalSafeBoard extends SafeBoard{
 	private CircleContainer circleChart = new CircleContainer();
-	//private IImage areaImage;
+	private IImage areaImage;
 	private TsColor fillColor = TsColor.black;
 	private int drawPointX;
 	private int drawPointY;
 	private int drawPointWidth;
 	private int drawPointHeight;
+	private final IImageFactory imageFactory;
 	
 	private final int initialRadius = 12;
-	public SurvivalSafeBoard(int centerX, int centerY) {
+	public SurvivalSafeBoard(int centerX, int centerY, IImageFactory imageFactory) {
+		this.imageFactory = imageFactory;
 		circleChart.addCircle(centerX, centerY, initialRadius, null);
 		redrawSafeArea();
 	}
@@ -26,21 +30,23 @@ public class SurvivalSafeBoard extends SafeBoard{
 
 	private void redrawSafeArea() {
 		double[] d = circleChart.getDimensions();
-		drawPointX = (int) d[0];
+		drawPointX = (int) d[0]; //TODO maybe should not cast to int?
 		drawPointY = (int) d[1];
 		drawPointWidth = (int) d[2];
 		drawPointHeight = (int) d[3];
-		/*areaImage = ImageFactory.instance.createEmpty(drawPointWidth, drawPointHeight);
-		Graphics2D g = (Graphics2D) areaImage.getGraphics();
+		areaImage = imageFactory.createEmpty(drawPointWidth, drawPointHeight);
+		IGraphics g = areaImage.getGraphics();
 		g.setColor(fillColor);
 		g.fillRect(0, 0, drawPointWidth, drawPointHeight);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setComposite(AlphaComposite.Clear);
+		g.setAntiAlias(true);
+		g.setErase(true);
 		for (Circle c : circleChart.circles) {
-			g.fillOval(c.firstX - drawPointX, c.firstY - drawPointY, 2 * c.radius, 2 * c.radius);
+			float diam = (float) (c.radius * 2);
+			float x = (float) (c.firstX - drawPointX);
+			float y = (float) (c.firstY - drawPointY);
+			g.fillOval(x, y, diam, diam);
 		}
-		g.setComposite(AlphaComposite.SrcOver);
-		g.dispose();*/
+		g.dispose();
 	}
 
 	public void addVisibilityForEntity(Entity e) {
@@ -113,6 +119,9 @@ public class SurvivalSafeBoard extends SafeBoard{
 		float bottomFill = (viewY + viewHeight) - (drawPointY + drawPointHeight);
 		if (bottomFill > 0)
 			g.fillRect(viewX, drawPointY + drawPointHeight, viewWidth, bottomFill);
+		
+
+		g.drawImage(areaImage, drawPointX, drawPointY);
 	}
 	
 }

@@ -4,7 +4,9 @@ import net.xuset.objectIO.netObject.NetVar;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.game.Game;
 import net.xuset.tSquare.imaging.IGraphics;
+import net.xuset.tSquare.imaging.IImageFactory;
 import net.xuset.tSquare.imaging.ScaledGraphics;
+import net.xuset.tSquare.imaging.ScaledImageFactory;
 import net.xuset.tSquare.imaging.TransformedGraphics;
 import net.xuset.tSquare.math.rect.IRectangleW;
 import net.xuset.tSquare.math.rect.Rectangle;
@@ -53,8 +55,9 @@ public class TriGame extends Game{
 		shop = new ShopManager(300);
 		shopDrawer = new ShopDrawer(shop.observer());
 		InputHolder input = drawBoard.createInputListener();
+		IImageFactory scaledFactory = new ScaledImageFactory(blockSize);
 		gameGrid = new GameGrid(100, 100);
-		background = new TiledBackground();
+		background = new TiledBackground(scaledFactory);
 		settings = SettingsFactory.createWithDefaults();
 		
 		BuildingGetter buildingGetter = new BuildingGetter();
@@ -64,7 +67,7 @@ public class TriGame extends Game{
 	
 		gameMode = GameMode.factoryCreator(gameInfo.getGameType(),
 				shop, gameGrid, network.objController, network.isServer,
-				gameInput.getRoundInput());
+				gameInput.getRoundInput(), scaledFactory);
 		
 		managerService = new ManagerService(managerController, gameInput.getPlayerInput(),
 				shop, gameGrid, particleController, network.isServer, userId, gameMode,
@@ -108,8 +111,8 @@ public class TriGame extends Game{
 		managerService.building.update(frameDelta);
 		managerService.projectile.update(frameDelta);
 		
-		//if (player.didMove() || player.isDead())
-			//ui.attacher.clearAttached();
+		if (player.didMove() || player.isDead())
+			ui.clearAttachedBuildings();
 		
 		if (player.isDead() || isGameOver) {
 			if (!managerService.building.interactives.isEmpty()) {
@@ -160,7 +163,7 @@ public class TriGame extends Game{
 		IGraphics transG = new TransformedGraphics(scaleG, viewableRect);
 
 		g.clear();
-		background.draw(transG, blockSize);
+		background.draw(transG);
 		managerService.pointWell.draw(transG);
 		managerService.building.draw(transG);
 		managerService.spawnHole.draw(transG);

@@ -31,6 +31,7 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 	
 	public IGameInput getGameInput() { return gameInput; }
 	public ArsenalItemAdder getArsenalItemAdder() { return arsenalItemAdder; }
+	public void clearAttachedBuildings() { attacher.clearAttached(); }
 
 	public UserInterface(InputHolder input, PointConverter pointConverter,
 			ShopManager shop, BuildingGetter buildingGetter, Settings settings) {

@@ -22,7 +22,7 @@ public class UiTrashCan extends UiComponent {
 		
 		IImage rawImg = Sprite.get(SPRITE_ID).createCopy();
 		double sx = 80.0 / rawImg.getWidth(), sy = 80.0 / rawImg.getHeight();
-		image = ImageFactory.instance.createScaled(rawImg, sx, sy);
+		image = new ImageFactory().createScaled(rawImg, sx, sy);
 	}
 	
 	@Override

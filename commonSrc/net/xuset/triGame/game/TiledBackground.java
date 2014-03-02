@@ -1,62 +1,71 @@
 package net.xuset.triGame.game;
 
+import net.xuset.tSquare.game.GameDrawable;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.IImage;
-import net.xuset.tSquare.imaging.ImageFactory;
+import net.xuset.tSquare.imaging.IImageFactory;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.rect.IRectangleR;
 
 
-public class TiledBackground {
+public class TiledBackground implements GameDrawable{
+	private IImageFactory imgFactory;
 	private double drawX = 0;
 	private double drawY = 0;
 	private IImage backgroundImage;
 	private IImage tileImage;
 	
 	private double lastWidth = 0, lastHeight = 0; 
-	int lastBlockSize = 0;
+	private boolean needsResizing = false;
 	
 	private Entity centerTo;
+	
+	TiledBackground(IImageFactory imgFactory) {
+		this.imgFactory = imgFactory;
+		resizeTileImage();
+		needsResizing = true;
+	}
+	
+	void setImageFactory(IImageFactory imgFactory) {
+		this.imgFactory = imgFactory;
+		resizeTileImage();
+	}
 	
 	public void setCenter(Entity e) {
 		centerTo = e;
 	}
 	
-	private void resizeTileImage(int blockSize) {
-		lastBlockSize = blockSize;
-		
-		final int gutter = (int) (5 * blockSize / 50.0f);
-		tileImage = ImageFactory.instance.createEmpty(blockSize, blockSize);
+	private void resizeTileImage() {
+		final float gutter = (float) (5 / 50.0f);
+		tileImage = imgFactory.createEmpty(1, 1);
 		IGraphics g = tileImage.getGraphics();
 		g.setColor(TsColor.darkGray);
-		g.fillRect(0, 0, blockSize, blockSize);
+		g.fillRect(0, 0, 1, 1);
 		g.setColor(225, 225, 225);
-		g.fillRect(gutter, gutter, blockSize - 2 * gutter, blockSize - 2 * gutter);
+		g.fillRect(gutter, gutter, 1 - 2 * gutter, 1 - 2 * gutter);
 		g.dispose();
 	}
 	
 	private void resizeBackground(double drawBoardWidth, double drawBoardHeight) {
 		lastWidth = drawBoardWidth;
 		lastHeight = drawBoardHeight;
+		needsResizing = false;
 	
-		final int blockSize = tileImage.getWidth();
-		final int normWidth = (int) (drawBoardWidth * blockSize);
-		final int normHeight = (int) (drawBoardHeight * blockSize);
+		int normWidth = (int) drawBoardWidth;
+		int normHeight = (int) drawBoardHeight;
 		
-		int width = ((normWidth % blockSize == 0) ?
-				normWidth / blockSize :
-					normWidth / blockSize + 1) + 1;
-		int height = ((normHeight % blockSize == 0) ?
-				normHeight / blockSize :
-					normHeight / blockSize + 1) + 1;
+		int width = ((drawBoardWidth - normWidth == 0) ?
+				normWidth + 1 : normWidth + 2);
+		int height = ((drawBoardHeight - normHeight == 0) ?
+				normHeight + 1 : normHeight + 2);
 		
-		backgroundImage = ImageFactory.instance.createEmpty(width * blockSize, height * blockSize);
+		backgroundImage = imgFactory.createEmpty(width, height);
 		
 		IGraphics g = backgroundImage.getGraphics();
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				g.drawImage(tileImage, x * blockSize, y * blockSize);
+				g.drawImage(tileImage, x, y);
 			}
 		}
 		g.dispose();
@@ -93,15 +102,16 @@ public class TiledBackground {
 		drawY = rect.getY() + (-1 * (pivotY - ((int) (pivotY))));
 	}
 	
-	private void checkToResize(IRectangleR view, int blockSize) {
-		if (blockSize != lastBlockSize)
-			resizeTileImage(blockSize);
-		if (view.getWidth() != lastWidth || view.getHeight() != lastHeight)
+	private void checkToResize(IRectangleR view) {
+		if (needsResizing ||
+				view.getWidth() != lastWidth || view.getHeight() != lastHeight) {
 			resizeBackground(view.getWidth(), view.getHeight());
+		}
 	}
 
-	public void draw(IGraphics g, int blockSize) {
-		checkToResize(g.getView(), blockSize);
+	@Override
+	public void draw(IGraphics g) {
+		checkToResize(g.getView());
 		positionBackground(g.getView());
 		g.drawImage(backgroundImage, (float) drawX, (float) drawY);
 	}
