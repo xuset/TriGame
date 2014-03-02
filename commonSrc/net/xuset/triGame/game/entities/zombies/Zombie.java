@@ -152,7 +152,9 @@ public class Zombie extends Entity {
 			moveForward(distance);
 		}
 		if (!inflictDamage(managers.person, frameDelta)) {
-			if (!managers.building.objectGrid.isBlockOpen(getCenterX(), getCenterY())){
+			double forwardX = getCenterX() + Math.cos(getAngle()) * getWidth() * 0.9;
+			double forwardY = getCenterY() - Math.sin(getAngle()) * getHeight() * 0.9;
+			if (!managers.building.objectGrid.isBlockOpen(forwardX, forwardY)){
 				inflictDamage(managers.building, frameDelta);
 			}
 		}
