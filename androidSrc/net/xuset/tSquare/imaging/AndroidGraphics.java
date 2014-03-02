@@ -57,10 +57,10 @@ public class AndroidGraphics implements IGraphics {
 	}
 
 	@Override
-	public void drawRoundedRect(float x, float y, float w, float h, int rx, int ry) {
+	public void drawRoundedRect(float x, float y, float w, float h, float rx, float ry) {
 		paint.setStyle(Paint.Style.STROKE);
 		RectF rect = new RectF(x, y, x + w, x + h);
-		canvas.drawRoundRect(rect, rx, ry, paint);
+		canvas.drawRoundRect(rect, rx/2, ry/2, paint);
 	}
 
 	@Override
@@ -77,10 +77,10 @@ public class AndroidGraphics implements IGraphics {
 	}
 
 	@Override
-	public void fillRoundedRect(float x, float y, float w, float h, int rx, int ry) {
+	public void fillRoundedRect(float x, float y, float w, float h, float rx, float ry) {
 		paint.setStyle(Paint.Style.FILL);
 		RectF rect = new RectF(x, y, x + w, y + h);
-		canvas.drawRoundRect(rect, rx, ry, paint);
+		canvas.drawRoundRect(rect, rx/2, ry/2, paint);
 	}
 	
 	@Override

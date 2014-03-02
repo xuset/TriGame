@@ -153,13 +153,13 @@ public class AwtGraphics implements IGraphics {
 	}
 
 	@Override
-	public void drawRoundedRect(float x, float y, float w, float h, int rx, int ry) {
-		g.drawRoundRect((int) x, (int) y, (int) w, (int) h, rx, ry);
+	public void drawRoundedRect(float x, float y, float w, float h, float rx, float ry) {
+		g.drawRoundRect((int) x, (int) y, (int) w, (int) h, (int) rx, (int) ry);
 	}
 
 	@Override
-	public void fillRoundedRect(float x, float y, float w, float h, int rx, int ry) {
-		g.fillRoundRect((int) x, (int) y, (int) w, (int) h, rx, ry);
+	public void fillRoundedRect(float x, float y, float w, float h, float rx, float ry) {
+		g.fillRoundRect((int) x, (int) y, (int) w, (int) h, (int) rx, (int) ry);
 	}
 
 	@Override

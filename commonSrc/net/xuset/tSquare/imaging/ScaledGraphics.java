@@ -71,7 +71,7 @@ public class ScaledGraphics implements IGraphics {
 	}
 
 	@Override
-	public void drawRoundedRect(float x, float y, float w, float h, int rx, int ry) {
+	public void drawRoundedRect(float x, float y, float w, float h, float rx, float ry) {
 		g.drawRoundedRect(
 				(x * scale),
 				(y * scale),
@@ -111,13 +111,13 @@ public class ScaledGraphics implements IGraphics {
 	}
 
 	@Override
-	public void fillRoundedRect(float x, float y, float w, float h, int rx, int ry) {
+	public void fillRoundedRect(float x, float y, float w, float h, float rx, float ry) {
 		g.fillRoundedRect(
 				(x * scale),
 				(y * scale),
 				(w * scale),
 				(h * scale),
-				rx, ry);
+				rx * scale, ry * scale);
 
 	}
 

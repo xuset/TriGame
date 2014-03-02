@@ -66,7 +66,7 @@ public class WindowGraphics implements IGraphics{
 	}
 
 	@Override
-	public void drawRoundedRect(float x, float y, float w, float h, int rx, int ry) {
+	public void drawRoundedRect(float x, float y, float w, float h, float rx, float ry) {
 		g.drawRoundedRect(
 				transformX(x),
 				transformY(y),
@@ -100,7 +100,7 @@ public class WindowGraphics implements IGraphics{
 	}
 
 	@Override
-	public void fillRoundedRect(float x, float y, float w, float h, int rx, int ry) {
+	public void fillRoundedRect(float x, float y, float w, float h, float rx, float ry) {
 		g.fillRoundedRect(
 				transformX(x),
 				transformY(y),

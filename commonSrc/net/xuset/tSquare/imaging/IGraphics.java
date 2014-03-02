@@ -8,12 +8,12 @@ public interface IGraphics {
 	void drawImageRotate(IImage image, float x, float y, double radians);
 	
 	void drawRect(float x, float y, float w, float h);
-	void drawRoundedRect(float x, float y, float w, float h, int rx, int ry);
+	void drawRoundedRect(float x, float y, float w, float h, float rx, float ry);
 	void drawOval(float x, float y, float w, float h);
 	void drawLine(float x1, float y1, float x2, float y2);
 	
 	void fillRect(float x, float y, float w, float h);
-	void fillRoundedRect(float x, float y, float w, float h, int rx, int ry);
+	void fillRoundedRect(float x, float y, float w, float h, float rx, float ry);
 	void fillOval(float x, float y, float w, float h);
 	void fillTriangle(float x, float y, float w, float h);
 	
