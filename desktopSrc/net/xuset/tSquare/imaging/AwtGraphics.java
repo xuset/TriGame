@@ -100,7 +100,7 @@ public class AwtGraphics implements IGraphics {
 	
 	@Override
 	public void setFont(IFont f) {
-		g.setFont(new Font(f.getName(), translateTsTypeFace(f.getTypeFace()), f.getSize()));
+		g.setFont(new Font(f.getName(), translateTsTypeFace(f.getTypeFace()), (int) f.getSize()));
 				
 	}
 
