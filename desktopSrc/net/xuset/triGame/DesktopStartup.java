@@ -10,8 +10,7 @@ import javax.swing.JFrame;
 import net.xuset.tSquare.files.FileFactory;
 import net.xuset.tSquare.system.DrawBoard;
 import net.xuset.tSquare.system.IDrawBoard;
-import net.xuset.triGame.game.DevStart;
-import net.xuset.triGame.game.GameMode.GameType;
+import net.xuset.triGame.intro.GameIntro;
 
 
 public class DesktopStartup {
@@ -23,7 +22,9 @@ public class DesktopStartup {
 		IDrawBoard db1 = createWindow("TriGame Dev - server");
 		//IDrawBoard db2 = createWindow("TriGame Dev - client");
 		
-		DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory());
+		GameIntro gameIntro = new GameIntro(db1, new FileFactory());
+		gameIntro.createGame().startGame();
+		//DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory());
 		//DevStart.startLocalMultiplayer(GameType.SURVIVAL, db1, db2, new FileFactory());
 	}
 	
