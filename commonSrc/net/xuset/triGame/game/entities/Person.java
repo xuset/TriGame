@@ -2,7 +2,6 @@ package net.xuset.triGame.game.entities;
 
 import java.util.ArrayList;
 
-import net.xuset.objectIO.connections.Connection;
 import net.xuset.objectIO.netObject.NetVar;
 import net.xuset.objectIO.netObject.ObjControllerI;
 import net.xuset.tSquare.game.GameIntegratable;
@@ -32,6 +31,7 @@ public class Person extends Entity implements GameIntegratable{
 	private final HealthBar healthBar;
 	private NetVar.nLong ownerId;
 	private NetVar.nInt color;
+	private boolean createdSprite = false;
 	
 	private double realSpeed = 0;
 	private boolean moved = false;
@@ -69,11 +69,6 @@ public class Person extends Entity implements GameIntegratable{
 
 		ownerId = new NetVar.nLong(0l, "ownerId", objClass);
 		color = new NetVar.nInt(0, "color", objClass);
-		color.setEvent(true, new NetVar.OnChange<Integer>() {
-			@Override public void onChange(NetVar<Integer> var, Connection c) {
-				sprite = triangleCreator.createTriangle(var.get().intValue());
-			}
-		});
 	}
 
 	public void giveFullHealth() {
@@ -87,6 +82,10 @@ public class Person extends Entity implements GameIntegratable{
 
 	@Override
 	public void update(int frameDelta) {
+		if (!createdSprite) {
+			sprite = triangleCreator.createTriangle(color.get().intValue());
+			createdSprite = true;
+		}
 		moved = false;
 		if (owned() && !isDead()) {
 			if (!safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY())) {
