@@ -33,7 +33,7 @@ public class Zombie extends Entity {
 	private int tickCount = 0;
 
 	private Entity target;
-	private double realSpeed;
+	private double speedCoEfficient;
 	private double damage = -100; //damage per second
 	private Path path;
 	private IPointW lastTargetBlock = new Point(0, 0);
@@ -53,7 +53,6 @@ public class Zombie extends Entity {
 		isServer = false;
 		spawnTime = 0;
 		additionalBuildingG = 0;
-		realSpeed = speed;
 	}
 	
 	Zombie(String spriteId, double x, double y, Entity target, long spawnDelay, double speed, int buildingG, double maxHealth, 
@@ -75,7 +74,7 @@ public class Zombie extends Entity {
 	
 	
 	public void freeze(double speedChange) {
-		realSpeed = speed * speedChange;
+		speedCoEfficient = speedChange;
 	}
 	
 	public void hitByProjectile(int damage) {
@@ -91,7 +90,13 @@ public class Zombie extends Entity {
 
 	@Override
 	public void update(int frameDelta) {
-		realSpeed = speed;
+		/*
+		 * TODO check and see if freeze towers effect zombies during projectile hits.
+		 * The speedCoEfficient may be getting reset before hitByProjectile can
+		 * take advantage of it.
+		 */
+		double speedOff = speedCoEfficient;
+		speedCoEfficient = 1.0;
 		if (!isServer)
 			return;
 		
@@ -110,7 +115,7 @@ public class Zombie extends Entity {
 		
 		if (shouldFindNewPath())
 			findPath();
-		move(frameDelta);
+		move(frameDelta, speedOff);
 		tickCount++;
 	}
 	
@@ -136,8 +141,8 @@ public class Zombie extends Entity {
 		lastObjectGridModCount = managers.building.objectGrid.getModCount();
 	}
 	
-	private void move(int frameDelta) {
-		double distance = realSpeed * frameDelta / 1000.0;
+	private void move(int frameDelta, double speedOff) {
+		double distance = speedOff * speed * frameDelta / 1000.0;
 		
 		if (path != null && path.peekNextStep() != null) {
 			Node.Point step = path.peekNextStep();
@@ -171,8 +176,7 @@ public class Zombie extends Entity {
 	}
 	
 	private void hitBack(double distance) {
-		double ratio = (1.0 * realSpeed) / (1.0 * speed);
-		distance = (-1 * distance * ratio);
+		distance = (-1 * distance * speedCoEfficient);
 		moveForward(distance);
 		if (!managers.building.objectGrid.isRectangleOpen(hitbox))
 			moveForward(-1 * distance);
