@@ -18,7 +18,7 @@ public class TsColor {
 	private static final int deltaColor = 16;
 	
 	public static int rgb(int r, int g, int b) {
-		return rgba(r, g, b, 0);
+		return rgba(r, g, b, 255);
 	}
 	
 	public static int rgba(int r, int g, int b, int a) {

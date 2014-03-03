@@ -22,9 +22,13 @@ public class UiController {
 	
 	public UiForm getForm() { return mainForm; }
 	
-	public UiController(IMouseListener mouseListener) {
+	public UiController() {
 		observers = new ArrayList<Observer.Change<TsMouseEvent>>();
 		mainForm = new UiMainForm();
+	}
+	
+	public UiController(IMouseListener mouseListener) {
+		this();
 		mouseListener.watch(new MouseObserver());
 	}
 	
