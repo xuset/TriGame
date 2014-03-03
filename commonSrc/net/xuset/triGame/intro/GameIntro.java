@@ -50,7 +50,7 @@ public class GameIntro implements IntroSwitcher{
 	private void setupIntroForms() {
 		IntroSwitcher iSwitcher = this;
 		introForms[GameIntroForms.MAIN.ordinal()] = new IntroMain(iSwitcher);
-		introForms[GameIntroForms.JOIN.ordinal()] = new IntroJoin();
+		introForms[GameIntroForms.JOIN.ordinal()] = new IntroJoin(iSwitcher);
 		introForms[GameIntroForms.SOLO.ordinal()] = new IntroSolo();
 		introForms[GameIntroForms.HOST.ordinal()] = new IntroHost();
 		introForms[GameIntroForms.SETTINGS.ordinal()] = new IntroSettings();
@@ -96,16 +96,21 @@ public class GameIntro implements IntroSwitcher{
 	public void switchToForm(GameIntroForms form) {
 		selectedForm = introForms[form.ordinal()];
 		mainLayout.add(selectedForm.getForm(), UiBorderLayout.BorderPosition.CENTER);
-		utilityForm.setBackVisibility(form != GameIntroForms.MAIN);
-		utilityForm.setSettingsVisibility(form != GameIntroForms.SETTINGS);
+		utilityForm.setButtonOptions(form != GameIntroForms.MAIN,
+				form != GameIntroForms.SETTINGS);
 	}
 	
 	private class UtilityForm extends UiForm {
 		private final UiButton btnBack = new UiButton("<- back");
 		private final UiButton btnSettings = new UiButton("Settings");
 		
-		void setBackVisibility(boolean vis) { btnBack.setVisibile(vis); }
-		void setSettingsVisibility(boolean vis) { btnSettings.setVisibile(vis); }
+		public void setButtonOptions(boolean showBack, boolean showSettings) {
+			getLayout().clearComponents();
+			if (showBack)
+				getLayout().add(btnBack);
+			if (showSettings)
+				getLayout().add(btnSettings);
+		}
 		
 		UtilityForm() {
 			UiQueueLayout layout = new UiQueueLayout(10, 5, this);
