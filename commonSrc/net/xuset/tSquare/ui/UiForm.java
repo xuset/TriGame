@@ -47,13 +47,9 @@ public class UiForm extends UiComponent implements UiAddable {
 	public void draw(IGraphics g) {
 		if (!isVisible())
 			return;
-		
-		super.draw(g);
+
 		getLayout().organize();
-		if (isOpaque()) {
-			g.setColor(getBackground());
-			g.fillRect(getX(), getY(), getWidth(), getHeight());
-		}
+		super.draw(g);
 		
 		IRectangleR subView = new Rectangle(getX(), getY(), getWidth(), getHeight());
 		WindowGraphics window = new WindowGraphics(subView, g);

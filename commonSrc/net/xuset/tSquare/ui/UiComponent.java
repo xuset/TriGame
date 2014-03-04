@@ -56,6 +56,11 @@ public abstract class UiComponent {
 		if (!isVisible())
 			return;
 		
+		if (isOpaque()) {
+			g.setColor(getBackground());
+			g.fillRect(getX(), getY(), getWidth(), getHeight());
+		}
+		
 		if (getBorder().isVisible())
 			getBorder().draw(g, getX(), getY(), getWidth(), getHeight());
 	}

@@ -31,7 +31,7 @@ public class UiButton extends UiComponent {
 	public int getOutlineSize() { return borderSize; }
 	
 	protected boolean isDrawingClick() { 
-		return clickTime + 50 < System.currentTimeMillis(); 
+		return clickTime + 100 > System.currentTimeMillis(); 
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class UiButton extends UiComponent {
 		g.setColor(borderColor);
 		g.fillRoundedRect(getX(), getY(), getWidth(), getHeight(), 6, 6);
 
-		if(!isDrawingClick());
+		if(!isDrawingClick())
 			g.setColor(getBackground());
 		
 		float inX = getX() + borderSize, inY = getY() + borderSize;
@@ -64,7 +64,7 @@ public class UiButton extends UiComponent {
 	@Override
 	public void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
-		if (e.action == MouseAction.RELEASE) {
+		if (e.action == MouseAction.PRESS) {
 			clickTime = System.currentTimeMillis();
 		}
 	}
