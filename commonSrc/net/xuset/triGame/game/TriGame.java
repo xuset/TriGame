@@ -173,7 +173,7 @@ public class TriGame extends Game{
 		managerService.person.draw(transG);
 		gameMode.draw(transG);
 		particleController.draw(transG);
-		ui.draw(g, blockSize);
+		ui.draw(g, transG, blockSize);
 		
 		if (isGameOver)
 			Draw.drawGameOver(scaleG);

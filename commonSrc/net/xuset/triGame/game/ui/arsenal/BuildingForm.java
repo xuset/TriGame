@@ -23,7 +23,8 @@ public class BuildingForm extends ArsenalSubForm {
 	
 	public void addBuilding(BuildingInfo info, LocManCreator<?> creator) {
 		IImage img = Sprite.get(info.spriteId).createCopy();
-		BuildingPanel bp = new BuildingPanel(info.item, creator, img, attacher, shop);
+		BuildingPanel bp = new BuildingPanel(info.item, creator, img, attacher, shop,
+				info.visibilityRadius);
 		panels.add(bp);
 		refreshView();
 	}

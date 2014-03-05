@@ -20,16 +20,18 @@ public class BuildingPanel extends UiForm {
 	private final IImage img;
 	private final BuildingAttacher attacher;
 	private final UiLabel lblPrice;
+	private final double viewRadius;
 	private boolean canPurchase = true;
 	
 	private long clickTime = 0l;
 	
 	public BuildingPanel(ShopItem shopItem, LocManCreator<?> creator, IImage img,
-			BuildingAttacher attacher, ShopManager shop) {
+			BuildingAttacher attacher, ShopManager shop, double viewRadius) {
 		
 		this.shopItem = shopItem;
 		this.creator = creator;
 		this.img = img;
+		this.viewRadius = viewRadius;
 		this.attacher = attacher;
 		
 		shop.observer().watch(new ShopObserver());
@@ -52,7 +54,7 @@ public class BuildingPanel extends UiForm {
 		super.recieveMouseEvent(e, x, y);
 		
 		if (canPurchase && e.action == MouseAction.PRESS) {
-			attacher.attach(shopItem, creator, img);
+			attacher.attach(shopItem, creator, img, viewRadius);
 			clickTime = System.currentTimeMillis();
 		}
 	}

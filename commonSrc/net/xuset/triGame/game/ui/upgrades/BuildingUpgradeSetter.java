@@ -1,6 +1,9 @@
 package net.xuset.triGame.game.ui.upgrades;
 
+import net.xuset.tSquare.game.GameDrawable;
+import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.Sprite;
+import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.util.Observer.Change;
@@ -11,12 +14,15 @@ import net.xuset.triGame.game.ui.UiCollisionDetector;
 import net.xuset.triGame.game.ui.UiFormSwitcher;
 import net.xuset.triGame.game.ui.UiFormTypes;
 
-public class BuildingUpgradeSetter implements Change<TsMouseEvent>{
+public class BuildingUpgradeSetter implements Change<TsMouseEvent>, GameDrawable{
 	private final BuildingGetter buildingGetter;
 	private final PointConverter pConv;
 	private final UiFormSwitcher uiSwitcher;
 	private final UiUpgrades uiUpgrades;
 	private final UiCollisionDetector uiCollision;
+	
+	private boolean drawBuildingView = false;
+	private Building selectedBuilding = null;
 	
 	public BuildingUpgradeSetter(BuildingGetter buildingGetter, PointConverter pConv,
 			UiFormSwitcher uiSwitcher, UiUpgrades uiUpgrades,
@@ -42,8 +48,24 @@ public class BuildingUpgradeSetter implements Change<TsMouseEvent>{
 			Sprite s = Sprite.get(b.getSpriteId());
 			uiUpgrades.showUpgrades(s, b.upgrades);
 			uiSwitcher.switchView(UiFormTypes.UPGRADES);
+			drawBuildingView = true;
+			selectedBuilding = b;
 		} else {
 			uiSwitcher.switchView(UiFormTypes.ARSENAL);
+			drawBuildingView = false;
+			selectedBuilding = null;
+		}
+	}
+
+	@Override
+	public void draw(IGraphics g) {
+		if (drawBuildingView) {
+			float r = (float) selectedBuilding.getVisibilityRadius();
+			float x = (float) (selectedBuilding.getX() - r);
+			float y = (float) (selectedBuilding.getY() - r);
+			
+			g.setColor(TsColor.green);
+			g.drawOval(x, y, 2 * r, 2 * r);
 		}
 	}
 }

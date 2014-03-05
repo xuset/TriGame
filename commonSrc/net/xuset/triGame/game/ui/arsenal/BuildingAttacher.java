@@ -23,10 +23,11 @@ public class BuildingAttacher implements GameDrawable{
 	private LocManCreator<?> creator;
 	private IImage image;
 	private ShopItem shopItem;
+	private float viewRadius;
 	private boolean attached = false;
 	
 	private int realX = 0, realY = 0;
-	private double mouseX = 0, mouseY = 0;
+	private float gameX = 0, gameY = 0;
 	private boolean shouldPurchase = false;
 	
 	
@@ -42,11 +43,13 @@ public class BuildingAttacher implements GameDrawable{
 	
 	public boolean isAttached() { return attached; }
 	
-	public void attach(ShopItem shopItem, LocManCreator<?> c, IImage image) {
+	public void attach(ShopItem shopItem, LocManCreator<?> creator, IImage image,
+			double viewRadius) {
 		
-		creator = c;
+		this.creator = creator;
 		this.image = image;
 		this.shopItem = shopItem;
+		this.viewRadius = (float) viewRadius;
 		attached = true;
 	}
 	
@@ -57,22 +60,18 @@ public class BuildingAttacher implements GameDrawable{
 	}
 	
 	public void placeAttached() {
-		double x = pointConverter.screenToGameX(mouseX);
-		double y = pointConverter.screenToGameY(mouseY);
 		if (canPlace()) {
 			shop.purchase(shopItem);
-			creator.create(x, y);
+			creator.create(gameX, gameY);
 		}
 		shouldPurchase = false;
 		clearAttached();
 	}
 	
 	private boolean canPlace() {
-		double x = pointConverter.screenToGameX(mouseX);
-		double y = pointConverter.screenToGameY(mouseY);
 		return shop.canPurchase(shopItem) &&
 				!collisionChecker.isCollidingWith(realX, realY) &&
-				creator.isValidLocation(x, y);
+				creator.isValidLocation(gameX, gameY);
 	}
 	
 	@Override
@@ -83,21 +82,24 @@ public class BuildingAttacher implements GameDrawable{
 		if (!attached)
 			return;
 
-		g.drawImage(image, (int) mouseX, (int) mouseY);
+		g.drawImage(image, gameX, gameY);
 
-		if (canPlace())
-			g.setColor(TsColor.green);
-		else
-			g.setColor(TsColor.red);
-		g.drawRect((int) mouseX, (int) mouseY, image.getWidth(), image.getHeight());
+		g.setColor(canPlace() ? TsColor.green : TsColor.red);
+		g.drawRect(gameX, gameY, image.getWidth(g), image.getHeight(g));
+		
+		if (viewRadius > 0.0f) {
+			g.drawOval(gameX + 0.5f - viewRadius,
+					gameY + 0.5f - viewRadius,
+					viewRadius * 2, viewRadius * 2);
+		}
 	}
 
 	private class MouseObserver implements Change<TsMouseEvent> {
 		@Override
 		public void observeChange(TsMouseEvent t) {
 			if (t.action == MouseAction.DRAG || t.action == MouseAction.MOVE) {
-				mouseX = pointConverter.gameToScreenX((int) pointConverter.screenToGameX(t.x));
-				mouseY = pointConverter.gameToScreenY((int) pointConverter.screenToGameY(t.y));
+				gameX = (int) pointConverter.screenToGameX(t.x);
+				gameY = (int) pointConverter.screenToGameY(t.y);
 				realX = t.x;
 				realY = t.y;
 			}

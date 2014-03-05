@@ -25,6 +25,7 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 	private final BuildingAttacher attacher;
 	private final ArsenalForm arsenalForm;
 	private final UpgradeForm upgradeForm;
+	private final BuildingUpgradeSetter upgradeSetter;
 
 	private final ArsenalItemAdder arsenalItemAdder;
 	private final GameInput gameInput;
@@ -43,9 +44,10 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		upgradeForm = new UpgradeForm(shop);
 		UiUpgrades upgrades = new UiUpgrades(upgradeForm, (UiFormSwitcher) this);
 		arsenalForm = new ArsenalForm(attacher, shop, upgrades);
-
-		input.getMouse().watch(new BuildingUpgradeSetter(buildingGetter, pointConverter,
-				(UiFormSwitcher) this, upgrades, (UiCollisionDetector) this));
+		upgradeSetter = new BuildingUpgradeSetter(buildingGetter, pointConverter,
+				(UiFormSwitcher) this, upgrades, (UiCollisionDetector) this);
+		
+		input.getMouse().watch(upgradeSetter);
 
 		UiBorderLayout layout = new UiBorderLayout(controller.getForm());
 		controller.getForm().setLayout(layout);
@@ -75,10 +77,11 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		baseForm.getLayout().add(f);
 	}
 	
-	public void draw(IGraphics g, int blockSize) {
+	public void draw(IGraphics g, IGraphics transG, int blockSize) {
 		controller.setScale(blockSize / 50.0f);
 		controller.draw(g);
-		attacher.draw(g);
+		attacher.draw(transG);
+		upgradeSetter.draw(transG);
 	}
 	
 	@Override
