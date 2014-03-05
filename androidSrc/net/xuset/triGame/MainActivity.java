@@ -4,11 +4,8 @@ import net.xuset.tSquare.files.AssetFileFactory;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.system.DrawBoard;
 import net.xuset.tSquare.system.IDrawBoard;
-import net.xuset.tSquare.system.Network;
-import net.xuset.triGame.game.GameInfo;
-import net.xuset.triGame.game.TriGame;
-import net.xuset.triGame.game.GameInfo.NetworkType;
-import net.xuset.triGame.game.GameMode.GameType;
+import net.xuset.triGame.intro.GameIntro;
+import net.xuset.triGame.settings.Settings;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -28,8 +25,6 @@ public class MainActivity extends Activity {
 		setContentView(viewDraw);
 		
 		new AndroidGame(drawBoard);
-//		Demo d = new Demo(drawBoard);
-//		d.start();
 	}
 	
 	private class AndroidGame extends Thread {
@@ -41,12 +36,22 @@ public class MainActivity extends Activity {
 		
 		@Override
 		public void run() {
-			
-			Network network = Network.createOffline();
-			GameInfo info = new GameInfo(network, GameType.SURVIVAL, NetworkType.SOLO);
 			IFileFactory fileFactory = new AssetFileFactory(getAssets());
-			TriGame tGame = new TriGame(info, drawBoard, fileFactory);
-			tGame.startGame();
+			GameIntro intro = new GameIntro(drawBoard, fileFactory, createDefaultSettings());
+			intro.createGame().startGame();
+			//TriGame tGame = new TriGame(
+			//new GameInfo(Network.createOffline(), GameType.SURVIVAL, NetworkType.SOLO),
+			//		drawBoard, fileFactory, createDefaultSettings());
+			//tGame.startGame();
+		}
+		
+		private Settings createDefaultSettings() {
+			Settings s = new Settings();
+			s.blockSize = 100;
+			s.defaultBlockSize = 100;
+			s.drawUiTouch = true;
+			s.enableSound = true;
+			return s;
 		}
 	}
 }

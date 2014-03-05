@@ -3,6 +3,7 @@ package net.xuset.triGame.intro.main;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiButton;
+import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
@@ -33,7 +34,7 @@ public class IntroMain implements IntroForm {
 	}
 
 	@Override
-	public UiForm getForm() {
+	public UiComponent getForm() {
 		return frmMain;
 	}
 

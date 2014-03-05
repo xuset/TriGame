@@ -2,12 +2,16 @@ package net.xuset.triGame.intro.host;
 
 import java.io.IOException;
 
+import net.xuset.objectIO.connections.sockets.p2pServer.server.ConnectionEvent;
+import net.xuset.objectIO.connections.sockets.p2pServer.server.P2PServer;
+import net.xuset.objectIO.connections.sockets.p2pServer.server.ServerConnection;
 import net.xuset.tSquare.system.Network;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.Alignment;
 import net.xuset.tSquare.ui.Axis;
 import net.xuset.tSquare.ui.UiButton;
+import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.UiLabel;
 import net.xuset.tSquare.ui.layout.UiQueueLayout;
@@ -18,19 +22,22 @@ import net.xuset.triGame.game.GameMode.GameType;
 import net.xuset.triGame.intro.IntroForm;
 
 public class IntroHost implements IntroForm {
+	private static final String joinedText = "Player joined: ";
 	private static final String hostGameText = "host game";
 	private static final String startGameText = "start game";
 	
 	private final UiForm frmMain = new UiForm();
-	private final UiLabel lblPlayers = new UiLabel("host on port 3000");
-	private final UiButton btnStart = new UiButton();
+	private final UiLabel lblPlayers = new UiLabel("Players joined: 1");
 	
+	private final UiButton btnStart = new UiButton();
+
 	private Network network = null;
 	private boolean startGame = false;
 	
 	public IntroHost() {
 		btnStart.setText(hostGameText);
 		btnStart.addMouseListener(new BtnStartAction());
+		lblPlayers.setVisibile(false);
 		frmMain.setLayout(new UiQueueLayout(5, 20, frmMain));
 		frmMain.getLayout().setAlignment(Axis.X_AXIS, Alignment.CENTER);
 		frmMain.getLayout().setOrientation(Axis.Y_AXIS);
@@ -39,7 +46,7 @@ public class IntroHost implements IntroForm {
 	}
 
 	@Override
-	public UiForm getForm() {
+	public UiComponent getForm() {
 		return frmMain;
 	}
 
@@ -60,7 +67,10 @@ public class IntroHost implements IntroForm {
 			if (btnStart.getText().equals(hostGameText)) {
 				try {
 					network = Network.startupServer(3000);
+					network.getServerInstance().event = new ServerConnectionEvent();
 					btnStart.setText(startGameText);
+					lblPlayers.setVisibile(true);
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -68,7 +78,23 @@ public class IntroHost implements IntroForm {
 				startGame = true;
 			}
 		}
-		
+	}
+	
+	private class ServerConnectionEvent implements ConnectionEvent {
+		@Override
+		public void onConnect(P2PServer s, ServerConnection c) {
+			lblPlayers.setText(joinedText + s.connections.size());
+		}
+
+		@Override
+		public void onDisconnect(P2PServer s, ServerConnection c) {
+			lblPlayers.setText(joinedText + s.connections.size());
+		}
+
+		@Override
+		public void onLastDisconnect(P2PServer s) {
+			
+		}
 	}
 
 }

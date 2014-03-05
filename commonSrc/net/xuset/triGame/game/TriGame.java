@@ -17,12 +17,11 @@ import net.xuset.triGame.game.entities.TriangleSpriteCreator;
 import net.xuset.triGame.game.entities.buildings.Building;
 import net.xuset.triGame.game.entities.buildings.BuildingGetter;
 import net.xuset.triGame.game.guns.GunManager;
-import net.xuset.triGame.game.settings.Settings;
-import net.xuset.triGame.game.settings.SettingsFactory;
 import net.xuset.triGame.game.shopping.ShopDrawer;
 import net.xuset.triGame.game.shopping.ShopManager;
 import net.xuset.triGame.game.ui.UserInterface;
 import net.xuset.triGame.game.ui.gameInput.IGameInput;
+import net.xuset.triGame.settings.Settings;
 
 
 
@@ -33,8 +32,7 @@ public class TriGame extends Game{
 	private final IGameInput gameInput;
 	private final GameGrid gameGrid;
 	private final TiledBackground background;
-	private final int blockSize = 50; //px
-	private final Settings settings;
+	private final int blockSize; //px
 	
 	private final ManagerService managerService;
 	private final GameMode gameMode;
@@ -45,10 +43,13 @@ public class TriGame extends Game{
 
 	private boolean isGameOver = false;
 	
-	public TriGame(GameInfo gameInfo, IDrawBoard drawBoard, IFileFactory fileFactory) {
+	public TriGame(GameInfo gameInfo, IDrawBoard drawBoard, IFileFactory fileFactory,
+			Settings settings) {
+		
 		super(gameInfo.getNetwork());
 		NetVar.nBool startGame = new NetVar.nBool(false, "start", network.objController);
 		
+		blockSize = settings.blockSize;
 		Load.loadResources(blockSize, fileFactory);
 
 		this.drawBoard = drawBoard;
@@ -58,7 +59,6 @@ public class TriGame extends Game{
 		IImageFactory scaledFactory = new ScaledImageFactory(blockSize);
 		gameGrid = new GameGrid(100, 100);
 		background = new TiledBackground(scaledFactory);
-		settings = SettingsFactory.createWithDefaults();
 		
 		BuildingGetter buildingGetter = new BuildingGetter();
 		PointConverter pConv = new PointConverter(viewableRect, blockSize);

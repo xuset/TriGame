@@ -3,7 +3,7 @@ package net.xuset.triGame.game.ui.gameInput;
 import net.xuset.tSquare.system.input.keyboard.IKeyListener;
 import net.xuset.tSquare.ui.layout.UiBorderLayout;
 import net.xuset.triGame.game.guns.GunType;
-import net.xuset.triGame.game.settings.Settings;
+import net.xuset.triGame.settings.Settings;
 
 public class GameInput implements IGameInput{
 	private final Settings settings;

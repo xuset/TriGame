@@ -1,9 +1,9 @@
 package net.xuset.triGame.intro;
 
-import net.xuset.tSquare.ui.UiForm;
+import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.triGame.game.GameInfo;
 
 public interface IntroForm {
-	UiForm getForm();
+	UiComponent getForm();
 	GameInfo getCreatedGameInfo();
 }

@@ -7,25 +7,34 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
+import net.xuset.tSquare.demo.Demo;
 import net.xuset.tSquare.files.FileFactory;
 import net.xuset.tSquare.system.DrawBoard;
 import net.xuset.tSquare.system.IDrawBoard;
+import net.xuset.triGame.game.DevStart;
+import net.xuset.triGame.game.GameMode.GameType;
 import net.xuset.triGame.intro.GameIntro;
+import net.xuset.triGame.settings.Settings;
 
 
+@SuppressWarnings("unused")
 public class DesktopStartup {
 
 	public static void main(String[] args) {
 		if (!System.getProperty("os.name").toLowerCase().contains("windows"))
 			System.setProperty("sun.java2d.opengl", "True");
 		
+		Settings settings = createDefaultSettings();
 		IDrawBoard db1 = createWindow("TriGame Dev - server");
 		//IDrawBoard db2 = createWindow("TriGame Dev - client");
 		
-		GameIntro gameIntro = new GameIntro(db1, new FileFactory());
+		GameIntro gameIntro = new GameIntro(db1, new FileFactory(), settings);
 		gameIntro.createGame().startGame();
-		//DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory());
-		//DevStart.startLocalMultiplayer(GameType.SURVIVAL, db1, db2, new FileFactory());
+		//DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory(), settings);
+		//DevStart.startLocalMultiplayer(GameType.SURVIVAL, db1, db2, new FileFactory(), settings);
+		
+		//Demo demo = new Demo(db1);
+		//demo.start();
 	}
 	
 	private static IDrawBoard createWindow(String title) {
@@ -43,6 +52,12 @@ public class DesktopStartup {
 		frame.setVisible(true);
 		
 		return drawBoard;
+	}
+	
+	private static final Settings createDefaultSettings() {
+		Settings settings = new Settings();
+		settings.drawUiTouch = false;
+		return settings;
 	}
 
 }

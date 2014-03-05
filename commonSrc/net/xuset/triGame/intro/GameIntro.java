@@ -20,11 +20,13 @@ import net.xuset.triGame.intro.join.IntroJoin;
 import net.xuset.triGame.intro.main.IntroMain;
 import net.xuset.triGame.intro.settings.IntroSettings;
 import net.xuset.triGame.intro.solo.IntroSolo;
+import net.xuset.triGame.settings.Settings;
 
 public class GameIntro implements IntroSwitcher{
 	private final UiController ui;
 	private final UiBorderLayout mainLayout;
 	private final IFileFactory fileFactory;
+	private final Settings settings;
 	private final IDrawBoard drawBoard;
 	private final UtilityForm utilityForm = new UtilityForm();
 	private final IntroForm[] introForms = new IntroForm[GameIntroForms.values().length];
@@ -32,9 +34,10 @@ public class GameIntro implements IntroSwitcher{
 	
 	private TriGame createdGame = null;
 	
-	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory) {
+	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory, Settings settings) {
 		this.drawBoard = drawBoard;
 		this.fileFactory = fileFactory;
+		this.settings = settings;
 		
 		ui = new UiController(drawBoard.createInputListener().getMouse());
 		UiForm mainForm = ui.getForm();
@@ -53,7 +56,7 @@ public class GameIntro implements IntroSwitcher{
 		introForms[GameIntroForms.JOIN.ordinal()] = new IntroJoin(iSwitcher);
 		introForms[GameIntroForms.SOLO.ordinal()] = new IntroSolo();
 		introForms[GameIntroForms.HOST.ordinal()] = new IntroHost();
-		introForms[GameIntroForms.SETTINGS.ordinal()] = new IntroSettings();
+		introForms[GameIntroForms.SETTINGS.ordinal()] = new IntroSettings(settings);
 	}
 	
 	public TriGame createGame() {
@@ -64,7 +67,7 @@ public class GameIntro implements IntroSwitcher{
 	private void tryToCreateGame() {
 		GameInfo gInfo = selectedForm.getCreatedGameInfo();
 		if (gInfo != null) {
-			createdGame = new TriGame(gInfo, drawBoard, fileFactory);
+			createdGame = new TriGame(gInfo, drawBoard, fileFactory, settings);
 		}
 	}
 	
