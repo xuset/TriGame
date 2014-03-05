@@ -39,6 +39,8 @@ public class UiGridList extends UiComponent {
 		setOpaque(true);
 	}
 	
+	public int getRowCount() { return items.size(); }
+	
 	public void addRow(String...item) {
 		if (item.length != columnCount)
 			throw new IllegalArgumentException("array size not equal to column count");
@@ -69,6 +71,10 @@ public class UiGridList extends UiComponent {
 	
 	public String[] getSelectedRow() {
 		return items.get(selectedIndex);
+	}
+	
+	public void clearRows() {
+		items.clear();
 	}
 	
 	@Override
