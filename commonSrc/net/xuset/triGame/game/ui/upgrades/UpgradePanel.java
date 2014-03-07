@@ -7,6 +7,7 @@ import net.xuset.tSquare.ui.Axis;
 import net.xuset.tSquare.ui.UiButton;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.UiLabel;
+import net.xuset.tSquare.ui.UiProgressBar;
 import net.xuset.tSquare.ui.layout.UiLayout;
 import net.xuset.tSquare.util.Observer.Change;
 import net.xuset.triGame.game.shopping.ShopManager;
@@ -17,7 +18,7 @@ public class UpgradePanel extends UiForm {
 	private final ShopManager shop;
 	private final UiLabel lblName = new UiLabel("");
 	private final UiLabel lblPrice = new UiLabel("");
-	private final UiLabel lblProgress = new UiLabel("");
+	private final UiProgressBar progressBar = new UiProgressBar();
 	private final UiButton btnBuy = new UiButton("Buy");
 	
 	private UpgradeItem uItem = null;
@@ -33,7 +34,7 @@ public class UpgradePanel extends UiForm {
 		l.setAlignment(Axis.X_AXIS, Alignment.CENTER);
 		l.add(lblName);
 		l.add(lblPrice);
-		l.add(lblProgress);
+		l.add(progressBar);
 		l.add(btnBuy);
 	}
 	
@@ -41,7 +42,8 @@ public class UpgradePanel extends UiForm {
 		this.uItem = uItem;
 		this.uManager = uManager;
 		lblName.setText(uItem.shopItem.getName());
-		lblProgress.setText(uItem.getUpgradeCount() + " of " + uItem.maxUpgrades);
+		double progress = uItem.getUpgradeCount() / (0.0 + uItem.maxUpgrades);
+		progressBar.setProgress(progress);
 		lblPrice.setText("$" + uItem.shopItem.getCost());
 	}
 	
