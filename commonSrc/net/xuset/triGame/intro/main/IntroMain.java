@@ -42,6 +42,21 @@ public class IntroMain implements IntroForm {
 	public GameInfo getCreatedGameInfo() {
 		return null;
 	}
+
+	@Override
+	public void onFocusGained() {
+		//Do nothing
+	}
+
+	@Override
+	public void onFocusLost() {
+		//Do nothing
+	}
+
+	@Override
+	public void update() {
+		//Do nothing
+	}
 	
 	private class BtnSoloAction implements Observer.Change<TsMouseEvent> {
 		@Override

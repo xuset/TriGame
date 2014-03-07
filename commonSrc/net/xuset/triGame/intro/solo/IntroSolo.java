@@ -16,8 +16,22 @@ public class IntroSolo implements IntroForm {
 
 	@Override
 	public UiComponent getForm() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void onFocusGained() {
+		//Do nothing
+	}
+
+	@Override
+	public void onFocusLost() {
+		//Do nothing
+	}
+
+	@Override
+	public void update() {
+		//Do nothing
 	}
 
 }

@@ -6,4 +6,7 @@ import net.xuset.triGame.game.GameInfo;
 public interface IntroForm {
 	UiComponent getForm();
 	GameInfo getCreatedGameInfo();
+	void onFocusGained();
+	void onFocusLost();
+	void update();
 }

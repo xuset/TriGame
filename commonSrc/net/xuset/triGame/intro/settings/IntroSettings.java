@@ -23,4 +23,19 @@ public class IntroSettings implements IntroForm {
 		return null;
 	}
 
+	@Override
+	public void onFocusGained() {
+		//Do nothing
+	}
+
+	@Override
+	public void onFocusLost() {
+		//Do nothing
+	}
+
+	@Override
+	public void update() {
+		//Do nothing
+	}
+
 }

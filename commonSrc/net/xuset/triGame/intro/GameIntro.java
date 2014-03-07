@@ -31,6 +31,7 @@ public class GameIntro implements IntroSwitcher{
 	private final UtilityForm utilityForm = new UtilityForm();
 	private final IntroForm[] introForms = new IntroForm[GameIntroForms.values().length];
 	private IntroForm selectedForm = null;
+	private GameIntroForms newForm = null;
 	
 	private TriGame createdGame = null;
 	
@@ -79,10 +80,14 @@ public class GameIntro implements IntroSwitcher{
 			if (g == null)
 				continue;
 			
+			checkAndSwitchForms();
+			selectedForm.update();
+			
 			g.clear();
 			g.setColor(TsColor.rgb(220, 220, 220));
 			IRectangleR view = g.getView();
 			g.fillRect(0, 0, (float) view.getWidth(), (float) view.getHeight());
+			ui.setScale(settings.blockSize / 50.0f);
 			ui.draw(g);
 			drawBoard.flushScreen();
 			tryToCreateGame();
@@ -94,13 +99,23 @@ public class GameIntro implements IntroSwitcher{
 			
 		}
 	}
+	
+	private void checkAndSwitchForms() {
+		if (newForm != null) {
+			if (selectedForm != null)
+				selectedForm.onFocusLost();
+			selectedForm = introForms[newForm.ordinal()];
+			mainLayout.add(selectedForm.getForm(), UiBorderLayout.BorderPosition.CENTER);
+			selectedForm.onFocusGained();
+			utilityForm.setButtonOptions(newForm != GameIntroForms.MAIN,
+					newForm != GameIntroForms.SETTINGS);
+			newForm = null;
+		}
+	}
 
 	@Override
-	public void switchToForm(GameIntroForms form) {
-		selectedForm = introForms[form.ordinal()];
-		mainLayout.add(selectedForm.getForm(), UiBorderLayout.BorderPosition.CENTER);
-		utilityForm.setButtonOptions(form != GameIntroForms.MAIN,
-				form != GameIntroForms.SETTINGS);
+	public void switchToForm(GameIntroForms newForm) {
+		this.newForm = newForm;
 	}
 	
 	private class UtilityForm extends UiForm {
