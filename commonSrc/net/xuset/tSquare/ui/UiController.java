@@ -12,6 +12,7 @@ import net.xuset.tSquare.util.Observer;
 import net.xuset.tSquare.util.Observer.Change;
 
 public class UiController {
+	private final ArrayList<TsMouseEvent> mouseQueue = new ArrayList<TsMouseEvent>();
 	private final ArrayList<Observer.Change<TsMouseEvent>> observers;
 	private final UiForm mainForm;
 	private double lastWidth = 0.0, lastHeight = 0.0;
@@ -33,6 +34,7 @@ public class UiController {
 	}
 	
 	public void draw(IGraphics g) {
+		dispatchRecievedInputEvents();
 		g = new ScaledGraphics(g, scale, false);
 		IRectangleR view = g.getView();
 		if (view.getWidth() != lastWidth || view.getHeight() != lastHeight) {
@@ -41,6 +43,27 @@ public class UiController {
 			mainForm.setSize((float) lastWidth, (float) lastHeight);
 		}
 		mainForm.draw(g);
+	}
+	
+	public void dispatchRecievedInputEvents() {
+		synchronized(mouseQueue) {
+			for (TsMouseEvent t : mouseQueue) {
+				float scaleX = t.x / scale, scaleY = t.y / scale;
+				TsMouseEvent scaledEvent = new TsMouseEvent(t.action, t.button,
+						(int) scaleX, (int) scaleY);
+				
+				UiForm f = getForm();
+				if (f.contains(scaleX, scaleY)) {
+					float rx = scaleX - f.getX();
+					float ry = scaleY - f.getY();
+					f.recieveMouseEvent(scaledEvent, rx, ry);
+				}
+				
+				for (Observer.Change<TsMouseEvent> c : observers)
+					c.observeChange(scaledEvent);
+			}
+			mouseQueue.clear();
+		}
 	}
 	
 	public void watchForMouse(Observer.Change<TsMouseEvent> listener) {
@@ -55,19 +78,9 @@ public class UiController {
 
 		@Override
 		public void observeChange(TsMouseEvent t) {
-			float scaleX = t.x / scale, scaleY = t.y / scale;
-			TsMouseEvent scaledEvent = new TsMouseEvent(t.action, t.button,
-					(int) scaleX, (int) scaleY);
-			
-			UiForm f = getForm();
-			if (f.contains(scaleX, scaleY)) {
-				float rx = scaleX - f.getX();
-				float ry = scaleY - f.getY();
-				f.recieveMouseEvent(scaledEvent, rx, ry);
+			synchronized(mouseQueue) {
+				mouseQueue.add(t);
 			}
-			
-			for (Observer.Change<TsMouseEvent> c : observers)
-				c.observeChange(scaledEvent);
 		}
 		
 	}
