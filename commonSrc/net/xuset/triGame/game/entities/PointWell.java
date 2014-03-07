@@ -53,7 +53,7 @@ public class PointWell extends Entity {
 				if (particles == null)
 					return;
 				
-				for (int i = particles.length - 1; i >= count && i >= 0; i++) {
+				for (int i = particles.length - 1; i >= count && i >= 0; i--) {
 					if (particles[i] == null)
 						continue;
 					particles[i].setExpired();
