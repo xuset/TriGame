@@ -9,6 +9,7 @@ import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 public class UiButton extends UiComponent {
 	private String text = "";
 	private TsFont font = new TsFont("Arial", 15);
+	private boolean isEnabled = true;
 	private int borderSize = 4;
 	private long clickTime = 0;
 	
@@ -29,6 +30,8 @@ public class UiButton extends UiComponent {
 	public String getText() { return text; }
 	public void setOutlineSize(int s) { borderSize = s; }
 	public int getOutlineSize() { return borderSize; }
+	public void setEnabled(boolean isEnabled) { this.isEnabled = isEnabled; }
+	public boolean isEnabled() { return isEnabled; }
 	
 	protected boolean isDrawingClick() { 
 		return clickTime + 100 > System.currentTimeMillis(); 
@@ -47,7 +50,7 @@ public class UiButton extends UiComponent {
 		g.setColor(borderColor);
 		g.fillRoundedRect(getX(), getY(), getWidth(), getHeight(), 6, 6);
 
-		if(!isDrawingClick())
+		if(!isDrawingClick() && isEnabled)
 			g.setColor(getBackground());
 		
 		float inX = getX() + borderSize, inY = getY() + borderSize;
