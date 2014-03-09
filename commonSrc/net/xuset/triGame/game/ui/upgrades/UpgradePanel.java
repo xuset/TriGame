@@ -1,5 +1,6 @@
 package net.xuset.triGame.game.ui.upgrades;
 
+import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.Alignment;
@@ -26,34 +27,58 @@ public class UpgradePanel extends UiForm {
 	
 	public UpgradePanel(ShopManager shop) {
 		this.shop = shop;
+		shop.observer().watch(new OnShopChange());
 		
 		btnBuy.addMouseListener(new OnBuyMouseEvent());
+		btnBuy.setEnabled(false);
 		
 		UiLayout l = getLayout();
 		l.setAlignment(Axis.Y_AXIS, Alignment.CENTER);
 		l.setAlignment(Axis.X_AXIS, Alignment.CENTER);
 		l.add(lblName);
-		l.add(lblPrice);
 		l.add(progressBar);
 		l.add(btnBuy);
+		l.add(lblPrice);
 	}
 	
 	void setUpgrade(UpgradeItem uItem, UpgradeManager uManager) {
 		this.uItem = uItem;
 		this.uManager = uManager;
 		lblName.setText(uItem.shopItem.getName());
+		lblPrice.setText("$" + uItem.shopItem.getCost());
+		resetStyle();
+	}
+	
+	private void resetStyle() {
 		double progress = uItem.getUpgradeCount() / (0.0 + uItem.maxUpgrades);
 		progressBar.setProgress(progress);
-		lblPrice.setText("$" + uItem.shopItem.getCost());
+		lblPrice.setForeground(shop.canPurchase(uItem.shopItem) ?
+				TsColor.black : TsColor.red);
+		btnBuy.setEnabled(canPurchase());
+	}
+	
+	private boolean canPurchase() {
+		return shop.canPurchase(uItem.shopItem) &&
+				uItem.getUpgradeCount() < uItem.maxUpgrades;
 	}
 	
 	private class OnBuyMouseEvent implements Change<TsMouseEvent> {
 		@Override
 		public void observeChange(TsMouseEvent t) {
-			if (t.action == MouseAction.PRESS) {
+			if (t.action == MouseAction.RELEASE && canPurchase()) {
 				uManager.upgrade(uItem, shop);
-				setUpgrade(uItem, uManager);
+				resetStyle();
 			}
 		}
+	}
+	
+	private class OnShopChange implements Change<ShopManager> {
+
+		@Override
+		public void observeChange(ShopManager t) {
+			if (uItem != null && uManager != null)
+				resetStyle();
+		}
+		
 	}
 }
