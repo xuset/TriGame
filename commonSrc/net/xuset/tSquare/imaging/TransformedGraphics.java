@@ -195,6 +195,6 @@ public class TransformedGraphics implements IGraphics{
 
 	@Override
 	public void setErase(boolean erase) {
-g.setErase(true);
+		g.setErase(erase);
 	}
 }
