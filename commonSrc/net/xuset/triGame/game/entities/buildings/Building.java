@@ -5,7 +5,6 @@ import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.game.particles.ParticleController;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.TsColor;
-import net.xuset.tSquare.math.rect.IRectangleR;
 import net.xuset.triGame.game.entities.HealthBar;
 import net.xuset.triGame.game.entities.buildings.types.HeadQuarters;
 import net.xuset.triGame.game.shopping.ShopItem;
@@ -63,37 +62,35 @@ public abstract class Building extends Entity{
 	@Override
 	public void draw(IGraphics g) {
 		super.draw(g);
-		IRectangleR rect = g.getView();
-		drawUpgradeVisual( (getCenterX() - rect.getX()),
-				(getCenterY() - rect.getY()), g);
+		drawUpgradeVisual(getCenterX(), getCenterY(), g);
 	}
 	
-	private static final int upgrVisDistance = 18;
-	private static final int upgrVisRadius = 4;
+	private static final float upgrVisDistance = 18/50.0f;
+	private static final float upgrVisRadius = 4/50.0f;
 	private void drawUpgradeVisual(double drawX, double drawY, IGraphics g) {
 		if (upgrades == null)
 			return;
 		
 		final int totalItems = upgrades.items.size();
-		final double angleDelta = 360.0 / totalItems;
+		final double angleDelta = 2.0 * Math.PI / totalItems;
 		int count = 0;
 		for (UpgradeItem item : upgrades.items) {
 			if (item.getUpgradeCount() == item.maxUpgrades) {
-				final double rads = Math.toRadians(angleDelta * count - getAngle() + 180);
-				final int itemX = (int) (drawX + Math.cos(rads) * upgrVisDistance);
-				final int itemY = (int) (drawY + Math.sin(rads) * upgrVisDistance);
+				double rads = angleDelta * count - getAngle() + Math.PI;
+				float itemX = (float) (drawX + Math.cos(rads) * upgrVisDistance);
+				float itemY = (float) (drawY + Math.sin(rads) * upgrVisDistance);
 				drawUpgrVis(itemX, itemY, upgrVisRadius, g);
 			}
 			count++;
 		}
 	}
 	
-	private void drawUpgrVis(int x, int y, int r, IGraphics g) {
-		final int border = 2;
+	private void drawUpgrVis(float x, float y, float r, IGraphics g) {
+		final float border = 2/50.0f;
 		g.setColor(TsColor.darkGray);
-		g.drawRect(x - r, y - r, r * 2, r * 2);
+		g.fillRect(x - r, y - r, r * 2, r * 2);
 		g.setColor(TsColor.white);
-		g.drawRect(x - r + border, y - r + border, 2 * (r - border), 2 * (r - border));
+		g.fillRect(x - r + border, y - r + border, 2 * (r - border), 2 * (r - border));
 
 	}
 	
