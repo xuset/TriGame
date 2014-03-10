@@ -1,6 +1,7 @@
 package net.xuset.triGame.game.ui.upgrades;
 
 import net.xuset.tSquare.imaging.Sprite;
+import net.xuset.tSquare.ui.Alignment;
 import net.xuset.tSquare.ui.Axis;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.UiLabel;
@@ -18,6 +19,7 @@ public class UpgradeForm extends UiForm {
 	public UpgradeForm(ShopManager shop) {
 		getLayout().add(lblName);
 		panelContainer.getLayout().setOrientation(Axis.Y_AXIS);
+		panelContainer.getLayout().setAlignment(Axis.X_AXIS, Alignment.BACK);
 		getLayout().add(panelContainer);
 		
 		for (int i = 0; i < panels.length; i++)

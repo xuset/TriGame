@@ -34,7 +34,7 @@ public class UpgradePanel extends UiForm {
 		
 		UiLayout l = getLayout();
 		l.setAlignment(Axis.Y_AXIS, Alignment.CENTER);
-		l.setAlignment(Axis.X_AXIS, Alignment.CENTER);
+		l.setAlignment(Axis.X_AXIS, Alignment.BACK);
 		l.add(lblName);
 		l.add(progressBar);
 		l.add(btnBuy);
