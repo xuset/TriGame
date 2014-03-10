@@ -3,10 +3,9 @@ package net.xuset.triGame.intro.join;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.List;
+import java.util.ArrayList;
 
-import net.xuset.objectIO.util.HostCheckerPort;
-import net.xuset.objectIO.util.HostFinder;
+import net.xuset.objectIO.util.broadcast.BroadcastClient;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.IdGenerator;
 import net.xuset.tSquare.system.Network;
@@ -24,58 +23,83 @@ import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.GameInfo.NetworkType;
 import net.xuset.triGame.game.GameMode.GameType;
+import net.xuset.triGame.intro.BroadcastMsg;
 import net.xuset.triGame.intro.GameIntroForms;
 import net.xuset.triGame.intro.IntroForm;
 import net.xuset.triGame.intro.IntroSwitcher;
+import net.xuset.triGame.intro.host.IntroHost;
 
 public class IntroJoin implements IntroForm{
+	private static final long scanInterval = 2000L;
 	
 	private final IntroSwitcher introSwitcher;
-	private final UiForm frmMain = new UiForm();
-	private final UiButton btnRefresh = new UiButton("Refresh");
-	private final UiButton btnConnect = new UiButton("Connect");
-	private final UiButton btnHost = new UiButton("Host new game");
+	private final UiForm frmMain;
 	private final UiLabel lblStatus = new UiLabel("");
-	private final UiFixedGridList gridList = new UiFixedGridList(3, 5, 300);
+	private final UiFixedGridList gridList = new UiFixedGridList(2, 5, 300);
 	
-	private InetAddress serverAddress = null;
-	private HostFinder hostFinder = null;
-	private List<InetAddress> gameAddresses = null;
+	private ArrayList<Host> hostsList = new ArrayList<Host>();
 	private Network network = null;
-	private boolean shouldStartNewScan = false;
+	private BroadcastClient broadcastReciever = null;
+	private long lastScanTime = 0L;
 	
 	public IntroJoin(IntroSwitcher introSwitcher) {
 		this.introSwitcher = introSwitcher;
-		UiQueueLayout layout = new UiQueueLayout(5, 20, frmMain);
-		frmMain.setLayout(layout);
+		frmMain = createFrmMain();
+		setStatus(false, "Searching for open games...");
+	}
+	
+	private UiForm createFrmMain() {
+		UiForm main = new UiForm();
+		UiQueueLayout layout = new UiQueueLayout(5, 20, main);
+		main.setLayout(layout);
 		
-		btnConnect.addMouseListener(new BtnConnectAction());
+		UiForm frmButtons = createFrmButtons();
+		UiForm frmGrid = createFrmGrid(frmButtons);
+		
+		UiButton btnHost = new UiButton("Host new game");
 		btnHost.addMouseListener(new BtnHostAction());
-		btnRefresh.addMouseListener(new BtnRefreshAction());
-		UiForm frmButtons = new UiForm();
-		frmButtons.getLayout().setOrientation(Axis.Y_AXIS);
-		frmButtons.getLayout().setAlignment(Axis.X_AXIS, Alignment.CENTER);
-		frmButtons.getLayout().add(btnRefresh);
-		frmButtons.getLayout().add(btnConnect);
-		
-		UiForm frmGrid = new UiForm();
-		frmGrid.getLayout().setAlignment(Axis.Y_AXIS, Alignment.BACK);
-		frmGrid.getLayout().add(gridList);
-		frmGrid.getLayout().add(frmButtons);
 		
 		layout.setOrientation(Axis.Y_AXIS);
 		layout.setAlignment(Axis.X_AXIS, Alignment.CENTER);
 		layout.add(lblStatus);
 		layout.add(frmGrid);
 		layout.add(btnHost);
+		
+		return main;
+	}
+	
+	private UiForm createFrmButtons() {
+		UiForm frmButtons = new UiForm();
+		UiButton btnRefresh = new UiButton("Refresh");
+		UiButton btnConnect = new UiButton("Connect");
+		
+		btnConnect.addMouseListener(new BtnConnectAction());
+		btnRefresh.addMouseListener(new BtnRefreshAction());
+
+		frmButtons.getLayout().setOrientation(Axis.Y_AXIS);
+		frmButtons.getLayout().setAlignment(Axis.X_AXIS, Alignment.CENTER);
+		frmButtons.getLayout().add(btnRefresh);
+		frmButtons.getLayout().add(btnConnect);
+		
+		return frmButtons;
+	}
+	
+	private UiForm createFrmGrid(UiForm frmButtons) {
+		UiForm frmGrid = new UiForm();
+		frmGrid.getLayout().setAlignment(Axis.Y_AXIS, Alignment.BACK);
+		frmGrid.getLayout().add(gridList);
+		frmGrid.getLayout().add(frmButtons);
+		return frmGrid;
 	}
 
 	@Override
 	public GameInfo getCreatedGameInfo() {
 		if (network == null)
 			return null;
-		else
+		else {
+			broadcastReciever.stop();
 			return new GameInfo(network, GameType.SURVIVAL, NetworkType.JOIN);
+		}
 	}
 
 	@Override
@@ -85,70 +109,76 @@ public class IntroJoin implements IntroForm{
 
 	@Override
 	public void onFocusGained() {
-		startHostsScan();
+		createBroadcast();
 	}
 
 	@Override
 	public void onFocusLost() {
-		if (hostFinder != null) {
-			hostFinder.cancelScan();
-			hostFinder = null;
-		}
+		destroyBroadcast();
 	}
 
 	@Override
 	public void update() {
-		if (network == null && serverAddress != null)
-			tryConnecting();
-		if (hostFinder != null && !hostFinder.isScanning())
-			fillHostsList();
-		if (shouldStartNewScan)
-			startHostsScan();
+		if (lastScanTime + scanInterval < System.currentTimeMillis())
+			pollBroadcast();
 	}
 	
-	private void tryConnecting() {
+	private void pollBroadcast() {
+		gridList.clearRows();
+		hostsList.clear();
+		
+		String recieved = null;
+		while ((recieved = broadcastReciever.pollMsgQueue()) != null) {
+			try {
+				
+				BroadcastMsg msg = new BroadcastMsg(recieved);
+				Host host = new Host(msg.getHost(), msg.getPort());
+				
+				hostsList.add(host);
+				gridList.addRow("" + hostsList.size(), host.toString());
+				
+			}
+			catch (IllegalArgumentException ex) { }
+			catch (UnknownHostException ex) { }
+		}
+
+		lastScanTime = System.currentTimeMillis();
+	}
+	
+	private void createBroadcast() {
+		destroyBroadcast();
+		
+		int port = IntroHost.MULTICAST_PORT;
+		String host = IntroHost.MULTICAST_GROUP;
 		try {
-			network = Network.connectToServer(serverAddress.getHostAddress(),
-					3000, IdGenerator.getNext());
-			lblStatus.setText("Connected. Waiting on host to start.");
-		} catch (UnknownHostException e) {
-			setStatus(true, "Error: " + e.getMessage());
-			e.printStackTrace();
+			broadcastReciever = new BroadcastClient(port, host);
 		} catch (IOException e) {
 			setStatus(true, "Error: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 	
-	private void fillHostsList() {
-		gameAddresses = hostFinder.createHostsList();
-		hostFinder = null;
-		
-		lblStatus.setForeground(TsColor.black);
-		if (gameAddresses.isEmpty())
-			lblStatus.setText("No games found. Try refreshing");
-		else
-			lblStatus.setText("Found " + gameAddresses.size() + " games");
-		
-		serverAddress = null;
-		gridList.clearRows();
-		for (int i = 0; i < gameAddresses.size(); i++) {
-			InetAddress addr = gameAddresses.get(i);
-			gridList.addRow("" + (i + 1), addr.getHostName(), addr.getHostAddress());
+	private void destroyBroadcast() {
+		if (broadcastReciever != null)
+			broadcastReciever.stop();
+		broadcastReciever = null;
+	}
+	
+	
+	
+	private void tryConnecting(String addr, int port) {
+		try {
+			network = Network.connectToServer(addr, port, IdGenerator.getNext());
+			lblStatus.setText("Connected. Waiting on host to start.");
+		} catch (IOException e) {
+			setStatus(true, "Error: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	
 	private void setStatus(boolean isError, String status) {
 		lblStatus.setForeground(isError ? TsColor.red : TsColor.black);
 		lblStatus.setText(status);
-	}
-	
-	private void startHostsScan() {
-		shouldStartNewScan = false;
-		setStatus(false, "Scanning for open games...");
-		if (hostFinder != null && hostFinder.isScanning())
-			hostFinder.cancelScan();
-		new HostsScanner();
 	}
 	
 	private class BtnConnectAction implements Observer.Change<TsMouseEvent> {
@@ -158,9 +188,10 @@ public class IntroJoin implements IntroForm{
 				return;
 			
 			int selected = gridList.getSelectedRowIndex();
-			if (selected < gameAddresses.size()) {
+			if (selected < hostsList.size()) {
 				setStatus(false, "Attempting to connect...");
-				serverAddress = gameAddresses.get(selected);
+				Host host = hostsList.get(selected);
+				tryConnecting(host.getAddress(), host.getPort());
 			}
 		}
 	}
@@ -179,28 +210,28 @@ public class IntroJoin implements IntroForm{
 		public void observeChange(TsMouseEvent t) {
 			if (t.action != MouseAction.PRESS)
 				return;
-			shouldStartNewScan = true;
+
+			setStatus(false, "Searching for open games...");
+			pollBroadcast();
 		}
 	}
 	
-	private class HostsScanner extends Thread {
-		public HostsScanner() {
-			start();
+	private class Host {
+		private final String addr;
+		private final int port;
+		private final InetAddress iNetAddr;
+		
+		public String getAddress() { return addr; }
+		public int getPort() { return port; }
+		
+		public Host(String addr, int port) throws UnknownHostException {
+			this.addr = addr;
+			this.port = port;
+			iNetAddr = InetAddress.getByName(addr);
 		}
 		
 		@Override
-		public void run() {
-			try {
-				InetAddress local = InetAddress.getLocalHost();
-				if (!local.isLoopbackAddress())
-					hostFinder = new HostFinder(new HostCheckerPort(3000), 20, local);
-				else
-					setStatus(true, "Error: could not find network");
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-				setStatus(true, "Error: " + e.getMessage());
-			}
-		}
+		public String toString() { return iNetAddr.getHostName(); }
 	}
 
 }

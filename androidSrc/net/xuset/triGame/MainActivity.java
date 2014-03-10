@@ -5,10 +5,12 @@ import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.system.DrawBoard;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.triGame.intro.GameIntro;
+import net.xuset.triGame.intro.IpGetterIFace;
 import net.xuset.triGame.settings.Settings;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.view.SurfaceView;
 
 public class MainActivity extends Activity {
@@ -17,32 +19,32 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		IDrawBoard drawBoard = new DrawBoard(MainActivity.this);
+		final IDrawBoard drawBoard = new DrawBoard(MainActivity.this);
 		SurfaceView viewDraw = (SurfaceView) drawBoard.getBackend();
 		viewDraw.setFocusable(true);
 		viewDraw.setFocusableInTouchMode(true);
 		viewDraw.requestFocus();
 		setContentView(viewDraw);
 		
-		new AndroidGame(drawBoard);
+		new AndroidGame(drawBoard, this);
 	}
 	
-	private class AndroidGame extends Thread {
+	private static class AndroidGame extends Thread {
 		private final IDrawBoard drawBoard;
-		public AndroidGame(IDrawBoard drawBoard) {
+		private final Context context;
+		public AndroidGame(IDrawBoard drawBoard, Context context) {
 			this.drawBoard = drawBoard;
+			this.context = context;
 			start();
 		}
 		
 		@Override
 		public void run() {
-			IFileFactory fileFactory = new AssetFileFactory(getAssets());
-			GameIntro intro = new GameIntro(drawBoard, fileFactory, createDefaultSettings());
+			IFileFactory fileFactory = new AssetFileFactory(context.getAssets());
+			Settings settings = createDefaultSettings();
+			IpGetterIFace ipGetter = new WifiIpGetter(context);
+			GameIntro intro = new GameIntro(drawBoard, fileFactory, settings, ipGetter);
 			intro.createGame().startGame();
-			//TriGame tGame = new TriGame(
-			//new GameInfo(Network.createOffline(), GameType.SURVIVAL, NetworkType.SOLO),
-			//		drawBoard, fileFactory, createDefaultSettings());
-			//tGame.startGame();
 		}
 		
 		private Settings createDefaultSettings() {

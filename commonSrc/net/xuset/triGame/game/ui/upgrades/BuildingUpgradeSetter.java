@@ -22,7 +22,7 @@ public class BuildingUpgradeSetter implements Change<TsMouseEvent>, GameDrawable
 	private final UiCollisionDetector uiCollision;
 	
 	private boolean drawBuildingView = false;
-	private Building selectedBuilding = null;
+	private Building selected = null;
 	
 	public BuildingUpgradeSetter(BuildingGetter buildingGetter, PointConverter pConv,
 			UiFormSwitcher uiSwitcher, UiUpgrades uiUpgrades,
@@ -49,20 +49,20 @@ public class BuildingUpgradeSetter implements Change<TsMouseEvent>, GameDrawable
 			uiUpgrades.showUpgrades(s, b.upgrades);
 			uiSwitcher.switchView(UiFormTypes.UPGRADES);
 			drawBuildingView = true;
-			selectedBuilding = b;
+			selected = b;
 		} else {
 			uiSwitcher.switchView(UiFormTypes.ARSENAL);
 			drawBuildingView = false;
-			selectedBuilding = null;
+			selected = null;
 		}
 	}
 
 	@Override
 	public void draw(IGraphics g) {
 		if (drawBuildingView) {
-			float r = (float) selectedBuilding.getVisibilityRadius();
-			float x = (float) (selectedBuilding.getX() - r);
-			float y = (float) (selectedBuilding.getY() - r);
+			float r = (float) selected.getVisibilityRadius();
+			float x = (float) (selected.getX() + selected.getWidth() / 2 - r);
+			float y = (float) (selected.getY()  + selected.getHeight() / 2 - r);
 			
 			g.setColor(TsColor.green);
 			g.drawOval(x, y, 2 * r, 2 * r);

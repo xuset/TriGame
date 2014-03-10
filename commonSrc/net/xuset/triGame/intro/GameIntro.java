@@ -35,7 +35,9 @@ public class GameIntro implements IntroSwitcher{
 	
 	private TriGame createdGame = null;
 	
-	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory, Settings settings) {
+	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory, Settings settings,
+			IpGetterIFace ipGetter) {
+		
 		this.drawBoard = drawBoard;
 		this.fileFactory = fileFactory;
 		this.settings = settings;
@@ -47,16 +49,16 @@ public class GameIntro implements IntroSwitcher{
 		
 		mainLayout.add(utilityForm, UiBorderLayout.BorderPosition.SOUTH);
 		
-		setupIntroForms();
+		setupIntroForms(ipGetter);
 		switchToForm(GameIntroForms.MAIN);
 	}
 	
-	private void setupIntroForms() {
+	private void setupIntroForms(IpGetterIFace ipGetter) {
 		IntroSwitcher iSwitcher = this;
 		introForms[GameIntroForms.MAIN.ordinal()] = new IntroMain(iSwitcher);
 		introForms[GameIntroForms.JOIN.ordinal()] = new IntroJoin(iSwitcher);
 		introForms[GameIntroForms.SOLO.ordinal()] = new IntroSolo();
-		introForms[GameIntroForms.HOST.ordinal()] = new IntroHost();
+		introForms[GameIntroForms.HOST.ordinal()] = new IntroHost(ipGetter);
 		introForms[GameIntroForms.SETTINGS.ordinal()] = new IntroSettings(settings);
 	}
 	

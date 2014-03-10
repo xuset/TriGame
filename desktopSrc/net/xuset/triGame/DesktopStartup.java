@@ -4,6 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import javax.swing.JFrame;
 
@@ -14,6 +20,7 @@ import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.triGame.game.DevStart;
 import net.xuset.triGame.game.GameMode.GameType;
 import net.xuset.triGame.intro.GameIntro;
+import net.xuset.triGame.intro.IpGetterIFace;
 import net.xuset.triGame.settings.Settings;
 
 
@@ -28,7 +35,7 @@ public class DesktopStartup {
 		IDrawBoard db1 = createWindow("TriGame Dev - server");
 		//IDrawBoard db2 = createWindow("TriGame Dev - client");
 		
-		GameIntro gameIntro = new GameIntro(db1, new FileFactory(), settings);
+		GameIntro gameIntro = new GameIntro(db1, new FileFactory(), settings, new IpGetter());
 		gameIntro.createGame().startGame();
 		//DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory(), settings);
 		//DevStart.startLocalMultiplayer(GameType.SURVIVAL, db1, db2, new FileFactory(), settings);
@@ -58,6 +65,26 @@ public class DesktopStartup {
 		Settings settings = new Settings();
 		settings.drawUiTouch = false;
 		return settings;
+	}
+	
+	private static class IpGetter implements IpGetterIFace {
+		private InetAddress address = null;
+		
+		public IpGetter() {
+			try {
+				address = InetAddress.getLocalHost();
+			} catch (UnknownHostException e) {
+				System.err.println("Error: Could not determine local IP");
+				e.printStackTrace();
+				address =  InetAddress.getLoopbackAddress();
+			}
+		}
+
+		@Override
+		public InetAddress getLocalIP() {
+			return address;
+		}
+		
 	}
 
 }

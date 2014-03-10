@@ -1,10 +1,12 @@
 package net.xuset.triGame.intro.host;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 import net.xuset.objectIO.connections.sockets.p2pServer.server.ConnectionEvent;
 import net.xuset.objectIO.connections.sockets.p2pServer.server.P2PServer;
 import net.xuset.objectIO.connections.sockets.p2pServer.server.ServerConnection;
+import net.xuset.objectIO.util.broadcast.BroadcastServer;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.Network;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
@@ -20,26 +22,35 @@ import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.GameInfo.NetworkType;
 import net.xuset.triGame.game.GameMode.GameType;
+import net.xuset.triGame.intro.BroadcastMsg;
 import net.xuset.triGame.intro.IntroForm;
+import net.xuset.triGame.intro.IpGetterIFace;
+
 
 public class IntroHost implements IntroForm {
+	public static final String MULTICAST_GROUP = "230.0.0.1";
+	public static final int MULTICAST_PORT = 4000;
 	private static final String joinedText = "Players joined: ";
 	
 	private final UiForm frmMain = new UiForm();
 	private final UiLabel lblStatus = new UiLabel("Waiting for players to join");
-	
-	private final UiButton btnStart = new UiButton("Start game");
+	private final UiLabel lblPlayers = new UiLabel(joinedText + 0);
+	private final IpGetterIFace ipGetter;
 
+	private BroadcastServer broadcaster;
 	private Network network;
 	private boolean startGame = false;
 	
-	public IntroHost() {
+	public IntroHost(IpGetterIFace ipGetter) {
+		this.ipGetter = ipGetter;
+		UiButton btnStart = new UiButton("Start game");
 		btnStart.addMouseListener(new BtnStartAction());
 		
 		frmMain.setLayout(new UiQueueLayout(5, 20, frmMain));
 		frmMain.getLayout().setAlignment(Axis.X_AXIS, Alignment.CENTER);
 		frmMain.getLayout().setOrientation(Axis.Y_AXIS);
 		frmMain.getLayout().add(lblStatus);
+		frmMain.getLayout().add(lblPlayers);
 		frmMain.getLayout().add(btnStart);
 	}
 
@@ -50,32 +61,59 @@ public class IntroHost implements IntroForm {
 
 	@Override
 	public GameInfo getCreatedGameInfo() {
-		if (startGame)
+		if (startGame) {
+			network.getServerInstance().accepter.stop();
+			broadcaster.stop();
+			broadcaster = null;
 			return new GameInfo(network, GameType.SURVIVAL, NetworkType.HOST);
+		}
 		return null;
 	}
 
 	@Override
 	public void onFocusGained() {
-		try {
-			network = Network.startupServer(3000);
-			network.getServerInstance().event = new ServerConnectionEvent();
-		} catch (IOException e) {
-			setStatus(true, "Error: " + e.getMessage());
-			e.printStackTrace();
-		}
+		createServer();
 	}
 
 	@Override
 	public void onFocusLost() {
-		if (network != null)
-			network.disconnect();
-		network = null;
+		destroyServer();
 	}
 
 	@Override
 	public void update() {
 		
+	}
+	
+	private void createServer() {
+		try {
+			
+			network = Network.startupServer(0);
+			network.getServerInstance().event = new ServerConnectionEvent();
+			int port = network.getServerInstance().getPort();
+			InetAddress group = InetAddress.getByName(MULTICAST_GROUP);
+			InetAddress local = ipGetter.getLocalIP();
+			if (local == null)
+				throw new IOException("Cannot determine local IP address.");
+			broadcaster = new BroadcastServer(MULTICAST_PORT, group);
+			BroadcastMsg bMsg = new BroadcastMsg(local, port);
+			broadcaster.start(bMsg.toString());
+			
+		} catch (IOException e) {
+			setStatus(true, "Error: " + e.getMessage());
+			e.printStackTrace();
+			destroyServer();
+		}
+	}
+	
+	private void destroyServer() {
+		if (broadcaster != null)
+			broadcaster.stop();
+		if (network != null)
+			network.disconnect();
+		
+		broadcaster = null;
+		network = null;
 	}
 	
 	private void setStatus(boolean isError, String status) {
@@ -95,12 +133,12 @@ public class IntroHost implements IntroForm {
 	private class ServerConnectionEvent implements ConnectionEvent {
 		@Override
 		public void onConnect(P2PServer s, ServerConnection c) {
-			setStatus(false, joinedText + s.connections.size());
+			lblPlayers.setText(joinedText + (s.connections.size() - 1));
 		}
 
 		@Override
 		public void onDisconnect(P2PServer s, ServerConnection c) {
-			setStatus(false, joinedText + s.connections.size());
+			lblPlayers.setText(joinedText + (s.connections.size() - 1));
 		}
 
 		@Override
