@@ -18,7 +18,7 @@ public class SurvivalSafeBoard extends SafeBoard{
 	private double lastWidth = 0.0, lastHeight = 0.0;
 	
 	
-	public SurvivalSafeBoard(int centerX, int centerY, IImageFactory imageFactory) {
+	public SurvivalSafeBoard(double centerX, double centerY, IImageFactory imageFactory) {
 		this.imageFactory = imageFactory;
 		circleChart.addCircle(centerX, centerY, initialRadius, null);
 	}

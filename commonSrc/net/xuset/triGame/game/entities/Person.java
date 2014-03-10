@@ -88,7 +88,7 @@ public class Person extends Entity implements GameIntegratable{
 		}
 		moved = false;
 		if (owned() && !isDead()) {
-			if (!safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY())) {
+			if (!safeBoard.insideSafeArea(getCenterX(), getCenterY())) {
 				moveToSafeArea(frameDelta);
 				return;
 			}
@@ -113,7 +113,7 @@ public class Person extends Entity implements GameIntegratable{
 	@Override
 	public void moveForward(double distance) {
 		setX(getX() + Math.cos(getAngle()) * distance);
-		if (this.getCenterX() > gameGrid.getGridWidth() || this.getCenterX() < 0 || safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY()) == false)
+		if (this.getCenterX() > gameGrid.getGridWidth() || this.getCenterX() < 0 || safeBoard.insideSafeArea(getCenterX(), getCenterY()) == false)
 			setX(getX() + Math.cos(getAngle()) * distance * -1);
 		else {
 			buildingCollisions();
@@ -126,13 +126,13 @@ public class Person extends Entity implements GameIntegratable{
 					else
 						direction = -1;
 					setY(getY() + distance * direction);
-					if (this.numberOfCollisions(managers.building.list, 1) > 0 || this.getCenterY() > gameGrid.getGridHeight() || this.getCenterY() < 0 || safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY()) == false)
+					if (this.numberOfCollisions(managers.building.list, 1) > 0 || this.getCenterY() > gameGrid.getGridHeight() || this.getCenterY() < 0 || safeBoard.insideSafeArea(getCenterX(), getCenterY()) == false)
 						setY(getY() + distance * -direction);
 				}
 			}
 		}
 		setY(getY() - Math.sin(getAngle()) * distance);
-		if (this.getCenterY() > gameGrid.getGridHeight() || this.getY() + this.getHeight()/2 < 0 || safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY()) == false)
+		if (this.getCenterY() > gameGrid.getGridHeight() || this.getY() + this.getHeight()/2 < 0 || safeBoard.insideSafeArea(getCenterX(), getCenterY()) == false)
 			setY(getY() - Math.sin(getAngle()) * distance * -1);
 		else {
 			buildingCollisions();
@@ -145,7 +145,7 @@ public class Person extends Entity implements GameIntegratable{
 					else
 						direction = -1;
 					setX(getX() + distance * direction);
-					if (this.numberOfCollisions(managers.building.list, 1) > 0 || this.getCenterX() > gameGrid.getGridWidth() || this.getCenterX() < 0 || safeBoard.insideSafeArea((int) getCenterX(), (int) getCenterY()) == false)
+					if (this.numberOfCollisions(managers.building.list, 1) > 0 || this.getCenterX() > gameGrid.getGridWidth() || this.getCenterX() < 0 || safeBoard.insideSafeArea(getCenterX(), getCenterY()) == false)
 						setX(getX() + distance * -direction);
 				}
 			}
