@@ -15,7 +15,10 @@ public class SurvivalSafeBoard extends SafeBoard{
 	private final IImageFactory imageFactory;
 	
 	private IImage areaImage;
+	private IGraphics areaGraphics;
 	private double lastWidth = 0.0, lastHeight = 0.0;
+	private double lastX = 0.0, lastY = 0.0;
+	private boolean needsRedraw = true;
 	
 	
 	public SurvivalSafeBoard(double centerX, double centerY, IImageFactory imageFactory) {
@@ -33,20 +36,31 @@ public class SurvivalSafeBoard extends SafeBoard{
 			int newH = (lastHeight - (int) lastHeight == 0.0) ? 
 					(int) lastHeight : 1 + (int) lastHeight;
 			areaImage = imageFactory.createEmpty(newW, newH);
+			if (areaGraphics != null)
+				areaGraphics.dispose();
+			needsRedraw = true;
+			areaGraphics = areaImage.getGraphics();
+			areaGraphics.setColor(TsColor.black);
 		}
 	}
 
 
 	private void redrawSafeArea(IRectangleR view) {
-		IGraphics g = areaImage.getGraphics();
-		g.setColor(TsColor.black);
-		g.fillRect(0, 0, (float) view.getWidth(), (float) view.getHeight());
-		g.setErase(true);
-		for (Circle c : circleChart.circles) {
-			float diam = (float) (c.radius * 2);
-			float x = (float) (c.firstX - view.getX());
-			float y = (float) (c.firstY - view.getY());
-			g.fillOval(x, y, diam, diam);
+		if (needsRedraw || view.getX() != lastX || view.getY() != lastY) {
+			needsRedraw = false;
+			lastX = view.getX();
+			lastY = view.getY();
+			
+			IGraphics g = areaGraphics;
+			g.setErase(false);
+			g.fillRect(0, 0, (float) view.getWidth(), (float) view.getHeight());
+			g.setErase(true);
+			for (Circle c : circleChart.circles) {
+				float diam = (float) (c.radius * 2);
+				float x = (float) (c.firstX - view.getX());
+				float y = (float) (c.firstY - view.getY());
+				g.fillOval(x, y, diam, diam);
+			}
 		}
 	}
 	
