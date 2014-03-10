@@ -54,7 +54,7 @@ public class Network {
 	public static Network startupServer(int port) throws IOException {
 		P2PServer server = new P2PServer(port);
 		server.accepter.start();
-		ClientHub hub = new ClientHub("127.0.0.1", port, 3l);
+		ClientHub hub = new ClientHub("127.0.0.1", server.getPort(), 3l);
 		Network n = new Network(server, hub, 3l);
 		n.client = hub;
 		return n;
