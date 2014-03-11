@@ -79,8 +79,10 @@ public class GameIntro implements IntroSwitcher{
 		long timeStart = System.currentTimeMillis();
 		while (createdGame == null) {
 			IGraphics g = drawBoard.getGraphics();
-			if (g == null)
+			if (g == null) {
+				try { Thread.sleep(10); } catch (InterruptedException ex) { }
 				continue;
+			}
 			
 			checkAndSwitchForms();
 			selectedForm.update();
