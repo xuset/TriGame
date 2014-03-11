@@ -85,6 +85,7 @@ public abstract class Load {
 		IImageFactory factory = new ImageFactory();
 		IImage img = factory.loadImage(file);
 		IImage scaled = factory.createScaled(img, scale, scale);
+		file.close();
 		return scaled;
 	}
 	
@@ -93,8 +94,8 @@ public abstract class Load {
 			IFile file = ff.open(url);
 			ISound sound = SoundFactory.instance.loadSound(file);
 			SoundStore.add(url, sound);
+			file.close();
 		}
-		SoundStore.add(Projectile.SOUND_ID);
 	}
 	
 	private static void drawSprites(int blockSize) {
