@@ -66,11 +66,13 @@ public class SurvivalSafeBoard extends SafeBoard{
 	
 	@Override
 	public void addVisibilityForEntity(Entity e, double radius) {
+		needsRedraw = true;
 		circleChart.addCircle(e.getCenterX(), e.getCenterY(), radius, e);
 	}
 
 	@Override
 	public void removeVisibility(Entity e) {
+		needsRedraw = true;
 		circleChart.removeByEntity(e);
 	}
 	
