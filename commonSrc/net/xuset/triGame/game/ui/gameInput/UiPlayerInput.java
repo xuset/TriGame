@@ -8,7 +8,7 @@ import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiComponent;
 
 public class UiPlayerInput extends UiComponent implements IPlayerInput{
-	private static final float initSize = 250;
+	private static final float initSize = 200;
 
 	private final double movementThreshold = 0.05;
 	private final IPointW uiMoveCenter = new Point();
@@ -82,7 +82,8 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 		int y = (int) (uiMoveCenter.getY() - uiMoveRadius);
 		int diam = uiMoveRadius * 2;
 		
-		g.setColor(TsColor.rgba(64, 64, 64, 128));
+		//g.setColor(TsColor.rgba(64, 64, 64, 128));
+		g.setColor(TsColor.lightGray);
 		g.fillOval(x, y, diam, diam);
 		g.setColor(TsColor.white);
 		g.drawOval(x, y, diam, diam);

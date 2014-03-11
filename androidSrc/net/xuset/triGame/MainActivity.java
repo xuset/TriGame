@@ -49,8 +49,8 @@ public class MainActivity extends Activity {
 		
 		private Settings createDefaultSettings() {
 			Settings s = new Settings();
-			s.blockSize = 100;
-			s.defaultBlockSize = 100;
+			s.blockSize = 120;
+			s.defaultBlockSize = 120;
 			s.drawUiTouch = true;
 			s.enableSound = true;
 			return s;
