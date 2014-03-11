@@ -138,7 +138,9 @@ public abstract class Load {
 		IImage image = factory.createEmpty(blockSize, blockSize);
 		IGraphics g = new ScaledGraphics(image.getGraphics(), scale);
 		g.setColor(TsColor.darkGray);
-		g.fillOval(0, 0, 50, 50);
+		g.fillTriangle(10, 10, 30, 30);
+		g.setColor(TsColor.lightGray);
+		g.fillTriangle(16, 18, 18, 18);
 		g.dispose();
 		Sprite.add(new Sprite(SpawnHole.SPRITE_ID, image, 1.0f / blockSize));
 	}
