@@ -45,11 +45,7 @@ public abstract class UiComponent {
 	}
 	
 	public void setSize(float w, float h) {
-		if (w != getWidth() || h != getHeight()) {
-			//comparing doubles against floats.. maybe a bad idea?
 			rect.setDimensions(w, h);
-			onSizeChange();
-		}
 	}
 	
 	public void draw(IGraphics g) {
@@ -77,9 +73,5 @@ public abstract class UiComponent {
 	@SuppressWarnings("unused")
 	protected void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		mouseObserver.notifyWatchers(e);
-	}
-	
-	protected void onSizeChange() {
-		
 	}
 }

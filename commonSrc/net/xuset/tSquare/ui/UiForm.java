@@ -74,12 +74,6 @@ public class UiForm extends UiComponent implements UiAddable {
 			}
 		}
 	}
-	
-	@Override
-	public void onSizeChange() {
-		super.onSizeChange();
-		layout.organize();
-	}
 
 	@Override
 	public float getWidth() {
