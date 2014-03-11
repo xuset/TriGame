@@ -14,7 +14,7 @@ import net.xuset.triGame.game.ui.upgrades.UiUpgrades;
 public class GunForm extends ArsenalSubForm implements IGunInput{
 	private final ShopManager shop;
 	private final UiUpgrades uiUpgrades;
-	private GunType selectedGun = null;
+	private GunType selectedGun = GunType.PISTOL;
 	private boolean requestGunChange = false;
 	
 	public GunForm(ShopManager shop, UiUpgrades uiUpgrades) {
