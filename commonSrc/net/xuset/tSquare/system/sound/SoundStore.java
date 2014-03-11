@@ -23,29 +23,7 @@ public class SoundStore {
 		sounds.put(name, sound);
 	}
 	
-	@SuppressWarnings("unused")
 	public static ISound get(String name) {
-		return new TEMPSOUND();
-		//return sounds.get(name);
-	}
-	
-	//TODO get rid of TEMPSOUND when sound is properly implemented
-	private static class TEMPSOUND implements ISound {
-
-		@Override
-		public void play() {
-			
-		}
-
-		@Override
-		public void stop() {
-			
-		}
-
-		@Override
-		public void close() {
-			
-		}
-		
+		return sounds.get(name);
 	}
 }

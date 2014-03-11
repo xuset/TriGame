@@ -26,12 +26,7 @@ public class AssetFileFactory extends FileFactory {
 	
 	@Override
 	public IFile open(String url) {
-		try {
-			InputStream is = assetManager.open(url);
-			return new StreamFile(url, is, null);
-		} catch (IOException e) {
-			return super.open(url);
-		}
+		return new AssetFile(url, assetManager);
 	}
 
 }
