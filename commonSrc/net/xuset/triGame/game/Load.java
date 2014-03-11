@@ -65,7 +65,7 @@ public abstract class Load {
 	}
 	
 	private static void loadSpritesOnDisk(int blockSize, IFileFactory ff) {
-		float scale = blockSize / 50.0f;
+		float scale = blockSize / 150.0f;
 		for (String url : spriteUrlOnDisk) {
 			IImage img = loadAndScaleImage(url, scale, ff);
 			Sprite.add(new Sprite(url, img, 1.0f / blockSize));

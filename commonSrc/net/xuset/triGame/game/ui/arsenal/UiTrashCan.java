@@ -2,7 +2,6 @@ package net.xuset.triGame.game.ui.arsenal;
 
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.IImage;
-import net.xuset.tSquare.imaging.ImageFactory;
 import net.xuset.tSquare.imaging.Sprite;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
@@ -20,20 +19,18 @@ public class UiTrashCan extends UiComponent {
 		getBorder().setColor(TsColor.red);
 		getBorder().setVisibility(true);
 		
-		IImage rawImg = Sprite.get(SPRITE_ID).createCopy();
-		double sx = 80.0 / rawImg.getWidth(), sy = 80.0 / rawImg.getHeight();
-		image = new ImageFactory().createScaled(rawImg, sx, sy);
+		image = Sprite.get(SPRITE_ID).createCopy();
 	}
 	
 	@Override
 	public void draw(IGraphics g) {
-		setSize(image.getWidth(g), image.getHeight(g));
+		setSize(image.getWidth(g) + 10, image.getHeight(g) + 10);
 		setVisibile(attacher.isAttached());
 		super.draw(g);
 		if (!isVisible())
 			return;
 
-		g.drawImage(image, getX(), getY());
+		g.drawImage(image, getX() + 5, getY() + 5);
 	}
 
 	@Override
