@@ -1,5 +1,8 @@
 package net.xuset.triGame.game;
 
+import net.xuset.objectIO.connections.sockets.p2pServer.client.ClientConnection;
+import net.xuset.objectIO.connections.sockets.p2pServer.client.ClientHub;
+import net.xuset.objectIO.connections.sockets.p2pServer.client.ConnectionEvent;
 import net.xuset.objectIO.netObject.NetVar;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.game.Game;
@@ -12,6 +15,7 @@ import net.xuset.tSquare.math.rect.IRectangleW;
 import net.xuset.tSquare.math.rect.Rectangle;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.tSquare.system.input.InputHolder;
+import net.xuset.triGame.game.GameInfo.NetworkType;
 import net.xuset.triGame.game.entities.Person;
 import net.xuset.triGame.game.entities.TriangleSpriteCreator;
 import net.xuset.triGame.game.entities.buildings.Building;
@@ -73,16 +77,18 @@ public class TriGame extends Game{
 				shop, gameGrid, particleController, network.isServer, userId, gameMode,
 				new TriangleSpriteCreator(blockSize), buildingGetter);
 		gameMode.setDependencies(managerService);
-		if (network.isServer) {
-			//network.getServerInstance().accepter.stop();
-			gameMode.createMap();
-		}
+		
+		
 		gunManager = new GunManager(managerService, shop, gameInput.getGunInput());
 		player = gameMode.spawnInPlayer();
-		//network.getClientInstance().conEvent = connectionEvent;
 		
 		managerService.building.addItemsToUI(ui.getArsenalItemAdder());
 		gunManager.addGunsToUI(ui.getArsenalItemAdder());
+		
+		if (network.isServer)
+			gameMode.createMap();
+		if (gameInfo.getNetworkType() != NetworkType.SOLO)
+			network.getClientInstance().conEvent = new GameConnectionEvent();
 		
 		if (network.isServer) {
 			startGame.set(true);
@@ -127,30 +133,6 @@ public class TriGame extends Game{
 		gameMode.update(frameDelta);
 		gameInput.update(frameDelta);
 	}
-	
-	/*private final ConnectionEvent connectionEvent = new ConnectionEvent() {
-		@Override public void onConnection(ClientHub hub, ClientConnection connection) { }
-
-		@Override
-		public void onDisconnection(ClientHub hub, ClientConnection connection) {
-			if (network.isServer) {
-				Person p = managerService.person.getByUserId(connection.getEndId());
-				if (p != null)
-					p.remove();
-			}
-		}
-		
-		@Override
-		public void onServerDisconnect(ClientHub hub) {
-			if (TriGame.this.isStopped())
-				return;
-			isGameOver = true;
-			//PopUp popup = new PopUp(300, 200, "Disconnected",
-			//		"Lost connection to server. The game has ended.");
-			System.err.println("Lost connection to server. The game has ended.");
-			//popup.display();
-		}
-	};*/
 
 	@Override
 	protected void displayLoop() {
@@ -187,5 +169,29 @@ public class TriGame extends Game{
 	public void shutdown() {
 		stopGame();
 		network.disconnect();
+	}
+	
+	private class GameConnectionEvent implements ConnectionEvent {
+		@Override public void onConnection(ClientHub hub, ClientConnection connection) { }
+
+		@Override
+		public void onDisconnection(ClientHub hub, ClientConnection connection) {
+			if (network.isServer) {
+				Person p = managerService.person.getByUserId(connection.getEndId());
+				if (p != null)
+					p.remove();
+			}
+		}
+		
+		@Override
+		public void onServerDisconnect(ClientHub hub) {
+			if (TriGame.this.isStopped())
+				return;
+			isGameOver = true;
+			//PopUp popup = new PopUp(300, 200, "Disconnected",
+			//		"Lost connection to server. The game has ended.");
+			System.err.println("Lost connection to server. The game has ended.");
+			//popup.display();
+		}
 	}
 }
