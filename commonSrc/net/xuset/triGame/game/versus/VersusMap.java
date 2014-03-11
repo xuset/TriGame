@@ -192,7 +192,7 @@ final class VersusMap {
 	}
 	
 	private Building createWall(BuildingCreator creator, double x, double y) {
-		if (missingWallZone.contains(x, y))
+		if (missingWallZone.contains(x + 0.1, y + 0.1))
 			return null;
 		return creator.create(x, y);
 	}

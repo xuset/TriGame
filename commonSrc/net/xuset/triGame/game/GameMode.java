@@ -10,6 +10,7 @@ import net.xuset.triGame.game.entities.zombies.ZombieTargeter;
 import net.xuset.triGame.game.shopping.ShopManager;
 import net.xuset.triGame.game.survival.SurvivalGameMode;
 import net.xuset.triGame.game.ui.gameInput.IRoundInput;
+import net.xuset.triGame.game.versus.VersusGameMode;
 
 
 public abstract class GameMode implements GameIntegratable {
@@ -31,7 +32,7 @@ public abstract class GameMode implements GameIntegratable {
 			return new SurvivalGameMode(shop, isServer, gameGrid, objc, roundInput,
 					imageFactory);
 		case VERSUS:
-			//return new VersusGameMode(shop, isServer, gameGrid, objc, roundInput);
+			return new VersusGameMode(shop, isServer, objc, roundInput);
 		}
 		return null;
 	}

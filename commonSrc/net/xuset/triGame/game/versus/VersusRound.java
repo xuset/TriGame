@@ -49,8 +49,6 @@ class VersusRound extends GameRound {
 		super.draw(g);
 		if (getRoundNumber() == 0)
 			Draw.drawPickASide(g);
-		if (isServer && !gameStarted)
-			Draw.drawEnterToStartVersus(g);
 	}
 
 	@Override
@@ -76,6 +74,8 @@ class VersusRound extends GameRound {
 			gameStarted = true;
 			gameMap.createMissingWalls(managers);
 		}
+		
+		roundInput.setNewRoundRequestable(!gameStarted);
 	}
 
 	@Override

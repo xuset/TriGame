@@ -326,15 +326,17 @@ public abstract class Load {
 		if (Sprite.exists(StrongWall.INFO.spriteId))
 			return;
 
+		final float scale = blockSize / 50.0f;
+
 		IImageFactory factory = new ImageFactory();
 		IImage image = factory.createEmpty(blockSize, blockSize);
-		IGraphics g = image.getGraphics();
+		IGraphics g = new ScaledGraphics(image.getGraphics(), scale);
 		g.setColor(TsColor.darkGray);
 		g.fillRect(0, 0, 50, 50);
-		g.setColor(TsColor.black);
+		g.setColor(TsColor.black.lighter());
 		g.fillRect(5, 5, 40, 40);
 		g.dispose();
-
+		
 		Sprite.add(new Sprite(StrongWall.INFO.spriteId, image, 1.0f / blockSize));
 	}
 }

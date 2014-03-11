@@ -11,17 +11,17 @@ import net.xuset.triGame.game.entities.PointParticle;
 
 
 public final class Draw {
-	private static final IFont standardFont = new TsFont("Arial", 25, TsTypeFace.BOLD);
+	private static final IFont standardFont = new TsFont("Arial", 25/50.0f, TsTypeFace.BOLD);
 	
 	private static final IFont roundStartFont = new TsFont("Arial", 25, TsTypeFace.BOLD);
 	public static void drawEnterToStart(IGraphics g) {
 		Draw.drawXCenteredText("\'Enter\' to start Round", TsColor.lightGray,
-				roundStartFont, TsColor.black, 45, g);
+				roundStartFont, 0, TsColor.black, 0, 45, g);
 	}
 	
 	public static void drawTapToStart(IGraphics g) {
 		drawXCenteredText("Tap to start Round", TsColor.lightGray,
-				roundStartFont, TsColor.black, 45, g);
+				roundStartFont, 0, TsColor.black, 0, 45, g);
 	}
 
 	private static final TsFont roundNumberFont = new TsFont("Arial", 60/50.0f, TsTypeFace.BOLD);
@@ -40,24 +40,23 @@ public final class Draw {
 		g.drawText(x, y, message);
 	}
 	
-	private static final IFont youWinFont = new TsFont("Arial", 30, TsTypeFace.BOLD);
+	private static final IFont youWinFont = new TsFont("Arial", 30/50.0f, TsTypeFace.BOLD);
 	public static void drawYouWin(IGraphics g) {
 		int red = (int) (Math.random() * 200 + 50);
 		int green = (int) (Math.random() * 200 + 50);
 		int blue = (int) (Math.random() * 200 + 50);
 		TsColor color = new TsColor(red, green, blue);
-		drawXCenteredText("YOU WIN!", color, youWinFont, TsColor.black, 45, g);
-	}
-	
-	
-	public static void drawEnterToStartVersus(IGraphics g) {
-		Draw.drawXCenteredText("\'Enter\' to finalize zones", TsColor.lightGray,
-				standardFont, TsColor.black, 90, g);
+		float offsetX = (float) g.getView().getX();
+		float offsetY = (float) g.getView().getY() + 1;
+		drawXCenteredText("YOU WIN!", color, youWinFont,
+				2/50.0f, TsColor.black, offsetX, offsetY, g);
 	}
 	
 	public static void drawPickASide(IGraphics g) {
+		float offsetX = (float) g.getView().getX();
+		float offsetY = (float) g.getView().getY() + 2;
 		Draw.drawXCenteredText("Pick your zone.", TsColor.red,
-				standardFont, TsColor.black, 45, g);
+				standardFont, 2/50.0f, TsColor.black, offsetX, offsetY, g);
 	}
 
 	private static final IFont gameOverFont = new TsFont("Arial", 70/50.f, TsTypeFace.BOLD);
@@ -75,24 +74,24 @@ public final class Draw {
 	}
 	
 	public static void drawXCenteredText(String text, TsColor color, IFont font,
-			TsColor shadow, float y, IGraphics g) {
+			float shadowOffset, TsColor shadow, float offsetX, float y, IGraphics g) {
 		IRectangleR rect = g.getView();
 		g.setFont(font);
 		float messageWidth = g.getTextWidth(text);
 		float x = (float) ((rect.getWidth() - messageWidth) / 2);
-		drawText(text, color, font, shadow, x, y, g);
+		drawText(text, color, font, shadowOffset, shadow, offsetX + x, y, g);
 	}
 	
-	public static void drawText(String text, TsColor color, IFont font, TsColor shadow,
-			float x, float y, IGraphics g) {
+	public static void drawText(String text, TsColor color, IFont font,
+			float shadowOffset, TsColor shadow, float x, float y, IGraphics g) {
 		
 		g.setFont(font);
 		if (shadow != null) {
 			g.setColor(shadow);
-			g.drawText(x, y, text);
+			g.drawText(x + shadowOffset, y + shadowOffset, text);
 		}
 		g.setColor(color);
-		g.drawText(x - 2, y + 2, text);
+		g.drawText(x, y, text);
 	}
 
 	private static final IFont statFont = new TsFont("Arial", 12/50.0f, TsTypeFace.BOLD);

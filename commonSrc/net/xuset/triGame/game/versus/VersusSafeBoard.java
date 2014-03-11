@@ -29,26 +29,26 @@ class VersusSafeBoard extends SafeBoard {
 	public void draw(IGraphics g) {
 		IRectangleR rect = g.getView();
 		g.setColor(TsColor.black);
-		int viewX = (int) rect.getX();
-		int viewY = (int) rect.getY();
-		int viewWidth = (int) rect.getWidth();
-		int viewHeight = (int) rect.getHeight();
+		float viewX = (float) rect.getX();
+		float viewY = (float) rect.getY();
+		float viewWidth = (float) rect.getWidth();
+		float viewHeight = (float) rect.getHeight();
 		
-		int leftFill = (int) (bigArea.getX() - viewX);
+		float leftFill = (float) (bigArea.getX() - viewX);
 		if (leftFill > 0)
-			g.drawRect(0, 0, leftFill, viewHeight);
+			g.fillRect(viewX, viewY, leftFill, viewHeight);
 		
-		int rightFill = (int) ((viewX + viewWidth) - (bigArea.getX() + bigArea.getWidth()));
+		float rightFill = (float) ((viewX + viewWidth) - (bigArea.getX() + bigArea.getWidth()));
 		if (rightFill > 0)
-			g.drawRect((int) (bigArea.getX() + bigArea.getWidth() - viewX), 0, rightFill, viewHeight);
+			g.fillRect((float) (bigArea.getX() + bigArea.getWidth()), viewY, rightFill + 0.1f, viewHeight);
 		
-		int topFill = (int) (bigArea.getY() - viewY);
+		float topFill = (float) (bigArea.getY() - viewY);
 		if (topFill > 0)
-			g.drawRect(0, 0, viewWidth, topFill);
+			g.fillRect(viewX, viewY, viewWidth, topFill);
 		
-		int bottomFill = (int) ((viewY + viewHeight) - (bigArea.getY() + bigArea.getHeight()));
+		float bottomFill = (float) ((viewY + viewHeight) - (bigArea.getY() + bigArea.getHeight()));
 		if (bottomFill > 0)
-			g.drawRect(0, (int) (bigArea.getY() + bigArea.getHeight() - viewY), viewWidth, bottomFill);
+			g.fillRect(viewX, (float) (bigArea.getY() + bigArea.getHeight()), viewWidth, bottomFill + 0.1f);
 	}
 
 	@Override

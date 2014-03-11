@@ -1,7 +1,9 @@
 package net.xuset.triGame.game.versus;
 
 import net.xuset.tSquare.game.entity.Entity;
+import net.xuset.tSquare.imaging.Sprite;
 import net.xuset.tSquare.math.point.IPointR;
+import net.xuset.tSquare.math.point.Point;
 import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.entities.Person;
 import net.xuset.triGame.game.entities.buildings.Building;
@@ -22,10 +24,16 @@ class VersusZombie extends ZombieHandler{
 	
 	@Override
 	protected IPointR setSpawnPoint(Entity target) {
+		final float width = Sprite.get(Zombie.SPRITE_ID).getWidth();
+		final float height = Sprite.get(Zombie.SPRITE_ID).getHeight();
+		
 		int zone = gameMap.getZoneNumber(target.getX(), target.getY());
 		IPointR[] locations = gameMap.getSpawns(zone);
 		int index = (int) (Math.random() * locations.length);
-		return locations[index];
+		IPointR uncentered = locations[index];
+		Point centered = new Point(uncentered);
+		centered.translate(0.5 - width/2.0, 0.5 - height/2.0);
+		return centered;
 	}
 	
 	@Override
