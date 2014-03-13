@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import net.xuset.objectIO.netObject.ObjController;
 import net.xuset.objectIO.util.broadcast.BroadcastClient;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.IdGenerator;
@@ -22,11 +23,11 @@ import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.GameInfo.NetworkType;
-import net.xuset.triGame.game.GameMode.GameType;
 import net.xuset.triGame.intro.BroadcastMsg;
 import net.xuset.triGame.intro.GameIntroForms;
 import net.xuset.triGame.intro.IntroForm;
 import net.xuset.triGame.intro.IntroSwitcher;
+import net.xuset.triGame.intro.NetworkGameStarter;
 import net.xuset.triGame.intro.host.IntroHost;
 
 public class IntroJoin implements IntroForm{
@@ -39,6 +40,7 @@ public class IntroJoin implements IntroForm{
 	
 	private ArrayList<Host> hostsList = new ArrayList<Host>();
 	private Network network = null;
+	private NetworkGameStarter gameStarter;
 	private BroadcastClient broadcastReciever = null;
 	private long lastScanTime = 0L;
 	
@@ -94,12 +96,11 @@ public class IntroJoin implements IntroForm{
 
 	@Override
 	public GameInfo getCreatedGameInfo() {
-		if (network == null)
-			return null;
-		else {
+		if (gameStarter != null && gameStarter.hasGameStarted()) {
 			broadcastReciever.stop();
-			return new GameInfo(network, GameType.SURVIVAL, NetworkType.JOIN);
+			return new GameInfo(network, gameStarter.getGameType(), NetworkType.JOIN);
 		}
+		return null;
 	}
 
 	@Override
@@ -114,6 +115,8 @@ public class IntroJoin implements IntroForm{
 
 	@Override
 	public void onFocusLost() {
+		disconnectNetwork();
+		gameStarter = null;
 		destroyBroadcast();
 	}
 
@@ -164,11 +167,17 @@ public class IntroJoin implements IntroForm{
 		broadcastReciever = null;
 	}
 	
-	
+	private void disconnectNetwork() {
+		if (network != null)
+			network.disconnect();
+		network = null;
+	}
 	
 	private void tryConnecting(String addr, int port) {
 		try {
+			disconnectNetwork();
 			network = Network.connectToServer(addr, port, IdGenerator.getNext());
+			gameStarter = new NetworkGameStarter(new ObjController(network.hub));
 			lblStatus.setText("Connected. Waiting on host to start.");
 		} catch (IOException e) {
 			setStatus(true, "Error: " + e.getMessage());

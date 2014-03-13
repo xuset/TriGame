@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import net.xuset.objectIO.connections.sockets.p2pServer.server.ConnectionEvent;
 import net.xuset.objectIO.connections.sockets.p2pServer.server.P2PServer;
 import net.xuset.objectIO.connections.sockets.p2pServer.server.ServerConnection;
+import net.xuset.objectIO.netObject.ObjController;
 import net.xuset.objectIO.util.broadcast.BroadcastServer;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.Network;
@@ -17,6 +18,7 @@ import net.xuset.tSquare.ui.UiButton;
 import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.UiLabel;
+import net.xuset.tSquare.ui.UiRadioGroup;
 import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameInfo;
@@ -25,32 +27,39 @@ import net.xuset.triGame.game.GameMode.GameType;
 import net.xuset.triGame.intro.BroadcastMsg;
 import net.xuset.triGame.intro.IntroForm;
 import net.xuset.triGame.intro.IpGetterIFace;
+import net.xuset.triGame.intro.NetworkGameStarter;
 
 
 public class IntroHost implements IntroForm {
 	public static final String MULTICAST_GROUP = "230.0.0.1";
 	public static final int MULTICAST_PORT = 4000;
 	private static final String joinedText = "Players joined: ";
+	private static final String survivalText = "Survival", versusText = "Versus";
 	
 	private final UiForm frmMain = new UiForm();
 	private final UiLabel lblStatus = new UiLabel("Waiting for players to join");
 	private final UiLabel lblPlayers = new UiLabel(joinedText + 0);
+	private final UiRadioGroup radioGroup = new UiRadioGroup();
 	private final IpGetterIFace ipGetter;
 
 	private BroadcastServer broadcaster;
+	private NetworkGameStarter gameStarter;
 	private Network network;
-	private boolean startGame = false;
 	
 	public IntroHost(IpGetterIFace ipGetter) {
 		this.ipGetter = ipGetter;
 		UiButton btnStart = new UiButton("Start game");
 		btnStart.addMouseListener(new BtnStartAction());
 		
+		radioGroup.addButton(survivalText);
+		radioGroup.addButton(versusText);
+		
 		frmMain.setLayout(new UiQueueLayout(5, 20, frmMain));
 		frmMain.getLayout().setAlignment(Axis.X_AXIS, Alignment.CENTER);
 		frmMain.getLayout().setOrientation(Axis.Y_AXIS);
 		frmMain.getLayout().add(lblStatus);
 		frmMain.getLayout().add(lblPlayers);
+		frmMain.getLayout().add(radioGroup);
 		frmMain.getLayout().add(btnStart);
 	}
 
@@ -61,11 +70,11 @@ public class IntroHost implements IntroForm {
 
 	@Override
 	public GameInfo getCreatedGameInfo() {
-		if (startGame) {
+		if (gameStarter.hasGameStarted()) {
 			network.getServerInstance().accepter.stop();
 			broadcaster.stop();
 			broadcaster = null;
-			return new GameInfo(network, GameType.SURVIVAL, NetworkType.HOST);
+			return new GameInfo(network, gameStarter.getGameType(), NetworkType.HOST);
 		}
 		return null;
 	}
@@ -90,6 +99,7 @@ public class IntroHost implements IntroForm {
 			
 			network = Network.startupServer(0);
 			network.getServerInstance().event = new ServerConnectionEvent();
+			gameStarter = new NetworkGameStarter(new ObjController(network.hub));
 			int port = network.getServerInstance().getPort();
 			InetAddress group = InetAddress.getByName(MULTICAST_GROUP);
 			InetAddress local = ipGetter.getLocalIP();
@@ -112,6 +122,7 @@ public class IntroHost implements IntroForm {
 		if (network != null)
 			network.disconnect();
 		
+		gameStarter = null;
 		broadcaster = null;
 		network = null;
 	}
@@ -125,8 +136,13 @@ public class IntroHost implements IntroForm {
 
 		@Override
 		public void observeChange(TsMouseEvent t) {
-			if (t.action == MouseAction.PRESS)
-				startGame = true;
+			if (t.action == MouseAction.PRESS) {
+				GameType type =
+						radioGroup.getSelectedButton().getText().equals(versusText) ?
+						GameType.VERSUS : GameType.SURVIVAL;
+				gameStarter.startGame(type);
+				network.flush();
+			}
 		}
 	}
 	
