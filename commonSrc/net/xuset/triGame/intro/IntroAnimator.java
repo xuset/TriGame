@@ -21,9 +21,9 @@ public class IntroAnimator implements GameDrawable{
 	private boolean goingLeft = true;
 	private long timeToEnd = 0L;
 	
-	public IntroAnimator() {
-		zombieImage = Load.triangleImage(TsColor.red, 80);
-		IImage playerImage = Load.triangleImage(TsColor.cyan, 80);
+	public IntroAnimator(int blockSize) {
+		zombieImage = Load.triangleImage(TsColor.red, blockSize);
+		IImage playerImage = Load.triangleImage(TsColor.cyan, blockSize);
 		person = new TriangleAnimator(playerImage);
 	}
 

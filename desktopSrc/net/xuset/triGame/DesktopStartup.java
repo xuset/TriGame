@@ -71,18 +71,26 @@ public class DesktopStartup {
 		private InetAddress address = null;
 		
 		public IpGetter() {
-			try {
-				address = InetAddress.getLocalHost();
-			} catch (UnknownHostException e) {
-				System.err.println("Error: Could not determine local IP");
-				e.printStackTrace();
-				address =  InetAddress.getLoopbackAddress();
-			}
+			new Thread(new Worker(), "LocalIpFinder").start();
 		}
 
 		@Override
 		public InetAddress getLocalIP() {
 			return address;
+		}
+		
+		private class Worker implements Runnable {
+			
+			@Override
+			public void run() {
+				try {
+					address = InetAddress.getLocalHost();
+				} catch (UnknownHostException e) {
+					System.err.println("Error: Could not determine local IP");
+					e.printStackTrace();
+				}
+			}
+			
 		}
 		
 	}

@@ -8,6 +8,7 @@ import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiButton;
+import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.tSquare.ui.UiController;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.layout.UiBorderLayout;
@@ -30,7 +31,8 @@ public class GameIntro implements IntroSwitcher{
 	private final IDrawBoard drawBoard;
 	private final UtilityForm utilityForm = new UtilityForm();
 	private final IntroForm[] introForms = new IntroForm[GameIntroForms.values().length];
-	private final IntroAnimator animator = new IntroAnimator();
+	private final UiForm containerForm = new UiForm();
+	private final IntroAnimator animator;
 	private IntroForm selectedForm = null;
 	private GameIntroForms newForm = null;
 	
@@ -43,11 +45,17 @@ public class GameIntro implements IntroSwitcher{
 		this.fileFactory = fileFactory;
 		this.settings = settings;
 		
+		animator = new IntroAnimator(settings.blockSize);
 		ui = new UiController(drawBoard.createInputListener().getMouse());
+		containerForm.setOpaque(true);
+		containerForm.setBackground(new TsColor(235, 235, 235));
+		containerForm.getBorder().setVisibility(true);
+		containerForm.getBorder().setColor(TsColor.gray);
+		
 		UiForm mainForm = ui.getForm();
 		mainLayout = new UiBorderLayout(mainForm);
 		mainForm.setLayout(mainLayout);
-		
+		mainLayout.add(containerForm, UiBorderLayout.BorderPosition.CENTER);
 		mainLayout.add(utilityForm, UiBorderLayout.BorderPosition.SOUTH);
 		
 		setupIntroForms(ipGetter);
@@ -76,7 +84,7 @@ public class GameIntro implements IntroSwitcher{
 	}
 	
 	private void loop() {
-		final int targetFPS = 30;
+		final int targetFPS = 60;
 		long timeStart = System.currentTimeMillis();
 		while (createdGame == null) {
 			IGraphics g = drawBoard.getGraphics();
@@ -111,7 +119,10 @@ public class GameIntro implements IntroSwitcher{
 			if (selectedForm != null)
 				selectedForm.onFocusLost();
 			selectedForm = introForms[newForm.ordinal()];
-			mainLayout.add(selectedForm.getForm(), UiBorderLayout.BorderPosition.CENTER);
+			containerForm.getLayout().clearComponents();
+			UiComponent frm = selectedForm.getForm();
+			if (frm != null)
+				containerForm.getLayout().add(frm);
 			selectedForm.onFocusGained();
 			utilityForm.setButtonOptions(newForm != GameIntroForms.MAIN,
 					newForm != GameIntroForms.SETTINGS);
