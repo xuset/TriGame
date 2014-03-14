@@ -29,8 +29,10 @@ public class JavaXSound implements ISound {
 
 	@Override
 	public void play() {
-		stop();
-		clip.start();
+		if (!SoundStore.isMuteOn()) {
+			stop();
+			clip.start();
+		}
 	}
 
 	@Override

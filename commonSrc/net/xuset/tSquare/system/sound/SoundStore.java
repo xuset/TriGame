@@ -8,6 +8,7 @@ import net.xuset.tSquare.system.sound.SoundFactory;
 
 public class SoundStore {
 	private static final HashMap<String, ISound> sounds = new HashMap<String, ISound>();
+	private static boolean mute = false;
 	
 	private SoundStore() {
 		
@@ -26,4 +27,10 @@ public class SoundStore {
 	public static ISound get(String name) {
 		return sounds.get(name);
 	}
+	
+	public static void setMuteOnAll(boolean mute) {
+		SoundStore.mute = mute;
+	}
+	
+	public static boolean isMuteOn() { return mute; }
 }

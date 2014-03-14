@@ -24,7 +24,8 @@ public class AndroidSound implements ISound {
 	
 	@Override
 	public void play() {
-		soundPool.play(soundId, 100, 100, 1, 0, 1.0f);
+		if (!SoundStore.isMuteOn())
+			soundPool.play(soundId, 100, 100, 1, 0, 1.0f);
 	}
 
 	@Override
