@@ -30,6 +30,7 @@ public class GameIntro implements IntroSwitcher{
 	private final IDrawBoard drawBoard;
 	private final UtilityForm utilityForm = new UtilityForm();
 	private final IntroForm[] introForms = new IntroForm[GameIntroForms.values().length];
+	private final IntroAnimator animator = new IntroAnimator();
 	private IntroForm selectedForm = null;
 	private GameIntroForms newForm = null;
 	
@@ -92,6 +93,7 @@ public class GameIntro implements IntroSwitcher{
 			IRectangleR view = g.getView();
 			g.fillRect(0, 0, (float) view.getWidth(), (float) view.getHeight());
 			ui.setScale(settings.blockSize / 50.0f);
+			animator.draw(g);
 			ui.draw(g);
 			drawBoard.flushScreen();
 			tryToCreateGame();
