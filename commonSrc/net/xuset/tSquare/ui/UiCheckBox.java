@@ -1,6 +1,7 @@
 package net.xuset.tSquare.ui;
 
 import net.xuset.tSquare.imaging.IGraphics;
+import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 
@@ -14,6 +15,7 @@ public class UiCheckBox extends UiComponent{
 	
 	public UiCheckBox() {
 		super(0, 0, 10, 10);
+		setForeground(new TsColor(0, 220, 220));
 	}
 	
 	public boolean isChecked() { return isChecked; }
@@ -29,12 +31,12 @@ public class UiCheckBox extends UiComponent{
 			return;
 		g.setColor(getBackground().shade(-30));
 		g.fillRect(getX(), getY(), getWidth(), getHeight());
-		g.setColor(getBackground());
+		if (isChecked())
+			g.setColor(getForeground());
+		else
+			g.setColor(getBackground());
 		g.fillRect(getX() + gutter, getY() + gutter,
 				getWidth() - 2 * gutter, getHeight() - 2 * gutter);
-		
-		if (isChecked())
-			drawCheck(g);
 	}
 	
 	@Override
@@ -47,12 +49,12 @@ public class UiCheckBox extends UiComponent{
 		}
 	}
 
-	private void drawCheck(IGraphics g) {
-		g.setColor(getForeground());
+	/*private void drawCheck(IGraphics g) {
+		g.setColor(TsColor.black);
 		g.drawLine(getX() + gutter, getY() + gutter,
 				getX() + getWidth() - gutter, getY() + getHeight() - gutter);
 		g.drawLine(getX() + getWidth() - gutter, getY() + gutter,
 				getX() + gutter, getY() + getHeight() - gutter);
-	}
+	}*/
 
 }

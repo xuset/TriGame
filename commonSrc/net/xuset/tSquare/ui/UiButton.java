@@ -48,7 +48,7 @@ public class UiButton extends UiComponent {
 		
 		int borderColor = getBackground().darker();
 		if (isDrawingClick() && isEnabled)
-			borderColor = TsColor.rgb(0, 190, 190);
+			borderColor = TsColor.rgb(0, 220, 220);
 		g.setColor(borderColor);
 		g.fillRoundedRect(getX(), getY(), getWidth(), getHeight(), 6, 6);
 

@@ -1,6 +1,7 @@
 package net.xuset.tSquare.ui;
 
 import net.xuset.tSquare.imaging.IGraphics;
+import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 
@@ -12,6 +13,7 @@ public class UiSlider extends UiComponent {
 
 	public UiSlider() {
 		super(0, 0, 100, 10);
+		setForeground(new TsColor(0, 220, 220));
 	}
 	
 	public void setSliderListener(SliderChange listener) { this.listener = listener; }
@@ -52,6 +54,10 @@ public class UiSlider extends UiComponent {
 		g.setColor(getBackground());
 		g.fillRect(getX() + gutter, getY() + gutter,
 				getWidth() - 2 * gutter, getHeight() - 2 * gutter);
+		
+		g.setColor(getForeground());
+		float w = (float) ((getWidth() - 2 * gutter) * position);
+		g.fillRect(getX() + gutter, getY() + gutter, w, getHeight() - 2 * gutter);
 	}
 	
 	private void drawMarker(IGraphics g) {
@@ -64,7 +70,7 @@ public class UiSlider extends UiComponent {
 		float middleX = markerX + markerW / 2;
 		float middleY = markerY + markerH;
 		
-		g.setColor(getForeground());
+		g.setColor(getForeground().lighter());
 		g.drawLine(markerX, markerY, middleX, middleY);
 		g.drawLine(markerX + markerW, markerY, middleX, middleY);
 		

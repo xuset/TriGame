@@ -11,7 +11,7 @@ public class UiProgressBar extends UiComponent {
 	public UiProgressBar() {
 		super(0, 0, 60, 10);
 		setBackground(TsColor.darkGray);
-		setForeground(TsColor.cyan);
+		setForeground(new TsColor(0, 220, 220));
 	}
 
 	public double getProgress() { return progress; }
