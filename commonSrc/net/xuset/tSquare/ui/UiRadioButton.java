@@ -13,7 +13,7 @@ public class UiRadioButton extends UiComponent {
 	private float buttonSize = 15.0f;
 	private TsColor buttonBackgroundColor = TsColor.gray;
 	private TsColor buttonUnSelectedColor = TsColor.lightGray;
-	private TsColor buttonSelectedColor = TsColor.cyan;
+	private TsColor buttonSelectedColor = new TsColor(0, 190, 190);
 	
 	public UiRadioButton() {
 		this("");

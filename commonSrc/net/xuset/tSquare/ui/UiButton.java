@@ -47,11 +47,15 @@ public class UiButton extends UiComponent {
 		calcDimensions(g);
 		
 		int borderColor = getBackground().darker();
+		if (isDrawingClick() && isEnabled)
+			borderColor = TsColor.rgb(0, 190, 190);
 		g.setColor(borderColor);
 		g.fillRoundedRect(getX(), getY(), getWidth(), getHeight(), 6, 6);
 
 		if(!isDrawingClick() && isEnabled)
 			g.setColor(getBackground());
+		else
+			g.setColor(getBackground().darker());
 		
 		float inX = getX() + borderSize, inY = getY() + borderSize;
 		float inW = getWidth() - 2 * borderSize, inH = getHeight() - 2 * borderSize;
@@ -67,7 +71,7 @@ public class UiButton extends UiComponent {
 	@Override
 	public void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
-		if (e.action == MouseAction.PRESS) {
+		if (e.action == MouseAction.PRESS || e.action == MouseAction.DRAG) {
 			clickTime = System.currentTimeMillis();
 		}
 	}
