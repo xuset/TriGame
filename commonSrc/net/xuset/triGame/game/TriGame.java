@@ -15,6 +15,7 @@ import net.xuset.tSquare.math.rect.IRectangleW;
 import net.xuset.tSquare.math.rect.Rectangle;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.tSquare.system.input.InputHolder;
+import net.xuset.tSquare.system.sound.SoundStore;
 import net.xuset.triGame.game.GameInfo.NetworkType;
 import net.xuset.triGame.game.entities.Person;
 import net.xuset.triGame.game.entities.TriangleSpriteCreator;
@@ -37,6 +38,7 @@ public class TriGame extends Game{
 	private final GameGrid gameGrid;
 	private final TiledBackground background;
 	private final int blockSize; //px
+	private final Settings settings;
 	
 	private final ManagerService managerService;
 	private final GameMode gameMode;
@@ -51,6 +53,7 @@ public class TriGame extends Game{
 			Settings settings) {
 		
 		super(gameInfo.getNetwork());
+		this.settings = settings;
 		NetVar.nBool startGame = new NetVar.nBool(false, "start", network.objController);
 		
 		blockSize = settings.blockSize;
@@ -104,6 +107,8 @@ public class TriGame extends Game{
 	protected void logicLoop() {
 		//System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
 		int frameDelta = getDelta();
+		
+		SoundStore.setMuteOnAll(!settings.enableSound);
 		
 		if (!isGameOver) {
 			managerService.person.update(frameDelta);
