@@ -1,4 +1,4 @@
-package net.xuset.triGame.intro.host;
+package net.xuset.triGame.intro;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -24,10 +24,6 @@ import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.GameInfo.NetworkType;
 import net.xuset.triGame.game.GameMode.GameType;
-import net.xuset.triGame.intro.BroadcastMsg;
-import net.xuset.triGame.intro.IntroForm;
-import net.xuset.triGame.intro.IpGetterIFace;
-import net.xuset.triGame.intro.NetworkGameStarter;
 
 
 public class IntroHost implements IntroForm {

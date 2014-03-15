@@ -1,4 +1,4 @@
-package net.xuset.triGame.intro.main;
+package net.xuset.triGame.intro;
 
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
@@ -8,9 +8,6 @@ import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameInfo;
-import net.xuset.triGame.intro.GameIntroForms;
-import net.xuset.triGame.intro.IntroForm;
-import net.xuset.triGame.intro.IntroSwitcher;
 
 public class IntroMain implements IntroForm {
 	

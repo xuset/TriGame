@@ -21,11 +21,6 @@ import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.Params;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.TriGame;
-import net.xuset.triGame.intro.host.IntroHost;
-import net.xuset.triGame.intro.join.IntroJoin;
-import net.xuset.triGame.intro.main.IntroMain;
-import net.xuset.triGame.intro.settings.IntroSettings;
-import net.xuset.triGame.intro.solo.IntroSolo;
 import net.xuset.triGame.settings.Settings;
 
 public class GameIntro implements IntroSwitcher{

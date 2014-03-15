@@ -1,8 +1,7 @@
-package net.xuset.triGame.intro.settings;
+package net.xuset.triGame.intro;
 
 import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.triGame.game.GameInfo;
-import net.xuset.triGame.intro.IntroForm;
 import net.xuset.triGame.settings.Settings;
 import net.xuset.triGame.settings.UiSettingsForm;
 

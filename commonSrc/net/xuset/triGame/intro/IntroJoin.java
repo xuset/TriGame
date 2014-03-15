@@ -1,4 +1,4 @@
-package net.xuset.triGame.intro.join;
+package net.xuset.triGame.intro;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -23,12 +23,6 @@ import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.GameInfo.NetworkType;
-import net.xuset.triGame.intro.BroadcastMsg;
-import net.xuset.triGame.intro.GameIntroForms;
-import net.xuset.triGame.intro.IntroForm;
-import net.xuset.triGame.intro.IntroSwitcher;
-import net.xuset.triGame.intro.NetworkGameStarter;
-import net.xuset.triGame.intro.host.IntroHost;
 
 public class IntroJoin implements IntroForm{
 	private static final long scanInterval = 2000L;
