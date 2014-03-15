@@ -5,7 +5,7 @@ import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.settings.Settings;
 import net.xuset.triGame.settings.UiSettingsForm;
 
-public class IntroSettings implements IntroForm {
+class IntroSettings implements IntroForm {
 	private final UiSettingsForm uiSettings;
 	
 	public IntroSettings(Settings settings) {

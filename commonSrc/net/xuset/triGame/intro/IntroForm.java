@@ -3,7 +3,7 @@ package net.xuset.triGame.intro;
 import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.triGame.game.GameInfo;
 
-public interface IntroForm {
+interface IntroForm {
 	UiComponent getForm();
 	GameInfo getCreatedGameInfo();
 	void onFocusGained();

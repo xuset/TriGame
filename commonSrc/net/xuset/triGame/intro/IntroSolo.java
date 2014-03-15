@@ -6,7 +6,7 @@ import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.GameInfo.NetworkType;
 import net.xuset.triGame.game.GameMode.GameType;
 
-public class IntroSolo implements IntroForm {
+class IntroSolo implements IntroForm {
 
 	@Override
 	public GameInfo getCreatedGameInfo() {

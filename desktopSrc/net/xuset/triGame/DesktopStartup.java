@@ -19,7 +19,6 @@ import net.xuset.tSquare.system.DrawBoard;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.triGame.game.DevStart;
 import net.xuset.triGame.game.GameMode.GameType;
-import net.xuset.triGame.intro.GameIntro;
 import net.xuset.triGame.intro.IpGetterIFace;
 import net.xuset.triGame.intro.MainStartup;
 import net.xuset.triGame.settings.Settings;

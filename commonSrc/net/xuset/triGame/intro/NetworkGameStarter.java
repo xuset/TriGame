@@ -7,7 +7,7 @@ import net.xuset.objectIO.netObject.NetFunctionEvent;
 import net.xuset.objectIO.netObject.ObjController;
 import net.xuset.triGame.game.GameMode.GameType;
 
-public class NetworkGameStarter {
+class NetworkGameStarter {
 	private final NetFunction startFunc;
 	private final ObjController objController;
 	private GameType gameType = null;

@@ -10,7 +10,7 @@ import net.xuset.tSquare.math.point.Point;
 import net.xuset.tSquare.math.rect.IRectangleR;
 import net.xuset.triGame.game.Load;
 
-public class IntroAnimator implements GameDrawable{
+class IntroAnimator implements GameDrawable{
 	private final int maxZombies = 10;
 	private final double offscreenOffset = 200.0;
 	private final long timeDuration = 6000L;

@@ -24,7 +24,7 @@ import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.GameInfo.NetworkType;
 
-public class IntroJoin implements IntroForm{
+class IntroJoin implements IntroForm{
 	private static final long scanInterval = 2000L;
 	
 	private final IntroSwitcher introSwitcher;

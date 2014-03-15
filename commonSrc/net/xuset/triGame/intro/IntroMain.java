@@ -9,7 +9,7 @@ import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameInfo;
 
-public class IntroMain implements IntroForm {
+class IntroMain implements IntroForm {
 	
 	private final IntroSwitcher introSwticher;
 	private final UiForm frmMain = new UiForm();

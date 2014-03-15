@@ -3,7 +3,7 @@ package net.xuset.triGame.intro;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class BroadcastMsg {
+class BroadcastMsg {
 	private static final String networkIdentifier = "TriGameBroadcast";
 	private static final String delimeter = "/";
 	

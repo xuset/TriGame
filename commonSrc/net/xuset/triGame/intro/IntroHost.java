@@ -26,7 +26,7 @@ import net.xuset.triGame.game.GameInfo.NetworkType;
 import net.xuset.triGame.game.GameMode.GameType;
 
 
-public class IntroHost implements IntroForm {
+class IntroHost implements IntroForm {
 	public static final String MULTICAST_GROUP = "230.0.0.1";
 	public static final int MULTICAST_PORT = 4000;
 	private static final String joinedText = "Players joined: ";

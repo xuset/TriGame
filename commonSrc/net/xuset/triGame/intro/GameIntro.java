@@ -23,7 +23,7 @@ import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.TriGame;
 import net.xuset.triGame.settings.Settings;
 
-public class GameIntro implements IntroSwitcher{
+class GameIntro implements IntroSwitcher{
 	private final IFileFactory fileFactory;
 	private final Settings settings;
 	private final IDrawBoard drawBoard;
