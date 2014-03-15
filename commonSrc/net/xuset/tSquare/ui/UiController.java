@@ -15,11 +15,14 @@ public class UiController {
 	private final ArrayList<TsMouseEvent> mouseQueue = new ArrayList<TsMouseEvent>();
 	private final ArrayList<Observer.Change<TsMouseEvent>> observers;
 	private final UiForm mainForm;
+	private final UiPopupController popupController = new UiPopupController();
 	private double lastWidth = 0.0, lastHeight = 0.0;
 	private float scale = 1.0f;
 	
 	public void setScale(float scale) { this.scale = scale; }
 	public float getScale() { return scale; }
+	
+	public UiPopupController getPopupController() { return popupController; }
 	
 	public UiForm getForm() { return mainForm; }
 	
@@ -43,6 +46,7 @@ public class UiController {
 			mainForm.setSize((float) lastWidth, (float) lastHeight);
 		}
 		mainForm.draw(g);
+		popupController.draw(g);
 	}
 	
 	public void dispatchRecievedInputEvents() {
@@ -52,11 +56,15 @@ public class UiController {
 				TsMouseEvent scaledEvent = new TsMouseEvent(t.action, t.button,
 						(int) scaleX, (int) scaleY);
 				
-				UiForm f = getForm();
-				if (f.contains(scaleX, scaleY)) {
-					float rx = scaleX - f.getX();
-					float ry = scaleY - f.getY();
-					f.recieveMouseEvent(scaledEvent, rx, ry);
+				if (popupController.contains(scaleX, scaleY)) {
+					popupController.recieveMouseEvent(scaledEvent, scaleX, scaleY);
+				} else {
+					UiForm f = getForm();
+					if (f.contains(scaleX, scaleY)) {
+						float rx = scaleX - f.getX();
+						float ry = scaleY - f.getY();
+						f.recieveMouseEvent(scaledEvent, rx, ry);
+					}
 				}
 				
 				for (Observer.Change<TsMouseEvent> c : observers)
