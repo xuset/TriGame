@@ -96,7 +96,7 @@ public class Tower extends Building {
 			"tower",    //Creator hash map key
 			10,        //visibilityRadius
 			"Need help defending yourself from waves of undead triangles?",
-			new ShopItem("Tower", 500),
+			new ShopItem("Long-range Zombie Destroyer", 500),
 			true,   //has a healthBar
 			true,   //has an UpgradeManager
 			true,   //is interactive

@@ -31,8 +31,8 @@ public class SmallTower extends Tower {
 			"small tower",	//spriteId
 			"samll tower",	//Creator hash map key
 			6,			//visibilityRadius
-			"Just a little bit smaller than its predecessor",
-			new ShopItem("Small Tower", 150),
+			"The ATFPL is a lethal triangle killing machine.",
+			new ShopItem("Autonomous Target Finder and Projectile Launcher v1.2", 150),
 			true,   //has a healthBar
 			true,   //has an UpgradeManager
 			true,   //is interactive

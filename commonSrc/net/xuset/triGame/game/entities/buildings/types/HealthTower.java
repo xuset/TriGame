@@ -136,7 +136,7 @@ public class HealthTower extends Building {
 			"media/HealthTower.png",    //spriteId
 			"healthTower",    //Creator hash map key
 			2.51,        //visibilityRadius
-			"Regenerate a tower's health within it's range",
+			"Regenerate any tower's health within it's range",
 			new ShopItem("Regenerator", 400),
 			true,   //has a healthBar
 			true,   //has an UpgradeManager

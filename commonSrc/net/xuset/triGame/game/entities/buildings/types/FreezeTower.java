@@ -73,8 +73,8 @@ public class FreezeTower extends Building {
 			"media/FreezeTower.png",    //spriteId
 			"freezeTower",    //Creator hash map key
 			1.5,        //visibilityRadius
-			"Slow down the hoards.",
-			new ShopItem("Freeze tower", 100),
+			"Slow down the relentless waves.",
+			new ShopItem("Freeze Tower", 100),
 			true,    //has a healthBar
 			true,    //has an UpgradeManager
 			true,   //is interactive

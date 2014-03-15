@@ -73,7 +73,7 @@ public class MortarTower extends Tower {
 			"mortarTower",            //Creator hash map key
 			4,                      //visibilityRadius
 			"'BOOM,' says the mortar tower.",
-			new ShopItem("Mortar tower", 500),
+			new ShopItem("Mortar Tower", 500),
 			true,   //has a healthBar
 			true,   //has an UpgradeManager
 			true,   //is interactive

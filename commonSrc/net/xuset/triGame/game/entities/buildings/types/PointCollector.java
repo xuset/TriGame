@@ -57,7 +57,7 @@ public class PointCollector extends Building {
 			"pointCollector",			//Creator hash map key
 			300,						//visibilityRadius
 			"Want to collect more points? Than place this over a Point Well",
-			new ShopItem("Point collector", 300),
+			new ShopItem("Point Collector", 300),
 			true,   //has a healthBar
 			true,   //has an UpgradeManager
 			true,   //is interactive

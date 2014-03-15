@@ -15,7 +15,7 @@ public class SteelBarrier extends Wall {
 			"media/SteelBarrier.png",  //spriteId
 			"steel",                   //Creator hash map key
 			"Forged from steel, unlike Barriers.",
-			new ShopItem("Steel", 20),
+			new ShopItem("Steel Barrier", 20),
 			200 //max health
 		);
 
