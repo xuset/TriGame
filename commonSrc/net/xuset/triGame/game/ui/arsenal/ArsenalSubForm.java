@@ -8,4 +8,8 @@ public class ArsenalSubForm extends UiForm {
 	public ArsenalSubForm(String name) {
 		this.name = name;
 	}
+	
+	public void onForcedFocusLost() {
+		
+	}
 }

@@ -21,18 +21,23 @@ public class BuildingPanel extends UiForm {
 	private final BuildingAttacher attacher;
 	private final UiLabel lblPrice;
 	private final double viewRadius;
+	private final ItemMetaSetter mouseCallback;
+	private final String description;
 	private boolean canPurchase = true;
 	
-	private long clickTime = 0l;
+	private long hoverTime = 0l;
 	
 	public BuildingPanel(ShopItem shopItem, LocManCreator<?> creator, IImage img,
-			BuildingAttacher attacher, ShopManager shop, double viewRadius) {
+			BuildingAttacher attacher, ShopManager shop, double viewRadius,
+			ItemMetaSetter mouseCallback, String description) {
 		
 		this.shopItem = shopItem;
 		this.creator = creator;
 		this.img = img;
 		this.viewRadius = viewRadius;
 		this.attacher = attacher;
+		this.mouseCallback = mouseCallback;
+		this.description = description;
 		
 		shop.observer().watch(new ShopObserver());
 		
@@ -53,15 +58,17 @@ public class BuildingPanel extends UiForm {
 	protected void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
 		
-		if (canPurchase && e.action == MouseAction.PRESS) {
+		if (e.action == MouseAction.MOVE || e.action == MouseAction.DRAG)
+			mouseCallback.setDisplayInfo(shopItem.getName(), description);
+		
+		if (canPurchase && e.action == MouseAction.PRESS)
 			attacher.attach(shopItem, creator, img, viewRadius);
-			clickTime = System.currentTimeMillis();
-		}
+		hoverTime = System.currentTimeMillis();
 	}
 	
 	@Override
 	public void draw(IGraphics g) {
-		getBorder().setVisibility(clickTime + 50 > System.currentTimeMillis());
+		getBorder().setVisibility(hoverTime + 50 > System.currentTimeMillis());
 		super.draw(g);
 	}
 	

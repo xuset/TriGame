@@ -42,6 +42,10 @@ public class ArsenalForm extends UiForm {
 		switchTo(0);
 	}
 	
+	public void onForcedFocusLost() {
+		formContainer[selectedForm].onForcedFocusLost();
+	}
+	
 	private void switchTo(int formIndex) {
 		selectedForm = formIndex;
 		getLayout().clearComponents();

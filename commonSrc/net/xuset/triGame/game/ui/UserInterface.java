@@ -120,6 +120,8 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		public void observeChange(TsMouseEvent t) {
 			if (t.action == MouseAction.PRESS && !isCollidingWith(t.x, t.y))
 				pauseHandler.setPause(false);
+			if (!isCollidingWith(t.x, t.y))
+				arsenalForm.onForcedFocusLost();
 			upgradeSetter.observeChange(t);
 		}
 		
