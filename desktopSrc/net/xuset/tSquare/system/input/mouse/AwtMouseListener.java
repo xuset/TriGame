@@ -97,4 +97,9 @@ public class AwtMouseListener implements IMouseListener {
 	public void watch(Change<TsMouseEvent> watcher) {
 		observer.watch(watcher);
 	}
+
+	@Override
+	public void clearListeners() {
+		observer.unwatchAll();
+	}
 }

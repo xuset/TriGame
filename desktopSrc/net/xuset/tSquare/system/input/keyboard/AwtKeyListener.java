@@ -113,4 +113,9 @@ public class AwtKeyListener implements IKeyListener {
 		observer.watch(watcher);
 	}
 
+	@Override
+	public void clearListeners() {
+		observer.unwatchAll();
+	}
+
 }

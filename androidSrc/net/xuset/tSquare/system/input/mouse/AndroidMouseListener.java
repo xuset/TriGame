@@ -49,6 +49,11 @@ public class AndroidMouseListener implements IMouseListener {
 	public void watch(Change<TsMouseEvent> watcher) {
 		observer.watch(watcher);
 	}
+
+	@Override
+	public void clearListeners() {
+		observer.unwatchAll();
+	}
 	
 	private class TouchInput implements OnTouchListener {
 

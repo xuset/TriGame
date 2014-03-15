@@ -22,6 +22,10 @@ public class Observer<T> {
 		watchers.remove(c);
 	}
 	
+	public void unwatchAll() {
+		watchers.clear();
+	}
+	
 	public void notifyWatchers() {
 		notifyWatchers(var);
 	}

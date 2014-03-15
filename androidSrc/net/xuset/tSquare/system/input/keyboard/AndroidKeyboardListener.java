@@ -88,6 +88,11 @@ public class AndroidKeyboardListener implements IKeyListener {
 		return searchForEvent(KeyEvent.KEYCODE_DPAD_RIGHT, KeyAction.PRESS) != null ||
 				searchForEvent(KeyEvent.KEYCODE_D, KeyAction.PRESS) != null;
 	}
+
+	@Override
+	public void clearListeners() {
+		observer.unwatchAll();
+	}
 	
 	private class AndroidKeyListener implements OnKeyListener {
 
