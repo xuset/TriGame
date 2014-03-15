@@ -76,7 +76,8 @@ public class Network {
 	}
 	
 	public void disconnect() {
-		client.shutdown();
+		if (client != null)
+			client.shutdown();
 		if (server != null)
 			server.shutdown();
 		client = null;
