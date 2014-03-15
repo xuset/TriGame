@@ -3,6 +3,8 @@ package net.xuset.triGame.intro;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.TsColor;
+import net.xuset.tSquare.imaging.TsFont;
+import net.xuset.tSquare.imaging.TsTypeFace;
 import net.xuset.tSquare.math.rect.IRectangleR;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.tSquare.system.input.InputHolder;
@@ -12,9 +14,11 @@ import net.xuset.tSquare.ui.UiButton;
 import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.tSquare.ui.UiController;
 import net.xuset.tSquare.ui.UiForm;
+import net.xuset.tSquare.ui.UiLabel;
 import net.xuset.tSquare.ui.layout.UiBorderLayout;
 import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
+import net.xuset.triGame.Params;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.TriGame;
 import net.xuset.triGame.intro.host.IntroHost;
@@ -25,15 +29,17 @@ import net.xuset.triGame.intro.solo.IntroSolo;
 import net.xuset.triGame.settings.Settings;
 
 public class GameIntro implements IntroSwitcher{
-	private final UiController ui;
-	private final UiBorderLayout mainLayout;
 	private final IFileFactory fileFactory;
 	private final Settings settings;
 	private final IDrawBoard drawBoard;
 	private final InputHolder inputHolder;
+	
+	private final UiController ui;
+	private final UiBorderLayout mainLayout;
 	private final UtilityForm utilityForm = new UtilityForm();
 	private final IntroForm[] introForms = new IntroForm[GameIntroForms.values().length];
 	private final UiForm containerForm = new UiForm();
+	
 	private final IntroAnimator animator;
 	private IntroForm selectedForm = null;
 	private GameIntroForms newForm = null;
@@ -55,9 +61,17 @@ public class GameIntro implements IntroSwitcher{
 		containerForm.getBorder().setVisibility(true);
 		containerForm.getBorder().setColor(TsColor.gray);
 		
+		UiLabel lblTitle = new UiLabel(Params.GAME_NAME);
+		lblTitle.setFont(new TsFont("Arial", 70, TsTypeFace.BOLD));
+		lblTitle.setForeground(TsColor.darkGray);//new TsColor(230, 20, 20));
+		lblTitle.setShadowColor(new TsColor(200, 20, 20));
+		lblTitle.setDrawShadow(true);
+		
+		
 		UiForm mainForm = ui.getForm();
 		mainLayout = new UiBorderLayout(mainForm);
 		mainForm.setLayout(mainLayout);
+		mainLayout.add(lblTitle, UiBorderLayout.BorderPosition.NORTH);
 		mainLayout.add(containerForm, UiBorderLayout.BorderPosition.CENTER);
 		mainLayout.add(utilityForm, UiBorderLayout.BorderPosition.SOUTH);
 		
