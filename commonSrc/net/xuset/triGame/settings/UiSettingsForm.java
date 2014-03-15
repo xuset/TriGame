@@ -10,12 +10,17 @@ public class UiSettingsForm {
 	public UiComponent getUiComponent() { return frmMain; }
 	
 	public UiSettingsForm(Settings settings) {
+		this(settings, true);
+	}
+	
+	public UiSettingsForm(Settings settings, boolean showAll) {
 		frmMain = new UiForm();
 		frmMain.getLayout().setOrientation(Axis.Y_AXIS);
 		
 		frmMain.getLayout().add(new UiSettingsTouch(settings));
 		frmMain.getLayout().add(new UiSettingsSound(settings));
-		frmMain.getLayout().add(new UiSettingsZoom(settings));
+		if (showAll)
+			frmMain.getLayout().add(new UiSettingsZoom(settings));
 	}
 	
 	

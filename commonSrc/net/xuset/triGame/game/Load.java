@@ -36,6 +36,7 @@ import net.xuset.triGame.game.entities.projectiles.MortarProjectile;
 import net.xuset.triGame.game.entities.projectiles.Projectile;
 import net.xuset.triGame.game.entities.zombies.BossZombie;
 import net.xuset.triGame.game.entities.zombies.Zombie;
+import net.xuset.triGame.game.ui.PauseHandler;
 import net.xuset.triGame.game.ui.arsenal.UiTrashCan;
 
 
@@ -50,7 +51,8 @@ public abstract class Load {
 		MortarTower.INFO.spriteId,
 		HealthTower.INFO.spriteId,
 		MortarProjectile.SPRITE_ID,
-		UiTrashCan.SPRITE_ID
+		UiTrashCan.SPRITE_ID,
+		PauseHandler.SPRITE_ID
 	};
 	
 	private static final String[] soundUrlOnDisk = new String[] {

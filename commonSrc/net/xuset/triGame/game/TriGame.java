@@ -50,7 +50,7 @@ public class TriGame extends Game{
 	private boolean isGameOver = false;
 	
 	public TriGame(GameInfo gameInfo, IDrawBoard drawBoard, IFileFactory fileFactory,
-			Settings settings) {
+			InputHolder input, Settings settings) {
 		
 		super(gameInfo.getNetwork());
 		this.settings = settings;
@@ -62,7 +62,6 @@ public class TriGame extends Game{
 		this.drawBoard = drawBoard;
 		shop = new ShopManager(300);
 		shopDrawer = new ShopDrawer(shop.observer());
-		InputHolder input = drawBoard.createInputListener();
 		IImageFactory scaledFactory = new ScaledImageFactory(blockSize);
 		gameGrid = new GameGrid(100, 100);
 		background = new TiledBackground(scaledFactory);
@@ -107,10 +106,11 @@ public class TriGame extends Game{
 	protected void logicLoop() {
 		//System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
 		int frameDelta = getDelta();
+		ui.setGameOver(isGameOver);
 		
 		SoundStore.setMuteOnAll(!settings.enableSound);
 		
-		if (!isGameOver) {
+		if (!isGameOver && !ui.isPaused()) {
 			managerService.person.update(frameDelta);
 			isGameOver = gameMode.isGameOver();
 			gunManager.update(frameDelta);
@@ -122,7 +122,7 @@ public class TriGame extends Game{
 		managerService.building.update(frameDelta);
 		managerService.projectile.update(frameDelta);
 		
-		if (player.didMove() || player.isDead())
+		if (player.didMove() || player.isDead() || ui.isPaused())
 			ui.clearAttachedBuildings();
 		
 		if (player.isDead() || isGameOver) {
@@ -137,6 +137,9 @@ public class TriGame extends Game{
 		}
 		gameMode.update(frameDelta);
 		gameInput.update(frameDelta);
+		
+		if (ui.exitGameRequested())
+			shutdown();
 	}
 
 	@Override
@@ -162,13 +165,17 @@ public class TriGame extends Game{
 		particleController.draw(transG);
 		ui.draw(g, transG, blockSize);
 		
-		if (isGameOver)
-			Draw.drawGameOver(scaleG);
-		
 		Draw.drawStats(shop.getPointCount(), gameMode.getRoundNumber(),
 				managerService.zombie.getZombiesKilled(), getCurrentFps(), scaleG);
 		shopDrawer.draw(getDelta(), scaleG);
 		drawBoard.flushScreen();
+	}
+	
+	@Override
+	public void pauseGame(boolean pause) {
+		super.pauseGame(pause);
+		
+		ui.showPauseScreen(pause);
 	}
 	
 	public void shutdown() {

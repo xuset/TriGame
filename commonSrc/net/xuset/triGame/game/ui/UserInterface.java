@@ -2,9 +2,12 @@ package net.xuset.triGame.game.ui;
 
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.system.input.InputHolder;
+import net.xuset.tSquare.system.input.mouse.MouseAction;
+import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiController;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.layout.UiBorderLayout;
+import net.xuset.tSquare.util.Observer.Change;
 import net.xuset.triGame.settings.Settings;
 import net.xuset.triGame.game.PointConverter;
 import net.xuset.triGame.game.entities.buildings.BuildingGetter;
@@ -26,7 +29,7 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 	private final ArsenalForm arsenalForm;
 	private final UpgradeForm upgradeForm;
 	private final BuildingUpgradeSetter upgradeSetter;
-
+	private final PauseHandler pauseHandler;
 	private final ArsenalItemAdder arsenalItemAdder;
 	private final GameInput gameInput;
 	
@@ -46,8 +49,9 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		arsenalForm = new ArsenalForm(attacher, shop, upgrades);
 		upgradeSetter = new BuildingUpgradeSetter(buildingGetter, pointConverter,
 				(UiFormSwitcher) this, upgrades, (UiCollisionDetector) this);
+		pauseHandler = new PauseHandler(controller.getPopupController(), settings);
 		
-		input.getMouse().watch(upgradeSetter);
+		input.getMouse().watch(new MouseObserver());
 
 		UiBorderLayout layout = new UiBorderLayout(controller.getForm());
 		controller.getForm().setLayout(layout);
@@ -72,12 +76,8 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		}
 	}
 	
-	private void switchView(UiForm f) {
-		baseForm.getLayout().clearComponents();
-		baseForm.getLayout().add(f);
-	}
-	
 	public void draw(IGraphics g, IGraphics transG, int blockSize) {
+		pauseHandler.update();
 		controller.setScale(blockSize / 50.0f);
 		controller.draw(g);
 		attacher.draw(transG);
@@ -88,8 +88,41 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 	public boolean isCollidingWith(float x, float y) {
 		x /= controller.getScale();
 		y /= controller.getScale();
+		boolean popupCollision = controller.getPopupController().contains(x, y);
 		//TODO maybe you dont need gameInput?
-		return gameInput.contains(x, y) || baseForm.contains(x, y);
+		return gameInput.contains(x, y) || baseForm.contains(x, y) || popupCollision;
+	}
+	
+	public void showPauseScreen(boolean showPause) {
+		pauseHandler.setPause(showPause);
+	}
+	
+	public boolean isPaused() {
+		return pauseHandler.isPaused();
+	}
+	
+	public void setGameOver(boolean isGameOver) {
+		pauseHandler.setGameOver(isGameOver);
+	}
+	
+	private void switchView(UiForm f) {
+		baseForm.getLayout().clearComponents();
+		baseForm.getLayout().add(f);
+	}
+	
+	public boolean exitGameRequested() {
+		return pauseHandler.exitGameRequested();
+	}
+	
+	private class MouseObserver implements Change<TsMouseEvent> {
+
+		@Override
+		public void observeChange(TsMouseEvent t) {
+			if (t.action == MouseAction.PRESS && !isCollidingWith(t.x, t.y))
+				pauseHandler.setPause(false);
+			upgradeSetter.observeChange(t);
+		}
+		
 	}
 	
 }

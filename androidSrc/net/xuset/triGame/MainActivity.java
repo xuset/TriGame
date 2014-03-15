@@ -4,8 +4,8 @@ import net.xuset.tSquare.files.AssetFileFactory;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.system.DrawBoard;
 import net.xuset.tSquare.system.IDrawBoard;
-import net.xuset.triGame.intro.GameIntro;
 import net.xuset.triGame.intro.IpGetterIFace;
+import net.xuset.triGame.intro.MainStartup;
 import net.xuset.triGame.settings.Settings;
 
 import android.os.Bundle;
@@ -43,8 +43,7 @@ public class MainActivity extends Activity {
 			IFileFactory fileFactory = new AssetFileFactory(context.getAssets());
 			Settings settings = createDefaultSettings();
 			IpGetterIFace ipGetter = new WifiIpGetter(context);
-			GameIntro intro = new GameIntro(drawBoard, fileFactory, settings, ipGetter);
-			intro.createGame().startGame();
+			new MainStartup(drawBoard, fileFactory, settings, ipGetter);
 		}
 		
 		private Settings createDefaultSettings() {

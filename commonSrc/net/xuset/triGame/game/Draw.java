@@ -58,20 +58,6 @@ public final class Draw {
 		Draw.drawXCenteredText("Pick your zone.", TsColor.red,
 				standardFont, 2/50.0f, TsColor.black, offsetX, offsetY, g);
 	}
-
-	private static final IFont gameOverFont = new TsFont("Arial", 70/50.f, TsTypeFace.BOLD);
-	private static final TsColor gameOverColor = new TsColor(255,0,0);
-	public static void drawGameOver(IGraphics g) {
-		g.setFont(gameOverFont);
-		String text = "GAME  OVER!";
-		float textWidth = g.getTextWidth(text);
-		float x = (float) (g.getView().getCenterX() - textWidth/2);
-		float y = (float) (g.getView().getCenterY());
-		g.setColor(TsColor.black);
-		g.drawText(x + 2/50.0f, y + 2/50.0f, text);
-		g.setColor(gameOverColor);
-		g.drawText(x, y, text);
-	}
 	
 	public static void drawXCenteredText(String text, TsColor color, IFont font,
 			float shadowOffset, TsColor shadow, float offsetX, float y, IGraphics g) {

@@ -17,7 +17,7 @@ public class DevStart {
 			Settings settings) {
 		
 		GameInfo gInfo = new GameInfo(Network.createOffline(), gameType, NetworkType.SOLO);
-		TriGame tGame = new TriGame(gInfo, db, ff, settings);
+		TriGame tGame = new TriGame(gInfo, db, ff, db.createInputListener(), settings);
 		tGame.startGame();
 	}
 	
@@ -26,7 +26,7 @@ public class DevStart {
 		
 		Network n = Network.connectToServer(ip, port, IdGenerator.getNext());
 		GameInfo gInfo = new GameInfo(n, type, NetworkType.SOLO);
-		TriGame tGame = new TriGame(gInfo, db, ff, settings);
+		TriGame tGame = new TriGame(gInfo, db, ff, db.createInputListener(), settings);
 		tGame.startGame();
 	}
 	
@@ -36,7 +36,7 @@ public class DevStart {
 		Network n = Network.startupServer(port);
 		n.waitForClientsToConnect(players, Integer.MAX_VALUE);
 		GameInfo gInfo = new GameInfo(n, type, NetworkType.SOLO);
-		TriGame tGame = new TriGame(gInfo, db, ff, settings);
+		TriGame tGame = new TriGame(gInfo, db, ff, db.createInputListener(), settings);
 		tGame.startGame();
 	}
 	

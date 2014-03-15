@@ -21,6 +21,7 @@ import net.xuset.triGame.game.DevStart;
 import net.xuset.triGame.game.GameMode.GameType;
 import net.xuset.triGame.intro.GameIntro;
 import net.xuset.triGame.intro.IpGetterIFace;
+import net.xuset.triGame.intro.MainStartup;
 import net.xuset.triGame.settings.Settings;
 
 
@@ -35,8 +36,9 @@ public class DesktopStartup {
 		IDrawBoard db1 = createWindow("TriGame Dev - server");
 		//IDrawBoard db2 = createWindow("TriGame Dev - client");
 		
-		GameIntro gameIntro = new GameIntro(db1, new FileFactory(), settings, new IpGetter());
-		gameIntro.createGame().startGame();
+		new MainStartup(db1, new FileFactory(), settings, new IpGetter());
+		//GameIntro gameIntro = new GameIntro(db1, new FileFactory(), settings, new IpGetter());
+		//gameIntro.createGame().startGame();
 		//DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory(), settings);
 		//DevStart.startLocalMultiplayer(GameType.SURVIVAL, db1, db2, new FileFactory(), settings);
 		

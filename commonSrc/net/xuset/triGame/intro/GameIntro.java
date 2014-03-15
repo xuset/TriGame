@@ -5,6 +5,7 @@ import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.rect.IRectangleR;
 import net.xuset.tSquare.system.IDrawBoard;
+import net.xuset.tSquare.system.input.InputHolder;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiButton;
@@ -29,6 +30,7 @@ public class GameIntro implements IntroSwitcher{
 	private final IFileFactory fileFactory;
 	private final Settings settings;
 	private final IDrawBoard drawBoard;
+	private final InputHolder inputHolder;
 	private final UtilityForm utilityForm = new UtilityForm();
 	private final IntroForm[] introForms = new IntroForm[GameIntroForms.values().length];
 	private final UiForm containerForm = new UiForm();
@@ -38,15 +40,16 @@ public class GameIntro implements IntroSwitcher{
 	
 	private TriGame createdGame = null;
 	
-	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory, Settings settings,
-			IpGetterIFace ipGetter) {
+	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory,
+			InputHolder inputHolder, Settings settings, IpGetterIFace ipGetter) {
 		
 		this.drawBoard = drawBoard;
 		this.fileFactory = fileFactory;
 		this.settings = settings;
+		this.inputHolder = inputHolder;
 		
 		animator = new IntroAnimator(settings.blockSize);
-		ui = new UiController(drawBoard.createInputListener().getMouse());
+		ui = new UiController(inputHolder.getMouse());
 		containerForm.setOpaque(true);
 		containerForm.setBackground(new TsColor(235, 235, 235));
 		containerForm.getBorder().setVisibility(true);
@@ -79,7 +82,7 @@ public class GameIntro implements IntroSwitcher{
 	private void tryToCreateGame() {
 		GameInfo gInfo = selectedForm.getCreatedGameInfo();
 		if (gInfo != null) {
-			createdGame = new TriGame(gInfo, drawBoard, fileFactory, settings);
+			createdGame = new TriGame(gInfo, drawBoard, fileFactory, inputHolder, settings);
 		}
 	}
 	
