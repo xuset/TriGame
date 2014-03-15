@@ -33,7 +33,7 @@ public class DesktopStartup {
 			System.setProperty("sun.java2d.opengl", "True");
 		
 		Settings settings = createDefaultSettings();
-		IDrawBoard db1 = createWindow("TriGame Dev - server");
+		IDrawBoard db1 = createWindow(Params.GAME_NAME);
 		//IDrawBoard db2 = createWindow("TriGame Dev - client");
 		
 		new MainStartup(db1, new FileFactory(), settings, new IpGetter());
