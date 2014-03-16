@@ -28,15 +28,24 @@ public class MainActivity extends Activity {
 		viewDraw.requestFocus();
 		setContentView(viewDraw);
 		
-		new AndroidGame(drawBoard, this);
+		int screenWidth = viewDraw.getResources().getDisplayMetrics().widthPixels;
+		int blockSize = getBlockSize(screenWidth);
+		new AndroidGame(drawBoard, this, blockSize);
+	}
+	
+	private int getBlockSize(int appWidth) {
+		return 50 * (appWidth / 650);
 	}
 	
 	private static class AndroidGame extends Thread {
 		private final IDrawBoard drawBoard;
 		private final Context context;
-		public AndroidGame(IDrawBoard drawBoard, Context context) {
+		private final int initBlockSize;
+		
+		public AndroidGame(IDrawBoard drawBoard, Context context, int initBlockSize) {
 			this.drawBoard = drawBoard;
 			this.context = context;
+			this.initBlockSize = initBlockSize;
 			start();
 		}
 		
@@ -51,8 +60,8 @@ public class MainActivity extends Activity {
 		
 		private Settings createDefaultSettings() {
 			Settings s = new Settings();
-			s.blockSize = 120;
-			s.defaultBlockSize = 120;
+			s.blockSize = initBlockSize;
+			s.defaultBlockSize = initBlockSize;
 			s.drawUiTouch = true;
 			s.enableSound = true;
 			return s;
