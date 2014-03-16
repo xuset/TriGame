@@ -37,14 +37,15 @@ class GameIntro implements IntroSwitcher{
 	private TriGame createdGame = null;
 	
 	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory,
-			InputHolder inputHolder, Settings settings, IpGetterIFace ipGetter) {
+			InputHolder inputHolder, Settings settings, IpGetterIFace ipGetter,
+			IUpdateChecker updateChecker) {
 		
 		this.drawBoard = drawBoard;
 		this.fileFactory = fileFactory;
 		this.settings = settings;
 		this.inputHolder = inputHolder;
 		
-		utilityForm = new UtilityForm((IntroSwitcher) this);
+		utilityForm = new UtilityForm((IntroSwitcher) this, updateChecker);
 		animator = new IntroAnimator(settings.blockSize);
 		ui = new UiController(inputHolder.getMouse());
 		containerForm.setOpaque(true);

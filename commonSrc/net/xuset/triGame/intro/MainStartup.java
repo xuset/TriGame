@@ -12,15 +12,17 @@ public class MainStartup {
 	private final InputHolder inputHolder;
 	private final Settings settings;
 	private final IpGetterIFace ipGetter;
+	private final IUpdateChecker updateChecker;
 	
 	public MainStartup(IDrawBoard drawBoard, IFileFactory fileFactory,
-			Settings settings, IpGetterIFace ipGetter) {
+			Settings settings, IpGetterIFace ipGetter, IUpdateChecker updateChecker) {
 		
 		this.drawBoard = drawBoard;
 		this.fileFactory = fileFactory;
 		this.settings = settings;
 		this.ipGetter = ipGetter;
 		this.inputHolder = drawBoard.createInputListener();
+		this.updateChecker = updateChecker;
 		
 		while (true) {
 			resetInputHolder();
@@ -38,7 +40,7 @@ public class MainStartup {
 	
 	private TriGame createGame() {
 		GameIntro intro = new GameIntro(drawBoard, fileFactory,
-				inputHolder, settings, ipGetter);
+				inputHolder, settings, ipGetter, updateChecker);
 		
 		return intro.createGame();
 	}

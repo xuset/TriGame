@@ -35,7 +35,7 @@ public class DesktopStartup {
 		IDrawBoard db1 = createWindow(Params.GAME_NAME);
 		//IDrawBoard db2 = createWindow("TriGame Dev - client");
 		
-		new MainStartup(db1, new FileFactory(), settings, new IpGetter());
+		new MainStartup(db1, new FileFactory(), settings, new IpGetter(), new UpdateChecker());
 		//GameIntro gameIntro = new GameIntro(db1, new FileFactory(), settings, new IpGetter());
 		//gameIntro.createGame().startGame();
 		//DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory(), settings);
