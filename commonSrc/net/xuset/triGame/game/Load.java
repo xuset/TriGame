@@ -36,6 +36,9 @@ import net.xuset.triGame.game.entities.projectiles.MortarProjectile;
 import net.xuset.triGame.game.entities.projectiles.Projectile;
 import net.xuset.triGame.game.entities.zombies.BossZombie;
 import net.xuset.triGame.game.entities.zombies.Zombie;
+import net.xuset.triGame.game.guns.GunPistol;
+import net.xuset.triGame.game.guns.GunShotgun;
+import net.xuset.triGame.game.guns.GunSub;
 import net.xuset.triGame.game.ui.PauseHandler;
 import net.xuset.triGame.game.ui.arsenal.UiTrashCan;
 
@@ -56,7 +59,11 @@ public abstract class Load {
 	};
 	
 	private static final String[] soundUrlOnDisk = new String[] {
-		Projectile.SOUND_ID
+		Tower.SOUND_ID,
+		MortarProjectile.SOUND_ID,
+		GunPistol.SOUND_ID,
+		GunSub.SOUND_ID,
+		GunShotgun.SOUND_ID
 	};
 	
 	static void loadResources(int blockSize, IFileFactory fileFactory) {
@@ -93,6 +100,8 @@ public abstract class Load {
 	
 	private static void loadSoundsOnDisk(IFileFactory ff) {
 		for (String url : soundUrlOnDisk) {
+			if (SoundStore.get(url) != null)
+				continue;
 			IFile file = ff.open(url);
 			ISound sound = SoundFactory.instance.loadSound(file);
 			SoundStore.add(url, sound);

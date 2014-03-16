@@ -14,6 +14,8 @@ import net.xuset.triGame.game.shopping.UpgradeItem;
 
 
 public class Tower extends Building {
+	public static final String SOUND_ID = "media/Laser_Shot.wav";
+	
 	private static final int initialSpeed = 14;
 	private static final int initialShootDelay = 500;
 	private static final int initialDamage = -35;
@@ -34,6 +36,8 @@ public class Tower extends Building {
 	protected int getFireRate() { return (int) fireRateUpgrade.getValue(); }
 	
 	protected boolean readyToFire() { return System.currentTimeMillis() >= lastShot + getFireRate(); }
+	
+	protected String getFireShotSoundId() { return SOUND_ID; }
 	
 	public Tower(double x, double y, ParticleController pc, ZombieTargeter zombieTargeter,
 			ProjectileManager projectile, EntityKey key) {
@@ -88,7 +92,8 @@ public class Tower extends Building {
 		int tSpeed = initialSpeed;
 		if (accuracyUpgrade != null)
 			tSpeed = (int) accuracyUpgrade.getValue();
-		projectile.create(getCenterX(), getCenterY(), getAngle(), tSpeed, (int) damageUpgrade.getValue(), true);
+		projectile.create(getCenterX(), getCenterY(), getAngle(), tSpeed,
+				(int) damageUpgrade.getValue(), true, getFireShotSoundId());
 	}
 	
 	public static final BuildingInfo INFO = new BuildingInfo(

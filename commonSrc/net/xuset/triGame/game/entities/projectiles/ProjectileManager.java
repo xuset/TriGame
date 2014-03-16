@@ -32,10 +32,10 @@ public class ProjectileManager extends Manager<Projectile> {
 	}
 	
 	public Projectile create(double x, double y, double angle, int speed, int damage,
-			boolean noBuildingCollisions) {
+			boolean noBuildingCollisions, String soundId) {
 		
 		Projectile p = new Projectile(Projectile.SPRITE_ID, x, y, angle, speed, damage,
-				noBuildingCollisions, managers, gameGrid);
+				noBuildingCollisions, managers, gameGrid, soundId);
 		add(p);
 		creator.createOnNetwork(p, this);
 		return p;

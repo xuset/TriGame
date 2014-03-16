@@ -8,6 +8,8 @@ import net.xuset.triGame.game.shopping.UpgradeItem;
 
 
 public class GunShotgun extends AbstractGun {
+	public static final String SOUND_ID = "media/Shotgun_Shot.wav";
+	
 	private static final int initialSpeed = 14;
 	private static final int initialDamage = -20;
 	private static final int initialRange = 10; //in degrees
@@ -23,7 +25,7 @@ public class GunShotgun extends AbstractGun {
 				new ShopItem("Shotgun", 200, true), //to buy the gun
 				500,         //semi-shot delay
 				true,       //full auto
-				700);          //auto-shot delay
+				700);       //auto-shot delay
 		
 		
 		fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 50), 3, autoShotDelay, -50);
@@ -45,7 +47,8 @@ public class GunShotgun extends AbstractGun {
 		for (int i = 0; i < bursts; i++) {
 			double relativeAngle = deltaAngle * (i + 1 - (bursts + 1) / 2.0);
 			double angle = player.getAngle() + relativeAngle;
-			projManager.create(x, y, angle, initialSpeed, (int) damageUpgrade.getValue(), false);
+			projManager.create(x, y, angle, initialSpeed, (int) damageUpgrade.getValue(),
+					false, SOUND_ID);
 		}
 	}
 	

@@ -10,6 +10,7 @@ import net.xuset.triGame.game.entities.zombies.Zombie;
 
 
 public class MortarProjectile extends Projectile {
+	public static final String SOUND_ID = "media/Mortar_Shot.wav";
 	public static final String SPRITE_ID = "media/MortarProjectile.png";
 	private static final double explodedTime = 300;
 	private static final double splashRadius = 1.0;
@@ -23,7 +24,8 @@ public class MortarProjectile extends Projectile {
 	protected MortarProjectile(double startX, double startY, double angle,
 			double speed, int damage, ManagerService managers, GameGrid gameGrid) {
 		
-		super(SPRITE_ID, startX, startY, angle, speed, damage, true, managers, gameGrid);
+		super(SPRITE_ID, startX, startY, angle, speed, damage, true, managers,
+				gameGrid, SOUND_ID);
 		timeCreated = System.currentTimeMillis();
 	}
 	

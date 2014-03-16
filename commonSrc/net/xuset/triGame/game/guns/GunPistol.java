@@ -8,6 +8,8 @@ import net.xuset.triGame.game.shopping.UpgradeItem;
 
 
 public class GunPistol extends AbstractGun {
+	public static final String SOUND_ID = "media/Pistol_Shot.wav";
+	
 	private static final int shotDelayDelta = -20;
 	private static final int initialDamage = -35;
 	private static final int damageDelta = -8;
@@ -38,7 +40,8 @@ public class GunPistol extends AbstractGun {
 		double y = player.getCenterY();
 		double angle = player.getAngle();
 		
-		projManager.create(x, y, angle, initialSpeed, (int) damageUpgrade.getValue(), false);
+		projManager.create(x, y, angle, initialSpeed, (int) damageUpgrade.getValue(),
+				false, SOUND_ID);
 	}
 	
 	private Observer.Change<UpgradeItem> fireRateObserve = new Observer.Change<UpgradeItem>() {

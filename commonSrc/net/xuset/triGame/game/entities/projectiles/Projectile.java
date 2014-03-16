@@ -6,7 +6,6 @@ import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.math.point.IPointR;
 import net.xuset.tSquare.math.point.Point;
-import net.xuset.tSquare.system.sound.ISound;
 import net.xuset.tSquare.system.sound.SoundStore;
 import net.xuset.triGame.game.GameGrid;
 import net.xuset.triGame.game.ManagerService;
@@ -16,19 +15,17 @@ import net.xuset.triGame.game.entities.zombies.Zombie;
 
 public class Projectile extends Entity {
 	public static final String SPRITE_ID = "projectile";
-	public static final String SOUND_ID = "media/Pistol_Shot.wav";
-	
-	private final ISound fireSound = SoundStore.get(SOUND_ID);
 
 	protected final GameGrid gameGrid;
 	protected final ManagerService managers;
 	protected NetVar.nDouble speed;
 	protected NetVar.nInt damage;
 	protected NetVar.nBool noBuildingCollisions;
+	protected NetVar.nString soundId;
 
 	protected Projectile(String sSpriteId, double startX, double startY,
 			double angle, double speed, int damage, boolean noBuildingCollisions,
-			ManagerService managers, GameGrid gameGrid) {
+			ManagerService managers, GameGrid gameGrid, String soundId) {
 		
 		super(sSpriteId, startX, startY);
 		this.speed.set(speed);
@@ -37,13 +34,19 @@ public class Projectile extends Entity {
 		this.managers = managers;
 		this.gameGrid = gameGrid;
 		setAngle(angle);
-		fireSound.play();
+		this.soundId.set(soundId);
+		playSound();
 	}
 	
 	protected Projectile(GameGrid gameGrid, EntityKey key) {
 		super(key);
 		this.gameGrid = gameGrid;
 		managers = null;
+		playSound();
+	}
+	
+	protected void playSound() {
+		SoundStore.get(soundId.get()).play();
 	}
 
 	@Override
@@ -106,5 +109,6 @@ public class Projectile extends Entity {
 		speed = new NetVar.nDouble(0.0, "speed", objClass);
 		damage = new NetVar.nInt(0, "damage", objClass);
 		noBuildingCollisions = new NetVar.nBool(true, "noBuildingCollisions", objClass);
+		soundId = new NetVar.nString("", "soundId", objClass);
 	}
 }
