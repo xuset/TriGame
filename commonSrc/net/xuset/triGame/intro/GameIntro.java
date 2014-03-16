@@ -8,16 +8,11 @@ import net.xuset.tSquare.imaging.TsTypeFace;
 import net.xuset.tSquare.math.rect.IRectangleR;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.tSquare.system.input.InputHolder;
-import net.xuset.tSquare.system.input.mouse.MouseAction;
-import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
-import net.xuset.tSquare.ui.UiButton;
 import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.tSquare.ui.UiController;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.UiLabel;
 import net.xuset.tSquare.ui.layout.UiBorderLayout;
-import net.xuset.tSquare.ui.layout.UiQueueLayout;
-import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.Params;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.TriGame;
@@ -31,7 +26,7 @@ class GameIntro implements IntroSwitcher{
 	
 	private final UiController ui;
 	private final UiBorderLayout mainLayout;
-	private final UtilityForm utilityForm = new UtilityForm();
+	private final UtilityForm utilityForm;
 	private final IntroForm[] introForms = new IntroForm[GameIntroForms.values().length];
 	private final UiForm containerForm = new UiForm();
 	
@@ -49,6 +44,7 @@ class GameIntro implements IntroSwitcher{
 		this.settings = settings;
 		this.inputHolder = inputHolder;
 		
+		utilityForm = new UtilityForm((IntroSwitcher) this);
 		animator = new IntroAnimator(settings.blockSize);
 		ui = new UiController(inputHolder.getMouse());
 		containerForm.setOpaque(true);
@@ -58,7 +54,7 @@ class GameIntro implements IntroSwitcher{
 		
 		UiLabel lblTitle = new UiLabel(Params.GAME_NAME);
 		lblTitle.setFont(new TsFont("Arial", 70, TsTypeFace.BOLD));
-		lblTitle.setForeground(TsColor.darkGray);//new TsColor(230, 20, 20));
+		lblTitle.setForeground(TsColor.darkGray);
 		lblTitle.setShadowColor(new TsColor(200, 20, 20));
 		lblTitle.setDrawShadow(true);
 		
@@ -145,46 +141,6 @@ class GameIntro implements IntroSwitcher{
 	@Override
 	public void switchToForm(GameIntroForms newForm) {
 		this.newForm = newForm;
-	}
-	
-	private class UtilityForm extends UiForm {
-		private final UiButton btnBack = new UiButton("<- back");
-		private final UiButton btnSettings = new UiButton("Settings");
-		
-		public void setButtonOptions(boolean showBack, boolean showSettings) {
-			getLayout().clearComponents();
-			if (showBack)
-				getLayout().add(btnBack);
-			if (showSettings)
-				getLayout().add(btnSettings);
-		}
-		
-		UtilityForm() {
-			UiQueueLayout layout = new UiQueueLayout(10, 5, this);
-			setLayout(layout);
-			
-			btnBack.addMouseListener(new BtnBackAction());
-			btnSettings.addMouseListener(new BtnSettingsAction());
-			
-			layout.add(btnBack);
-			layout.add(btnSettings);
-		}
-		
-		private class BtnBackAction implements Observer.Change<TsMouseEvent> {
-			@Override
-			public void observeChange(TsMouseEvent t) {
-				if (t.action == MouseAction.PRESS)
-					switchToForm(GameIntroForms.MAIN);
-			}
-		}
-		
-		private class BtnSettingsAction implements Observer.Change<TsMouseEvent> {
-			@Override
-			public void observeChange(TsMouseEvent t) {
-				if (t.action == MouseAction.PRESS)
-					switchToForm(GameIntroForms.SETTINGS);
-			}
-		}
 	}
 
 }
