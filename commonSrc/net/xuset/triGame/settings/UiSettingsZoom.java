@@ -8,7 +8,7 @@ import net.xuset.tSquare.ui.UiSlider;
 import net.xuset.tSquare.ui.UiSlider.SliderChange;
 
 class UiSettingsZoom extends UiForm {
-	private static final double minZoom = 0.25, maxZoom = 4.0;
+	private static final double minZoom = 0.5, maxZoom = 2.0;
 	
 	private final Settings settings;
 	private final UiLabel lblZoom = new UiLabel();
