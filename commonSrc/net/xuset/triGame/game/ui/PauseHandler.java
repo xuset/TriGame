@@ -52,10 +52,10 @@ public class PauseHandler {
 		}
 	}
 	
-	public void setGameOver(boolean setGameOver) {
-		isGameOver = setGameOver;
-		if (isGameOver)
-			setPause(true, false, true);
+	public void setGameOver(int roundsSurvived) {
+		pauseForm.lblRoundsSurvived.setText("Survived " + roundsSurvived + " rounds");
+		isGameOver = true;
+		setPause(true, false, true);
 	}
 	
 	public void setPause(boolean isPaused) {
@@ -91,6 +91,7 @@ public class PauseHandler {
 		private final UiComponent settingsComponent;
 		private final UiButton btnExit = new UiButton("END GAME");
 		private final UiLabel lblGameOver = new UiLabel("GAME  OVER!");
+		private final UiLabel lblRoundsSurvived = new UiLabel("");
 
 		public PauseForm() {
 			settingsComponent = new UiSettingsForm(settings, false).getUiComponent();
@@ -114,6 +115,11 @@ public class PauseHandler {
 			lblGameOver.setDrawShadow(true);
 			lblGameOver.setShadowColor(TsColor.black);
 			
+			lblRoundsSurvived.setFont(new TsFont("Arial", 30, TsTypeFace.BOLD));
+			lblRoundsSurvived.setForeground(TsColor.red);
+			lblRoundsSurvived.setDrawShadow(true);
+			lblRoundsSurvived.setShadowColor(TsColor.black);
+			
 			setOptions(true, false);
 		}
 		
@@ -121,8 +127,10 @@ public class PauseHandler {
 			innerForm.getLayout().clearComponents();
 			getLayout().clearComponents();
 			
-			if (showGameOver)
+			if (showGameOver) {
 				getLayout().add(lblGameOver);
+				getLayout().add(lblRoundsSurvived);
+			}
 			
 			getLayout().add(innerForm);
 			

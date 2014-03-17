@@ -107,13 +107,14 @@ public class TriGame extends Game{
 	protected void logicLoop() {
 		//System.out.println("free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024));
 		int frameDelta = getDelta();
-		ui.setGameOver(isGameOver);
 		
 		SoundStore.setMuteOnAll(!settings.enableSound);
 		
 		if (!isGameOver && !ui.isPaused()) {
 			managerService.person.update(frameDelta);
 			isGameOver = gameMode.isGameOver();
+			if (isGameOver)
+				ui.setGameOver(gameMode.getRoundNumber());
 			gunManager.update(frameDelta);
 		}
 

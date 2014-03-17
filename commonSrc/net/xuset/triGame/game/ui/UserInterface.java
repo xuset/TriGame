@@ -101,8 +101,8 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		return pauseHandler.isPaused();
 	}
 	
-	public void setGameOver(boolean isGameOver) {
-		pauseHandler.setGameOver(isGameOver);
+	public void setGameOver(int roundsSurvived) {
+		pauseHandler.setGameOver(roundsSurvived);
 	}
 	
 	private void switchView(UiForm f) {
