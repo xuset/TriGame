@@ -33,7 +33,7 @@ public final class Draw {
 		double visibility = Math.max(0, -Math.abs( (timeDiff - totalTime/2.0) / (totalTime/2.0) ) + 1);
 		TsColor color = new TsColor(230, 20, 20, (int) (255 * visibility));
 		g.setFont(roundNumberFont);
-		float y = (float) (view.getCenterY() - g.getTextHeight()/4);
+		float y = (float) (view.getY() + view.getHeight() * 0.1 + g.getTextHeight());
 		float x = (float) (view.getCenterX() - g.getTextWidth(message)/2);
 
 		g.setColor(color);
