@@ -141,9 +141,6 @@ public abstract class Load {
 	}
 	
 	private static void spriteSpawnHole(int blockSize) {
-		if (Sprite.exists(SpawnHole.SPRITE_ID))
-			return;
-
 		IImageFactory factory = new ImageFactory();
 		final float scale = blockSize / 50.0f; //drawn in 50x50px
 		IImage image = factory.createEmpty(blockSize, blockSize);
@@ -157,36 +154,24 @@ public abstract class Load {
 	}
 	
 	private static void spritePerson(int blockSize) {
-		if (Sprite.exists(Person.SPRITE_ID))
-			return;
-		
 		Sprite.add(new Sprite(Person.SPRITE_ID,
 				triangleImage(TsColor.cyan, blockSize),
 				1.0f / blockSize));
 	}
 	
 	private static void spriteZombie(int blockSize) {
-		if (Sprite.exists(Zombie.SPRITE_ID))
-			return;
-		
 		Sprite.add(new Sprite(Zombie.SPRITE_ID,
 				triangleImage(TsColor.red, blockSize),
 				1.0f / blockSize));
 	}
 	
 	private static void spriteBossZombie(int blockSize) {
-		if (Sprite.exists(BossZombie.SPRITE_ID))
-			return;
-		
 		Sprite.add(new Sprite(BossZombie.SPRITE_ID,
 				triangleImage(TsColor.black, blockSize),
 				1.0f / blockSize));
 	}
 	
 	private static void spriteBarrier(int blockSize) {
-		if (Sprite.exists(Barrier.INFO.spriteId))
-			return;
-
 		final float scale = blockSize / 50.0f;
 
 		IImageFactory factory = new ImageFactory();
@@ -202,9 +187,6 @@ public abstract class Load {
 	}
 	
 	private static void spriteTower(int blockSize) {
-		if (Sprite.exists(Tower.INFO.spriteId))
-			return;
-
 		IImageFactory factory = new ImageFactory();
 		IImage image = factory.createEmpty(blockSize, blockSize);
 		IGraphics g = new ScaledGraphics(image.getGraphics(), blockSize / 50.0f);
@@ -218,9 +200,6 @@ public abstract class Load {
 	}
 	
 	private static void spriteSmallTower(int blockSize) {
-		if (Sprite.exists(SmallTower.INFO.spriteId))
-			return;
-
 		IImageFactory factory = new ImageFactory();
 		IImage image = factory.createEmpty(blockSize, blockSize);
 		IGraphics g = new ScaledGraphics(image.getGraphics(), blockSize / 50.0f);
@@ -234,21 +213,7 @@ public abstract class Load {
 		
 	}
 	
-	/*private static void spriteLaserTower() {
-		if (Sprite.exists(LaserTower.INFO.spriteId))
-			return;
-		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setColor(Color.ORANGE);
-		g.fillOval(0, 0, 50, 50);
-		g.dispose();
-		new Sprite(LaserTower.INFO.spriteId, image);
-	}*/
-	
 	private static void spriteProjectile(int blockSize) {
-		if (Sprite.exists(Projectile.SPRITE_ID))
-			return;
-
 		IImageFactory factory = new ImageFactory();
 		int height = blockSize / 5;
 		int width = blockSize < 25 ? 1 : blockSize / 25;
@@ -261,11 +226,6 @@ public abstract class Load {
 	}
 	
 	private static void spriteHQ(int blockSize) {
-		if (Sprite.exists(HeadQuarters.INFO.spriteId))
-			return;
-		
-		
-
 		IImageFactory factory = new ImageFactory();
 		IImage image = factory.createEmpty(blockSize * 2, blockSize * 2);
 		IGraphics g = new ScaledGraphics(image.getGraphics(), blockSize / 50.0f);
@@ -287,9 +247,6 @@ public abstract class Load {
 	}
 	
 	private static void spritePointParticle(int blockSize) {
-		if (Sprite.exists(PointParticle.SPRITE_ID))
-			return;
-
 		IImageFactory factory = new ImageFactory();
 		int size = (int) (0.12 * blockSize);
 		IImage image = factory.createEmpty(size, size);
@@ -320,25 +277,16 @@ public abstract class Load {
 	}
 	
 	private static void spriteHealthPack(int blockSize) {
-		if (Sprite.exists(DropPack.HealthInfo.SPRITE_ID))
-			return;
-		
 		IImage image = createDropPack(TsColor.white, TsColor.red, blockSize);
 		Sprite.add(new Sprite(DropPack.HealthInfo.SPRITE_ID, image, 1.0f / blockSize));
 	}
 	
 	private static void spritePointPack(int blockSize) {
-		if (Sprite.exists(DropPack.PointInfo.SPRITE_ID))
-			return;
-		
 		IImage image = createDropPack(TsColor.gray, TsColor.yellow, blockSize);
 		Sprite.add(new Sprite(DropPack.PointInfo.SPRITE_ID, image, 1.0f / blockSize));
 	}
 	
 	private static void spriteStrongWall(int blockSize) {
-		if (Sprite.exists(StrongWall.INFO.spriteId))
-			return;
-
 		final float scale = blockSize / 50.0f;
 
 		IImageFactory factory = new ImageFactory();
