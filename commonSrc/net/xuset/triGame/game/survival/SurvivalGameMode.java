@@ -33,8 +33,8 @@ public class SurvivalGameMode extends GameMode {
 		
 		this.shop = shop;
 		this.gameGrid = gameGrid;
-		safeBoard = new SurvivalSafeBoard(gameGrid.getGridWidth() / 2.0,
-				gameGrid.getGridHeight() / 2.0, imageFactory);
+		safeBoard = new SurvivalSafeBoard(gameGrid.getGridWidth() / 2.0 + 0.5,
+				gameGrid.getGridHeight() / 2.0 + 0.5, imageFactory);
 		zombieTargeter = new ZombieTargeter();
 		gameRound = new SurvivalRound(objController, isServer, roundInput, isGameOver);
 		zombieHandler = new ZombieHandler(gameRound.onNewRound);
