@@ -97,7 +97,7 @@ public class BuildingAttacher implements GameDrawable{
 	private class MouseObserver implements Change<TsMouseEvent> {
 		@Override
 		public void observeChange(TsMouseEvent t) {
-			if (t.action == MouseAction.DRAG || t.action == MouseAction.MOVE) {
+			if ((t.action == MouseAction.PRESS || t.action == MouseAction.DRAG)) {
 				gameX = (int) pointConverter.screenToGameX(t.x);
 				gameY = (int) pointConverter.screenToGameY(t.y);
 				realX = t.x;
