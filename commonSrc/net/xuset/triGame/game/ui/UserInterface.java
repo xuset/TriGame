@@ -90,7 +90,9 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		y /= controller.getScale();
 		boolean popupCollision = controller.getPopupController().contains(x, y);
 		//TODO maybe you dont need gameInput?
-		return gameInput.contains(x, y) || baseForm.contains(x, y) || popupCollision;
+		return (gameInput != null && gameInput.contains(x, y)) ||
+				(baseForm != null && baseForm.contains(x, y)) ||
+				popupCollision;
 	}
 	
 	public void showPauseScreen(boolean showPause) {
