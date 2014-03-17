@@ -11,6 +11,7 @@ import net.xuset.tSquare.imaging.IImageFactory;
 import net.xuset.tSquare.imaging.ScaledGraphics;
 import net.xuset.tSquare.imaging.ScaledImageFactory;
 import net.xuset.tSquare.imaging.TransformedGraphics;
+import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.rect.IRectangleW;
 import net.xuset.tSquare.math.rect.Rectangle;
 import net.xuset.tSquare.system.IDrawBoard;
@@ -151,8 +152,9 @@ public class TriGame extends Game{
 		ScaledGraphics scaleG = new ScaledGraphics(g, blockSize);
 		viewableRect.setDimensions(scaleG.getView().getWidth(), scaleG.getView().getHeight());
 		IGraphics transG = new TransformedGraphics(scaleG, viewableRect);
-
-		g.clear();
+		
+		g.setColor(TsColor.darkGray);
+		g.fillRect(0, 0, (float) g.getView().getWidth(), (float) g.getView().getHeight());
 		background.draw(transG);
 		managerService.pointWell.draw(transG);
 		managerService.building.draw(transG);
