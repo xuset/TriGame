@@ -55,7 +55,7 @@ public class PointCollector extends Building {
 	public static final BuildingInfo INFO = new BuildingInfo(
 			"media/PointCollector.png",	//spriteId
 			"pointCollector",			//Creator hash map key
-			300,						//visibilityRadius
+			6,						//visibilityRadius
 			"Want to collect more points? Than place this over a Point Well",
 			new ShopItem("Point Collector", 300),
 			true,   //has a healthBar
