@@ -44,7 +44,7 @@ public class BuildingUpgradeSetter implements Change<TsMouseEvent>, GameDrawable
 		
 		//TODO this may cause a concurrentModificationException 
 		Building b = buildingGetter.getByLocation(gameX, gameY);
-		if (b != null && b.upgrades != null && !b.upgrades.items.isEmpty()) {
+		if (b != null && b.upgrades != null && b.owned() && !b.upgrades.items.isEmpty()) {
 			Sprite s = Sprite.get(b.getSpriteId());
 			uiUpgrades.showUpgrades(s, b.upgrades);
 			uiSwitcher.switchView(UiFormTypes.UPGRADES);
