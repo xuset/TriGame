@@ -157,12 +157,18 @@ public class Zombie extends Entity {
 			moveForward(distance);
 		}
 		if (!inflictDamage(managers.person, frameDelta)) {
-			double forwardX = getCenterX() + Math.cos(getAngle()) * getWidth() * 0.9;
-			double forwardY = getCenterY() - Math.sin(getAngle()) * getHeight() * 0.9;
-			if (!managers.building.objectGrid.isBlockOpen(forwardX, forwardY)){
+			if (isHittingBuilding())
 				inflictDamage(managers.building, frameDelta);
-			}
 		}
+	}
+	
+	private boolean isHittingBuilding() {
+		double forwardX = getCenterX() + Math.cos(getAngle()) * getWidth() * 0.9;
+		double forwardY = getCenterY() - Math.sin(getAngle()) * getHeight() * 0.9;
+		if (managers.building.objectGrid.isBlockOpen(forwardX, forwardY)) {
+			return !managers.building.objectGrid.isBlockOpen(getCenterX(), getCenterY());
+		}
+		return true;
 	}
 	
 	private boolean inflictDamage(Manager<?> manager, int frameDelta) {
@@ -178,7 +184,7 @@ public class Zombie extends Entity {
 	private void hitBack(double distance) {
 		distance = (-1 * distance * speedCoEfficient);
 		moveForward(distance);
-		if (!managers.building.objectGrid.isRectangleOpen(hitbox))
+		if (isHittingBuilding())
 			moveForward(-1 * distance);
 	}
 }
