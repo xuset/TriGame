@@ -38,7 +38,7 @@ public abstract class PointR implements IPointR{
 		
 		double angle = 0.0;
 		if (dx == 0)
-			return  Math.PI;
+			return  dy > 0 ? Math.PI / 2 : Math.PI * 3.0 / 2;
 		angle = Math.atan(dy / dx);
 		if (dx < 0)
 			angle += Math.PI;
