@@ -112,9 +112,8 @@ public class TriGame extends Game{
 		
 		if (!isGameOver && !ui.isPaused()) {
 			managerService.person.update(frameDelta);
-			isGameOver = gameMode.isGameOver();
-			if (isGameOver)
-				ui.setGameOver(gameMode.getRoundNumber());
+			if (gameMode.isGameOver())
+				setGameOver();
 			gunManager.update(frameDelta);
 		}
 
@@ -181,6 +180,13 @@ public class TriGame extends Game{
 		ui.showPauseScreen(pause);
 	}
 	
+	public void setGameOver() {
+		if (!isGameOver) {
+			isGameOver = true;
+			ui.setGameOver(gameMode.getRoundNumber());
+		}
+	}
+	
 	public void shutdown() {
 		stopGame();
 		network.disconnect();
@@ -202,11 +208,8 @@ public class TriGame extends Game{
 		public void onServerDisconnect(ClientHub hub) {
 			if (TriGame.this.isStopped())
 				return;
-			isGameOver = true;
-			//PopUp popup = new PopUp(300, 200, "Disconnected",
-			//		"Lost connection to server. The game has ended.");
+			setGameOver();
 			System.err.println("Lost connection to server. The game has ended.");
-			//popup.display();
 		}
 	}
 }
