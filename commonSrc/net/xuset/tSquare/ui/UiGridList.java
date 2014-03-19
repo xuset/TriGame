@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.xuset.tSquare.imaging.IFont;
 import net.xuset.tSquare.imaging.IGraphics;
+import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.imaging.TsFont;
 import net.xuset.tSquare.imaging.TsTypeFace;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
@@ -15,6 +16,7 @@ public class UiGridList extends UiComponent {
 	private final ArrayList<String[]> items = new ArrayList<String[]>();
 	private final int columnCount;
 	private final float[] columnWidths;
+	private final TsColor selectedColor = new TsColor(0, 220, 220);
 	
 	private IFont font = new TsFont("Arial", 12, TsTypeFace.PLAIN);
 	private float gutter = 5.0f;
@@ -67,7 +69,7 @@ public class UiGridList extends UiComponent {
 	
 	public int getSelectedRowIndex() {
 		return selectedIndex;
-		}
+	}
 	
 	public String[] getSelectedRow() {
 		return items.get(selectedIndex);
@@ -90,7 +92,7 @@ public class UiGridList extends UiComponent {
 		for (int i = 0; i < items.size(); i++) {
 			float x = getX() + gutter;
 			if (i == selectedIndex) {
-				g.setColor(getBackground().shade(-20));
+				g.setColor(getBackground().shade(-40));
 				g.fillRect(getX(), y, getWidth(), cellHeight);
 			}
 
@@ -113,6 +115,16 @@ public class UiGridList extends UiComponent {
 			g.drawRect(getX() + currentW, getY(), w, getHeight());
 			currentW += w;
 		}
+		
+		drawSelected(g);
+	}
+	
+	private void drawSelected(IGraphics g) {
+		float x = getX();
+		float y = getY() + selectedIndex * cellHeight;
+		
+		g.setColor(selectedColor);
+		g.drawRect(x, y, getWidth(), cellHeight);
 	}
 	
 	private void setDimensions(IGraphics g) {
