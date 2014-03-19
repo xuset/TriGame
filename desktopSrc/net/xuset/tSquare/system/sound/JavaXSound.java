@@ -30,8 +30,8 @@ public class JavaXSound implements ISound {
 	@Override
 	public void play() {
 		if (!SoundStore.isMuteOn()) {
-			clip.setFramePosition(0);
 			if (!clip.isActive()) {
+				clip.setFramePosition(0);
 				clip.start();
 			}
 		}
