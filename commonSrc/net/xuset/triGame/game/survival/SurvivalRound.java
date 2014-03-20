@@ -11,6 +11,8 @@ import net.xuset.triGame.game.ui.gameInput.IRoundInput;
 
 
 class SurvivalRound extends GameRound {
+	private static final int bossRoundNumber = 10;
+	
 	private final boolean isServer;
 	private final IRoundInput roundInput;
 	private final ZombieSpawner zombieSpawner = new ZombieSpawner();
@@ -60,11 +62,17 @@ class SurvivalRound extends GameRound {
 	protected void onRoundStart() {
 		super.onRoundStart();
 		roundInput.setNewRoundRequestable(false);
-		if (getRoundNumber() % 10 == 0)
-			zombieSpawner.startNewSpawnRound(1, 0, true);
+		if (getRoundNumber() % bossRoundNumber == 0)
+			zombieSpawner.startNewSpawnRound(getBossZombiesPerRound(), 3000, true);
 		else
 			zombieSpawner.startNewSpawnRound(getZombiesPerRound(),
 					getZombieSpawnDelta(), false);
+	}
+	
+	private int getBossZombiesPerRound() {
+		int d = getRoundNumber() / bossRoundNumber;
+		d = d * d + 2;
+		return d;
 	}
 
 	@Override

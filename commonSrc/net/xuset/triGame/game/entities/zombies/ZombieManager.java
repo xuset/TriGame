@@ -53,9 +53,9 @@ public class ZombieManager extends Manager<Zombie> {
 	}
 	
 	public BossZombie createBoss() {
-		final int roundNumber = gameMode.getRoundNumber();
 		final double speed = 3.0/5.0;
-		final int health = (roundNumber * roundNumber) * 15 * managers.person.list.size();
+		
+		int health = gameMode.getZombieHandler().determineHealth() * 10;
 		final Building hq = managers.building.getBuildingGetter().getHQ();
 		
 		return createBoss(health, speed, hq, 40);
