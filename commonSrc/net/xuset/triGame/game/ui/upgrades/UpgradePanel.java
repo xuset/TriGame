@@ -63,9 +63,18 @@ public class UpgradePanel extends UiForm {
 	}
 	
 	private class OnBuyMouseEvent implements Change<TsMouseEvent> {
+		private static final long maxTimeHeld = 1000;
+		private long timePressed = 0;
+		
 		@Override
 		public void observeChange(TsMouseEvent t) {
-			if (t.action == MouseAction.RELEASE && canPurchase()) {
+			if (t.action == MouseAction.PRESS)
+				timePressed = System.currentTimeMillis();
+			
+			if (t.action == MouseAction.RELEASE &&
+					timePressed + maxTimeHeld > System.currentTimeMillis() &&
+					canPurchase()) {
+				
 				uManager.upgrade(uItem, shop);
 				resetStyle();
 			}
