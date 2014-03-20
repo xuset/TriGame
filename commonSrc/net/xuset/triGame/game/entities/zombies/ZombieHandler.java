@@ -136,7 +136,7 @@ public class ZombieHandler implements GameIntegratable{
 	
 	protected int determineHealth() {
 		int players = managers.person.list.size();
-		int health = (int) ((roundNumber * roundNumber / 10.0)  + (players * roundNumber * 1.0) + 90.0);
+		int health = (int) ((roundNumber * roundNumber / 10.0)  + (players * roundNumber * 0.5) + 90.0);
 		return health;
 	}
 	
