@@ -20,7 +20,7 @@ import net.xuset.triGame.game.ui.gameInput.IPlayerInput;
 
 public class Person extends Entity implements GameIntegratable{
 	public static final String SPRITE_ID = "person";
-	private static final int maxHealth = 100;
+	public static final int MAX_HEALTH = 100;
 	
 	private final GameGrid gameGrid;
 	private final TriangleSpriteCreator triangleCreator;
@@ -72,7 +72,7 @@ public class Person extends Entity implements GameIntegratable{
 	}
 
 	public void giveFullHealth() {
-		double toAdd = maxHealth - getHealth();
+		double toAdd = MAX_HEALTH - getHealth();
 		modifyHealth(toAdd);
 	}
 	
@@ -156,7 +156,7 @@ public class Person extends Entity implements GameIntegratable{
 		DropPack drop = managers.dropPack.grabAnyPacks(attackbox);
 		if (drop != null && drop.isHealthPack()) {
 			double pickedUpHealth = drop.pickup();
-			double max = maxHealth - getHealth();
+			double max = MAX_HEALTH - getHealth();
 			if (pickedUpHealth > max)
 				pickedUpHealth = max;
 			modifyHealth(pickedUpHealth);

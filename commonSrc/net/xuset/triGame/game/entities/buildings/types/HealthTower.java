@@ -1,8 +1,11 @@
 package net.xuset.triGame.game.entities.buildings.types;
 
+import java.util.Collection;
+
 import net.xuset.objectIO.connections.Connection;
 import net.xuset.objectIO.netObject.NetVar;
 import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.game.particles.Particle;
 import net.xuset.tSquare.game.particles.ParticleController;
@@ -10,6 +13,7 @@ import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.point.PointR;
 import net.xuset.triGame.game.ManagerService;
+import net.xuset.triGame.game.entities.Person;
 import net.xuset.triGame.game.entities.buildings.Building;
 import net.xuset.triGame.game.shopping.ShopItem;
 import net.xuset.triGame.game.shopping.UpgradeItem;
@@ -66,15 +70,9 @@ public class HealthTower extends Building {
 		rangeValue.set(rangeUpgrade.getValue());
 		
 		final long nextRegeneration = lastRegeneration + ((int) rateUpgrade.getValue());
-		final double centerX = getCenterX();
-		final double centerY = getCenterY();
-		final double range = rangeUpgrade.getValue();
 		if (System.currentTimeMillis() > nextRegeneration) {
-			for (Building b : managers.building.interactives) {
-				double dist = PointR.distance(centerX, centerY, b.getCenterX(), b.getCenterY());
-				if (dist <= range)
-					increaseBuildingHealth(b);
-			}
+			regenerateBuildingsInRange();
+			regenerateEntitiesInRange(managers.person.list, Person.MAX_HEALTH);
 			lastRegeneration = System.currentTimeMillis();
 		}
 		
@@ -96,10 +94,40 @@ public class HealthTower extends Building {
 			setAngle(Math.PI / 2);
 	}
 	
-	private void increaseBuildingHealth(Building b) {
-		double deltaHealth = b.info.maxHealth - b.getHealth();
+	private void regenerateEntitiesInRange(Collection<? extends Entity> entities,
+			double maxHealth) {
+		
+		final double centerX = getCenterX();
+		final double centerY = getCenterY();
+		final double range = rangeUpgrade.getValue();
+		for (Entity e : entities) {
+			double dist = PointR.distance(
+					centerX, centerY,
+					e.getCenterX(), e.getCenterY());
+			
+			if (dist <= range)
+				increaseEntityHealth(e, maxHealth);
+		}
+	}
+	
+	private void regenerateBuildingsInRange() {
+		final double centerX = getCenterX();
+		final double centerY = getCenterY();
+		final double range = rangeUpgrade.getValue();
+		for (Building b : managers.building.interactives) {
+			double dist = PointR.distance(
+					centerX, centerY,
+					b.getCenterX(), b.getCenterY());
+			
+			if (dist <= range)
+				increaseEntityHealth(b, b.info.maxHealth);
+		}
+	}
+	
+	private void increaseEntityHealth(Entity e, double maxHealth) {
+		double deltaHealth = maxHealth - e.getHealth();
 		double gains = deltaHealth * powerUpgrade.getValue() * regenerateScale;
-		b.modifyHealth(gains);
+		e.modifyHealth(gains);
 	}
 	
 	private final class OnRegenerateChange implements NetVar.OnChange<Boolean> {
@@ -116,7 +144,8 @@ public class HealthTower extends Building {
 			if (!drawRegeneration.get())
 				return;
 				
-			final float ratio = (System.currentTimeMillis() - drawTimeStarted) / elapsedDrawTime;
+			final float ratio = (System.currentTimeMillis() - drawTimeStarted) /
+					elapsedDrawTime;
 			final float radius = (float) (rangeValue.get() * ratio);
 			final float x = (float) (getCenterX() - radius);
 			final float y = (float) (getCenterY() - radius);
