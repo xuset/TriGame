@@ -10,20 +10,25 @@ import net.xuset.tSquare.ui.UiLabel;
 
 public class UiRoundInput extends UiLabel implements IRoundInput{
 	private static final long maxClickDelay = 50;
+	private static final String touchRequestText = "Tap to start round";
+	private static final String keyboardRequestText = "\'Enter\' to start round";
+	private static final String waitText = "Waiting for other players";
 	
 	private long timeMouseClick = 0l;
 	private boolean newRoundRequestable = false;
 	private boolean shouldRespondToMouse = false;
+	private String roundRequestText = keyboardRequestText;
 	
 	public UiRoundInput() {
-		super("\'Enter\' to start new round");
+		super();
 		setFont(new TsFont("Arial", 30, TsTypeFace.BOLD));
 		setDrawShadow(true);
 		setForeground(TsColor.lightGray);
 	}
 	
-	public void respondToMouse(boolean shouldRespondToMouse) {
-		this.shouldRespondToMouse = shouldRespondToMouse;
+	public void setEnableTouchMode(boolean touchOn) {
+		shouldRespondToMouse = touchOn;
+		roundRequestText = touchOn ? touchRequestText : keyboardRequestText;
 	}
 
 	@Override
@@ -52,6 +57,12 @@ public class UiRoundInput extends UiLabel implements IRoundInput{
 	@Override
 	public void setNewRoundRequestable(boolean requestable) {
 		newRoundRequestable = requestable;
+		if (requestable)
+			setText(roundRequestText);
+	}
+	
+	public void displayWaitText() {
+		setText(waitText);
 	}
 	
 	private boolean wasLabelClicked() {

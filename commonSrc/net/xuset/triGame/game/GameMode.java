@@ -25,14 +25,15 @@ public abstract class GameMode implements GameIntegratable {
 	
 	public static GameMode factoryCreator(GameType gameType, ShopManager shop,
 			GameGrid gameGrid, ObjControllerI objc, boolean isServer,
-			IRoundInput roundInput, IImageFactory imageFactory) {
+			IRoundInput roundInput, IImageFactory imageFactory,
+			PlayerInfoContainer playerContainer) {
 		
 		switch (gameType) {
 		case SURVIVAL:
 			return new SurvivalGameMode(shop, isServer, gameGrid, objc, roundInput,
-					imageFactory);
+					imageFactory, playerContainer);
 		case VERSUS:
-			return new VersusGameMode(shop, isServer, objc, roundInput);
+			return new VersusGameMode(shop, isServer, objc, roundInput, playerContainer);
 		}
 		return null;
 	}
@@ -60,7 +61,7 @@ public abstract class GameMode implements GameIntegratable {
 	public abstract ZombieTargeter getZombieTargeter();
 	protected abstract void createMap();
 	protected abstract Person spawnInPlayer();
-	protected abstract void setDependencies(ManagerService managers); //, UserInterface ui);
+	protected abstract void setDependencies(ManagerService managers);
 	protected abstract GameRound getGameRound();
 
 	public class IsGameOver {

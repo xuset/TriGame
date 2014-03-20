@@ -52,9 +52,7 @@ public class GameInput implements IGameInput{
 	private void setUiTouchVisibility(boolean isVisible) {
 		playerInput.touchPlayer.setVisibile(isVisible);
 		gunInput.touchGun.setVisibile(isVisible);
-		roundInput.touchRound.respondToMouse(isVisible);
-		roundInput.touchRound.setText(isVisible ?
-				"Tap to start round" : "\'Enter\' to start round");
+		roundInput.touchRound.setEnableTouchMode(isVisible);
 	}
 	
 	private boolean isUiTouchOn() {
@@ -165,6 +163,13 @@ public class GameInput implements IGameInput{
 		
 		@Override
 		public boolean newRoundRequested() {
+			boolean requested = wasNewRoundRequested();
+			if (requested)
+				touchRound.displayWaitText();
+			return requested;
+		}
+		
+		private boolean wasNewRoundRequested() {
 			if (keyboardRound.newRoundRequested())
 				return true;
 			if (!isUiTouchOn())

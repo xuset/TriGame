@@ -3,6 +3,7 @@ package net.xuset.triGame.game.survival;
 import net.xuset.objectIO.netObject.ObjControllerI;
 import net.xuset.triGame.game.GameRound;
 import net.xuset.triGame.game.ManagerService;
+import net.xuset.triGame.game.PlayerInfoContainer;
 import net.xuset.triGame.game.GameMode.IsGameOver;
 import net.xuset.triGame.game.entities.zombies.ZombieManager;
 import net.xuset.triGame.game.entities.zombies.ZombieSpawner;
@@ -18,9 +19,10 @@ class SurvivalRound extends GameRound {
 	private ManagerService managers;
 
 	public SurvivalRound(ObjControllerI objController, boolean isServer,
-			IRoundInput roundInput, IsGameOver isGameOver) {
+			IRoundInput roundInput, IsGameOver isGameOver,
+			PlayerInfoContainer playerContainer) {
 		
-		super(objController);
+		super(objController, playerContainer);
 		this.isServer = isServer;
 		this.roundInput = roundInput;
 		this.isGameOver = isGameOver;
@@ -43,22 +45,26 @@ class SurvivalRound extends GameRound {
 	
 	@Override
 	protected void handleRoundNotOnGoing() {
-		if (isServer && !isGameOver.value)
+		if (!isGameOver.value)
 			roundInput.setNewRoundRequestable(true);
-		if (isServer && !isGameOver.value && roundInput.newRoundRequested()) {
-			roundInput.setNewRoundRequestable(false);
-			int next = getRoundNumber() + 1;
-			setRound(next);
+		if (!isGameOver.value && roundInput.newRoundRequested())
+			setReadyForNextRound();
+		
+		if (isServer && areAllPlayersReadyForNewRound()) {
+			resetAllPlayersRoundRequest();
+			setRound(getRoundNumber() + 1);
 		}
 	}
 	
 	@Override
 	protected void onRoundStart() {
 		super.onRoundStart();
+		roundInput.setNewRoundRequestable(false);
 		if (getRoundNumber() % 10 == 0)
 			zombieSpawner.startNewSpawnRound(1, 0, true);
 		else
-			zombieSpawner.startNewSpawnRound(getZombiesPerRound(), getZombieSpawnDelta(), false);
+			zombieSpawner.startNewSpawnRound(getZombiesPerRound(),
+					getZombieSpawnDelta(), false);
 	}
 
 	@Override

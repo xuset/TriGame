@@ -8,6 +8,7 @@ import net.xuset.triGame.game.Draw;
 import net.xuset.triGame.game.GameMode;
 import net.xuset.triGame.game.GameRound;
 import net.xuset.triGame.game.ManagerService;
+import net.xuset.triGame.game.PlayerInfoContainer;
 import net.xuset.triGame.game.SafeBoard;
 import net.xuset.triGame.game.entities.Person;
 import net.xuset.triGame.game.entities.zombies.Zombie;
@@ -32,12 +33,14 @@ public class VersusGameMode extends GameMode {
 	private boolean iAmAWinner = false;
 
 	public VersusGameMode(ShopManager shop, boolean isServer,
-			ObjControllerI objController, IRoundInput roundInput) {
+			ObjControllerI objController, IRoundInput roundInput,
+			PlayerInfoContainer playerContainer) {
 
 		this.shop = shop;
 		gameMap = new VersusMap();
 		safeBoard = new VersusSafeBoard(gameMap.playableArea);
-		gameRound = new VersusRound(objController, isServer, roundInput, gameMap, entireGameOver);
+		gameRound = new VersusRound(objController, isServer, roundInput, gameMap,
+				entireGameOver, playerContainer);
 		zombieHandler = new VersusZombie(gameMap, gameRound.onNewRound);
 		
 		gameRound.onNewRound.watch(new RoundObserver());
@@ -55,7 +58,8 @@ public class VersusGameMode extends GameMode {
 		super.update(frameDelta);
 		if (didLoose())
 			isGameOver.value = true;
-		if (gameMap.headQuarters[0].removeRequested() && gameMap.headQuarters[1].removeRequested())
+		if (gameMap.headQuarters[0].removeRequested() &&
+				gameMap.headQuarters[1].removeRequested())
 			entireGameOver.value = true;
 	}
 	
@@ -74,7 +78,6 @@ public class VersusGameMode extends GameMode {
 		gameRound.setDependencies(managers);
 		zombieHandler.setDependencies(managers);
 		zombieTargeter.setDependencies(managers.zombie.list);
-		//ui.arsenal.panel.groups.add(new ZombieUI(ui.focus, gameRound.spawner, shop,	ui.arsenal.panel));
 	}
 	
 	@Override
@@ -103,7 +106,8 @@ public class VersusGameMode extends GameMode {
 	
 	private void onZoneFinalize() {
 		if (player.hitbox.isInside(gameMap.missingWallZone)) {
-			double sign = (player.getCenterX() > gameMap.missingWallZone.getCenterX()) ? 1 : -1;
+			double sign = (player.getCenterX() > gameMap.missingWallZone.getCenterX()) ?
+					1 : -1;
 			double dist = sign * (gameMap.missingWallZone.getWidth());
 			player.setX(player.getX() + dist);
 		}

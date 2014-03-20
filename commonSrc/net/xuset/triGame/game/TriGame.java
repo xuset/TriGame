@@ -40,6 +40,7 @@ public class TriGame extends Game{
 	private final TiledBackground background;
 	private final int blockSize; //px
 	private final Settings settings;
+	private final PlayerInfoContainer playerContainer;
 	
 	private final ManagerService managerService;
 	private final GameMode gameMode;
@@ -66,6 +67,7 @@ public class TriGame extends Game{
 		IImageFactory scaledFactory = new ScaledImageFactory(blockSize);
 		gameGrid = new GameGrid(100, 100);
 		background = new TiledBackground(scaledFactory);
+		playerContainer = new PlayerInfoContainer(network.objController, userId);
 		
 		BuildingGetter buildingGetter = new BuildingGetter();
 		PointConverter pConv = new PointConverter(viewableRect, blockSize);
@@ -74,7 +76,7 @@ public class TriGame extends Game{
 	
 		gameMode = GameMode.factoryCreator(gameInfo.getGameType(),
 				shop, gameGrid, network.objController, network.isServer,
-				gameInput.getRoundInput(), scaledFactory);
+				gameInput.getRoundInput(), scaledFactory, playerContainer);
 		
 		managerService = new ManagerService(managerController, gameInput.getPlayerInput(),
 				shop, gameGrid, particleController, network.isServer, userId, gameMode,
@@ -199,6 +201,7 @@ public class TriGame extends Game{
 		public void onDisconnection(ClientHub hub, ClientConnection connection) {
 			if (network.isServer) {
 				Person p = managerService.person.getByUserId(connection.getEndId());
+				playerContainer.removeOnNetwork(connection.getEndId());
 				if (p != null)
 					p.remove();
 			}

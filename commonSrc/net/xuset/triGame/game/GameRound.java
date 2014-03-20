@@ -12,6 +12,7 @@ import net.xuset.tSquare.util.Observer;
 public abstract class GameRound implements GameIntegratable{
 	private static final long totalNumberDrawTime = 3000;
 	
+	protected final PlayerInfoContainer playerContainer;
 	protected final NetVar.nInt roundNumber;
 	protected final NetVar.nBool roundOnGoing;
 	private long timeNumberDrawStarted = 0;
@@ -24,7 +25,8 @@ public abstract class GameRound implements GameIntegratable{
 	public int getRoundNumber() { return roundNumber.get(); }
 	public boolean isRoundOnGoing() { return roundOnGoing.get(); }
 	
-	public GameRound(ObjControllerI objController) {
+	public GameRound(ObjControllerI objController, PlayerInfoContainer playerContainer) {
+		this.playerContainer = playerContainer;
 		roundNumber = new NetVar.nInt(0, "roundNumber", objController);
 		roundOnGoing = new NetVar.nBool(false, "roundOngoing", objController);
 		roundNumber.setEvent(true, new RoundChangeEvent());
@@ -53,11 +55,36 @@ public abstract class GameRound implements GameIntegratable{
 
 	@Override
 	public void draw(IGraphics g) {
-		Draw.drawRoundNumber(g, roundNumber.get(), System.currentTimeMillis() - timeNumberDrawStarted, totalNumberDrawTime);
+		Draw.drawRoundNumber(g, roundNumber.get(),
+				System.currentTimeMillis() - timeNumberDrawStarted, totalNumberDrawTime);
 	}
 	
 	protected void onRoundStart() {
 		
+	}
+	
+	protected void resetAllPlayersRoundRequest() {
+		for (int i = 0; i < playerContainer.getPlayerCount(); i++) {
+			PlayerInfo pInfo = playerContainer.getPlayer(i);
+			pInfo.resetNewRoundRequest();
+		}
+	}
+	
+	protected boolean areAllPlayersReadyForNewRound() {
+		for (int i = 0; i < playerContainer.getPlayerCount(); i++) {
+			PlayerInfo pInfo = playerContainer.getPlayer(i);
+			if (!pInfo.isRequestingNewRound())
+				return false;
+		}
+		return true;
+	}
+	
+	protected boolean isReadyForNextRound() {
+		return playerContainer.getOwnedPlayer().isRequestingNewRound();
+	}
+	
+	protected void setReadyForNextRound() {
+		playerContainer.getOwnedPlayer().requestNewRound();
 	}
 	
 	private class RoundChangeEvent implements OnChange<Integer> {

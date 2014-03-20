@@ -7,6 +7,7 @@ import net.xuset.triGame.game.GameGrid;
 import net.xuset.triGame.game.GameMode;
 import net.xuset.triGame.game.GameRound;
 import net.xuset.triGame.game.ManagerService;
+import net.xuset.triGame.game.PlayerInfoContainer;
 import net.xuset.triGame.game.SafeBoard;
 import net.xuset.triGame.game.entities.Person;
 import net.xuset.triGame.game.entities.zombies.ZombieHandler;
@@ -29,14 +30,15 @@ public class SurvivalGameMode extends GameMode {
 
 	public SurvivalGameMode(ShopManager shop, boolean isServer, GameGrid gameGrid,
 			ObjControllerI objController, IRoundInput roundInput,
-			IImageFactory imageFactory) {
+			IImageFactory imageFactory, PlayerInfoContainer playerContainer) {
 		
 		this.shop = shop;
 		this.gameGrid = gameGrid;
 		safeBoard = new SurvivalSafeBoard(gameGrid.getGridWidth() / 2.0 + 0.5,
 				gameGrid.getGridHeight() / 2.0 + 0.5, imageFactory);
 		zombieTargeter = new ZombieTargeter();
-		gameRound = new SurvivalRound(objController, isServer, roundInput, isGameOver);
+		gameRound = new SurvivalRound(objController, isServer, roundInput, 
+				isGameOver, playerContainer);
 		zombieHandler = new ZombieHandler(gameRound.onNewRound);
 		gameRound.onNewRound.watch(new OnNewRound());
 	}
@@ -45,7 +47,10 @@ public class SurvivalGameMode extends GameMode {
 	@Override public ZombieHandler getZombieHandler() { return zombieHandler; }
 	@Override public ZombieTargeter getZombieTargeter() { return zombieTargeter; }
 	@Override protected GameRound getGameRound() { return gameRound; }
-	@Override protected void createMap() { SurvivalMap.createRandomMap(managers, safeBoard, gameGrid); }
+	
+	@Override protected void createMap() {
+		SurvivalMap.createRandomMap(managers, safeBoard, gameGrid);
+	}
 	
 	@Override
 	public void update(int frameDelta) {
