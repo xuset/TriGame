@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import net.xuset.tSquare.demo.Demo;
 import net.xuset.tSquare.files.FileFactory;
@@ -31,22 +32,55 @@ public class DesktopStartup {
 		if (!System.getProperty("os.name").toLowerCase().contains("windows"))
 			System.setProperty("sun.java2d.opengl", "True");
 		
+		mainStartup();
+	}
+	
+	private static void devStartup() {
 		Settings settings = createDefaultSettings();
 		IDrawBoard db1 = createWindow(Params.GAME_NAME);
 		//IDrawBoard db2 = createWindow("TriGame Dev - client");
 		
-		new MainStartup(db1, new FileFactory(), settings, new IpGetter(), new UpdateChecker());
-		//GameIntro gameIntro = new GameIntro(db1, new FileFactory(), settings, new IpGetter());
-		//gameIntro.createGame().startGame();
-		//DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory(), settings);
+		DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory(), settings);
 		//DevStart.startLocalMultiplayer(GameType.SURVIVAL, db1, db2, new FileFactory(), settings);
 		
 		//Demo demo = new Demo(db1);
 		//demo.start();
 	}
 	
-	private static IDrawBoard createWindow(String title) {
+	private static void mainStartup() {
+		Settings settings = createDefaultSettings();
 		JFrame frame = new JFrame();
+		IDrawBoard drawBoard = createWindow(frame, Params.GAME_NAME);
+		
+		try {
+			new MainStartup(drawBoard, new FileFactory(), settings,
+					new IpGetter(), new UpdateChecker());
+		} catch (Exception ex) {
+			System.err.println("Error while handling another error");
+			ex.printStackTrace();
+			JFrame errorFrame = new JFrame();
+			errorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			JOptionPane.showMessageDialog(errorFrame,
+					createStackTrace(ex),
+					Params.GAME_NAME + " : An eror has occured.",
+					JOptionPane.ERROR_MESSAGE);
+			errorFrame.dispose();
+			frame.dispose();
+		}
+	}
+	
+	private static String createStackTrace(Exception ex) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("An error has occured and the game has ended.\r\n");
+		builder.append("Sorry about this. Below is a description of the error.\r\n\r\n");
+		builder.append(ex.toString()).append("\r\n");
+		for (StackTraceElement e : ex.getStackTrace()) {
+			builder.append("     at ").append(e.toString()).append("\r\n");
+		}
+		return builder.toString();
+	}
+	
+	private static IDrawBoard createWindow(JFrame frame, String title) {
 		frame.setPreferredSize(new Dimension(800, 600));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle(title);
@@ -60,6 +94,10 @@ public class DesktopStartup {
 		frame.setVisible(true);
 		
 		return drawBoard;
+	}
+	
+	private static IDrawBoard createWindow(String title) {
+		return createWindow(new JFrame(), title);
 	}
 	
 	private static final Settings createDefaultSettings() {

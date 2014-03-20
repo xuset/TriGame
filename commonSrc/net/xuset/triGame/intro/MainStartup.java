@@ -24,11 +24,20 @@ public class MainStartup {
 		this.inputHolder = drawBoard.createInputListener();
 		this.updateChecker = updateChecker;
 		
-		while (true) {
+		try {
+		
+			while (true) {
+				resetInputHolder();
+				TriGame game = createGame();
+				game.startGame();
+				game.shutdown();
+			}
+		
+		} catch (Exception ex) {
+			System.err.println("Encountered error. Game has ended");
+			ex.printStackTrace();
 			resetInputHolder();
-			TriGame game = createGame();
-			game.startGame();
-			game.shutdown();
+			new ExceptionViewer(drawBoard, inputHolder.getMouse(), ex);
 		}
 	}
 	
