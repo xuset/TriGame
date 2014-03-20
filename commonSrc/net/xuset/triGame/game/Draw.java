@@ -12,17 +12,6 @@ import net.xuset.triGame.game.entities.PointParticle;
 
 public final class Draw {
 	private static final IFont standardFont = new TsFont("Arial", 25/50.0f, TsTypeFace.BOLD);
-	
-	private static final IFont roundStartFont = new TsFont("Arial", 25, TsTypeFace.BOLD);
-	public static void drawEnterToStart(IGraphics g) {
-		Draw.drawXCenteredText("\'Enter\' to start Round", TsColor.lightGray,
-				roundStartFont, 0, TsColor.black, 0, 45, g);
-	}
-	
-	public static void drawTapToStart(IGraphics g) {
-		drawXCenteredText("Tap to start Round", TsColor.lightGray,
-				roundStartFont, 0, TsColor.black, 0, 45, g);
-	}
 
 	private static final TsFont roundNumberFont = new TsFont("Arial", 60/50.0f, TsTypeFace.BOLD);
 	public static void drawRoundNumber(IGraphics g, int number, long timeDiff, long totalTime) {
