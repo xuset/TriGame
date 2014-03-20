@@ -48,8 +48,8 @@ public class SurvivalGameMode extends GameMode {
 	@Override public ZombieTargeter getZombieTargeter() { return zombieTargeter; }
 	@Override protected GameRound getGameRound() { return gameRound; }
 	
-	@Override protected void createMap() {
-		SurvivalMap.createRandomMap(managers, safeBoard, gameGrid);
+	@Override protected void createMap(double wallGenCoefficient) {
+		SurvivalMap.createRandomMap(managers, safeBoard, gameGrid, wallGenCoefficient);
 	}
 	
 	@Override

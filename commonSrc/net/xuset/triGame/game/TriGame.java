@@ -91,7 +91,7 @@ public class TriGame extends Game{
 		gunManager.addGunsToUI(ui.getArsenalItemAdder());
 		
 		if (network.isServer)
-			gameMode.createMap();
+			gameMode.createMap(settings.wallGenCoefficient);
 		if (gameInfo.getNetworkType() != NetworkType.SOLO)
 			network.getClientInstance().conEvent = new GameConnectionEvent();
 		

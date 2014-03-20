@@ -5,6 +5,7 @@ public class Settings {
 	public int blockSize = 50;
 	public int defaultBlockSize = 50;
 	public boolean enableSound = true;
+	public double wallGenCoefficient = 1.0;
 	
 	public Settings createCopy() {
 		Settings s = new Settings();

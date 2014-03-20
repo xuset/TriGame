@@ -49,9 +49,14 @@ public class VersusGameMode extends GameMode {
 	@Override public boolean isGameOver() { return didLoose(); }
 	@Override public SafeBoard getSafeBoard() { return safeBoard; }
 	@Override public ZombieHandler getZombieHandler() { return zombieHandler; }
-	@Override protected void createMap() { gameMap.createMap(managers); }
 	@Override public ZombieTargeter getZombieTargeter() { return zombieTargeter; }
 	@Override protected GameRound getGameRound() { return gameRound; }
+	
+
+	@Override
+	protected void createMap(double wallGenCoefficient) {
+		gameMap.createMap(managers);
+	}
 
 	@Override
 	public void update(int frameDelta) {

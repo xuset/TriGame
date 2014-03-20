@@ -59,7 +59,7 @@ public abstract class GameMode implements GameIntegratable {
 	public abstract SafeBoard getSafeBoard();
 	public abstract ZombieHandler getZombieHandler();
 	public abstract ZombieTargeter getZombieTargeter();
-	protected abstract void createMap();
+	protected abstract void createMap(double wallGenCoefficient);
 	protected abstract Person spawnInPlayer();
 	protected abstract void setDependencies(ManagerService managers);
 	protected abstract GameRound getGameRound();

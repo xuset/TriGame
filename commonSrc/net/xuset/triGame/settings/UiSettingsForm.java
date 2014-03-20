@@ -19,8 +19,10 @@ public class UiSettingsForm {
 		
 		frmMain.getLayout().add(new UiSettingsTouch(settings));
 		frmMain.getLayout().add(new UiSettingsSound(settings));
-		if (showAll)
+		if (showAll) {
 			frmMain.getLayout().add(new UiSettingsZoom(settings));
+			frmMain.getLayout().add(new UiSettingsWall(settings));
+		}
 	}
 	
 	
