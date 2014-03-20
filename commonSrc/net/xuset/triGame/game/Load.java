@@ -227,21 +227,22 @@ public abstract class Load {
 	
 	private static void spriteHQ(int blockSize) {
 		IImageFactory factory = new ImageFactory();
-		IImage image = factory.createEmpty(blockSize * 2, blockSize * 2);
+		IImage image = factory.createEmpty(blockSize * 3, blockSize * 3);
 		IGraphics g = new ScaledGraphics(image.getGraphics(), blockSize / 50.0f);
 		g.setAntiAlias(true);
 		g.setColor(TsColor.darkGray);
-		g.fillRoundedRect(0, 0, 100, 100, 25, 25);
+		g.fillRoundedRect(0, 0, 150, 150, 25, 25);
 		g.setColor(TsColor.lightGray);
-		g.fillRoundedRect(5, 5, 90, 90, 25, 25);
+		g.fillRoundedRect(5, 5, 140, 140, 25, 25);
 		g.setColor(new TsColor(15, 30, 150));
-		g.fillRoundedRect(10, 10, 80, 30, 25, 25);
-		g.fillRoundedRect(10, 60, 80, 30, 25, 25);
+		g.fillRoundedRect(10, 10, 130, 45, 25, 25);
+		g.fillRoundedRect(10, 95, 130, 45, 25, 25);
 		g.setColor(new TsColor(40, 80, 120));
 		String hq = "HQ";
-		g.setFont(new TsFont("Arial", 20, TsTypeFace.BOLD));
-		float hqWidth = g.getTextWidth(hq);
-		g.drawText(50 - hqWidth / 2, 58, hq);
+		g.setFont(new TsFont("Arial", 40, TsTypeFace.BOLD));
+		float textWidth = g.getTextWidth(hq);
+		float textHeight = g.getTextHeight();
+		g.drawText(75 - textWidth / 2, 75 + textHeight / 4  + 2, hq);
 		g.dispose();
 		Sprite.add(new Sprite(HeadQuarters.INFO.spriteId, image, 1.0f / blockSize));
 	}
