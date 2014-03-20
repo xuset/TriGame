@@ -12,6 +12,7 @@ import net.xuset.tSquare.imaging.Sprite;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.imaging.TsFont;
 import net.xuset.tSquare.imaging.TsTypeFace;
+import net.xuset.tSquare.system.sound.DummySound;
 import net.xuset.tSquare.system.sound.ISound;
 import net.xuset.tSquare.system.sound.SoundFactory;
 import net.xuset.tSquare.system.sound.SoundStore;
@@ -104,6 +105,8 @@ public abstract class Load {
 				continue;
 			IFile file = ff.open(url);
 			ISound sound = SoundFactory.instance.loadSound(file);
+			if (sound == null)
+				sound = new DummySound();
 			SoundStore.add(url, sound);
 			file.close();
 		}
