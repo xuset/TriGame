@@ -82,22 +82,22 @@ final class SurvivalMap {
 		for (int x = 0; x < gridWidth; x++) {
 			
 			if (objectGrid.isOpen(x, 0) && x > 2) {
-				creator.create(x, 0);
+				creator.forceCreate(x, 0, manager);
 			}
 			
 			if (objectGrid.isOpen(x, gridHeight - 1)) {
-				creator.create(x, gridHeight - 1);
+				creator.forceCreate(x, gridHeight - 1, manager);
 			}
 			
 		}
 		for (int y = 1; y < gridHeight - 1 ; y++) {
 			
 			if (objectGrid.isOpen(0, y)&& y > 2) {
-				creator.create(0, y);
+				creator.forceCreate(0, y, manager);
 			}
 			
 			if (objectGrid.isOpen(gridWidth - 1, y)) {
-				creator.create(gridWidth - 1, y);
+				creator.forceCreate(gridWidth - 1, y, manager);
 			}
 			
 		}
@@ -132,7 +132,7 @@ final class SurvivalMap {
 				if (p.equals(gameWidth / 2 - 1, gameHeight / 2 -2)) //location of player spawn
 					foundSpot = false;
 			}
-			barrier.create((int) p.getX(), (int) p.getY());
+			barrier.forceCreate((int) p.getX(), (int) p.getY(), building);
 		}
 	}
 }
