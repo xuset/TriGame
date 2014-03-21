@@ -229,23 +229,38 @@ public abstract class Load {
 	}
 	
 	private static void spriteHQ(int blockSize) {
+		final int realSize = HeadQuarters.SIZE * blockSize;
+		final float size = HeadQuarters.SIZE * 50;
+		final float gutter = 5.0f;
+		final float innerSize = size / 3 - gutter;
+		final float corner = size / 6;
+		
 		IImageFactory factory = new ImageFactory();
-		IImage image = factory.createEmpty(blockSize * 3, blockSize * 3);
+		IImage image = factory.createEmpty(realSize, realSize);
 		IGraphics g = new ScaledGraphics(image.getGraphics(), blockSize / 50.0f);
 		g.setAntiAlias(true);
+		
 		g.setColor(TsColor.darkGray);
-		g.fillRoundedRect(0, 0, 150, 150, 25, 25);
+		g.fillRoundedRect(0, 0, size, size, corner, corner);
+		
 		g.setColor(TsColor.lightGray);
-		g.fillRoundedRect(5, 5, 140, 140, 25, 25);
+		g.fillRoundedRect(gutter, gutter,size - 2 * gutter, size - 2 * gutter, corner, corner);
+		
 		g.setColor(new TsColor(15, 30, 150));
-		g.fillRoundedRect(10, 10, 130, 45, 25, 25);
-		g.fillRoundedRect(10, 95, 130, 45, 25, 25);
+		g.fillRoundedRect(2 * gutter, 2 * gutter,
+				size - 4 * gutter, innerSize,
+				corner, corner);
+		g.fillRoundedRect(2 * gutter, size - 2 * gutter - innerSize,
+				size - 4 * gutter, innerSize,
+				corner, corner);
+		
 		g.setColor(new TsColor(40, 80, 120));
 		String hq = "HQ";
-		g.setFont(new TsFont("Arial", 40, TsTypeFace.BOLD));
+		g.setFont(new TsFont("Arial", 4 * size / 15, TsTypeFace.BOLD));
 		float textWidth = g.getTextWidth(hq);
 		float textHeight = g.getTextHeight();
-		g.drawText(75 - textWidth / 2, 75 + textHeight / 4  + 2, hq);
+		g.drawText(size/2 - textWidth / 2, size/2 + textHeight / 3 - 1, hq);
+		
 		g.dispose();
 		Sprite.add(new Sprite(HeadQuarters.INFO.spriteId, image, 1.0f / blockSize));
 	}

@@ -7,6 +7,7 @@ import net.xuset.triGame.game.entities.buildings.Building;
 
 
 public class HeadQuarters extends Building {
+	public static final int SIZE = 3;
 	
 	
 	public HeadQuarters(double x, double y, ParticleController pc, EntityKey key) {

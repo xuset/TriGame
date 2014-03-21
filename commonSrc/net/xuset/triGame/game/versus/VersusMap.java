@@ -165,8 +165,9 @@ final class VersusMap {
 				spawnLocations[teamNumber][index] = new Point(x, y);
 				index++;
 			} else {
+				y -= HeadQuarters.SIZE / 2;
 				if (teamNumber == 0)
-					x -= 1;
+					x -= HeadQuarters.SIZE - 1;
 				headQuarters[teamNumber] = managers.building.getCreator(HeadQuarters.INFO).create(x, y);
 			}
 			count++;
