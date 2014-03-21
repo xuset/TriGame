@@ -180,7 +180,7 @@ public class Person extends Entity implements GameIntegratable{
 		}
 		
 		turn(moveToX, moveToY);
-		moveForward(8 * frameDelta / 1000.0);
+		super.moveForward(8 * frameDelta / 1000.0);
 	}
 	
 	/*private void move(int frameDelta) {
