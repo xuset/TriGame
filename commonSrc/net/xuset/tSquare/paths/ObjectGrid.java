@@ -138,9 +138,13 @@ public class ObjectGrid{
 	}
 	
 	public boolean isOpen(int x, int y) { 
-		if (grid[x][y] == false)
+		if (isInBounds(x, y) && grid[x][y] == false)
 			return true;
 		return false;
+	}
+	
+	private boolean isInBounds(int x, int y) {
+		return x >= 0 && y >= 0 && x < gridWidth && y < gridHeight;
 	}
 	
 //	public int roundToGridX(double x) {
