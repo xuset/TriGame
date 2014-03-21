@@ -23,7 +23,7 @@ final class SurvivalMap {
 		final int centerX = gameGrid.getGridWidth() / 2;
 		final int centerY = gameGrid.getGridHeight() / 2;
 		service.building.getCreator(HeadQuarters.INFO).create(centerX - 1, centerY - 1);
-		service.pointWell.create(centerX - 10, centerY - 10);
+		service.pointWell.create(centerX - 6, centerY - 6);
 		
 		createSpawnHoles(service.building, service.spawnHole, safeBoard, gameGrid);
 		createPointWells(service.building, service.pointWell, service.spawnHole,
