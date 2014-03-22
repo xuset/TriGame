@@ -13,6 +13,9 @@ import net.xuset.triGame.game.shopping.UpgradeItem;
 
 
 public class MortarTower extends Tower {
+	
+	protected final UpgradeItem splashUpgrade;
+	
 	public MortarTower(double x, double y, ParticleController pc,
 			ZombieTargeter targeter, ProjectileManager projectile, EntityKey key) {
 		
@@ -20,11 +23,11 @@ public class MortarTower extends Tower {
 		fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, 1500, -150);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100), 3, INFO.visibilityRadius, 1.5);
 		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, -232, -15);
-		accuracyUpgrade = new UpgradeItem(new ShopItem("Accuracy", 100), 3, 0, 1);
+		splashUpgrade = new UpgradeItem(new ShopItem("Splash radius", 100), 3, 1.0, 0.25);
 		upgrades.addUpgrade(fireRateUpgrade);
 		upgrades.addUpgrade(rangeUpgrade);
 		upgrades.addUpgrade(damageUpgrade);
-		upgrades.addUpgrade(accuracyUpgrade);
+		upgrades.addUpgrade(splashUpgrade);
 	}
 	
 	@Override
@@ -38,10 +41,12 @@ public class MortarTower extends Tower {
 		final double dist = PointR.distance(myX, myY, targetX, targetY);
 		if (dist < getVisibilityRadius()) {
 			final double angle = PointR.angle(myX, myY, targetX, targetY);
-			final double speed = accuracyUpgrade.getValue() * (8.0 / 5.0) + 5;
+			final double speed = 5.0;
 			final int damage = (int) damageUpgrade.getValue();
+			final double splashRadius = splashUpgrade.getValue();
 			
-			projectile.mortarCreate(myX, myY, angle, speed, damage);
+			projectile.mortarCreate(myX, myY, angle, speed, damage, splashRadius,
+					getVisibilityRadius());
 		}
 	}
 

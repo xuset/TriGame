@@ -41,9 +41,11 @@ public class ProjectileManager extends Manager<Projectile> {
 		return p;
 	}
 	
-	public Projectile mortarCreate(double x, double y, double angle, double speed, int damage) {
+	public Projectile mortarCreate(double x, double y, double angle, double speed,
+			int damage, double splashRadius, double maxDistance) {
+		
 		Projectile p = new MortarProjectile(x, y, angle, speed, damage,
-				managers, gameGrid);
+				managers, gameGrid, splashRadius, maxDistance);
 		add(p);
 		mortarCreator.createOnNetwork(p, this);
 		return p;

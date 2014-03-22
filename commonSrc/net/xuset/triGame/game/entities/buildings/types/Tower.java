@@ -26,7 +26,6 @@ public class Tower extends Building {
 	protected UpgradeItem rangeUpgrade = null;
 	protected UpgradeItem fireRateUpgrade = null;
 	protected UpgradeItem damageUpgrade = null;
-	protected UpgradeItem accuracyUpgrade = null;
 	
 	protected long lastShot = 0;
 	
@@ -46,11 +45,9 @@ public class Tower extends Building {
 		if (owned()) {
 			fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, initialShootDelay, -50);
 			damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, initialDamage, -10);
-			accuracyUpgrade = new UpgradeItem(new ShopItem("Accuracy", 200), 3, initialSpeed, 2);
 			upgrades.addUpgrade(rangeUpgrade);
 			upgrades.addUpgrade(fireRateUpgrade);
 			upgrades.addUpgrade(damageUpgrade);
-			upgrades.addUpgrade(accuracyUpgrade);
 		}
 	}
 	
@@ -89,10 +86,7 @@ public class Tower extends Building {
 	}
 	
 	private void shoot() {
-		int tSpeed = initialSpeed;
-		if (accuracyUpgrade != null)
-			tSpeed = (int) accuracyUpgrade.getValue();
-		projectile.create(getCenterX(), getCenterY(), getAngle(), tSpeed,
+		projectile.create(getCenterX(), getCenterY(), getAngle(), initialSpeed,
 				(int) damageUpgrade.getValue(), true, getFireShotSoundId());
 	}
 	
