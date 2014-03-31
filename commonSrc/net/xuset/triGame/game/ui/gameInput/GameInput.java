@@ -108,8 +108,6 @@ public class GameInput implements IGameInput{
 		private final IGunInput gunArsenalInput;
 		private boolean keyboardsChange = true;
 		
-		//TODO add support for changing guns within arsenal gun form.
-		
 		private CombineGun(UiBorderLayout layout, IKeyListener keyboard,
 				IGunInput gunArsenalInput) {
 			

@@ -5,6 +5,7 @@ import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.point.IPointW;
 import net.xuset.tSquare.math.point.Point;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
+import net.xuset.tSquare.system.input.mouse.MousePointer;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.triGame.game.guns.GunType;
@@ -14,8 +15,8 @@ public class UiShootInput extends UiComponent implements IGunInput{
 	
 	private final IPointW buttonCenter = new Point();
 	private int buttonRadius = 0;
-	private long timeShootRequested = 0;
 	private boolean shootRequested = false;
+	private MousePointer pointer = null;
 	
 	public UiShootInput() {
 		super(0, 0, initSize, initSize);
@@ -25,8 +26,8 @@ public class UiShootInput extends UiComponent implements IGunInput{
 	protected void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
 		
-		if (e.action == MouseAction.PRESS || e.action == MouseAction.DRAG) {
-			timeShootRequested = System.currentTimeMillis();
+		if (e.action == MouseAction.PRESS) {
+			pointer = e.pointer;
 			shootRequested = true;
 		}
 	}
@@ -36,13 +37,16 @@ public class UiShootInput extends UiComponent implements IGunInput{
 		if (!isVisible())
 			return;
 		
+		if (pointer == null || !pointer.isPressed())
+			shootRequested = false;
+		
 		boolean savedAntiAlias = g.isAntiAliasOn();
 		g.setAntiAlias(true);
 		
 		buttonRadius = (int) (0.9 * getWidth() / 2);
 		buttonCenter.setTo(getX() + buttonRadius, getY() + buttonRadius);
 		
-		if (System.currentTimeMillis() - timeShootRequested < 50) {
+		if (shootRequested) {
 			//highlight the shoot button orange for 50ms after the button was pressed
 			g.setColor(TsColor.orange);
 			g.fillOval(getX(), getY(), buttonRadius * 2, buttonRadius * 2);
@@ -59,11 +63,7 @@ public class UiShootInput extends UiComponent implements IGunInput{
 
 	@Override
 	public boolean shootRequested() {
-		if (shootRequested) {
-			shootRequested = false;
-			return true;
-		}
-		return false;
+		return shootRequested;
 	}
 
 	@Override

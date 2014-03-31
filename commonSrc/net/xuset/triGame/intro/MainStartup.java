@@ -44,7 +44,6 @@ public class MainStartup {
 	private void resetInputHolder() {
 		inputHolder.getMouse().clearListeners();
 		inputHolder.getKeyboard().clearListeners();
-		inputHolder.clearAllEvents();
 	}
 	
 	private TriGame createGame() {

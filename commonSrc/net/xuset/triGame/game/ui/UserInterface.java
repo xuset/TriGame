@@ -41,8 +41,8 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 			ShopManager shop, BuildingGetter buildingGetter, Settings settings) {
 
 		controller = new UiController(input.getMouse());
-		attacher = new BuildingAttacher(input.getMouse(),
-				pointConverter, shop, (UiCollisionDetector) this);
+		attacher = new BuildingAttacher(pointConverter, shop,
+				(UiCollisionDetector) this, input.getMouse());
 		baseForm = new BaseForm();
 		upgradeForm = new UpgradeForm(shop);
 		UiUpgrades upgrades = new UiUpgrades(upgradeForm, (UiFormSwitcher) this);

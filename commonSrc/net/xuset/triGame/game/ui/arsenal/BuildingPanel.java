@@ -58,11 +58,11 @@ public class BuildingPanel extends UiForm {
 	protected void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
 		
-		if (e.action == MouseAction.MOVE || e.action == MouseAction.DRAG)
+		if (e.action == MouseAction.MOVE)
 			mouseCallback.setDisplayInfo(shopItem.getName(), description);
 		
 		if (canPurchase && e.action == MouseAction.PRESS)
-			attacher.attach(shopItem, creator, img, viewRadius);
+			attacher.attach(shopItem, creator, img, viewRadius, e.pointer);
 		hoverTime = System.currentTimeMillis();
 	}
 	

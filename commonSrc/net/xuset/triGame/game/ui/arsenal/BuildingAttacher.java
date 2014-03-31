@@ -6,9 +6,7 @@ import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.IImage;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.input.mouse.IMouseListener;
-import net.xuset.tSquare.system.input.mouse.MouseAction;
-import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
-import net.xuset.tSquare.util.Observer.Change;
+import net.xuset.tSquare.system.input.mouse.MousePointer;
 import net.xuset.triGame.game.PointConverter;
 import net.xuset.triGame.game.entities.LocManCreator;
 import net.xuset.triGame.game.shopping.ShopItem;
@@ -19,41 +17,44 @@ public class BuildingAttacher implements GameDrawable{
 	private final PointConverter pointConverter;
 	private final ShopManager shop;
 	private final UiCollisionDetector collisionChecker;
+	private final IMouseListener mouseListener;
 	
 	private LocManCreator<?> creator;
 	private IImage image;
 	private ShopItem shopItem;
 	private float viewRadius;
 	private boolean attached = false;
+	private MousePointer mousePointer = null;
 	
 	private int realX = 0, realY = 0;
 	private float gameX = 0, gameY = 0;
-	private boolean shouldPurchase = false;
 	
 	
-	public BuildingAttacher(IMouseListener mouse, PointConverter pointConverter,
-			ShopManager shop, UiCollisionDetector collisionChecker) {
+	public BuildingAttacher(PointConverter pointConverter, ShopManager shop,
+			UiCollisionDetector collisionChecker, IMouseListener mouseListener) {
 		
 		this.shop = shop;
 		this.pointConverter = pointConverter;
 		this.collisionChecker = collisionChecker;
-		
-		mouse.watch(new MouseObserver());
+		this.mouseListener = mouseListener;
 	}
 	
 	public boolean isAttached() { return attached; }
 	
 	public void attach(ShopItem shopItem, LocManCreator<?> creator, IImage image,
-			double viewRadius) {
+			double viewRadius, MousePointer scaledMousePointer) {
 		
+		mousePointer = mouseListener.getPointerById(scaledMousePointer.getId());
 		this.creator = creator;
 		this.image = image;
 		this.shopItem = shopItem;
 		this.viewRadius = (float) viewRadius;
 		attached = true;
+		updateAttachedInfo();
 	}
 	
 	public void clearAttached() {
+		mousePointer = null;
 		creator = null;
 		image = null;
 		attached = false;
@@ -64,7 +65,6 @@ public class BuildingAttacher implements GameDrawable{
 			shop.purchase(shopItem);
 			creator.create(gameX, gameY);
 		}
-		shouldPurchase = false;
 		clearAttached();
 	}
 	
@@ -76,11 +76,13 @@ public class BuildingAttacher implements GameDrawable{
 	
 	@Override
 	public void draw(IGraphics g) {
-		if (shouldPurchase && attached)
+		if (attached && !mousePointer.isPressed())
 			placeAttached();
 		
 		if (!attached)
 			return;
+		
+		updateAttachedInfo();
 
 		g.drawImage(image, gameX, gameY);
 
@@ -93,20 +95,13 @@ public class BuildingAttacher implements GameDrawable{
 					viewRadius * 2, viewRadius * 2);
 		}
 	}
-
-	private class MouseObserver implements Change<TsMouseEvent> {
-		@Override
-		public void observeChange(TsMouseEvent t) {
-			if ((t.action == MouseAction.PRESS || t.action == MouseAction.DRAG)) {
-				gameX = (int) pointConverter.screenToGameX(t.x);
-				gameY = (int) pointConverter.screenToGameY(t.y);
-				realX = t.x;
-				realY = t.y;
-			}
-			
-			if (attached && t.action == MouseAction.RELEASE) {
-				shouldPurchase = true;
-			}
-		}
+	
+	private void updateAttachedInfo() {
+		float x = mousePointer.getX();
+		float y = mousePointer.getY();
+		realX = (int) x;
+		realY = (int) y;
+		gameX = (int) pointConverter.screenToGameX(x);
+		gameY = (int) pointConverter.screenToGameY(y);
 	}
 }
