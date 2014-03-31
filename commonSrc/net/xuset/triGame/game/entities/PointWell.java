@@ -1,8 +1,8 @@
 package net.xuset.triGame.game.entities;
 
-import net.xuset.objectIO.connections.Connection;
+import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.game.particles.ParticleController;
@@ -44,11 +44,11 @@ public class PointWell extends Entity {
 	}
 	
 	@Override
-	protected void setNetObjects(ObjControllerI objClass) {
+	protected void setNetObjects(NetObjUpdater objClass) {
 		particleCount = new NetVar.nInt(maxParticles, "pcount", objClass);
 		particleCount.setEvent(true, new NetVar.OnChange<Integer>() {
 			@Override
-			public void onChange(NetVar<Integer> var, Connection c) {
+			public void onChange(NetVar<Integer> var, ConnectionI c) {
 				int count = var.get();
 				if (particles == null)
 					return;

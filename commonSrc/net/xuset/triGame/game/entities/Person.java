@@ -3,7 +3,7 @@ package net.xuset.triGame.game.entities;
 import java.util.ArrayList;
 
 import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.tSquare.game.GameIntegratable;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
@@ -64,7 +64,7 @@ public class Person extends Entity implements GameIntegratable{
 	}
 	
 	@Override
-	protected void setNetObjects(ObjControllerI objClass) {
+	protected void setNetObjects(NetObjUpdater objClass) {
 		super.setNetObjects(objClass);
 
 		ownerId = new NetVar.nLong(0l, "ownerId", objClass);

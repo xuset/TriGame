@@ -1,13 +1,13 @@
 package net.xuset.triGame.game;
 
 import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 
 public class PlayerInfo {
 	private final long id;
 	private final NetVar.nBool netRequestRound;
 	
-	public PlayerInfo(ObjControllerI objController, long id) {
+	public PlayerInfo(NetObjUpdater objController, long id) {
 		this.id = id;
 		netRequestRound = new NetVar.nBool(false, "netRequestRound" + id, objController);
 	}

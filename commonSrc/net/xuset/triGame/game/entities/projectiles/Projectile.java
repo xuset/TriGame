@@ -1,7 +1,7 @@
 package net.xuset.triGame.game.entities.projectiles;
 
 import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.math.point.IPointR;
@@ -105,7 +105,7 @@ public class Projectile extends Entity {
 	}
 	
 	@Override
-	protected void setNetObjects(ObjControllerI objClass) {
+	protected void setNetObjects(NetObjUpdater objClass) {
 		speed = new NetVar.nDouble(0.0, "speed", objClass);
 		damage = new NetVar.nInt(0, "damage", objClass);
 		noBuildingCollisions = new NetVar.nBool(true, "noBuildingCollisions", objClass);

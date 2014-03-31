@@ -1,6 +1,6 @@
 package net.xuset.triGame.game;
 
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.tSquare.game.GameIntegratable;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.IImageFactory;
@@ -24,7 +24,7 @@ public abstract class GameMode implements GameIntegratable {
 	
 	
 	public static GameMode factoryCreator(GameType gameType, ShopManager shop,
-			GameGrid gameGrid, ObjControllerI objc, boolean isServer,
+			GameGrid gameGrid, NetObjUpdater objc, boolean isServer,
 			IRoundInput roundInput, IImageFactory imageFactory,
 			PlayerInfoContainer playerContainer) {
 		

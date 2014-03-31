@@ -5,7 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import net.xuset.objectIO.netObject.ObjController;
+import net.xuset.objectIO.netObject.StandardObjUpdater;
 import net.xuset.objectIO.util.broadcast.BroadcastClient;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.IdGenerator;
@@ -148,7 +148,7 @@ class IntroJoin implements IntroForm{
 		int port = IntroHost.MULTICAST_PORT;
 		String host = IntroHost.MULTICAST_GROUP;
 		try {
-			broadcastReciever = new BroadcastClient(port, host);
+			broadcastReciever = new BroadcastClient(port, host, 256);
 		} catch (IOException e) {
 			setStatus(true, "Error: " + e.getMessage());
 			e.printStackTrace();
@@ -171,7 +171,7 @@ class IntroJoin implements IntroForm{
 		try {
 			disconnectNetwork();
 			network = Network.connectToServer(addr, port, IdGenerator.getNext());
-			gameStarter = new NetworkGameStarter(new ObjController(network.hub));
+			gameStarter = new NetworkGameStarter(new StandardObjUpdater(network.hub));
 			lblStatus.setText("Connected. Waiting on host to start.");
 		} catch (IOException e) {
 			setStatus(true, "Error: " + e.getMessage());
@@ -235,6 +235,7 @@ class IntroJoin implements IntroForm{
 		
 		@Override
 		public String toString() { return iNetAddr.getHostName(); }
+		//TODO iNetAddr.getHostName() never returns on some networks
 	}
 
 }

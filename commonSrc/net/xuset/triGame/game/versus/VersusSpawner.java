@@ -4,11 +4,11 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import net.xuset.objectIO.connections.Connection;
+import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.markupMsg.MarkupMsg;
-import net.xuset.objectIO.markupMsg.MsgAttribute;
 import net.xuset.objectIO.netObject.NetFunction;
 import net.xuset.objectIO.netObject.NetFunctionEvent;
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.triGame.game.entities.zombies.ZombieManager;
 import net.xuset.triGame.game.entities.zombies.ZombieSpawner;
@@ -21,7 +21,7 @@ class VersusSpawner extends ZombieSpawner {
 	private Entity[] bossTargets = null;
 	private int bossSpawnZone = 0;
 	
-	VersusSpawner(ObjControllerI objController, boolean isServer) {
+	VersusSpawner(NetObjUpdater objController, boolean isServer) {
 		bossSpawners[0] = new BossSpawner(0, objController);
 		bossSpawners[1] = new BossSpawner(1, objController);
 		this.isServer = isServer;
@@ -52,7 +52,7 @@ class VersusSpawner extends ZombieSpawner {
 		private final NetFunction spawnFunc;
 		private long nextSpawn = 0;
 		
-		private BossSpawner(int zone, ObjControllerI objController) {
+		private BossSpawner(int zone, NetObjUpdater objController) {
 			this.zone = zone;
 			spawnFunc = new NetFunction(objController, "zone" + zone + "SpawnFunc");
 			spawnFunc.function = new SpawnEvent();
@@ -71,8 +71,8 @@ class VersusSpawner extends ZombieSpawner {
 		
 		private void spawnBoss(int health, int speed) {
 			MarkupMsg msg = new MarkupMsg();
-			msg.addAttribute(new MsgAttribute("speed").set(speed));
-			msg.addAttribute(new MsgAttribute("health").set(health));
+			msg.addAttribute("speed", speed);
+			msg.addAttribute("health", health);
 			spawnFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
 			if (isServer)
 				spawnFunc.function.calledFunc(msg, null);
@@ -81,7 +81,7 @@ class VersusSpawner extends ZombieSpawner {
 		private class SpawnEvent implements NetFunctionEvent {
 
 			@Override
-			public MarkupMsg calledFunc(MarkupMsg args, Connection c) {
+			public MarkupMsg calledFunc(MarkupMsg args, ConnectionI c) {
 				if (!isServer || spawnQueue.size() >= maxQueueSize)
 					return null;
 				
@@ -90,7 +90,7 @@ class VersusSpawner extends ZombieSpawner {
 			}
 
 			@Override
-			public void returnedFunc(MarkupMsg args, Connection c) { }
+			public void returnedFunc(MarkupMsg args, ConnectionI c) { }
 			
 		}
 	}	

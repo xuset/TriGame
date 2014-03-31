@@ -1,8 +1,8 @@
 package net.xuset.triGame.game;
 
-import net.xuset.objectIO.connections.Connection;
+import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.objectIO.netObject.NetVar.OnChange;
 import net.xuset.tSquare.game.GameIntegratable;
 import net.xuset.tSquare.imaging.IGraphics;
@@ -25,7 +25,7 @@ public abstract class GameRound implements GameIntegratable{
 	public int getRoundNumber() { return roundNumber.get(); }
 	public boolean isRoundOnGoing() { return roundOnGoing.get(); }
 	
-	public GameRound(ObjControllerI objController, PlayerInfoContainer playerContainer) {
+	public GameRound(NetObjUpdater objController, PlayerInfoContainer playerContainer) {
 		this.playerContainer = playerContainer;
 		roundNumber = new NetVar.nInt(0, "roundNumber", objController);
 		roundOnGoing = new NetVar.nBool(false, "roundOngoing", objController);
@@ -89,7 +89,7 @@ public abstract class GameRound implements GameIntegratable{
 	
 	private class RoundChangeEvent implements OnChange<Integer> {
 		@Override
-		public void onChange(NetVar<Integer> var, Connection c) {
+		public void onChange(NetVar<Integer> var, ConnectionI c) {
 			timeNumberDrawStarted = System.currentTimeMillis();
 			onNewRound.notifyWatchers(roundNumber.get());
 			onRoundStart();

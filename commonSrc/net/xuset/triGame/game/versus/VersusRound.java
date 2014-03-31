@@ -1,6 +1,6 @@
 package net.xuset.triGame.game.versus;
 
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.triGame.game.Draw;
 import net.xuset.triGame.game.GameRound;
@@ -23,7 +23,7 @@ class VersusRound extends GameRound {
 	
 	final VersusSpawner spawner;
 
-	VersusRound(ObjControllerI objController, boolean isServer,
+	VersusRound(NetObjUpdater objController, boolean isServer,
 			IRoundInput roundInput, VersusMap gameMap, IsGameOver isGameOver,
 			PlayerInfoContainer playerContainer) {
 		

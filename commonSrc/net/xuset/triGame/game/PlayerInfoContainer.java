@@ -3,11 +3,12 @@ package net.xuset.triGame.game;
 import java.util.ArrayList;
 
 import net.xuset.objectIO.connections.Connection;
+import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.markupMsg.MarkupMsg;
 import net.xuset.objectIO.markupMsg.MsgAttribute;
 import net.xuset.objectIO.netObject.NetFunction;
 import net.xuset.objectIO.netObject.NetFunctionEvent;
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 
 public class PlayerInfoContainer {
 	private static final String ID_ATTRIBUTE = "id";
@@ -15,12 +16,12 @@ public class PlayerInfoContainer {
 	private static final String ACTION_CREATE = "cre";
 	private static final String ACTION_REMOVE = "rem";
 	
-	private final ObjControllerI objController;
+	private final NetObjUpdater objController;
 	private final ArrayList<PlayerInfo> playerInfos = new ArrayList<PlayerInfo>();
 	private final NetFunction funcCreate;
 	private final PlayerInfo myPlayer;
 	
-	public PlayerInfoContainer(ObjControllerI objController, long playerId) {
+	public PlayerInfoContainer(NetObjUpdater objController, long playerId) {
 		this.objController = objController;
 		funcCreate = new NetFunction(objController, "playerInfoCreate",
 				new PlayerCreate());
@@ -77,22 +78,22 @@ public class PlayerInfoContainer {
 	
 	private MarkupMsg craftCreateMsg(long id) {
 		MarkupMsg msg = new MarkupMsg();
-		msg.attribute.add(new MsgAttribute(ID_ATTRIBUTE).set(id));
-		msg.attribute.add(new MsgAttribute(ACTION_ATTRIBUTE).set(ACTION_CREATE));
+		msg.addAttribute(ID_ATTRIBUTE, id);
+		msg.addAttribute(ACTION_ATTRIBUTE, ACTION_CREATE);
 		return msg;
 	}
 	
 	private MarkupMsg craftRemoveMsg(long id) {
 		MarkupMsg msg = new MarkupMsg();
-		msg.attribute.add(new MsgAttribute(ID_ATTRIBUTE).set(id));
-		msg.attribute.add(new MsgAttribute(ACTION_ATTRIBUTE).set(ACTION_REMOVE));
+		msg.addAttribute(ID_ATTRIBUTE, id);
+		msg.addAttribute(ACTION_ATTRIBUTE, ACTION_REMOVE);
 		return msg;
 	}
 	
 	private class PlayerCreate implements NetFunctionEvent {
 
 		@Override
-		public MarkupMsg calledFunc(MarkupMsg args, Connection c) {
+		public MarkupMsg calledFunc(MarkupMsg args, ConnectionI c) {
 			MsgAttribute actionAttrib = args.getAttribute(ACTION_ATTRIBUTE);
 			MsgAttribute idAttrib = args.getAttribute(ID_ATTRIBUTE);
 			long id = idAttrib.getLong();
@@ -100,16 +101,16 @@ public class PlayerInfoContainer {
 			if (actionAttrib == null || idAttrib == null)
 				return null;
 			
-			if (actionAttrib.value.equals(ACTION_CREATE)) {
+			if (actionAttrib.getValue().equals(ACTION_CREATE)) {
 				localCreateAndStore(id);
-			} else if (actionAttrib.value.equals(ACTION_REMOVE)){
+			} else if (actionAttrib.getValue().equals(ACTION_REMOVE)){
 				localRemove(id);
 			}
 			return null;
 		}
 
 		@Override
-		public void returnedFunc(MarkupMsg args, Connection c) {
+		public void returnedFunc(MarkupMsg args, ConnectionI c) {
 			//Do nothing
 		}
 		

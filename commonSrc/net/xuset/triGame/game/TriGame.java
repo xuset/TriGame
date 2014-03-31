@@ -1,8 +1,7 @@
 package net.xuset.triGame.game;
 
-import net.xuset.objectIO.connections.sockets.p2pServer.client.ClientConnection;
-import net.xuset.objectIO.connections.sockets.p2pServer.client.ClientHub;
-import net.xuset.objectIO.connections.sockets.p2pServer.client.ConnectionEvent;
+import net.xuset.objectIO.connections.sockets.ServerEventListener;
+import net.xuset.objectIO.connections.sockets.groupNet.client.GroupClientCon;
 import net.xuset.objectIO.netObject.NetVar;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.game.Game;
@@ -93,13 +92,13 @@ public class TriGame extends Game{
 		if (network.isServer)
 			gameMode.createMap(settings.wallGenCoefficient);
 		if (gameInfo.getNetworkType() != NetworkType.SOLO)
-			network.getClientInstance().conEvent = new GameConnectionEvent();
+			network.getClientInstance().watchEvents(new GameConnectionEvent());
 		
 		if (network.isServer) {
 			startGame.set(true);
 		}
 		while (!startGame.get()) {
-			network.objController.distributeRecievedUpdates();
+			network.objController.distributeAllUpdates();
 			try { Thread.sleep(10); } catch (Exception ex) { }
 		}
 		gameMode.onGameStart();
@@ -194,21 +193,31 @@ public class TriGame extends Game{
 		network.disconnect();
 	}
 	
-	private class GameConnectionEvent implements ConnectionEvent {
-		@Override public void onConnection(ClientHub hub, ClientConnection connection) { }
+	private class GameConnectionEvent implements ServerEventListener<GroupClientCon> {
 
 		@Override
-		public void onDisconnection(ClientHub hub, ClientConnection connection) {
+		public void onRemove(GroupClientCon con) {
 			if (network.isServer) {
-				Person p = managerService.person.getByUserId(connection.getEndId());
-				playerContainer.removeOnNetwork(connection.getEndId());
+				Person p = managerService.person.getByUserId(con.getId());
+				playerContainer.removeOnNetwork(con.getId());
 				if (p != null)
 					p.remove();
 			}
 		}
-		
+
 		@Override
-		public void onServerDisconnect(ClientHub hub) {
+		public void onAdd(GroupClientCon con) {
+			//Do nothing
+		}
+
+		@Override
+		public void onLastRemove() {
+			//Do nothing
+		
+		}
+
+		@Override
+		public void onShutdown() {
 			if (TriGame.this.isStopped())
 				return;
 			setGameOver();

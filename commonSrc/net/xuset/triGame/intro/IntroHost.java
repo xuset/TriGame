@@ -3,10 +3,9 @@ package net.xuset.triGame.intro;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import net.xuset.objectIO.connections.sockets.p2pServer.server.ConnectionEvent;
-import net.xuset.objectIO.connections.sockets.p2pServer.server.P2PServer;
-import net.xuset.objectIO.connections.sockets.p2pServer.server.ServerConnection;
-import net.xuset.objectIO.netObject.ObjController;
+import net.xuset.objectIO.connections.sockets.ServerEventListener;
+import net.xuset.objectIO.connections.sockets.groupNet.server.GroupServerCon;
+import net.xuset.objectIO.netObject.StandardObjUpdater;
 import net.xuset.objectIO.util.broadcast.BroadcastServer;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.Network;
@@ -67,7 +66,7 @@ class IntroHost implements IntroForm {
 	@Override
 	public GameInfo getCreatedGameInfo() {
 		if (gameStarter.hasGameStarted()) {
-			network.getServerInstance().accepter.stop();
+			network.getServerInstance().getAcceptor().stop();
 			broadcaster.stop();
 			broadcaster = null;
 			return new GameInfo(network, gameStarter.getGameType(), NetworkType.HOST);
@@ -94,8 +93,8 @@ class IntroHost implements IntroForm {
 		try {
 			
 			network = Network.startupServer(0);
-			network.getServerInstance().event = new ServerConnectionEvent();
-			gameStarter = new NetworkGameStarter(new ObjController(network.hub));
+			network.getServerInstance().watchEvents(new ServerConnectionEvent());
+			gameStarter = new NetworkGameStarter(new StandardObjUpdater(network.hub));
 			int port = network.getServerInstance().getPort();
 			InetAddress group = InetAddress.getByName(MULTICAST_GROUP);
 			InetAddress local = ipGetter.getLocalIP();
@@ -142,19 +141,33 @@ class IntroHost implements IntroForm {
 		}
 	}
 	
-	private class ServerConnectionEvent implements ConnectionEvent {
+	private class ServerConnectionEvent implements ServerEventListener<GroupServerCon> {
+
 		@Override
-		public void onConnect(P2PServer s, ServerConnection c) {
-			lblPlayers.setText(joinedText + (s.connections.size() - 1));
+		public void onRemove(GroupServerCon con) {
+			update();
 		}
 
 		@Override
-		public void onDisconnect(P2PServer s, ServerConnection c) {
-			lblPlayers.setText(joinedText + (s.connections.size() - 1));
+		public void onAdd(GroupServerCon con) {
+			update();
+		}
+		
+		private void update() {
+			int count = 0;
+			if (network != null)
+				count = network.getServerInstance().getConnectionCount() - 1;
+			lblPlayers.setText(joinedText + count);
 		}
 
 		@Override
-		public void onLastDisconnect(P2PServer s) {
+		public void onLastRemove() {
+			//Do nothing
+		}
+
+		@Override
+		public void onShutdown() {
+			//Do nothing
 			
 		}
 	}

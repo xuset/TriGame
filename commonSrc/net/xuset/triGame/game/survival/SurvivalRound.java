@@ -1,6 +1,6 @@
 package net.xuset.triGame.game.survival;
 
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.triGame.game.GameRound;
 import net.xuset.triGame.game.ManagerService;
 import net.xuset.triGame.game.PlayerInfoContainer;
@@ -20,7 +20,7 @@ class SurvivalRound extends GameRound {
 	
 	private ManagerService managers;
 
-	public SurvivalRound(ObjControllerI objController, boolean isServer,
+	public SurvivalRound(NetObjUpdater objController, boolean isServer,
 			IRoundInput roundInput, IsGameOver isGameOver,
 			PlayerInfoContainer playerContainer) {
 		

@@ -2,9 +2,9 @@ package net.xuset.triGame.game.entities.buildings.types;
 
 import java.util.Collection;
 
-import net.xuset.objectIO.connections.Connection;
+import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.game.particles.Particle;
@@ -54,7 +54,7 @@ public class HealthTower extends Building {
 	}
 	
 	@Override
-	protected void setNetObjects(ObjControllerI objClass) {
+	protected void setNetObjects(NetObjUpdater objClass) {
 		rangeValue = new NetVar.nDouble(INFO.visibilityRadius, "range", objClass);
 		drawRegeneration = new NetVar.nBool(false, "drawRegeneration", objClass);
 		drawRegeneration.setEvent(true, new OnRegenerateChange());
@@ -132,7 +132,7 @@ public class HealthTower extends Building {
 	
 	private final class OnRegenerateChange implements NetVar.OnChange<Boolean> {
 		@Override
-		public void onChange(NetVar<Boolean> var, Connection c) {
+		public void onChange(NetVar<Boolean> var, ConnectionI c) {
 			drawTimeStarted = var.get() ? System.currentTimeMillis() : 0;
 		}
 	}
