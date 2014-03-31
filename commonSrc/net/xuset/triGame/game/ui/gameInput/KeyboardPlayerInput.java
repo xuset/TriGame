@@ -70,15 +70,19 @@ public class KeyboardPlayerInput implements IPlayerInput {
 		private void setKey(char key, boolean val) {
 			switch(key) {
 			case 'w':
+			case 'W':
 				upPressed = val;
 				return;
+			case 'S':
 			case 's':
 				downPressed = val;
 				return;
 			case 'a':
+			case 'A':
 				leftPressed = val;
 				return;
 			case 'd':
+			case 'D':
 				rightPressed = val;
 				return;
 			}
