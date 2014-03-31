@@ -53,8 +53,8 @@ class IntroHost implements IntroForm {
 		frmMain.getLayout().setAlignment(Axis.X_AXIS, Alignment.CENTER);
 		frmMain.getLayout().setOrientation(Axis.Y_AXIS);
 		frmMain.getLayout().add(lblStatus);
-		frmMain.getLayout().add(lblPlayers);
 		frmMain.getLayout().add(radioGroup);
+		frmMain.getLayout().add(lblPlayers);
 		frmMain.getLayout().add(btnStart);
 	}
 
