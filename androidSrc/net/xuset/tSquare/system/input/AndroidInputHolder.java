@@ -26,9 +26,4 @@ public class AndroidInputHolder implements InputHolder {
 		return mouse;
 	}
 
-	@Override
-	public void clearAllEvents() {
-		mouse.clearEvents();
-	}
-
 }

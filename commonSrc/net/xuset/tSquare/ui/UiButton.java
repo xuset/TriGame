@@ -71,7 +71,7 @@ public class UiButton extends UiComponent {
 	@Override
 	public void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
-		if (e.action == MouseAction.PRESS || e.action == MouseAction.DRAG) {
+		if (e.action == MouseAction.PRESS) {
 			clickTime = System.currentTimeMillis();
 		}
 	}

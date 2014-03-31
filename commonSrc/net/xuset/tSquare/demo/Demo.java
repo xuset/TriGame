@@ -1,26 +1,19 @@
 package net.xuset.tSquare.demo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import net.xuset.tSquare.game.Game;
 import net.xuset.tSquare.imaging.IGraphics;
-import net.xuset.tSquare.imaging.IImage;
-import net.xuset.tSquare.imaging.ImageFactory;
+import net.xuset.tSquare.imaging.ScaledGraphics;
 import net.xuset.tSquare.imaging.TsColor;
-import net.xuset.tSquare.imaging.TsFont;
-import net.xuset.tSquare.imaging.TsTypeFace;
-import net.xuset.tSquare.math.point.IPointW;
+import net.xuset.tSquare.math.point.IPointR;
 import net.xuset.tSquare.math.point.Point;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.tSquare.system.Network;
-import net.xuset.tSquare.system.input.InputHolder;
-import net.xuset.tSquare.system.input.keyboard.TsKeyEvent;
 import net.xuset.tSquare.system.input.mouse.IMouseListener;
-import net.xuset.tSquare.system.input.mouse.MouseAction;
-import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
-import net.xuset.tSquare.ui.UiButton;
-import net.xuset.tSquare.ui.UiComponent;
-import net.xuset.tSquare.ui.UiController;
-import net.xuset.tSquare.ui.UiForm;
-import net.xuset.tSquare.util.Observer;
+import net.xuset.tSquare.system.input.mouse.MousePointer;
+import net.xuset.tSquare.system.input.mouse.ScaledMouseListener;
 
 public class Demo {
 	private final DemoGame demoGame;
@@ -37,99 +30,111 @@ public class Demo {
 		}
 	}
 	
+	private static class Circle {
+		private final long timeCreated;
+		private final IPointR point;
+		
+		public Circle(double x, double y) {
+			timeCreated = System.currentTimeMillis();
+			point = new Point(x, y);
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (o instanceof Circle) {
+				Circle c = (Circle) o;
+				return c.point.equals(this.point);
+			}
+			return super.equals(o);
+		}
+	}
+	
 	private static class DemoGame extends Game{
+		private static final float scale = 2.0f;
+		
+		private final ArrayList<Circle> circles = new ArrayList<Circle>();
 		private final IDrawBoard drawBoard;
-		private final InputHolder input;
-		private final UiController ui;
-		private final double speed = 200;
-		private IPointW player = new Point(200, 200);
-		private IPointW target = new Point(500, 500);
-		private final IImage sprite;
+		private final IMouseListener input;
 		
 		public DemoGame(IDrawBoard drawBoard) {
 			super(Network.createOffline());
 			this.drawBoard = drawBoard;
-			sprite = createSprite();
 			
-			ui = createUI();
 			
-			input = drawBoard.createInputListener();
-			input.getKeyboard().watch(new InputObserver());
+			input = new ScaledMouseListener(drawBoard.createInputListener().getMouse(), scale);
+			//input.getMouse().watch(new MouseObserver());
 		}
 
 		@Override
 		protected void logicLoop() {
 			handleInput();
-			
-			if (player.calcDistance(target) > 5) {
-				double moveDistance = speed * getDelta() / 1000.0;
-				double angle = player.calcAngle(target);
-				player.translate(Math.cos(angle) * moveDistance,
-						-Math.sin(angle) * moveDistance);
-			}
+			removeOldCirlces();
 		}
 
 		@Override
 		protected void displayLoop() {
 			IGraphics g = drawBoard.getGraphics();
 			if (g != null) {
+				g = new ScaledGraphics(g, scale);
 				g.clear();
 				g.setAntiAlias(true);
-				double spinAngle = player.calcAngle(target);
-				g.drawImageRotate(sprite, (int) player.getX(), (int) player.getY(), spinAngle);
 				
-				g.setColor(new TsColor(0, 255, 255));
-				g.setFont(new TsFont("Arial", 70, TsTypeFace.BOLD));
-				String message = "GAME DEMO #1";
-				float messageWidth = g.getTextWidth(message);
-				int textX = (int) (g.getView().getWidth() / 2 - messageWidth / 2);
-				g.drawText(textX, 200, message);
-				
-				ui.draw(g);
+				drawCircles(g);
 				
 				drawBoard.flushScreen();
 			}
 		}
 		
-		private UiController createUI() {
-			UiController ui = new UiController(drawBoard.createInputListener().getMouse());
-			UiForm form = ui.getForm();
-			
-			UiComponent lblHello = new UiButton("Hello");
-			lblHello.setLocation(50, 50);
-			form.getLayout().add(lblHello);
-			
-			return ui;
-		}
-		
-		private IImage createSprite() {
-			IImage sprite = new ImageFactory().createEmpty(100, 100);
-			IGraphics g = sprite.getGraphics();
-			g.setColor(TsColor.darkGray);
-			g.fillTriangle(0, 0, 100, 100);
-			g.setColor(TsColor.cyan);
-			g.fillTriangle(12, 12, 76, 76);
-			g.dispose();
-			return sprite;
-		}
-		
-		private void handleInput() {
-			TsMouseEvent e = null;
-			IMouseListener mouse = input.getMouse();
-			while ((e = mouse.pollEvent()) != null) {
-				if (e.action == MouseAction.PRESS || e.action == MouseAction.DRAG) {
-					target.setTo(e.x - sprite.getWidth() / 2, e.y - sprite.getHeight() / 2);
+		private void drawCircles(IGraphics g) {
+			final float diameter = 50.0f;
+			g.setColor(TsColor.red);
+			synchronized(circles) {
+				for (Circle c : circles) {
+					float x = (float) (c.point.getX() - diameter / 2);
+					float y = (float) (c.point.getY() - diameter / 2);
+					g.drawOval(x, y, diameter, diameter);
 				}
 			}
 		}
 		
-		private class InputObserver implements Observer.Change<TsKeyEvent> {
+		private void removeOldCirlces() {
+			final long timeAlive = 500; //ms
+			synchronized(circles) {
+				for (Iterator<Circle> it = circles.iterator(); it.hasNext(); ) {
+					Circle c = it.next();
+					if (c.timeCreated + timeAlive < System.currentTimeMillis())
+						it.remove();
+				}
+			}
+		}
+		
+		private void handleInput() {
+			for (int i = 0; i < input.getPointerCount(); i++) {
+				MousePointer pointer = input.getPointerByIndex(i);
+				if (pointer.isPressed())
+					attemptToAddCircle((int) pointer.getX(), (int) pointer.getY());
+			}
+		}
+		
+		private void attemptToAddCircle(int x, int y) {
+			synchronized(circles) {
+				Circle c = new Circle(x, y);
+				circles.remove(c);
+				circles.add(c);
+			}
+		}
+		
+		/*private class MouseObserver implements Observer.Change<TsMouseEvent> {
 
 			@Override
-			public void observeChange(TsKeyEvent t) {
-				
+			public void observeChange(TsMouseEvent t) {
+				synchronized(circles) {
+					Circle c = new Circle(t.x, t.y);
+					circles.remove(c);
+					circles.add(c);
+				}
 			}
 			
-		}
+		}*/
 	}
 }

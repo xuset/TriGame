@@ -6,5 +6,4 @@ import net.xuset.tSquare.system.input.mouse.IMouseListener;
 public interface InputHolder {
 	IKeyListener getKeyboard();
 	IMouseListener getMouse();
-	void clearAllEvents();
 }

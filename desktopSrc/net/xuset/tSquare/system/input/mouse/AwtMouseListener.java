@@ -4,45 +4,18 @@ import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
 
 import net.xuset.tSquare.util.Observer;
 import net.xuset.tSquare.util.Observer.Change;
 
 public class AwtMouseListener implements IMouseListener {
-	private final ArrayList<TsMouseEvent> queue = new ArrayList<TsMouseEvent>();
 	private final Observer<TsMouseEvent> observer = new Observer<TsMouseEvent>();
+	private final MousePointer mainPointer;
 	
 	public AwtMouseListener(Component c) {
 		attachListener(c);
-	}
-
-	@Override
-	public TsMouseEvent pollEvent() {
-		if (queue.isEmpty())
-			return null;
-		return queue.remove(0);
-	}
-
-	@Override
-	public void addEvent(TsMouseEvent e) {
-		queue.add(e);
-		observer.notifyWatchers(e);
-	}
-
-	@Override
-	public void clearEvents() {
-		queue.clear();
-	}
-
-	@Override
-	public TsMouseEvent searchForEvent(MouseButton button, MouseAction action) {
-		for (int i = 0; i < queue.size(); i++) {
-			TsMouseEvent e = queue.get(i);
-			if (e.button == button && e.action == action)
-				return e;
-		}
-		return null;
+		mainPointer = new MousePointer(0, 0.0f, 0.0f);
+		mainPointer.isPressed = false;
 	}
 	
 	public void attachListener(Component c) {
@@ -63,6 +36,12 @@ public class AwtMouseListener implements IMouseListener {
 		return MouseButton.UNKNOWN;
 	}
 	
+	private void updatePointer(MouseEvent e, boolean isPressed) {
+		mainPointer.x = e.getX();
+		mainPointer.y = e.getY();
+		mainPointer.isPressed = isPressed;
+	}
+	
 	public class MouseInput implements MouseListener, MouseMotionListener {
 		@Override public void mouseClicked(MouseEvent e) { }
 		@Override public void mouseEntered(MouseEvent e) { }
@@ -70,26 +49,28 @@ public class AwtMouseListener implements IMouseListener {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			MouseButton btn = getMouseButtonByAwtId(e.getButton());
-			addEvent(new TsMouseEvent(MouseAction.PRESS, btn, e.getX(), e.getY()));
+			updatePointer(e, true);
+			observer.notifyWatchers(createEvent(e, MouseAction.PRESS));
+			
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			MouseButton btn = getMouseButtonByAwtId(e.getButton());
-			addEvent(new TsMouseEvent(MouseAction.RELEASE, btn, e.getX(), e.getY()));
+			updatePointer(e, false);
+			observer.notifyWatchers(createEvent(e, MouseAction.RELEASE));
 		}
 		
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			addEvent(new TsMouseEvent(MouseAction.MOVE, MouseButton.UNKNOWN, e.getX(), e.getY()));
+			updatePointer(e, false);
+			observer.notifyWatchers(createEvent(e, MouseAction.MOVE));
 		}
 		
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			MouseButton button = getMouseButtonByAwtId(e.getButton());
-			addEvent(new TsMouseEvent(MouseAction.DRAG, button, e.getX(), e.getY()));
+			updatePointer(e, true);
+			observer.notifyWatchers(createEvent(e, MouseAction.MOVE));
 		}
 	}
 
@@ -101,5 +82,35 @@ public class AwtMouseListener implements IMouseListener {
 	@Override
 	public void clearListeners() {
 		observer.unwatchAll();
+	}
+
+	@Override
+	public int getPointerCount() {
+		return 1;
+	}
+
+	@Override
+	public MousePointer getPointerByIndex(int index) {
+		if (index != 0)
+			throw new IndexOutOfBoundsException();
+		return mainPointer;
+	}
+	
+	@Override
+	public MousePointer getPointerById(int id) {
+		if (id != mainPointer.getId())
+			return null;
+		return mainPointer;
+	}
+	
+	private TsMouseEvent createEvent(MouseEvent e, MouseAction action) {
+		return new TsMouseEvent(mainPointer, action,
+				getMouseButtonByAwtId(e.getButton()),
+				e.getX(), e.getY());
+	}
+
+	@Override
+	public boolean unwatch(Change<TsMouseEvent> watcher) {
+		return observer.unwatch(watcher);
 	}
 }

@@ -67,7 +67,7 @@ public class AwtGraphics implements IGraphics {
 	@Override
 	public void drawOval(float x, float y, float w, float h) {
 		g.drawOval((int) x, (int) y, (int) w, (int) h);
-;	}
+	}
 
 	@Override
 	public void fillRect(float x, float y, float w, float h) {

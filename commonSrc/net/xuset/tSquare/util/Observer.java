@@ -18,8 +18,8 @@ public class Observer<T> {
 		watchers.add(c);
 	}
 	
-	public void unwatch(Change<T> c) {
-		watchers.remove(c);
+	public boolean unwatch(Change<T> c) {
+		return watchers.remove(c);
 	}
 	
 	public void unwatchAll() {

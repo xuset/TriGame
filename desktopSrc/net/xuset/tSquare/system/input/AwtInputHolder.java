@@ -25,12 +25,4 @@ public class AwtInputHolder implements InputHolder {
 	public IMouseListener getMouse() {
 		return mouseListener;
 	}
-
-	@Override
-	public void clearAllEvents() {
-		keyListener.clearEvents();
-		mouseListener.clearEvents();
-	}
-
-
 }

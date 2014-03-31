@@ -39,7 +39,7 @@ public class UiSlider extends UiComponent {
 	protected void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
 		
-		if (e.action == MouseAction.PRESS || e.action == MouseAction.DRAG) {
+		if (e.action == MouseAction.PRESS) {
 			position = x / getWidth();
 			if (listener != null)
 				listener.onChange(position);
