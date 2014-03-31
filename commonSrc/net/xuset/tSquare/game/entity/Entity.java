@@ -4,11 +4,11 @@ package net.xuset.tSquare.game.entity;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.xuset.objectIO.connections.Connection;
+import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.markupMsg.MarkupMsg;
 import net.xuset.objectIO.netObject.NetClass;
 import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.tSquare.game.GameIntegratable;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.Sprite;
@@ -84,11 +84,11 @@ public class Entity implements GameIntegratable{
 	}
 	
 	@SuppressWarnings("unused")
-	protected void setNetObjects(ObjControllerI objClass) {
+	protected void setNetObjects(NetObjUpdater objClass) {
 		
 	}
 	
-	public final boolean isUpdatesAllowed() { return objClass.isSynced(); }
+	public final boolean isUpdatesAllowed() { return objClass.hasUpdater(); }
 	public final boolean isCreatedOnNetwork() { return createdOnNetwork; }
 	public final String getSpriteId() { return spriteId.get(); }
 	public final double getX() { return x.get(); }
@@ -115,7 +115,7 @@ public class Entity implements GameIntegratable{
 	
 	private class OnSpriteIdChange implements NetVar.OnChange<String> {
 		@Override
-		public void onChange(NetVar<String> var, Connection c) {
+		public void onChange(NetVar<String> var, ConnectionI c) {
 			sprite = Sprite.add(var.get());
 		}
 	}
@@ -278,13 +278,13 @@ public class Entity implements GameIntegratable{
 	public void remove() {
 		removed = true;
 	}
-	
+
 	final void handleRemove() {
-		objClass.remove();
+		objClass.removeUpdater();
 		onRemoved();
 	}
 	
-	final void syncWithController(ObjControllerI objController) {
-		objClass.setController(objController);
+	final void syncWithController(NetObjUpdater updater) {
+		objClass.setUpdater(updater);
 	}
 }

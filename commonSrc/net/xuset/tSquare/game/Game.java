@@ -64,7 +64,7 @@ public abstract class Game implements Runnable {
 				logicLoop();
 				eventHandler.handleEvents();
 			}
-			network.objController.distributeRecievedUpdates();
+			network.objController.distributeAllUpdates();
 			network.flush();
 			displayLoop();
 			

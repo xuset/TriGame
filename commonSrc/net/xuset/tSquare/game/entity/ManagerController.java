@@ -4,7 +4,7 @@ package net.xuset.tSquare.game.entity;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.xuset.objectIO.netObject.ObjControllerI;
+import net.xuset.objectIO.netObject.NetObjUpdater;
 import net.xuset.tSquare.game.GameIntegratable;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.imaging.IGraphics;
@@ -17,7 +17,7 @@ public final class ManagerController implements GameIntegratable{
 	
 	public final CreationHandler creator;
 	
-	public ManagerController(ObjControllerI objController) {
+	public ManagerController(NetObjUpdater objController) {
 		creator = new CreationHandler(objController, this);
 	}
 	
