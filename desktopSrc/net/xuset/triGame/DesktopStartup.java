@@ -20,6 +20,8 @@ import net.xuset.tSquare.system.DrawBoard;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.triGame.game.DevStart;
 import net.xuset.triGame.game.GameMode.GameType;
+import net.xuset.triGame.intro.DummyUpdateChecker;
+import net.xuset.triGame.intro.IUpdateChecker;
 import net.xuset.triGame.intro.IpGetterIFace;
 import net.xuset.triGame.intro.MainStartup;
 import net.xuset.triGame.settings.Settings;
@@ -53,8 +55,11 @@ public class DesktopStartup {
 		IDrawBoard drawBoard = createWindow(frame, Params.GAME_NAME);
 		
 		try {
+			IUpdateChecker updater = Params.DEBUG_MODE ?
+					new DummyUpdateChecker() : new UpdateChecker();
+					
 			new MainStartup(drawBoard, new FileFactory(), settings,
-					new IpGetter(), new UpdateChecker());
+					new IpGetter(), updater);
 		} catch (Exception ex) {
 			System.err.println("Error while handling another error");
 			ex.printStackTrace();
