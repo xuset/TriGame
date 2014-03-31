@@ -119,6 +119,7 @@ public class AndroidMouseListener implements IMouseListener {
 				break;
 			case MotionEvent.ACTION_MOVE:
 				sendMoveEvent(pointerId);
+				break;
 			case MotionEvent.ACTION_CANCEL:
 				removeAllPointers();
 				break;
