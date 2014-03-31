@@ -83,7 +83,7 @@ public abstract class Load {
 	}
 	
 	private static void loadAnimSpritesOnDisk(int blockSize, IFileFactory ff) {
-		float scale = blockSize / 50.0f;
+		float scale = blockSize / 150.0f;
 		IImage img = loadAndScaleImage(Wall.CRACKS_SPRITE_ID, scale, ff);
 		AnimatedSprite wallSprite = new AnimatedSprite(
 				Wall.CRACKS_SPRITE_ID, img, 1, 3, 3);
