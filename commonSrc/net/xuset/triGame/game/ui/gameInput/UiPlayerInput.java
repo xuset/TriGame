@@ -11,8 +11,8 @@ import net.xuset.tSquare.ui.UiComponent;
 
 public class UiPlayerInput extends UiComponent implements IPlayerInput{
 	
-	private final static float initSize = 200;
-	private final double movementThreshold = 0.05;
+	private final static float initSize = 250;
+	private final double movementThreshold = 0.1;
 	
 	private final IPointW uiMoveCenter = new Point(0, 0);
 	private int uiMoveRadius = 0;
@@ -33,9 +33,12 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 			return 0.0;
 		
 		double dist = uiMoveCenter.calcDistance(pointer.getX(), pointer.getY());
+		dist /= initSize / 2;
+		dist *= 3;
+		
 		if (dist < movementThreshold)
 			dist = 0.0;
-		else
+		else if (dist > 1.0)
 			dist = 1.0;
 		return dist;
 	}
@@ -60,7 +63,7 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 	
 	private double roundAngle(double angle) {
 		angle += Math.signum(angle) * Math.PI / 8;
-		angle = (Math.PI / 4) * ( (int) (angle / (Math.PI / 4) ) ); //TODO a modulu here may look nicer
+		angle = (Math.PI / 4) * ( (int) (angle / (Math.PI / 4) ) );
 		return angle;
 	}
 	
@@ -96,8 +99,7 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 		int y = (int) (uiMoveCenter.getY() - uiMoveRadius);
 		int diam = uiMoveRadius * 2;
 		
-		//g.setColor(TsColor.rgba(64, 64, 64, 128));
-		g.setColor(TsColor.lightGray);
+		g.setColor(TsColor.rgba(64, 64, 64, 128));
 		g.fillOval(x, y, diam, diam);
 		g.setColor(TsColor.white);
 		g.drawOval(x, y, diam, diam);
