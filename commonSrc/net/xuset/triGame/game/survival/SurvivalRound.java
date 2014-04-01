@@ -70,8 +70,10 @@ class SurvivalRound extends GameRound {
 	}
 	
 	private int getBossZombiesPerRound() {
-		int d = getRoundNumber() / bossRoundNumber;
-		d = d * d + 2;
+		final int players = managers.person.list.size();
+		
+		int d = getRoundNumber() / bossRoundNumber + 1;
+		d = d * d * players / 2;
 		return d;
 	}
 
