@@ -36,6 +36,7 @@ public class GunManager implements GameIntegratable{
 		addGun(pistol);
 		addGun(new GunShotgun());
 		addGun(new GunSub());
+		addGun(new GunBazooka());
 	}
 	
 	@Override

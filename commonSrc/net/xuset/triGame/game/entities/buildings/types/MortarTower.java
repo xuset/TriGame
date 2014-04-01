@@ -46,7 +46,7 @@ public class MortarTower extends Tower {
 			final double splashRadius = splashUpgrade.getValue();
 			
 			projectile.mortarCreate(myX, myY, angle, speed, damage, splashRadius,
-					getVisibilityRadius());
+					getVisibilityRadius(), true);
 		}
 	}
 

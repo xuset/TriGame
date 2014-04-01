@@ -7,6 +7,7 @@ import net.xuset.tSquare.math.point.Point;
 import net.xuset.tSquare.math.point.PointR;
 import net.xuset.triGame.game.GameGrid;
 import net.xuset.triGame.game.ManagerService;
+import net.xuset.triGame.game.entities.buildings.Building;
 import net.xuset.triGame.game.entities.zombies.Zombie;
 
 
@@ -23,11 +24,11 @@ public class MortarProjectile extends Projectile {
 	private final double maxDistance, startX, startY, splashRadius;
 	
 	protected MortarProjectile(double startX, double startY, double angle,
-			double speed, int damage, ManagerService managers, GameGrid gameGrid,
-			double splashRadius, double maxDistance) {
+			double speed, int damage, boolean noBuildingCollsion, ManagerService managers,
+			GameGrid gameGrid, double splashRadius, double maxDistance) {
 		
-		super(SPRITE_ID, startX, startY, angle, speed, damage, true, managers,
-				gameGrid, SOUND_ID);
+		super(SPRITE_ID, startX, startY, angle, speed, damage, noBuildingCollsion,
+				managers, gameGrid, SOUND_ID);
 		this.startX = startX;
 		this.startY = startY;
 		this.splashRadius = splashRadius;
@@ -69,17 +70,13 @@ public class MortarProjectile extends Projectile {
 		if (!owned())
 			return;
 		
-		Zombie zombie = collidedWithFirst(managers.zombie.list);
-		if (zombie != null) {
+		
+		if (didCollide()) {
 			collided = true;
-
-			for (Zombie z : managers.zombie.list) {
-				double distance = PointR.distance(getCenterX(), getCenterY(), z.getCenterX(), z.getCenterY());
-				double ratio = 1 - distance / splashRadius;
-				if (ratio > 0)
-					z.hitByProjectile((int) (ratio * damage.get()));
-			}
 			
+			destroyZombies();
+			if (!noBuildingCollisions.get())
+				destroyBuildings();
 		}
 		
 		if (Point.distance(getX(), getY(), startX, startY) >= maxDistance)
@@ -87,6 +84,31 @@ public class MortarProjectile extends Projectile {
 		
 		if (collided)
 			explodeStarted = System.currentTimeMillis();
+	}
+	
+	private boolean didCollide() {
+		return collidedWithFirst(managers.zombie.list) != null ||
+				(!noBuildingCollisions.get() && (noBuildingCollisions.get() ||
+						!managers.building.objectGrid.isBlockOpen(
+						getCenterX(), getCenterY())));
+	}
+	
+	private void destroyZombies() {
+		for (Zombie z : managers.zombie.list) {
+			double distance = PointR.distance(getCenterX(), getCenterY(), z.getCenterX(), z.getCenterY());
+			double ratio = 1 - distance / splashRadius;
+			if (ratio > 0)
+				z.hitByProjectile((int) (ratio * damage.get()));
+		}
+	}
+	
+	private void destroyBuildings() {
+		for (Building b : managers.building.list) {
+			double distance = PointR.distance(getCenterX(), getCenterY(), b.getCenterX(), b.getCenterY());
+			double ratio = 1 - distance / splashRadius;
+			if (ratio > 0)
+				b.modifyHealth(ratio * damage.get());
+		}
 	}
 	
 	private void drawBlowBack(double drawX, double drawY, IGraphics g) {
