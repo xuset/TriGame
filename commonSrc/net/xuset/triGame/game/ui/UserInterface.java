@@ -89,9 +89,7 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		x /= controller.getScale();
 		y /= controller.getScale();
 		boolean popupCollision = controller.getPopupController().contains(x, y);
-		//TODO maybe you dont need gameInput?
-		return (gameInput != null && gameInput.contains(x, y)) ||
-				(baseForm != null && baseForm.contains(x, y)) ||
+		return (baseForm != null && baseForm.contains(x, y)) ||
 				popupCollision;
 	}
 	

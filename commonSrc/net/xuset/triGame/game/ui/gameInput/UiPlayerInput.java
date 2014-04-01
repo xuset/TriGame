@@ -61,9 +61,17 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 		}
 	}
 	
+	private boolean useDiagonal(double angle) {
+		final double minDiagonalRange = Math.PI / 10; // must be <= PI / 8
+		angle += Math.signum(angle) * Math.PI / 4;
+		double range = angle % (Math.PI / 2);
+		return Math.abs(range) <= minDiagonalRange;
+	}
+
 	private double roundAngle(double angle) {
-		angle += Math.signum(angle) * Math.PI / 8;
-		angle = (Math.PI / 4) * ( (int) (angle / (Math.PI / 4) ) );
+		double denominator = useDiagonal(angle) ? 4 : 2;
+		angle += Math.signum(angle) * Math.PI / (denominator * 2);
+		angle = (Math.PI / denominator) * ( (int) (angle / (Math.PI / denominator) ) );
 		return angle;
 	}
 	
