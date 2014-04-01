@@ -154,7 +154,7 @@ public class ZombieHandler implements GameIntegratable{
 	}
 	
 	protected int determinePathBuildingG() {
-		return 220;
+		return 300;
 	}
 
 	@Override
