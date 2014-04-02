@@ -13,9 +13,9 @@ public class AwtMouseListener implements IMouseListener {
 	private final MousePointer mainPointer;
 	
 	public AwtMouseListener(Component c) {
-		attachListener(c);
 		mainPointer = new MousePointer(0, 0.0f, 0.0f);
 		mainPointer.isPressed = false;
+		attachListener(c);
 	}
 	
 	public void attachListener(Component c) {
