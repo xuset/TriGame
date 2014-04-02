@@ -15,13 +15,13 @@ import net.xuset.triGame.Params;
 
 class UtilityForm extends UiForm {
 	private final IntroSwitcher switcher;
-	private final IUpdateChecker updateChecker;
+	private final UpdateChecker updateChecker;
 	private final UiForm frmButtons;
 	private final UiButton btnBack = new UiButton("<- back");
 	private final UiButton btnSettings = new UiButton("Settings");
 	private final UiLabel lblUpdates = new UiLabel("");
 	
-	public UtilityForm(IntroSwitcher switcher, IUpdateChecker updateChecker) {
+	public UtilityForm(IntroSwitcher switcher, UpdateChecker updateChecker) {
 		this.switcher = switcher;
 		this.updateChecker = updateChecker;
 		

@@ -21,6 +21,8 @@ import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.UiLabel;
 import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
+import net.xuset.triGame.Params;
+import net.xuset.triGame.Version;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.GameInfo.NetworkType;
 
@@ -129,7 +131,7 @@ class IntroJoin implements IntroForm{
 			try {
 				
 				BroadcastMsg msg = new BroadcastMsg(recieved);
-				Host host = new Host(msg.getHost(), msg.getPort());
+				Host host = new Host(msg);
 				
 				hostsList.add(host);
 				gridList.addRow("" + hostsList.size(), host.toString());
@@ -167,10 +169,21 @@ class IntroJoin implements IntroForm{
 		network = null;
 	}
 	
-	private void tryConnecting(String addr, int port) {
+	private void tryConnecting(Host host) {
+		if (host.getVersion().isGreaterThan(Params.VERSION)) {
+			setStatus(true, "Please download the latest update to join this game");
+			return;
+		}
+		
+		if (Params.VERSION.isGreaterThan(host.getVersion())) {
+			setStatus(true, "The other game's version is outdated");
+			return;
+		}
+		
 		try {
 			disconnectNetwork();
-			network = Network.connectToServer(addr, port, IdGenerator.getNext());
+			network = Network.connectToServer(host.getAddress(), host.getPort(),
+					IdGenerator.getNext());
 			gameStarter = new NetworkGameStarter(new StandardObjUpdater(network.hub));
 			lblStatus.setText("Connected. Waiting on host to start.");
 		} catch (IOException e) {
@@ -194,7 +207,7 @@ class IntroJoin implements IntroForm{
 			if (selected < hostsList.size()) {
 				setStatus(false, "Attempting to connect...");
 				Host host = hostsList.get(selected);
-				tryConnecting(host.getAddress(), host.getPort());
+				tryConnecting(host);
 			}
 		}
 	}
@@ -223,19 +236,34 @@ class IntroJoin implements IntroForm{
 		private final String addr;
 		private final int port;
 		private final InetAddress iNetAddr;
+		private final Version version;
 		
 		public String getAddress() { return addr; }
 		public int getPort() { return port; }
+		public Version getVersion() { return version; }
 		
-		public Host(String addr, int port) throws UnknownHostException {
+		public Host(BroadcastMsg msg) throws UnknownHostException {
+			this(msg.getHost(), msg.getPort(), msg.getVersion());
+		}
+		
+		public Host(String addr, int port, Version version) throws UnknownHostException {
 			this.addr = addr;
 			this.port = port;
+			this.version = version;
 			iNetAddr = InetAddress.getByName(addr);
 		}
 		
 		@Override
-		public String toString() { return iNetAddr.getHostName(); }
-		//TODO iNetAddr.getHostName() never returns on some networks
+		public String toString() {
+			//TODO iNetAddr.getHostName() never returns on some networks
+			String toString = "";
+			if (!version.equals(Params.VERSION))
+				toString = "[ incompatible game versions ]  ";
+			toString += iNetAddr.getHostName();
+			return toString;
+		}
+		
+		
 	}
 
 }

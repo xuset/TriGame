@@ -12,17 +12,16 @@ public class MainStartup {
 	private final InputHolder inputHolder;
 	private final Settings settings;
 	private final IpGetterIFace ipGetter;
-	private final IUpdateChecker updateChecker;
+	private final UpdateChecker updateChecker = new UpdateChecker();
 	
 	public MainStartup(IDrawBoard drawBoard, IFileFactory fileFactory,
-			Settings settings, IpGetterIFace ipGetter, IUpdateChecker updateChecker) {
+			Settings settings, IpGetterIFace ipGetter) {
 		
 		this.drawBoard = drawBoard;
 		this.fileFactory = fileFactory;
 		this.settings = settings;
 		this.ipGetter = ipGetter;
 		this.inputHolder = drawBoard.createInputListener();
-		this.updateChecker = updateChecker;
 		
 		try {
 		

@@ -65,7 +65,7 @@ class IntroHost implements IntroForm {
 
 	@Override
 	public GameInfo getCreatedGameInfo() {
-		if (gameStarter.hasGameStarted()) {
+		if (gameStarter != null && gameStarter.hasGameStarted()) {
 			network.getServerInstance().getAcceptor().stop();
 			broadcaster.stop();
 			broadcaster = null;
@@ -157,6 +157,8 @@ class IntroHost implements IntroForm {
 			int count = 0;
 			if (network != null)
 				count = network.getServerInstance().getConnectionCount() - 1;
+			if (count == -1)
+				count = 0;
 			lblPlayers.setText(joinedText + count);
 		}
 

@@ -38,7 +38,7 @@ class GameIntro implements IntroSwitcher{
 	
 	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory,
 			InputHolder inputHolder, Settings settings, IpGetterIFace ipGetter,
-			IUpdateChecker updateChecker) {
+			UpdateChecker updateChecker) {
 		
 		this.drawBoard = drawBoard;
 		this.fileFactory = fileFactory;

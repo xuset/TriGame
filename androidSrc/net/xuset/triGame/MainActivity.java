@@ -4,8 +4,6 @@ import net.xuset.tSquare.files.AssetFileFactory;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.system.DrawBoard;
 import net.xuset.tSquare.system.IDrawBoard;
-import net.xuset.triGame.intro.DummyUpdateChecker;
-import net.xuset.triGame.intro.IUpdateChecker;
 import net.xuset.triGame.intro.IpGetterIFace;
 import net.xuset.triGame.intro.MainStartup;
 import net.xuset.triGame.settings.Settings;
@@ -54,8 +52,7 @@ public class MainActivity extends Activity {
 			IFileFactory fileFactory = new AssetFileFactory(context.getAssets());
 			Settings settings = createDefaultSettings();
 			IpGetterIFace ipGetter = new WifiIpGetter(context);
-			IUpdateChecker updateChecker = new DummyUpdateChecker();
-			new MainStartup(drawBoard, fileFactory, settings, ipGetter, updateChecker);
+			new MainStartup(drawBoard, fileFactory, settings, ipGetter);
 		}
 		
 		private Settings createDefaultSettings() {
