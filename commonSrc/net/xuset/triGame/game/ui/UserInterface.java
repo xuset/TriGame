@@ -32,6 +32,7 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 	private final PauseHandler pauseHandler;
 	private final ArsenalItemAdder arsenalItemAdder;
 	private final GameInput gameInput;
+	private final Settings settings;
 	
 	public IGameInput getGameInput() { return gameInput; }
 	public ArsenalItemAdder getArsenalItemAdder() { return arsenalItemAdder; }
@@ -40,6 +41,7 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 	public UserInterface(InputHolder input, PointConverter pointConverter,
 			ShopManager shop, BuildingGetter buildingGetter, Settings settings) {
 
+		this.settings = settings;
 		controller = new UiController(input.getMouse());
 		attacher = new BuildingAttacher(pointConverter, shop,
 				(UiCollisionDetector) this, input.getMouse());
@@ -76,9 +78,9 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		}
 	}
 	
-	public void draw(IGraphics g, IGraphics transG, int blockSize) {
+	public void draw(IGraphics g, IGraphics transG) {
 		pauseHandler.update();
-		controller.setScale(blockSize / 50.0f);
+		controller.setScale(settings.uiZoom);
 		controller.draw(g);
 		attacher.draw(transG);
 		upgradeSetter.draw(transG);

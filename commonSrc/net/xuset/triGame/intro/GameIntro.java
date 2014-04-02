@@ -109,7 +109,7 @@ class GameIntro implements IntroSwitcher{
 			g.setColor(TsColor.rgb(220, 220, 220));
 			IRectangleR view = g.getView();
 			g.fillRect(0, 0, (float) view.getWidth(), (float) view.getHeight());
-			ui.setScale(settings.blockSize / 50.0f);
+			ui.setScale(settings.uiZoom);
 			animator.draw(g);
 			ui.draw(g);
 			drawBoard.flushScreen();

@@ -166,7 +166,7 @@ public class TriGame extends Game{
 		managerService.person.draw(transG);
 		gameMode.draw(transG);
 		particleController.draw(transG);
-		ui.draw(g, transG, blockSize);
+		ui.draw(g, transG);
 		
 		Draw.drawStats(shop.getPointCount(), gameMode.getRoundNumber(),
 				managerService.zombie.getZombiesKilled(), getCurrentFps(), scaleG);

@@ -10,37 +10,39 @@ import net.xuset.tSquare.ui.UiSlider.SliderChange;
 class UiSettingsZoom extends UiForm {
 	private static final double minZoom = 0.5, maxZoom = 2.0;
 	
-	private final Settings settings;
 	private final UiLabel lblZoom = new UiLabel();
 	private final UiSlider slider = new UiSlider();
+	private final SliderChange listener;
 	
-	UiSettingsZoom(Settings settings) {
-		this.settings = settings;
+	UiSettingsZoom(String name, SliderChange sliderListener, double init) {
 
+		this.listener = sliderListener;
+		
 		getLayout().setAlignment(Axis.Y_AXIS, Alignment.CENTER);
 		
-		getLayout().add(new UiLabel("Zoom   "));
+		getLayout().add(new UiLabel(name + "   "));
 		getLayout().add(slider);
 		getLayout().add(lblZoom);
 		
-		setInitialPosition();
+		setInitialPosition(init);
 		slider.setSliderListener(new SliderListener());
 		slider.getBorder().setVisibility(true);
 		reset();
 	}
 	
-	private void setInitialPosition() {
-		double zoom = settings.blockSize / (0.0 + settings.defaultBlockSize);
-		double position = (zoom - minZoom) / (maxZoom - minZoom);
+	private void setInitialPosition(double init) {
+		double position = (init - minZoom) / (maxZoom - minZoom);
 		if (position > 1.0)
 			position = 1.0;
+		if (position < 0.0)
+			position = 0.0;
 		slider.setPosition(position);
 	}
 	
 	private void reset() {
 		double sliderZoom = minZoom + (maxZoom - minZoom) * slider.getPosition();
-		settings.blockSize = (int) (settings.defaultBlockSize * sliderZoom);
 		lblZoom.setText(((int) (sliderZoom * 100)) + "%");
+		listener.onChange(sliderZoom);
 	}
 	
 	private class SliderListener implements SliderChange {

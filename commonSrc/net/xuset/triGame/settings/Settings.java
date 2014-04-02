@@ -6,6 +6,8 @@ public class Settings {
 	public int defaultBlockSize = 50;
 	public boolean enableSound = true;
 	public double wallGenCoefficient = 1.0;
+	public float uiZoom = 1.0f;
+	
 	
 	public Settings createCopy() {
 		Settings s = new Settings();
