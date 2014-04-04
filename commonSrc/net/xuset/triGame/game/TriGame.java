@@ -24,6 +24,7 @@ import net.xuset.triGame.game.entities.buildings.BuildingGetter;
 import net.xuset.triGame.game.guns.GunManager;
 import net.xuset.triGame.game.shopping.ShopDrawer;
 import net.xuset.triGame.game.shopping.ShopManager;
+import net.xuset.triGame.game.ui.IBrowserOpener;
 import net.xuset.triGame.game.ui.UserInterface;
 import net.xuset.triGame.game.ui.gameInput.IGameInput;
 import net.xuset.triGame.settings.Settings;
@@ -51,7 +52,7 @@ public class TriGame extends Game{
 	private boolean isGameOver = false;
 	
 	public TriGame(GameInfo gameInfo, IDrawBoard drawBoard, IFileFactory fileFactory,
-			InputHolder input, Settings settings) {
+			InputHolder input, Settings settings, IBrowserOpener browserOpener) {
 		
 		super(gameInfo.getNetwork());
 		this.settings = settings;
@@ -70,7 +71,8 @@ public class TriGame extends Game{
 		
 		BuildingGetter buildingGetter = new BuildingGetter();
 		PointConverter pConv = new PointConverter(viewableRect, blockSize);
-		ui = new UserInterface(input, pConv, shop, buildingGetter, settings);
+		ui = new UserInterface(input, pConv, shop, buildingGetter,
+				settings, browserOpener);
 		gameInput = ui.getGameInput();
 	
 		gameMode = GameMode.factoryCreator(gameInfo.getGameType(),
@@ -184,7 +186,8 @@ public class TriGame extends Game{
 	public void setGameOver() {
 		if (!isGameOver) {
 			isGameOver = true;
-			ui.setGameOver(gameMode.getRoundNumber());
+			ui.setGameOver(gameMode.getRoundNumber(),
+					managerService.person.getMaxJoinedPlayers());
 		}
 	}
 	

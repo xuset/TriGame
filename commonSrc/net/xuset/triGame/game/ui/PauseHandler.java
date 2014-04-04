@@ -28,18 +28,22 @@ public class PauseHandler {
 	private final Settings settings;
 	private final PauseForm pauseForm;
 	private final PauseButton pauseButton;
+	private final ScoreSubmitter scoreSubmitter = new ScoreSubmitter();
 	
 	private boolean requestExitGame = false;
 	private boolean isGameOver = false;
 	private PauseState switchState = null; //null for dont switch
+	private int playerCount, roundsSurvived;
 	
 	public boolean exitGameRequested() { return requestExitGame; }
 	public boolean isPaused() { return popupController.contains(pauseForm); }
 	
-	public PauseHandler(UiPopupController popupController, Settings settings) {
+	public PauseHandler(UiPopupController popupController, Settings settings,
+			IBrowserOpener browserOpener) {
+		
 		this.popupController = popupController;
 		this.settings = settings;
-		pauseForm = new PauseForm();
+		pauseForm = new PauseForm(browserOpener);
 		pauseButton = new PauseButton();
 		
 		popupController.addPopup(pauseButton);
@@ -52,7 +56,9 @@ public class PauseHandler {
 		}
 	}
 	
-	public void setGameOver(int roundsSurvived) {
+	public void setGameOver(int roundsSurvived, int playerCount) {
+		this.playerCount = playerCount;
+		this.roundsSurvived = roundsSurvived;
 		pauseForm.lblRoundsSurvived.setText("Survived " + roundsSurvived + " rounds");
 		isGameOver = true;
 		setPause(true, false, true);
@@ -92,8 +98,9 @@ public class PauseHandler {
 		private final UiButton btnExit = new UiButton("END GAME");
 		private final UiLabel lblGameOver = new UiLabel("GAME  OVER!");
 		private final UiLabel lblRoundsSurvived = new UiLabel("");
+		private final UiButton btnScores = new UiButton("Post to leader board");
 
-		public PauseForm() {
+		public PauseForm(IBrowserOpener browserOpener) {
 			settingsComponent = new UiSettingsForm(settings, false).getUiComponent();
 			
 			getLayout().setOrientation(Axis.Y_AXIS);
@@ -109,6 +116,8 @@ public class PauseHandler {
 			
 			btnExit.setFont(new TsFont("Arial", 20, TsTypeFace.BOLD));
 			btnExit.addMouseListener(new BtnExitAction());
+			
+			btnScores.addMouseListener(new BtnScoreAction(browserOpener));
 			
 			lblGameOver.setFont(new TsFont("Arial", 70, TsTypeFace.BOLD));
 			lblGameOver.setForeground(TsColor.red);
@@ -136,6 +145,8 @@ public class PauseHandler {
 			
 			if (showSettings)
 				innerForm.getLayout().add(settingsComponent);
+			if (showGameOver)
+				innerForm.getLayout().add(btnScores);
 			innerForm.getLayout().add(btnExit);
 			
 		}
@@ -201,5 +212,21 @@ public class PauseHandler {
 			if (t.action == MouseAction.RELEASE)
 				requestExitGame = true;
 		}
+	}
+	
+	private class BtnScoreAction implements Change<TsMouseEvent> {
+		private final IBrowserOpener browserOpener;
+		
+		public BtnScoreAction(IBrowserOpener browserOpener) {
+			this.browserOpener = browserOpener;
+		}
+
+		@Override
+		public void observeChange(TsMouseEvent t) {
+			if (t.action == MouseAction.RELEASE)
+				browserOpener.openBrowser(scoreSubmitter.
+						craftUrl(roundsSurvived, playerCount));
+		}
+		
 	}
 }

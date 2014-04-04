@@ -4,6 +4,7 @@ import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.tSquare.system.input.InputHolder;
 import net.xuset.triGame.game.TriGame;
+import net.xuset.triGame.game.ui.IBrowserOpener;
 import net.xuset.triGame.settings.Settings;
 
 public class MainStartup {
@@ -12,15 +13,17 @@ public class MainStartup {
 	private final InputHolder inputHolder;
 	private final Settings settings;
 	private final IpGetterIFace ipGetter;
+	private final IBrowserOpener browserOpener;
 	private final UpdateChecker updateChecker = new UpdateChecker();
 	
 	public MainStartup(IDrawBoard drawBoard, IFileFactory fileFactory,
-			Settings settings, IpGetterIFace ipGetter) {
+			Settings settings, IpGetterIFace ipGetter, IBrowserOpener browserOpener) {
 		
 		this.drawBoard = drawBoard;
 		this.fileFactory = fileFactory;
 		this.settings = settings;
 		this.ipGetter = ipGetter;
+		this.browserOpener = browserOpener;
 		this.inputHolder = drawBoard.createInputListener();
 		
 		try {
@@ -47,7 +50,7 @@ public class MainStartup {
 	
 	private TriGame createGame() {
 		GameIntro intro = new GameIntro(drawBoard, fileFactory,
-				inputHolder, settings, ipGetter, updateChecker);
+				inputHolder, settings, ipGetter, updateChecker, browserOpener);
 		
 		return intro.createGame();
 	}

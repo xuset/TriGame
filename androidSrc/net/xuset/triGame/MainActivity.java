@@ -52,7 +52,8 @@ public class MainActivity extends Activity {
 			IFileFactory fileFactory = new AssetFileFactory(context.getAssets());
 			Settings settings = createDefaultSettings();
 			IpGetterIFace ipGetter = new WifiIpGetter(context);
-			new MainStartup(drawBoard, fileFactory, settings, ipGetter);
+			new MainStartup(drawBoard, fileFactory, settings, ipGetter,
+					new AndroidBrowserOpener());
 		}
 		
 		private Settings createDefaultSettings() {

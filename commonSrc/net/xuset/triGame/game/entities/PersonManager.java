@@ -21,6 +21,7 @@ public class PersonManager extends Manager<Person>{
 	private final boolean isServer;
 	private final GameGrid gameGrid;
 	private final TriangleSpriteCreator triangleCreator;
+	private int maxJoinedPlayers = 0;
 	
 	public final LocationCreator<Person> creator;
 	
@@ -61,6 +62,14 @@ public class PersonManager extends Manager<Person>{
 		return null;
 	}
 	
+	public int getMaxJoinedPlayers() { return maxJoinedPlayers; }
+	
+	@Override
+	protected void onAdd(Person t) {
+		super.onAdd(t);
+		maxJoinedPlayers++;
+	}
+
 	private class PersonCreate implements LocationFunc<Person> {
 		
 		private Person create(double x, double y, EntityKey key) {

@@ -39,7 +39,8 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 	public void clearAttachedBuildings() { attacher.clearAttached(); }
 
 	public UserInterface(InputHolder input, PointConverter pointConverter,
-			ShopManager shop, BuildingGetter buildingGetter, Settings settings) {
+			ShopManager shop, BuildingGetter buildingGetter, Settings settings,
+			IBrowserOpener browserOpener) {
 
 		this.settings = settings;
 		controller = new UiController(input.getMouse());
@@ -51,7 +52,8 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		arsenalForm = new ArsenalForm(attacher, shop, upgrades);
 		upgradeSetter = new BuildingUpgradeSetter(buildingGetter, pointConverter,
 				(UiFormSwitcher) this, upgrades, (UiCollisionDetector) this);
-		pauseHandler = new PauseHandler(controller.getPopupController(), settings);
+		pauseHandler = new PauseHandler(controller.getPopupController(), settings,
+				browserOpener);
 		
 		input.getMouse().watch(new MouseObserver());
 
@@ -103,8 +105,8 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		return pauseHandler.isPaused();
 	}
 	
-	public void setGameOver(int roundsSurvived) {
-		pauseHandler.setGameOver(roundsSurvived);
+	public void setGameOver(int roundsSurvived, int playerCount) {
+		pauseHandler.setGameOver(roundsSurvived, playerCount);
 	}
 	
 	private void switchView(UiForm f) {

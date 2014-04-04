@@ -55,7 +55,7 @@ public class DesktopStartup {
 		
 		try {
 			new MainStartup(drawBoard, new FileFactory(), settings,
-					new IpGetter());
+					new IpGetter(), new DesktopBrowserOpener());
 		} catch (Exception ex) {
 			System.err.println("Error while handling another error");
 			ex.printStackTrace();

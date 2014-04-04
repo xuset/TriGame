@@ -16,6 +16,7 @@ import net.xuset.tSquare.ui.layout.UiBorderLayout;
 import net.xuset.triGame.Params;
 import net.xuset.triGame.game.GameInfo;
 import net.xuset.triGame.game.TriGame;
+import net.xuset.triGame.game.ui.IBrowserOpener;
 import net.xuset.triGame.settings.Settings;
 
 class GameIntro implements IntroSwitcher{
@@ -23,6 +24,7 @@ class GameIntro implements IntroSwitcher{
 	private final Settings settings;
 	private final IDrawBoard drawBoard;
 	private final InputHolder inputHolder;
+	private final IBrowserOpener browserOpener;
 	
 	private final UiController ui;
 	private final UiBorderLayout mainLayout;
@@ -38,12 +40,13 @@ class GameIntro implements IntroSwitcher{
 	
 	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory,
 			InputHolder inputHolder, Settings settings, IpGetterIFace ipGetter,
-			UpdateChecker updateChecker) {
+			UpdateChecker updateChecker, IBrowserOpener browserOpener) {
 		
 		this.drawBoard = drawBoard;
 		this.fileFactory = fileFactory;
 		this.settings = settings;
 		this.inputHolder = inputHolder;
+		this.browserOpener = browserOpener;
 		
 		utilityForm = new UtilityForm((IntroSwitcher) this, updateChecker);
 		animator = new IntroAnimator(settings.blockSize);
@@ -88,7 +91,8 @@ class GameIntro implements IntroSwitcher{
 	private void tryToCreateGame() {
 		GameInfo gInfo = selectedForm.getCreatedGameInfo();
 		if (gInfo != null) {
-			createdGame = new TriGame(gInfo, drawBoard, fileFactory, inputHolder, settings);
+			createdGame = new TriGame(gInfo, drawBoard, fileFactory, inputHolder,
+					settings, browserOpener);
 		}
 	}
 	

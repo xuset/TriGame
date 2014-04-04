@@ -9,6 +9,7 @@ import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.tSquare.system.Network;
 import net.xuset.triGame.game.GameInfo.NetworkType;
 import net.xuset.triGame.game.GameMode.GameType;
+import net.xuset.triGame.game.ui.DummyBrowserOpener;
 import net.xuset.triGame.settings.Settings;
 
 public class DevStart {
@@ -17,7 +18,8 @@ public class DevStart {
 			Settings settings) {
 		
 		GameInfo gInfo = new GameInfo(Network.createOffline(), gameType, NetworkType.SOLO);
-		TriGame tGame = new TriGame(gInfo, db, ff, db.createInputListener(), settings);
+		TriGame tGame = new TriGame(gInfo, db, ff, db.createInputListener(), settings,
+				new DummyBrowserOpener());
 		tGame.startGame();
 	}
 	
@@ -26,7 +28,8 @@ public class DevStart {
 		
 		Network n = Network.connectToServer(ip, port, IdGenerator.getNext());
 		GameInfo gInfo = new GameInfo(n, type, NetworkType.SOLO);
-		TriGame tGame = new TriGame(gInfo, db, ff, db.createInputListener(), settings);
+		TriGame tGame = new TriGame(gInfo, db, ff, db.createInputListener(), settings,
+				new DummyBrowserOpener());
 		tGame.startGame();
 	}
 	
@@ -36,7 +39,8 @@ public class DevStart {
 		Network n = Network.startupServer(port);
 		n.waitForClientsToConnect(players, Integer.MAX_VALUE);
 		GameInfo gInfo = new GameInfo(n, type, NetworkType.SOLO);
-		TriGame tGame = new TriGame(gInfo, db, ff, db.createInputListener(), settings);
+		TriGame tGame = new TriGame(gInfo, db, ff, db.createInputListener(), settings,
+				new DummyBrowserOpener());
 		tGame.startGame();
 	}
 	
