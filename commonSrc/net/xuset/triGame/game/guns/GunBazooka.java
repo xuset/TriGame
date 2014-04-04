@@ -8,13 +8,13 @@ import net.xuset.triGame.game.shopping.UpgradeItem;
 
 public class GunBazooka extends AbstractGun {
 	private static final double speed = 8.0, maxDistance = 7.0;
-	private static final double fireRateDelta = -50, damageDelta = -20, splashDelta = 0.2;
+	private static final double fireRateDelta = -50, damageDelta = -20;//, splashDelta = 0.2;
 	private static final double initFireRate = 800, initDamage = -150, initSplash = 1.0;
 	
 	
 	private final UpgradeItem fireRateUpgrade;
 	private final UpgradeItem damageUpgrade;
-	private final UpgradeItem splashUpgrade;
+	//private final UpgradeItem splashUpgrade;
 
 	public GunBazooka() {
 		
@@ -31,12 +31,12 @@ public class GunBazooka extends AbstractGun {
 				new ShopItem("Fire rate", 100), 3, semiShotDelay, fireRateDelta);
 		damageUpgrade = new UpgradeItem(
 				new ShopItem("Damage", 100), 3, initDamage, damageDelta);
-		splashUpgrade = new UpgradeItem(
-				new ShopItem("Spash range", 100), 3, initSplash, splashDelta);
+		//splashUpgrade = new UpgradeItem(
+				//new ShopItem("Spash range", 100), 3, initSplash, splashDelta);
 		
 		upgradeManager.addUpgrade(fireRateUpgrade);
 		upgradeManager.addUpgrade(damageUpgrade);
-		upgradeManager.addUpgrade(splashUpgrade);
+		//upgradeManager.addUpgrade(splashUpgrade);
 		
 		upgradeManager.observer().watch(fireRateObserve);
 	}
@@ -47,7 +47,7 @@ public class GunBazooka extends AbstractGun {
 		double y = player.getCenterY();
 		double angle = player.getAngle();
 		double damage = damageUpgrade.getValue();
-		double splashRadius = splashUpgrade.getValue();
+		double splashRadius = initSplash;//splashUpgrade.getValue();
 		
 		projManager.mortarCreate(x, y, angle, speed,
 				(int) damage, splashRadius, maxDistance, false);
