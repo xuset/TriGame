@@ -4,6 +4,8 @@ import net.xuset.tSquare.game.GameDrawable;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.Sprite;
 import net.xuset.tSquare.imaging.TsColor;
+import net.xuset.tSquare.math.point.IPointW;
+import net.xuset.tSquare.math.point.Point;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.util.Observer.Change;
@@ -21,6 +23,8 @@ public class BuildingUpgradeSetter implements Change<TsMouseEvent>, GameDrawable
 	private final UiUpgrades uiUpgrades;
 	private final UiCollisionDetector uiCollision;
 	
+	private IPointW lastMouseLoc = new Point();
+	private boolean needsRechecking = false;
 	private boolean drawBuildingView = false;
 	private Building selected = null;
 	
@@ -37,12 +41,18 @@ public class BuildingUpgradeSetter implements Change<TsMouseEvent>, GameDrawable
 
 	@Override
 	public void observeChange(TsMouseEvent t) {
-		if (t.action != MouseAction.RELEASE || uiCollision.isCollidingWith(t.x, t.y))
-			return;
-		double gameX = (int) pConv.screenToGameX(t.x);
-		double gameY = (int) pConv.screenToGameY(t.y);
+		if (t.action == MouseAction.RELEASE && !uiCollision.isCollidingWith(t.x, t.y)) {
+			needsRechecking = true;
+			lastMouseLoc.setTo(t.x, t.y);
+		}
+	}
+	
+	private void checkForSwitch() {
+		needsRechecking = false;
 		
-		//TODO this may cause a concurrentModificationException 
+		double gameX = (int) pConv.screenToGameX(lastMouseLoc.getX());
+		double gameY = (int) pConv.screenToGameY(lastMouseLoc.getY());
+		
 		Building b = buildingGetter.getByLocation(gameX, gameY);
 		if (b != null && b.upgrades != null && b.owned() && !b.upgrades.items.isEmpty()) {
 			Sprite s = Sprite.get(b.getSpriteId());
@@ -59,6 +69,9 @@ public class BuildingUpgradeSetter implements Change<TsMouseEvent>, GameDrawable
 
 	@Override
 	public void draw(IGraphics g) {
+		if (needsRechecking)
+			checkForSwitch();
+		
 		if (drawBuildingView) {
 			float r = (float) selected.getVisibilityRadius();
 			float x = (float) (selected.getX() + selected.getWidth() / 2 - r);
