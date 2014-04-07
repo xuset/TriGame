@@ -46,6 +46,8 @@ public class DimensionFinder {
 	}
 	
 	private static float getDimension(UiComponent c, Axis a) {
+		if (c == null)
+			return 0.0f;
 		switch (a) {
 		case X_AXIS:
 			return c.getWidth();
