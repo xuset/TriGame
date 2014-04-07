@@ -3,6 +3,7 @@ package net.xuset.triGame.game.ui.arsenal;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.ui.Alignment;
 import net.xuset.tSquare.ui.Axis;
+import net.xuset.tSquare.ui.UiBorder;
 import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.UiLabel;
@@ -14,6 +15,7 @@ public class ItemForm extends ArsenalSubForm implements ItemMetaSetter{
 	private final UiForm frmContainer = new UiForm();
 	
 	private InfoUpdate newUpdate = null;
+	private UiBorder lastBorder = null;
 	
 	public ItemForm(String formName) {
 		super(formName);
@@ -30,14 +32,21 @@ public class ItemForm extends ArsenalSubForm implements ItemMetaSetter{
 	
 	@Override
 	public void onForcedFocusLost() {
+		if (lastBorder != null)
+			lastBorder.setVisibility(false);
+		lastBorder = null;
 		lblName.setText("");
 		lblDescription.setText("");
 	}
 
 	@Override
-	public void setDisplayInfo(String name, String description) {
+	public void setDisplayInfo(String name, String description, UiBorder border) {
 		if (!lblName.getText().equals(name) ||
 				lblDescription.getText().equals(description)) {
+			if (lastBorder != null)
+				lastBorder.setVisibility(false);
+			lastBorder = border;
+			lastBorder.setVisibility(true);
 			
 			newUpdate = new InfoUpdate(name, description);
 		}

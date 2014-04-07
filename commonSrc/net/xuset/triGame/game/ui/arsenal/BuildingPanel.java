@@ -1,6 +1,5 @@
 package net.xuset.triGame.game.ui.arsenal;
 
-import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.IImage;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
@@ -24,8 +23,6 @@ public class BuildingPanel extends UiForm {
 	private final ItemMetaSetter mouseCallback;
 	private final String description;
 	private boolean canPurchase = true;
-	
-	private long hoverTime = 0l;
 	
 	public BuildingPanel(ShopItem shopItem, LocManCreator<?> creator, IImage img,
 			BuildingAttacher attacher, ShopManager shop, double viewRadius,
@@ -58,18 +55,12 @@ public class BuildingPanel extends UiForm {
 	protected void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
 		
-		if (e.action == MouseAction.MOVE)
-			mouseCallback.setDisplayInfo(shopItem.getName(), description);
+		if (e.action == MouseAction.MOVE || e.action == MouseAction.PRESS) {
+			mouseCallback.setDisplayInfo(shopItem.getName(), description, getBorder());
+		}
 		
 		if (canPurchase && e.action == MouseAction.PRESS)
 			attacher.attach(shopItem, creator, img, viewRadius, e.pointer);
-		hoverTime = System.currentTimeMillis();
-	}
-	
-	@Override
-	public void draw(IGraphics g) {
-		getBorder().setVisibility(hoverTime + 50 > System.currentTimeMillis());
-		super.draw(g);
 	}
 	
 	private void resetLblPriceColor() {
