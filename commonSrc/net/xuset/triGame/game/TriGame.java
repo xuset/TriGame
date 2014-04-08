@@ -127,7 +127,7 @@ public class TriGame extends Game{
 		managerService.building.update(frameDelta);
 		managerService.projectile.update(frameDelta);
 		
-		if (player.didMove() || player.isDead() || ui.isPaused())
+		if (player.isDead() || ui.isPaused())
 			ui.clearAttachedBuildings();
 		
 		if (player.isDead() || isGameOver) {

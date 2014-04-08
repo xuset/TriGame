@@ -14,6 +14,8 @@ import net.xuset.triGame.game.shopping.ShopItem;
 import net.xuset.triGame.game.shopping.ShopManager;
 
 public class BuildingPanel extends UiForm {
+	private static final long doubleClickDelta = 500L;
+	
 	private final ShopItem shopItem;
 	private final LocManCreator<?> creator;
 	private final IImage img;
@@ -22,6 +24,8 @@ public class BuildingPanel extends UiForm {
 	private final double viewRadius;
 	private final ItemMetaSetter mouseCallback;
 	private final String description;
+	
+	private long lastClickTime = 0L;
 	private boolean canPurchase = true;
 	
 	public BuildingPanel(ShopItem shopItem, LocManCreator<?> creator, IImage img,
@@ -59,8 +63,13 @@ public class BuildingPanel extends UiForm {
 			mouseCallback.setDisplayInfo(shopItem.getName(), description, getBorder());
 		}
 		
-		if (canPurchase && e.action == MouseAction.PRESS)
-			attacher.attach(shopItem, creator, img, viewRadius, e.pointer);
+		if (canPurchase && e.action == MouseAction.PRESS) {
+			boolean stayAttached =
+					System.currentTimeMillis() - lastClickTime < doubleClickDelta;
+			
+			attacher.attach(shopItem, creator, img, viewRadius, e.pointer, stayAttached);
+			lastClickTime = System.currentTimeMillis();
+		}
 	}
 	
 	private void resetLblPriceColor() {

@@ -25,6 +25,8 @@ public class BuildingAttacher implements GameDrawable{
 	private float viewRadius;
 	private boolean attached = false;
 	private MousePointer mousePointer = null;
+	private boolean stayAttached = false;
+	private boolean beenReleased = false;
 	
 	private int realX = 0, realY = 0;
 	private float gameX = 0, gameY = 0;
@@ -42,30 +44,37 @@ public class BuildingAttacher implements GameDrawable{
 	public boolean isAttached() { return attached; }
 	
 	public void attach(ShopItem shopItem, LocManCreator<?> creator, IImage image,
-			double viewRadius, MousePointer scaledMousePointer) {
+			double viewRadius, MousePointer scaledMousePointer, boolean stayAttached) {
 		
 		mousePointer = mouseListener.getPointerById(scaledMousePointer.getId());
 		this.creator = creator;
 		this.image = image;
 		this.shopItem = shopItem;
 		this.viewRadius = (float) viewRadius;
+		this.stayAttached = stayAttached;
 		attached = true;
+		beenReleased = false;
 		updateAttachedInfo();
 	}
-	
+
 	public void clearAttached() {
 		mousePointer = null;
 		creator = null;
 		image = null;
 		attached = false;
+		beenReleased = false;
 	}
 	
 	public void placeAttached() {
 		if (canPlace()) {
 			shop.purchase(shopItem);
 			creator.create(gameX, gameY);
+			beenReleased = false;
+			if (!stayAttached)
+				clearAttached();
+		} else {
+			clearAttached();
 		}
-		clearAttached();
 	}
 	
 	private boolean canPlace() {
@@ -76,8 +85,16 @@ public class BuildingAttacher implements GameDrawable{
 	
 	@Override
 	public void draw(IGraphics g) {
-		if (attached && !mousePointer.isPressed())
-			placeAttached();
+		if (mousePointer != null && !mousePointer.isPressed())
+			beenReleased = true;
+		
+		if (attached) {
+			if (stayAttached && beenReleased && mousePointer.isPressed()) {
+				placeAttached();
+			} else if (!stayAttached && !mousePointer.isPressed()){
+				placeAttached();
+			}
+		}
 		
 		if (!attached)
 			return;
