@@ -15,7 +15,7 @@ import net.xuset.triGame.game.shopping.UpgradeItem;
 public class MortarTower extends Tower {
 	private static final double initSplashRadius = 1.0;
 	
-	//protected final UpgradeItem splashUpgrade;
+	protected final UpgradeItem splashUpgrade;
 	
 	public MortarTower(double x, double y, ParticleController pc,
 			ZombieTargeter targeter, ProjectileManager projectile, EntityKey key) {
@@ -23,12 +23,12 @@ public class MortarTower extends Tower {
 		super(x, y, pc, targeter, projectile, INFO, key);
 		fireRateUpgrade = new UpgradeItem(new ShopItem("Fire rate", 100), 3, 1500, -150);
 		rangeUpgrade = new UpgradeItem(new ShopItem("Range", 100), 3, INFO.visibilityRadius, 1.5);
-		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, -232, -15);
-		//splashUpgrade = new UpgradeItem(new ShopItem("Splash radius", 100), 3, 1.0, 0.25);
+		damageUpgrade = new UpgradeItem(new ShopItem("Damage", 100), 3, -70, -15);
+		splashUpgrade = new UpgradeItem(new ShopItem("Splash radius", 100), 3, 1.0, 0.20);
 		upgrades.addUpgrade(fireRateUpgrade);
 		upgrades.addUpgrade(rangeUpgrade);
 		upgrades.addUpgrade(damageUpgrade);
-		//upgrades.addUpgrade(splashUpgrade);
+		upgrades.addUpgrade(splashUpgrade);
 	}
 	
 	@Override

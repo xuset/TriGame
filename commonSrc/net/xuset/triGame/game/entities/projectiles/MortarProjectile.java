@@ -1,5 +1,6 @@
 package net.xuset.triGame.game.entities.projectiles;
 
+import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.TsColor;
@@ -95,8 +96,7 @@ public class MortarProjectile extends Projectile {
 	
 	private void destroyZombies() {
 		for (Zombie z : managers.zombie.list) {
-			double distance = PointR.distance(getCenterX(), getCenterY(), z.getCenterX(), z.getCenterY());
-			double ratio = 1 - distance / splashRadius;
+			double ratio = getDamageRatio(z);
 			if (ratio > 0)
 				z.hitByProjectile((int) (ratio * damage.get()));
 		}
@@ -104,11 +104,18 @@ public class MortarProjectile extends Projectile {
 	
 	private void destroyBuildings() {
 		for (Building b : managers.building.list) {
-			double distance = PointR.distance(getCenterX(), getCenterY(), b.getCenterX(), b.getCenterY());
-			double ratio = 1 - distance / splashRadius;
+			double ratio = getDamageRatio(b);
 			if (ratio > 0)
 				b.modifyHealth(ratio * damage.get());
 		}
+	}
+	
+	private double getDamageRatio(Entity e) {
+		double avgSize = (e.getWidth() + e.getHeight()) / 4;
+		double distance = PointR.distance(getCenterX(), getCenterY(),
+				e.getCenterX(), e.getCenterY()) - avgSize;
+		return 1 - distance / splashRadius;
+		
 	}
 	
 	private void drawBlowBack(double drawX, double drawY, IGraphics g) {
