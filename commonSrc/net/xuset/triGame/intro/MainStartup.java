@@ -1,8 +1,14 @@
 package net.xuset.triGame.intro;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.system.IDrawBoard;
 import net.xuset.tSquare.system.input.InputHolder;
+import net.xuset.triGame.Params;
 import net.xuset.triGame.game.TriGame;
 import net.xuset.triGame.game.ui.IBrowserOpener;
 import net.xuset.triGame.settings.Settings;
@@ -25,6 +31,8 @@ public class MainStartup {
 		this.ipGetter = ipGetter;
 		this.browserOpener = browserOpener;
 		this.inputHolder = drawBoard.createInputListener();
+		
+		setLogLevel(Params.LOG_LEVEL);
 		
 		try {
 		
@@ -53,5 +61,14 @@ public class MainStartup {
 				inputHolder, settings, ipGetter, updateChecker, browserOpener);
 		
 		return intro.createGame();
+	}
+	
+	private void setLogLevel(Level level) {
+		Logger topLogger = java.util.logging.Logger.getLogger("");
+	    for (Handler handler : topLogger.getHandlers()) {
+	        if (handler instanceof ConsoleHandler) {
+	        	handler.setLevel(level);
+	        }
+	    }
 	}
 }

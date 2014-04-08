@@ -1,5 +1,7 @@
 package net.xuset.triGame;
 
+import java.util.logging.Level;
+
 public class Params {
 	public static final String WEBSITE_URL = "http://wwww.xuset.net";
 	public static final String GITHUB_URL = "https://github.com/xuset/triGame";
@@ -10,4 +12,5 @@ public class Params {
 	public static final String SCORE_SUBMIT_URL =
 			"http://xuset.net/polyDefense/scores/scoreSubmit.php";
 	public static final String SCORE_KEY = "no esta aqui";
+	public static final Level LOG_LEVEL = Level.WARNING;
 }
