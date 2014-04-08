@@ -140,7 +140,7 @@ class GameIntro implements IntroSwitcher{
 				containerForm.getLayout().add(frm);
 			selectedForm.onFocusGained();
 			utilityForm.setButtonOptions(newForm != GameIntroForms.MAIN,
-					newForm != GameIntroForms.SETTINGS);
+					newForm == GameIntroForms.MAIN);
 			newForm = null;
 		}
 	}
