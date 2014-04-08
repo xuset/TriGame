@@ -24,6 +24,7 @@ import net.xuset.triGame.game.entities.buildings.BuildingGetter;
 import net.xuset.triGame.game.guns.GunManager;
 import net.xuset.triGame.game.shopping.ShopDrawer;
 import net.xuset.triGame.game.shopping.ShopManager;
+import net.xuset.triGame.game.survival.SurvivalGameMode;
 import net.xuset.triGame.game.ui.IBrowserOpener;
 import net.xuset.triGame.game.ui.UserInterface;
 import net.xuset.triGame.game.ui.gameInput.IGameInput;
@@ -186,8 +187,9 @@ public class TriGame extends Game{
 	public void setGameOver() {
 		if (!isGameOver) {
 			isGameOver = true;
-			ui.setGameOver(gameMode.getRoundNumber(),
-					managerService.person.getMaxJoinedPlayers());
+			boolean isSurvival = gameMode instanceof SurvivalGameMode;
+			int count = isSurvival ? managerService.person.getMaxJoinedPlayers() : -1;
+			ui.setGameOver(gameMode.getRoundNumber(), count);
 		}
 	}
 	

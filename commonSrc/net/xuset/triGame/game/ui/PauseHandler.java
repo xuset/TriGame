@@ -145,7 +145,7 @@ public class PauseHandler {
 			
 			if (showSettings)
 				innerForm.getLayout().add(settingsComponent);
-			if (showGameOver)
+			if (showGameOver && playerCount != -1)
 				innerForm.getLayout().add(btnScores);
 			innerForm.getLayout().add(btnExit);
 			
