@@ -34,8 +34,9 @@ public abstract class Wall extends Building {
 		
 		super.draw(g);
 		
-		int index = (int) ((cracks.total + 1) * (1.0 - getHealth() / info.maxHealth));
+		int index = (int) Math.ceil((cracks.total) * (1.0 - getHealth() / info.maxHealth));
 		index -= 1;
+		
 		if (index >= 0 && index < cracks.total) {
 			Sprite s = cracks.sprites[index];
 			s.draw((float) getX(), (float) getY(), g);
