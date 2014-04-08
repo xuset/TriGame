@@ -33,9 +33,10 @@ class IntroHost implements IntroForm {
 	
 	private final UiForm frmMain = new UiForm();
 	private final UiLabel lblStatus = new UiLabel("Waiting for players to join");
-	private final UiLabel lblPlayers = new UiLabel(joinedText + 0);
+	private final UiLabel lblPlayers = new UiLabel(joinedText + 1);
 	private final UiRadioGroup radioGroup = new UiRadioGroup();
 	private final IpGetterIFace ipGetter;
+	private final ServerConnectionEvent connectionListener = new ServerConnectionEvent();
 
 	private BroadcastServer broadcaster;
 	private NetworkGameStarter gameStarter;
@@ -66,6 +67,7 @@ class IntroHost implements IntroForm {
 	@Override
 	public GameInfo getCreatedGameInfo() {
 		if (gameStarter != null && gameStarter.hasGameStarted()) {
+			network.getServerInstance().unwatchEvents(connectionListener);
 			network.getServerInstance().getAcceptor().stop();
 			broadcaster.stop();
 			broadcaster = null;
@@ -93,7 +95,7 @@ class IntroHost implements IntroForm {
 		try {
 			
 			network = Network.startupServer(0);
-			network.getServerInstance().watchEvents(new ServerConnectionEvent());
+			network.getServerInstance().watchEvents(connectionListener);
 			gameStarter = new NetworkGameStarter(new StandardObjUpdater(network.hub));
 			int port = network.getServerInstance().getPort();
 			InetAddress group = InetAddress.getByName(MULTICAST_GROUP);
@@ -116,7 +118,7 @@ class IntroHost implements IntroForm {
 			broadcaster.stop();
 		if (network != null)
 			network.disconnect();
-		
+		network.getServerInstance().unwatchEvents(connectionListener);
 		gameStarter = null;
 		broadcaster = null;
 		network = null;
@@ -156,9 +158,9 @@ class IntroHost implements IntroForm {
 		private void update() {
 			int count = 0;
 			if (network != null)
-				count = network.getServerInstance().getConnectionCount() - 1;
-			if (count == -1)
-				count = 0;
+				count = network.getServerInstance().getConnectionCount();
+			if (count <= 0)
+				count = 1;
 			lblPlayers.setText(joinedText + count);
 		}
 

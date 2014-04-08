@@ -76,8 +76,10 @@ class GameIntro implements IntroSwitcher{
 	
 	private void setupIntroForms(IpGetterIFace ipGetter) {
 		IntroSwitcher iSwitcher = this;
+		IntroConnected introCon = new IntroConnected();
+		introForms[GameIntroForms.CONNECTED.ordinal()] = introCon;
 		introForms[GameIntroForms.MAIN.ordinal()] = new IntroMain(iSwitcher);
-		introForms[GameIntroForms.JOIN.ordinal()] = new IntroJoin(iSwitcher);
+		introForms[GameIntroForms.JOIN.ordinal()] = new IntroJoin(iSwitcher, introCon);
 		introForms[GameIntroForms.SOLO.ordinal()] = new IntroSolo();
 		introForms[GameIntroForms.HOST.ordinal()] = new IntroHost(ipGetter);
 		introForms[GameIntroForms.SETTINGS.ordinal()] = new IntroSettings(settings);

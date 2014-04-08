@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import net.xuset.objectIO.netObject.StandardObjUpdater;
 import net.xuset.objectIO.util.broadcast.BroadcastClient;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.IdGenerator;
@@ -24,26 +23,24 @@ import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.Params;
 import net.xuset.triGame.Version;
 import net.xuset.triGame.game.GameInfo;
-import net.xuset.triGame.game.GameInfo.NetworkType;
 
 class IntroJoin implements IntroForm{
 	private static final long scanInterval = 2000L;
 	
 	private final IntroSwitcher introSwitcher;
+	private final IntroConnected introConnected;
 	private final UiForm frmMain;
 	private final UiLabel lblStatus = new UiLabel("");
 	private final UiFixedGridList gridList = new UiFixedGridList(2, 5, 300);
 	
 	private ArrayList<Host> hostsList = new ArrayList<Host>();
-	private Network network = null;
-	private NetworkGameStarter gameStarter;
 	private BroadcastClient broadcastReciever = null;
 	private long lastScanTime = 0L;
 	
-	public IntroJoin(IntroSwitcher introSwitcher) {
+	public IntroJoin(IntroSwitcher introSwitcher, IntroConnected introConnected) {
 		this.introSwitcher = introSwitcher;
+		this.introConnected = introConnected;
 		frmMain = createFrmMain();
-		setStatus(false, "Searching for open games...");
 	}
 	
 	private UiForm createFrmMain() {
@@ -92,10 +89,6 @@ class IntroJoin implements IntroForm{
 
 	@Override
 	public GameInfo getCreatedGameInfo() {
-		if (gameStarter != null && gameStarter.hasGameStarted()) {
-			broadcastReciever.stop();
-			return new GameInfo(network, gameStarter.getGameType(), NetworkType.JOIN);
-		}
 		return null;
 	}
 
@@ -106,13 +99,12 @@ class IntroJoin implements IntroForm{
 
 	@Override
 	public void onFocusGained() {
+		setStatus(false, "Searching for open games...");
 		createBroadcast();
 	}
 
 	@Override
 	public void onFocusLost() {
-		disconnectNetwork();
-		gameStarter = null;
 		destroyBroadcast();
 	}
 
@@ -163,12 +155,6 @@ class IntroJoin implements IntroForm{
 		broadcastReciever = null;
 	}
 	
-	private void disconnectNetwork() {
-		if (network != null)
-			network.disconnect();
-		network = null;
-	}
-	
 	private void tryConnecting(Host host) {
 		if (host.getVersion().isGreaterThan(Params.VERSION)) {
 			setStatus(true, "Please download the latest update to join this game");
@@ -181,11 +167,10 @@ class IntroJoin implements IntroForm{
 		}
 		
 		try {
-			disconnectNetwork();
-			network = Network.connectToServer(host.getAddress(), host.getPort(),
+			Network network = Network.connectToServer(host.getAddress(), host.getPort(),
 					IdGenerator.getNext());
-			gameStarter = new NetworkGameStarter(new StandardObjUpdater(network.hub));
-			lblStatus.setText("Connected. Waiting on host to start.");
+			introConnected.setNetwork(network);
+			introSwitcher.switchToForm(GameIntroForms.CONNECTED);
 		} catch (IOException e) {
 			setStatus(true, "Error: " + e.getMessage());
 			e.printStackTrace();

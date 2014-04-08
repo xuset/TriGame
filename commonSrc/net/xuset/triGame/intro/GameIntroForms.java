@@ -1,5 +1,5 @@
 package net.xuset.triGame.intro;
 
 enum GameIntroForms {
-	MAIN, SOLO, JOIN, HOST, SETTINGS
+	MAIN, SOLO, JOIN, HOST, SETTINGS, CONNECTED
 }
