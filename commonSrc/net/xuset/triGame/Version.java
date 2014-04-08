@@ -1,18 +1,29 @@
 package net.xuset.triGame;
 
 public class Version {
+	public static class VersionFormatException extends Exception {
+		private static final long serialVersionUID = -5995794602148574002L;
+
+		public VersionFormatException(String message) {
+			super("Invalid format. " + message);
+		}
+	}
+	
 	private final int major, minor, patch;
 	
-	public Version(String version) {
+	public Version(String version) throws VersionFormatException{
 		int[] verNum = getVersionsFromString(version);
 		major = verNum[0];
 		minor = verNum[1];
 		patch = verNum[2];
 	}
 	
-	private int[] getVersionsFromString(String in) {
+	private int[] getVersionsFromString(String in) throws VersionFormatException{
 		int[] array = new int[] { 0, 0, 0 };
-		String[] split = in.split("\\.");
+		String[] split = in.split("\\.", 4);
+		
+		if (split.length == 0)
+			throw new VersionFormatException("The version must be seperate by periods");
 		
 		for (int i = 0; i < 3 && i < split.length; i++)
 			array[i] = toInt(split[i]);
@@ -20,11 +31,11 @@ public class Version {
 		return array;
 	}
 	
-	private int toInt(String num) {
+	private int toInt(String num) throws VersionFormatException{
 		try {
 			return Integer.parseInt(num);
 		} catch (NumberFormatException ex) {
-			return 0;
+			throw new VersionFormatException(num + " is not an integer");
 		}
 	}
 	

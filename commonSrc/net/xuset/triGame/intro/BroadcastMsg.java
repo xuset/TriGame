@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 
 import net.xuset.triGame.Params;
 import net.xuset.triGame.Version;
+import net.xuset.triGame.Version.VersionFormatException;
 
 class BroadcastMsg {
 	private static final String networkIdentifier = "TriGameBroadcast";
@@ -46,7 +47,12 @@ class BroadcastMsg {
 			throwException();
 		}
 		
-		version = new Version(strVersion);
+		try {
+			version = new Version(strVersion);
+		} catch (VersionFormatException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException(e.getMessage());
+		}
 		
 		host = strHost;
 		port = intPort;

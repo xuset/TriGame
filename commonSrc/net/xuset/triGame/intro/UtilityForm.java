@@ -49,8 +49,8 @@ class UtilityForm extends UiForm {
 		if (updateChecker.isFinished()) {
 			if (updateChecker.updateAvailable()) {
 				lblUpdates.setForeground(new TsColor(200, 20, 20));
-				lblUpdates.setText("A new version is available!  " +
-						"Visit  www.xuset.net  or  github.com/xuset/trigame/releases");
+				lblUpdates.setText("A new version is available!  Visit  "
+						+ updateChecker.getUpdateURL());
 			} else {
 				lblUpdates.setText("You have the most recent version v" + Params.VERSION);
 			}
