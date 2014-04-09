@@ -116,9 +116,10 @@ class IntroHost implements IntroForm {
 	private void destroyServer() {
 		if (broadcaster != null)
 			broadcaster.stop();
-		if (network != null)
+		if (network != null) {
+			network.getServerInstance().unwatchEvents(connectionListener);
 			network.disconnect();
-		network.getServerInstance().unwatchEvents(connectionListener);
+		}
 		gameStarter = null;
 		broadcaster = null;
 		network = null;

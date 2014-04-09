@@ -26,7 +26,7 @@ public class Version {
 			throw new VersionFormatException("The version must be seperate by periods");
 		
 		for (int i = 0; i < 3 && i < split.length; i++)
-			array[i] = toInt(split[i]);
+			array[i] = toInt(split[i].trim());
 		
 		return array;
 	}
