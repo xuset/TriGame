@@ -58,11 +58,11 @@ class VersusRound extends GameRound {
 	protected int getZombiesPerRound() {
 		int number = roundNumber.get();
 		int players = managers.person.list.size();
-		return ((number * number) / 10 + number) * players;
+		return ((number * number) / 10 + number) * players * 2;
 	}
 
 	@Override
-	protected int getZombieSpawnDelta() { return 300; }
+	protected int getZombieSpawnDelta() { return 0; }
 
 	@Override
 	protected void handleRoundNotOnGoing() {
