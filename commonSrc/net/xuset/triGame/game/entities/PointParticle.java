@@ -15,6 +15,8 @@ public abstract class PointParticle extends SpriteParticle{
 		super(SPRITE_ID);
 		startX = x;
 		startY = y;
+		this.x = x;
+		this.y = y;
 	}
 
 	@Override
