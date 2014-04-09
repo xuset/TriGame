@@ -14,6 +14,7 @@ import net.xuset.triGame.game.entities.buildings.BuildingGetter;
 import net.xuset.triGame.game.shopping.ShopManager;
 import net.xuset.triGame.game.ui.arsenal.ArsenalForm;
 import net.xuset.triGame.game.ui.arsenal.ArsenalForm.ArsenalItemAdder;
+import net.xuset.triGame.game.ui.arsenal.ArsenalSubForm;
 import net.xuset.triGame.game.ui.arsenal.BuildingAttacher;
 import net.xuset.triGame.game.ui.gameInput.GameInput;
 import net.xuset.triGame.game.ui.gameInput.IGameInput;
@@ -116,6 +117,10 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 	
 	public boolean exitGameRequested() {
 		return pauseHandler.exitGameRequested();
+	}
+	
+	public void addArsenalSubForm(ArsenalSubForm subForm) {
+		arsenalForm.addSubForm(subForm);
 	}
 	
 	private class MouseObserver implements Change<TsMouseEvent> {

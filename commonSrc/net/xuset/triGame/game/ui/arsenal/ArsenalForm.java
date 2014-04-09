@@ -1,5 +1,8 @@
 package net.xuset.triGame.game.ui.arsenal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.xuset.tSquare.system.input.mouse.MouseAction;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.Alignment;
@@ -18,7 +21,7 @@ import net.xuset.triGame.game.ui.upgrades.UiUpgrades;
 
 public class ArsenalForm extends UiForm {
 	private final UiButton btnSwitch;
-	private final ArsenalSubForm[] formContainer;
+	private final List<ArsenalSubForm> formContainer = new ArrayList<ArsenalSubForm>();
 	private int selectedForm = 0;
 
 	public final ArsenalItemAdder itemAdder;
@@ -31,34 +34,37 @@ public class ArsenalForm extends UiForm {
 		btnSwitch = new UiButton("Guns");
 		btnSwitch.addMouseListener(new BtnSwitchClick());
 		
-		formContainer = new ArsenalSubForm[2];
 		BuildingForm bForm = new BuildingForm(attacher, shop);
-		formContainer[0] = bForm;
 		GunForm gForm = new GunForm(shop, upgrades);
 		arsenalInput = gForm;
-		formContainer[1] = gForm;
 		itemAdder = new ArsenalItemAdder(bForm, gForm);
+		addSubForm(bForm);
+		addSubForm(gForm);
 		
 		switchTo(0);
 	}
 	
+	public void addSubForm(ArsenalSubForm subForm) {
+		formContainer.add(subForm);
+	}
+	
 	public void onForcedFocusLost() {
-		formContainer[selectedForm].onForcedFocusLost();
+		formContainer.get(selectedForm).onForcedFocusLost();
 	}
 	
 	private void switchTo(int formIndex) {
 		selectedForm = formIndex;
 		getLayout().clearComponents();
 		getLayout().add(btnSwitch);
-		getLayout().add(formContainer[formIndex]);
+		getLayout().add(formContainer.get(formIndex));
 		
-		ArsenalSubForm next = formContainer[getNextFormIndex()];
+		ArsenalSubForm next = formContainer.get(getNextFormIndex());
 		btnSwitch.setText(next.name);
 		
 	}
 	
 	private int getNextFormIndex() {
-		if (selectedForm + 1 >= formContainer.length)
+		if (selectedForm + 1 >= formContainer.size())
 			return 0;
 		return selectedForm + 1;
 	}

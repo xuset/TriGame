@@ -15,6 +15,7 @@ import net.xuset.triGame.game.entities.zombies.Zombie;
 import net.xuset.triGame.game.entities.zombies.ZombieHandler;
 import net.xuset.triGame.game.entities.zombies.ZombieTargeter;
 import net.xuset.triGame.game.shopping.ShopManager;
+import net.xuset.triGame.game.ui.UserInterface;
 import net.xuset.triGame.game.ui.gameInput.IRoundInput;
 
 
@@ -34,7 +35,7 @@ public class VersusGameMode extends GameMode {
 
 	public VersusGameMode(ShopManager shop, boolean isServer,
 			NetObjUpdater objController, IRoundInput roundInput,
-			PlayerInfoContainer playerContainer) {
+			PlayerInfoContainer playerContainer, UserInterface ui) {
 
 		this.shop = shop;
 		gameMap = new VersusMap();
@@ -44,6 +45,8 @@ public class VersusGameMode extends GameMode {
 		zombieHandler = new VersusZombie(gameMap, gameRound.onNewRound);
 		
 		gameRound.onNewRound.watch(new RoundObserver());
+		
+		ui.addArsenalSubForm(new ZombieForm(gameRound.spawner, shop));
 	}
 
 	@Override public boolean isGameOver() { return didLoose(); }

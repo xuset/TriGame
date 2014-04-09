@@ -25,7 +25,7 @@ public class UiSettingsWall extends UiForm {
 		double range = maxPercent - minPercent;
 		double offset = percent / range;
 		offset = Math.min(1.0, Math.max(0, offset)); //limit to value between 0.0 and 1.0
-		slider.setPosition(offset);
+		slider.setProgress(offset);
 	}
 	
 	private class SliderListener implements UiSlider.SliderChange {

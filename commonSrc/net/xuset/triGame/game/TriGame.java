@@ -78,7 +78,7 @@ public class TriGame extends Game{
 	
 		gameMode = GameMode.factoryCreator(gameInfo.getGameType(),
 				shop, gameGrid, network.objController, network.isServer,
-				gameInput.getRoundInput(), scaledFactory, playerContainer);
+				gameInput.getRoundInput(), scaledFactory, playerContainer, ui);
 		
 		managerService = new ManagerService(managerController, gameInput.getPlayerInput(),
 				shop, gameGrid, particleController, network.isServer, userId, gameMode,

@@ -35,7 +35,7 @@ class VersusSpawner extends ZombieSpawner {
 		bossSpawners[1].update(zombies);
 	}
 	
-	void spawnBoss(int health, int speed) { bossSpawners[bossSpawnZone].spawnBoss(health, speed); }
+	void spawnBoss(double health, double speed) { bossSpawners[bossSpawnZone].spawnBoss(health, speed); }
 	
 	void setPlayerZoneAndTargets(int zone, Entity[] bossTargets) {
 		this.bossTargets = bossTargets;
@@ -43,8 +43,7 @@ class VersusSpawner extends ZombieSpawner {
 	}
 	
 	private class BossSpawner {
-		private static final int initialHealth = 300, initialSpeed = 40;
-		private static final int maxQueueSize = 10;
+		private static final int maxQueueSize = 20;
 		private static final long delayBetweenBossSpawns = 3000;
 
 		private final Queue<MarkupMsg> spawnQueue = new ArrayDeque<MarkupMsg>();
@@ -62,14 +61,14 @@ class VersusSpawner extends ZombieSpawner {
 		private void update(ZombieManager zombies) {
 			if (isServer && !spawnQueue.isEmpty() && System.currentTimeMillis() > nextSpawn) {
 				MarkupMsg bossAttrib = spawnQueue.poll();
-				int health = initialHealth + bossAttrib.getAttribute("health").getInt();
-				int speed = initialSpeed + bossAttrib.getAttribute("speed").getInt();
+				int health = (int) bossAttrib.getAttribute("health").getDouble();
+				double speed = bossAttrib.getAttribute("speed").getDouble();
 				zombies.createBoss(health, speed, bossTargets[zone], VersusZombie.ZOMBIE_BUILDING_G);
 				nextSpawn = System.currentTimeMillis() + delayBetweenBossSpawns;
 			}
 		}
 		
-		private void spawnBoss(int health, int speed) {
+		private void spawnBoss(double health, double speed) {
 			MarkupMsg msg = new MarkupMsg();
 			msg.addAttribute("speed", speed);
 			msg.addAttribute("health", health);
