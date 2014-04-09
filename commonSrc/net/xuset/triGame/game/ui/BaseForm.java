@@ -7,5 +7,6 @@ public class BaseForm extends UiForm {
 	public BaseForm() {
 		setOpaque(true);
 		setBackground(new TsColor(230, 230, 230));
+		getBorder().setVisibility(true);
 	}
 }
