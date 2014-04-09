@@ -17,6 +17,7 @@ import net.xuset.tSquare.ui.UiButton;
 import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.tSquare.ui.UiFixedGridList;
 import net.xuset.tSquare.ui.UiForm;
+import net.xuset.tSquare.ui.UiGridList;
 import net.xuset.tSquare.ui.UiLabel;
 import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
@@ -80,6 +81,7 @@ class IntroJoin implements IntroForm{
 	}
 	
 	private UiForm createFrmGrid(UiForm frmButtons) {
+		gridList.setGridListListener(new GridListAction());
 		UiForm frmGrid = new UiForm();
 		frmGrid.getLayout().setAlignment(Axis.Y_AXIS, Alignment.BACK);
 		frmGrid.getLayout().add(gridList);
@@ -155,6 +157,14 @@ class IntroJoin implements IntroForm{
 		broadcastReciever = null;
 	}
 	
+	private void tryConnecting(int rowIndex) {
+		if (rowIndex < hostsList.size()) {
+			setStatus(false, "Attempting to connect...");
+			Host host = hostsList.get(rowIndex);
+			tryConnecting(host);
+		}
+	}
+	
 	private void tryConnecting(Host host) {
 		if (host.getVersion().isGreaterThan(Params.VERSION)) {
 			setStatus(true, "Please download the latest update to join this game");
@@ -188,12 +198,7 @@ class IntroJoin implements IntroForm{
 			if (t.action != MouseAction.PRESS)
 				return;
 			
-			int selected = gridList.getSelectedRowIndex();
-			if (selected < hostsList.size()) {
-				setStatus(false, "Attempting to connect...");
-				Host host = hostsList.get(selected);
-				tryConnecting(host);
-			}
+			tryConnecting(gridList.getSelectedRowIndex());
 		}
 	}
 	
@@ -214,6 +219,19 @@ class IntroJoin implements IntroForm{
 
 			setStatus(false, "Searching for open games...");
 			pollBroadcast();
+		}
+	}
+	
+	private class GridListAction implements UiGridList.GridListChange {
+		private static final long doubleClickDelta = 400L;
+		
+		private long lastChangeTime = 0L;
+		@Override
+		public void onChange(int index, String[] text) {
+			if (lastChangeTime + doubleClickDelta > System.currentTimeMillis()) {
+				tryConnecting(index);
+			}
+			lastChangeTime = System.currentTimeMillis();
 		}
 	}
 	
