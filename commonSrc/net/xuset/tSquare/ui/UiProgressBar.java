@@ -9,7 +9,11 @@ public class UiProgressBar extends UiComponent {
 	private Axis orientation = Axis.X_AXIS;
 
 	public UiProgressBar() {
-		super(0, 0, 60, 10);
+		this(60, 10);
+	}
+	
+	public UiProgressBar(float w, float h) {
+		super(0, 0, w, h);
 		setBackground(TsColor.darkGray);
 		setForeground(new TsColor(0, 220, 220));
 	}
