@@ -13,6 +13,7 @@ import net.xuset.triGame.game.guns.GunType;
 import net.xuset.triGame.game.shopping.ShopItem;
 import net.xuset.triGame.game.shopping.ShopManager;
 import net.xuset.triGame.game.shopping.UpgradeManager;
+import net.xuset.triGame.game.ui.upgrades.UiUpgrades;
 
 public class GunPanel extends UiForm{
 	private final GunType gunType;
@@ -20,15 +21,17 @@ public class GunPanel extends UiForm{
 	private final UpgradeManager upgrades;
 	private final ShopManager shop;
 	private final UiLabel lblPrice = new UiLabel();
+	private final UiUpgrades uiUpgrades;
 	private long clickTime = 0l;
 	private boolean isSelected = false;
 	
 	public GunPanel(GunType gunType, String name, ShopItem item, UpgradeManager upgrades,
-			ShopManager shop) {
+			ShopManager shop, UiUpgrades uiUpgrades) {
 		this.gunType = gunType;
 		this.item = item;
 		this.upgrades = upgrades;
 		this.shop = shop;
+		this.uiUpgrades = uiUpgrades;
 		
 		shop.observer().watch(new ShopObserver());
 		lblPrice.setText("$" + item.getCost());
@@ -57,7 +60,8 @@ public class GunPanel extends UiForm{
 		super.recieveMouseEvent(e, x, y);
 		
 		if (e.action == MouseAction.PRESS) {
-			shop.purchase(item);
+			if (shop.purchase(item))
+				uiUpgrades.showUpgrades(getGunName(), getGunUpgradeManager());
 			clickTime = System.currentTimeMillis();
 		}
 	}

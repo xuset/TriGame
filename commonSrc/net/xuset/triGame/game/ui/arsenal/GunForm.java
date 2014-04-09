@@ -25,7 +25,7 @@ public class GunForm extends ArsenalSubForm implements IGunInput{
 	}
 	
 	public void addGun(GunType type, String name, ShopItem item, UpgradeManager upgrades) {
-		GunPanel gp = new GunPanel(type, name, item, upgrades, shop);
+		GunPanel gp = new GunPanel(type, name, item, upgrades, shop, uiUpgrades);
 		getLayout().add(gp);
 		
 		if (getLayout().getComponentCount() == 1)
