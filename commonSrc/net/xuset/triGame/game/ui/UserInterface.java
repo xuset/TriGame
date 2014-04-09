@@ -41,7 +41,7 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 
 	public UserInterface(InputHolder input, PointConverter pointConverter,
 			ShopManager shop, BuildingGetter buildingGetter, Settings settings,
-			IBrowserOpener browserOpener) {
+			IBrowserOpener browserOpener, ScoreSubmitter scoreSubmitter) {
 
 		this.settings = settings;
 		controller = new UiController(input.getMouse());
@@ -54,7 +54,7 @@ public class UserInterface implements UiFormSwitcher, UiCollisionDetector{
 		upgradeSetter = new BuildingUpgradeSetter(buildingGetter, pointConverter,
 				(UiFormSwitcher) this, upgrades, (UiCollisionDetector) this);
 		pauseHandler = new PauseHandler(controller.getPopupController(), settings,
-				browserOpener);
+				browserOpener, scoreSubmitter);
 		
 		input.getMouse().watch(new MouseObserver());
 

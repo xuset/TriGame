@@ -28,7 +28,7 @@ public class PauseHandler {
 	private final Settings settings;
 	private final PauseForm pauseForm;
 	private final PauseButton pauseButton;
-	private final ScoreSubmitter scoreSubmitter = new ScoreSubmitter();
+	private final ScoreSubmitter scoreSubmitter;
 	
 	private boolean requestExitGame = false;
 	private boolean isGameOver = false;
@@ -39,8 +39,9 @@ public class PauseHandler {
 	public boolean isPaused() { return popupController.contains(pauseForm); }
 	
 	public PauseHandler(UiPopupController popupController, Settings settings,
-			IBrowserOpener browserOpener) {
+			IBrowserOpener browserOpener, ScoreSubmitter scoreSubmitter) {
 		
+		this.scoreSubmitter = scoreSubmitter;
 		this.popupController = popupController;
 		this.settings = settings;
 		pauseForm = new PauseForm(browserOpener);

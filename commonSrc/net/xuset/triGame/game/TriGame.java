@@ -11,6 +11,7 @@ import net.xuset.tSquare.imaging.ScaledGraphics;
 import net.xuset.tSquare.imaging.ScaledImageFactory;
 import net.xuset.tSquare.imaging.TransformedGraphics;
 import net.xuset.tSquare.imaging.TsColor;
+import net.xuset.tSquare.math.IdGenerator;
 import net.xuset.tSquare.math.rect.IRectangleW;
 import net.xuset.tSquare.math.rect.Rectangle;
 import net.xuset.tSquare.system.IDrawBoard;
@@ -26,6 +27,7 @@ import net.xuset.triGame.game.shopping.ShopDrawer;
 import net.xuset.triGame.game.shopping.ShopManager;
 import net.xuset.triGame.game.survival.SurvivalGameMode;
 import net.xuset.triGame.game.ui.IBrowserOpener;
+import net.xuset.triGame.game.ui.ScoreSubmitter;
 import net.xuset.triGame.game.ui.UserInterface;
 import net.xuset.triGame.game.ui.gameInput.IGameInput;
 import net.xuset.triGame.settings.Settings;
@@ -70,10 +72,12 @@ public class TriGame extends Game{
 		background = new TiledBackground(scaledFactory);
 		playerContainer = new PlayerInfoContainer(network.objController, userId);
 		
+		NetVar.nLong gameId = new NetVar.nLong(0L, "gameId", network.objController);
+		ScoreSubmitter scoreSubmitter = new ScoreSubmitter(gameId);
 		BuildingGetter buildingGetter = new BuildingGetter();
 		PointConverter pConv = new PointConverter(viewableRect, blockSize);
 		ui = new UserInterface(input, pConv, shop, buildingGetter,
-				settings, browserOpener);
+				settings, browserOpener, scoreSubmitter);
 		gameInput = ui.getGameInput();
 	
 		gameMode = GameMode.factoryCreator(gameInfo.getGameType(),
@@ -92,8 +96,10 @@ public class TriGame extends Game{
 		managerService.building.addItemsToUI(ui.getArsenalItemAdder());
 		gunManager.addGunsToUI(ui.getArsenalItemAdder());
 		
-		if (network.isServer)
+		if (network.isServer) {
+			gameId.set(IdGenerator.getNext());
 			gameMode.createMap(settings.wallGenCoefficient);
+		}
 		if (gameInfo.getNetworkType() != NetworkType.SOLO)
 			network.getClientInstance().watchEvents(new GameConnectionEvent());
 		
