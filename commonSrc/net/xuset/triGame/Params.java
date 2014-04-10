@@ -13,4 +13,6 @@ public class Params {
 			"http://xuset.net/polyDefense/scores/scoreSubmit.php";
 	public static final String SCORE_KEY = "no esta aqui";
 	public static final Level LOG_LEVEL = Level.WARNING;
+	public static final String ERROR_REPORT_URL =
+			"http://www.xuset.net/polyDefense/bugs/submit.php";
 }
