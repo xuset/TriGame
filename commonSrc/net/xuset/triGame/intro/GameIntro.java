@@ -62,7 +62,6 @@ class GameIntro implements IntroSwitcher{
 		lblTitle.setShadowColor(new TsColor(200, 20, 20));
 		lblTitle.setDrawShadow(true);
 		
-		
 		UiForm mainForm = ui.getForm();
 		mainLayout = new UiBorderLayout(mainForm);
 		mainForm.setLayout(mainLayout);

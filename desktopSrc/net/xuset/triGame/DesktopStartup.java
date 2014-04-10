@@ -49,13 +49,18 @@ public class DesktopStartup {
 	}
 	
 	private static void mainStartup() {
-		Settings settings = createDefaultSettings();
 		JFrame frame = new JFrame();
 		IDrawBoard drawBoard = createWindow(frame, Params.GAME_NAME);
 		
+		if (Params.DEBUG_MODE)
+			createGame(drawBoard);
+		else
+			catchAllAndCreateGame(frame, drawBoard);
+	}
+	
+	private static void catchAllAndCreateGame(JFrame frame, IDrawBoard drawBoard) {
 		try {
-			new MainStartup(drawBoard, new FileFactory(), settings,
-					new IpGetter(), new DesktopBrowserOpener());
+			createGame(drawBoard);
 		} catch (Exception ex) {
 			System.err.println("Error while handling another error");
 			ex.printStackTrace();
@@ -68,6 +73,11 @@ public class DesktopStartup {
 			errorFrame.dispose();
 			frame.dispose();
 		}
+	}
+	
+	private static void createGame(IDrawBoard drawBoard) {
+		new MainStartup(drawBoard, new FileFactory(), createDefaultSettings(),
+				new IpGetter(), new DesktopBrowserOpener());
 	}
 	
 	private static String createStackTrace(Exception ex) {

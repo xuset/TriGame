@@ -23,10 +23,12 @@ public class ExceptionViewer {
 		this.drawBoard = drawBoard;
 		errorReport = new ErrorReport(ex);
 		
-		new Thread(new Runnable() {
-			@Override
-			public void run() { errorReport.postReport(Params.ERROR_REPORT_URL); }
-		}, "Report sender").start();
+		if (!Params.DEBUG_MODE) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() { errorReport.postReport(Params.ERROR_REPORT_URL); }
+			}, "Report sender").start();
+		}
 		
 		ui = new UiController(mouse);
 		setupForm();

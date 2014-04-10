@@ -34,20 +34,29 @@ public class MainStartup {
 		
 		setLogLevel(Params.LOG_LEVEL);
 		
+		if (Params.DEBUG_MODE)
+			runLoop();
+		else
+			catchAllAndLoop();
+	}
+	
+	private void catchAllAndLoop() {
 		try {
-		
-			while (true) {
-				resetInputHolder();
-				TriGame game = createGame();
-				game.startGame();
-				game.shutdown();
-			}
-		
+			runLoop();
 		} catch (Exception ex) {
 			System.err.println("Encountered error. Game has ended");
 			ex.printStackTrace();
 			resetInputHolder();
 			new ExceptionViewer(drawBoard, inputHolder.getMouse(), ex);
+		}
+	}
+	
+	private void runLoop() {
+		while (true) {
+			resetInputHolder();
+			TriGame game = createGame();
+			game.startGame();
+			game.shutdown();
 		}
 	}
 	
