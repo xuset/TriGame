@@ -10,6 +10,7 @@ import net.xuset.tSquare.math.point.PointR;
 import net.xuset.tSquare.paths.Node;
 import net.xuset.tSquare.paths.Path;
 import net.xuset.triGame.game.ManagerService;
+import net.xuset.triGame.game.entities.Person;
 import net.xuset.triGame.game.shopping.ShopManager;
 
 
@@ -18,6 +19,7 @@ public class Zombie extends Entity {
 	public static final int MAX_ZOMBIES = 100;
 	private static final double hitBackDistance = 1 / 5.0;
 	private static final int ticksPerFindPath = 5;
+	private static final long maxTimeAlive = 25 * 1000L;
 	
 	protected final int additionalBuildingG;//higher value, less likely to break through building.
 
@@ -33,6 +35,7 @@ public class Zombie extends Entity {
 	private int tickCount = 0;
 
 	private Entity target;
+	private long lastTargetTime;
 	private double speedCoEfficient;
 	private double damage = -100; //damage per second
 	private Path path;
@@ -68,6 +71,7 @@ public class Zombie extends Entity {
 		this.isServer = isServer;
 		this.pathFinder = pathFinder;
 		this.shop = shop;
+		lastTargetTime = System.currentTimeMillis();
 		spawnTime = System.currentTimeMillis() + spawnDelay;
 		health.set(maxHealth);
 	}
@@ -100,14 +104,20 @@ public class Zombie extends Entity {
 		if (!isServer)
 			return;
 		
-		if (getHealth() <= 0)
+		if (getHealth() <= 0 ||
+				(lastTargetTime + maxTimeAlive < System.currentTimeMillis() &&
+				target instanceof Person)) {
+
 			remove();
+		}
 		
 		if (System.currentTimeMillis() < spawnTime)
 			return;
 		
-		if (target == null || target.getHealth() <= 0 || target.removeRequested())
+		if (target == null || target.getHealth() <= 0 || target.removeRequested()) {
 			target = zombieHandler.findTarget(this);
+			lastTargetTime = System.currentTimeMillis();
+		}
 		if (target == null) {
 			remove();
 			return;
