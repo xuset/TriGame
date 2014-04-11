@@ -17,6 +17,9 @@ public abstract class Wall extends Building {
 		super(spriteId, x, y, null, info, key);
 	}
 	
+	@Override
+	protected boolean onlyHurtIfOwned() { return false; }
+	
 	public static class WallInfo extends BuildingInfo {
 		
 		public WallInfo(String spriteId, String identifier,

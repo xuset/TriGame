@@ -106,7 +106,7 @@ public class MortarProjectile extends Projectile {
 		for (Building b : managers.building.list) {
 			double ratio = getDamageRatio(b);
 			if (ratio > 0)
-				b.modifyHealth(ratio * damage.get());
+				b.damageByProjectile(ratio * damage.get());
 		}
 	}
 	

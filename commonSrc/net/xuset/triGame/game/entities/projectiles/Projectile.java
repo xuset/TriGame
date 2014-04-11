@@ -87,7 +87,7 @@ public class Projectile extends Entity {
 	}
 	
 	protected void handleBuildingCollision(Building b) {
-		b.modifyHealth(damage.get());
+		b.damageByProjectile(damage.get());
 		remove();
 	}
 	

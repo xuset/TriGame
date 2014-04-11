@@ -14,6 +14,9 @@ public class HeadQuarters extends Building {
 		super(INFO.spriteId, x, y, pc, INFO, key);
 		healthBar.relativeY = 0.1;
 	}
+	
+	@Override
+	protected boolean onlyHurtIfOwned() { return false; }
 
 	public static final BuildingInfo INFO = new BuildingInfo(
 			"hq",   //spriteId

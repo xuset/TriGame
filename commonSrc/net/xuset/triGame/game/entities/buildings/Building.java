@@ -24,6 +24,8 @@ public abstract class Building extends Entity{
 	public boolean isShopable() { return info.isShopable(); }
 	public boolean isInteractive() { return info.isInteractive; }
 	
+	protected boolean onlyHurtIfOwned() { return true; }
+	
 	public Building(String spriteId, double x, double y,
 			ParticleController pc, BuildingInfo info, EntityKey key) {
 		super(spriteId, x, y, key);
@@ -57,6 +59,11 @@ public abstract class Building extends Entity{
 		if (health <= 0)
 			remove();
 		return health;
+	}
+	
+	public void damageByProjectile(double damage) {
+		if (!onlyHurtIfOwned() || owned())
+			modifyHealth(damage);
 	}
 	
 	@Override
