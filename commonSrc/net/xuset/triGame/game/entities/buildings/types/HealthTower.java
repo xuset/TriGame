@@ -2,9 +2,9 @@ package net.xuset.triGame.game.entities.buildings.types;
 
 import java.util.Collection;
 
-import net.xuset.objectIO.connections.ConnectionI;
-import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetVar;
+import net.xuset.objectIO.netObj.NetVarListener;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.game.particles.Particle;
@@ -54,10 +54,12 @@ public class HealthTower extends Building {
 	}
 	
 	@Override
-	protected void setNetObjects(NetObjUpdater objClass) {
-		rangeValue = new NetVar.nDouble(INFO.visibilityRadius, "range", objClass);
-		drawRegeneration = new NetVar.nBool(false, "drawRegeneration", objClass);
-		drawRegeneration.setEvent(true, new OnRegenerateChange());
+	protected void setNetObjects(NetClass objClass) {
+		rangeValue = new NetVar.nDouble("range", INFO.visibilityRadius);
+		drawRegeneration = new NetVar.nBool("drawRegeneration", false);
+		objClass.addObj(rangeValue);
+		objClass.addObj(drawRegeneration);
+		drawRegeneration.setListener(new OnRegenerateChange());
 	}
 
 	@Override
@@ -79,9 +81,12 @@ public class HealthTower extends Building {
 		if (System.currentTimeMillis() > nextRegeneration - (int) elapsedDrawTime) {
 			if (!drawRegeneration.get()) {
 				drawRegeneration.set(true);
+				drawTimeStarted = System.currentTimeMillis();
 			}
-		} else
+		} else {
 			drawRegeneration.set(false);
+			drawTimeStarted = 0;
+		}
 	}
 	
 	@Override
@@ -130,10 +135,11 @@ public class HealthTower extends Building {
 		e.modifyHealth(gains);
 	}
 	
-	private final class OnRegenerateChange implements NetVar.OnChange<Boolean> {
+	private final class OnRegenerateChange implements NetVarListener<Boolean> {
 		@Override
-		public void onChange(NetVar<Boolean> var, ConnectionI c) {
-			drawTimeStarted = var.get() ? System.currentTimeMillis() : 0;
+		public void onVarChange(Boolean newValue) {
+			drawTimeStarted = newValue ? System.currentTimeMillis() : 0;
+			
 		}
 	}
 	

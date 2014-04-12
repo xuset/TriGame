@@ -1,7 +1,7 @@
 package net.xuset.triGame.game.entities.buildings.types;
 
-import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetVar;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.game.particles.Particle;
 import net.xuset.tSquare.game.particles.ParticleController;
@@ -39,11 +39,13 @@ public class FreezeTower extends Building {
 	}
 	
 	@Override
-	protected void setNetObjects(NetObjUpdater objClass) {
+	protected void setNetObjects(NetClass objClass) {
 		super.setNetObjects(objClass);
 		
-		rangeValue = new NetVar.nDouble(INFO.visibilityRadius, "rangeValue", objClass);
-		powerValue = new NetVar.nInt(1, "powerValue", objClass);
+		rangeValue = new NetVar.nDouble("rangeValue", INFO.visibilityRadius);
+		powerValue = new NetVar.nInt("powerValue", 1);
+		objClass.addObj(rangeValue);
+		objClass.addObj(powerValue);
 	}
 
 	@Override

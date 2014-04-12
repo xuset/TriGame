@@ -2,7 +2,7 @@ package net.xuset.triGame.game;
 
 import net.xuset.objectIO.connections.sockets.ServerEventListener;
 import net.xuset.objectIO.connections.sockets.groupNet.client.GroupClientCon;
-import net.xuset.objectIO.netObject.NetVar;
+import net.xuset.objectIO.netObj.NetVar;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.game.Game;
 import net.xuset.tSquare.imaging.IGraphics;
@@ -59,7 +59,8 @@ public class TriGame extends Game{
 		
 		super(gameInfo.getNetwork());
 		this.settings = settings;
-		NetVar.nBool startGame = new NetVar.nBool(false, "start", network.objController);
+		NetVar.nBool startGame = new NetVar.nBool("start", false);
+		network.objController.addObj(startGame);
 		
 		blockSize = settings.blockSize;
 		Load.loadResources(blockSize, fileFactory);
@@ -72,7 +73,8 @@ public class TriGame extends Game{
 		background = new TiledBackground(scaledFactory);
 		playerContainer = new PlayerInfoContainer(network.objController, userId);
 		
-		NetVar.nLong gameId = new NetVar.nLong(0L, "gameId", network.objController);
+		NetVar.nLong gameId = new NetVar.nLong("gameId", 0L);
+		network.objController.addObj(gameId);
 		ScoreSubmitter scoreSubmitter = new ScoreSubmitter(gameId);
 		BuildingGetter buildingGetter = new BuildingGetter();
 		PointConverter pConv = new PointConverter(viewableRect, blockSize);
@@ -107,7 +109,7 @@ public class TriGame extends Game{
 			startGame.set(true);
 		}
 		while (!startGame.get()) {
-			network.objController.distributeAllUpdates();
+			distributeReceivedUpdates();
 			try { Thread.sleep(10); } catch (Exception ex) { }
 		}
 		gameMode.onGameStart();

@@ -1,6 +1,6 @@
 package net.xuset.triGame.game.versus;
 
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.triGame.game.Draw;
 import net.xuset.triGame.game.GameRound;
@@ -23,7 +23,7 @@ class VersusRound extends GameRound {
 	
 	final VersusSpawner spawner;
 
-	VersusRound(NetObjUpdater objController, boolean isServer,
+	VersusRound(NetClass objController, boolean isServer,
 			IRoundInput roundInput, VersusMap gameMap, IsGameOver isGameOver,
 			PlayerInfoContainer playerContainer) {
 		
@@ -56,13 +56,13 @@ class VersusRound extends GameRound {
 
 	@Override
 	protected int getZombiesPerRound() {
-		int number = roundNumber.get();
+		int number = getRoundNumber();
 		int players = managers.person.list.size();
 		return ((number * number) / 10 + number) * players * 2;
 	}
 
 	@Override
-	protected int getZombieSpawnDelta() { return 0; }
+	protected int getZombieSpawnDelta() { return 100; }
 
 	@Override
 	protected void handleRoundNotOnGoing() {
@@ -103,9 +103,8 @@ class VersusRound extends GameRound {
 		
 		nextRoundStartTime = 0;
 		spawner.update(managers.zombie);
-		roundOnGoing.set(
-				!spawner.finishedSpawn() ||
-				managers.zombie.getZombiesAlive() > 0);
+		if (spawner.finishedSpawn() && managers.zombie.getZombiesAlive() == 0)
+			setRoundEnded();
 	}
 
 }

@@ -1,6 +1,6 @@
 package net.xuset.triGame.game.survival;
 
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
 import net.xuset.triGame.game.GameRound;
 import net.xuset.triGame.game.ManagerService;
 import net.xuset.triGame.game.PlayerInfoContainer;
@@ -20,7 +20,7 @@ class SurvivalRound extends GameRound {
 	
 	private ManagerService managers;
 
-	public SurvivalRound(NetObjUpdater objController, boolean isServer,
+	public SurvivalRound(NetClass objController, boolean isServer,
 			IRoundInput roundInput, IsGameOver isGameOver,
 			PlayerInfoContainer playerContainer) {
 		
@@ -42,7 +42,8 @@ class SurvivalRound extends GameRound {
 		final ZombieManager manager = managers.zombie;
 		zombieSpawner.update(manager);
 		
-		roundOnGoing.set(!zombieSpawner.finishedSpawn() || manager.getZombiesAlive() > 0);
+		if (zombieSpawner.finishedSpawn() && manager.getZombiesAlive() == 0)
+			setRoundEnded();
 	}
 	
 	@Override
@@ -80,7 +81,7 @@ class SurvivalRound extends GameRound {
 	@Override
 	public int getZombiesPerRound() {
 		final int players = managers.person.list.size();
-		final int number = roundNumber.get();
+		final int number = getRoundNumber();
 		
 		return ((number * number) / 10 + number) * players;
 	}
@@ -88,7 +89,7 @@ class SurvivalRound extends GameRound {
 	@Override
 	public int getZombieSpawnDelta() {
 		final int players = managers.person.list.size();
-		final int number = roundNumber.get();
+		final int number = getRoundNumber();
 		int d =  (int) ((700 - 100 * players) - number * 10.0);
 		d = d < 100 ? 100 : d;
 		return d;

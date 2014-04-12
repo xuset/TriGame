@@ -2,7 +2,6 @@ package net.xuset.triGame.intro;
 
 import net.xuset.objectIO.connections.sockets.ServerEventListener;
 import net.xuset.objectIO.connections.sockets.groupNet.client.GroupClientCon;
-import net.xuset.objectIO.netObject.StandardObjUpdater;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.Network;
 import net.xuset.tSquare.ui.Alignment;
@@ -41,7 +40,7 @@ public class IntroConnected implements IntroForm{
 		disconnectNetwork();
 		this.network = network;
 		network.getClientInstance().watchEvents(listener);
-		gameStarter = new NetworkGameStarter(new StandardObjUpdater(network.hub));
+		gameStarter = new NetworkGameStarter(network.hub, network.objController);
 		updatePlayerCount();
 	}
 

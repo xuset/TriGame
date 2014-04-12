@@ -3,12 +3,10 @@ package net.xuset.triGame.game.versus;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import net.xuset.objectIO.connections.Connection;
-import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.markupMsg.MarkupMsg;
-import net.xuset.objectIO.netObject.NetFunction;
-import net.xuset.objectIO.netObject.NetFunctionEvent;
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetFunc;
+import net.xuset.objectIO.netObj.NetFuncListener;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.triGame.game.entities.zombies.ZombieManager;
 import net.xuset.triGame.game.entities.zombies.ZombieSpawner;
@@ -21,7 +19,7 @@ class VersusSpawner extends ZombieSpawner {
 	private Entity[] bossTargets = null;
 	private int bossSpawnZone = 0;
 	
-	VersusSpawner(NetObjUpdater objController, boolean isServer) {
+	VersusSpawner(NetClass objController, boolean isServer) {
 		bossSpawners[0] = new BossSpawner(0, objController);
 		bossSpawners[1] = new BossSpawner(1, objController);
 		this.isServer = isServer;
@@ -48,13 +46,13 @@ class VersusSpawner extends ZombieSpawner {
 
 		private final Queue<MarkupMsg> spawnQueue = new ArrayDeque<MarkupMsg>();
 		private final int zone;
-		private final NetFunction spawnFunc;
+		private final NetFunc spawnFunc;
 		private long nextSpawn = 0;
 		
-		private BossSpawner(int zone, NetObjUpdater objController) {
+		private BossSpawner(int zone, NetClass objController) {
 			this.zone = zone;
-			spawnFunc = new NetFunction(objController, "zone" + zone + "SpawnFunc");
-			spawnFunc.function = new SpawnEvent();
+			spawnFunc = new NetFunc("zone" + zone + "SpawnFunc", new SpawnEvent());
+			objController.addObj(spawnFunc);
 			
 		}
 		
@@ -72,24 +70,28 @@ class VersusSpawner extends ZombieSpawner {
 			MarkupMsg msg = new MarkupMsg();
 			msg.addAttribute("speed", speed);
 			msg.addAttribute("health", health);
-			spawnFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
+			spawnFunc.sendCall(msg);
 			if (isServer)
-				spawnFunc.function.calledFunc(msg, null);
+				addMsgToSpawnQueue(msg);
 		}
 		
-		private class SpawnEvent implements NetFunctionEvent {
+		private void addMsgToSpawnQueue(MarkupMsg msg) {
+			if (!isServer || spawnQueue.size() >= maxQueueSize)
+				return;
+			
+			spawnQueue.add(msg);
+		}
+		
+		private class SpawnEvent implements NetFuncListener {
 
 			@Override
-			public MarkupMsg calledFunc(MarkupMsg args, ConnectionI c) {
-				if (!isServer || spawnQueue.size() >= maxQueueSize)
-					return null;
-				
-				spawnQueue.add(args);
+			public MarkupMsg funcCalled(MarkupMsg args) {
+				addMsgToSpawnQueue(args);
 				return null;
 			}
 
 			@Override
-			public void returnedFunc(MarkupMsg args, ConnectionI c) { }
+			public void funcReturned(MarkupMsg args) { }
 			
 		}
 	}	

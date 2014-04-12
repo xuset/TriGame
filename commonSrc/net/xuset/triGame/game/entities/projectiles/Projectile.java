@@ -1,7 +1,7 @@
 package net.xuset.triGame.game.entities.projectiles;
 
-import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetVar;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.math.point.IPointR;
@@ -105,10 +105,15 @@ public class Projectile extends Entity {
 	}
 	
 	@Override
-	protected void setNetObjects(NetObjUpdater objClass) {
-		speed = new NetVar.nDouble(0.0, "speed", objClass);
-		damage = new NetVar.nInt(0, "damage", objClass);
-		noBuildingCollisions = new NetVar.nBool(true, "noBuildingCollisions", objClass);
-		soundId = new NetVar.nString("", "soundId", objClass);
+	protected void setNetObjects(NetClass objClass) {
+		speed = new NetVar.nDouble("speed", 0.0);
+		damage = new NetVar.nInt("damage", 0);
+		noBuildingCollisions = new NetVar.nBool("noBuildingCollisions", true);
+		soundId = new NetVar.nString("soundId", "");
+		
+		objClass.addObj(speed);
+		objClass.addObj(damage);
+		objClass.addObj(noBuildingCollisions);
+		objClass.addObj(soundId);
 	}
 }

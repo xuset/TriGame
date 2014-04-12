@@ -1,6 +1,6 @@
 package net.xuset.triGame.game.ui;
 
-import net.xuset.objectIO.netObject.NetVar;
+import net.xuset.objectIO.netObj.NetVar;
 import net.xuset.tSquare.math.IdGenerator;
 import net.xuset.triGame.Hasher;
 import net.xuset.triGame.Params;

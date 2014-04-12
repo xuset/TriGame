@@ -1,8 +1,7 @@
 package net.xuset.triGame.game.entities.dropPacks;
 
-import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.NetObjUpdater;
-import net.xuset.objectIO.netObject.NetVar.nInt;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetVar;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 
@@ -29,9 +28,12 @@ public class DropPack extends Entity {
 	}
 	
 	@Override
-	protected void setNetObjects(NetObjUpdater objClass) {
-		timeToLive = new nInt(0, "timeToLive", objClass);
-		valueToGive = new nInt(0, "valueToGive", objClass);
+	protected void setNetObjects(NetClass objClass) {
+		timeToLive = new NetVar.nInt("timeToLive", 0);
+		valueToGive = new NetVar.nInt("valueToGive", 0);
+		objClass.addObj(timeToLive);
+		objClass.addObj(valueToGive);
+		
 	}
 	
 	public boolean isHealthPack() {

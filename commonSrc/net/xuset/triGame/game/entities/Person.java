@@ -2,8 +2,8 @@ package net.xuset.triGame.game.entities;
 
 import java.util.ArrayList;
 
-import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetVar;
 import net.xuset.tSquare.game.GameIntegratable;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
@@ -64,11 +64,13 @@ public class Person extends Entity implements GameIntegratable{
 	}
 	
 	@Override
-	protected void setNetObjects(NetObjUpdater objClass) {
+	protected void setNetObjects(NetClass objClass) {
 		super.setNetObjects(objClass);
 
-		ownerId = new NetVar.nLong(0l, "ownerId", objClass);
-		color = new NetVar.nInt(0, "color", objClass);
+		ownerId = new NetVar.nLong("ownerId", 0L);
+		color = new NetVar.nInt("color", 0);
+		objClass.addObj(ownerId);
+		objClass.addObj(color);
 	}
 
 	public void giveFullHealth() {
@@ -153,7 +155,7 @@ public class Person extends Entity implements GameIntegratable{
 	}
 	
 	private void pickupDropPacks() {
-		DropPack drop = managers.dropPack.grabAnyPacks(attackbox);
+		DropPack drop = managers.dropPack.grabAnyPacks(hitbox);
 		if (drop != null && drop.isHealthPack()) {
 			double pickedUpHealth = drop.pickup();
 			double max = MAX_HEALTH - getHealth();

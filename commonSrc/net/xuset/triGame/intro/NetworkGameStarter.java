@@ -1,26 +1,35 @@
 package net.xuset.triGame.intro;
 
 import net.xuset.objectIO.connections.Connection;
-import net.xuset.objectIO.connections.ConnectionI;
+import net.xuset.objectIO.connections.Hub;
+import net.xuset.objectIO.connections.sockets.InetCon;
 import net.xuset.objectIO.markupMsg.MarkupMsg;
-import net.xuset.objectIO.netObject.NetFunction;
-import net.xuset.objectIO.netObject.NetFunctionEvent;
-import net.xuset.objectIO.netObject.StandardObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetFunc;
+import net.xuset.objectIO.netObj.NetFuncListener;
 import net.xuset.triGame.game.GameMode.GameType;
 
 class NetworkGameStarter {
-	private final NetFunction startFunc;
-	private final StandardObjUpdater objController;
-	private GameType gameType = null;
+	private final Hub<? extends InetCon> hub;
+	private final NetClass objController;
+	private final NetFunc startFunc;
 	
-	public NetworkGameStarter(StandardObjUpdater objController) {
+	private GameType gameType = null;
+	private boolean distributeUpdates = true;
+	
+	public NetworkGameStarter(Hub<? extends InetCon> hub, NetClass objController) {
+		this.hub = hub;
 		this.objController = objController;
-		startFunc = new NetFunction(objController, "NetworkGameStarter",
-				new StartFuncEvent());
+		startFunc = new NetFunc("NetworkGameStarter", new StartFuncEvent());
+		objController.addObj(startFunc);
+		
 	}
 	
 	public boolean hasGameStarted() {
-		objController.distributeAllUpdates();
+		sendUpdates();
+		distributeReceivedUpdates();
+		if (gameType != null)
+			objController.removeObj(startFunc);
 		return gameType != null;
 	}
 	
@@ -30,21 +39,46 @@ class NetworkGameStarter {
 		this.gameType = gameType;
 		MarkupMsg msg = new MarkupMsg();
 		msg.setContent(gameType.name());
-		startFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
+		startFunc.sendCall(msg);
+		sendUpdates();
+		removeAddedNetObjs();
 	}
-
 	
-	private class StartFuncEvent implements NetFunctionEvent {
+	private void removeAddedNetObjs() {
+		objController.removeObj(startFunc);
+	}
+	
+	private class StartFuncEvent implements NetFuncListener {
 		@Override
-		public MarkupMsg calledFunc(MarkupMsg args, ConnectionI c) {
+		public MarkupMsg funcCalled(MarkupMsg args) {
 			gameType = GameType.valueOf(args.getContent());
-			objController.setRunning(false);
+			distributeUpdates = false;
 			return null;
 		}
 
 		@Override
-		public void returnedFunc(MarkupMsg args, ConnectionI c) {
+		public void funcReturned(MarkupMsg args) {
 			//Do nothing
+		}
+	}
+	
+	private void sendUpdates() {
+		if (objController.hasUpdates()) {
+			MarkupMsg msg = objController.serializeUpdates();
+			hub.broadcastMsg(msg);
+			for (int i = 0; i < hub.getConnectionCount(); i++)
+				hub.getConnectionByIndex(i).flush();
+		}
+	}
+	
+	private void distributeReceivedUpdates() {
+		for (int i = 0; distributeUpdates && i < hub.getConnectionCount(); i++) {
+			Connection con = hub.getConnectionByIndex(i);
+			while (distributeUpdates && con.isMsgAvailable()) {
+				MarkupMsg msg = con.pollNextMsg();
+				if (objController.getId().equals(msg.getName()))
+					objController.deserializeMsg(msg);
+			}
 		}
 	}
 }

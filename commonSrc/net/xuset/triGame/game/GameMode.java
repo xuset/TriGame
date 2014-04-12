@@ -1,6 +1,6 @@
 package net.xuset.triGame.game;
 
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
 import net.xuset.tSquare.game.GameIntegratable;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.IImageFactory;
@@ -19,13 +19,13 @@ public abstract class GameMode implements GameIntegratable {
 	
 	protected final IsGameOver isGameOver = new IsGameOver();
 	
-	public int getRoundNumber() { return getGameRound().roundNumber.get(); }
-	public boolean isRoundGoing() { return getGameRound().roundOnGoing.get(); }
+	public int getRoundNumber() { return getGameRound().getRoundNumber(); }
+	public boolean isRoundGoing() { return getGameRound().isRoundOnGoing(); }
 	public boolean isGameOver() { return isGameOver.value; }
 	
 	
 	public static GameMode factoryCreator(GameType gameType, ShopManager shop,
-			GameGrid gameGrid, NetObjUpdater objc, boolean isServer,
+			GameGrid gameGrid, NetClass objc, boolean isServer,
 			IRoundInput roundInput, IImageFactory imageFactory,
 			PlayerInfoContainer playerContainer, UserInterface ui) {
 		

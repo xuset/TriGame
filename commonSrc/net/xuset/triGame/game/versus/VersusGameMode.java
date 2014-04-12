@@ -1,6 +1,6 @@
 package net.xuset.triGame.game.versus;
 
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.math.point.IPointR;
 import net.xuset.tSquare.util.Observer;
@@ -34,7 +34,7 @@ public class VersusGameMode extends GameMode {
 	private boolean iAmAWinner = false;
 
 	public VersusGameMode(ShopManager shop, boolean isServer,
-			NetObjUpdater objController, IRoundInput roundInput,
+			NetClass objController, IRoundInput roundInput,
 			PlayerInfoContainer playerContainer, UserInterface ui) {
 
 		this.shop = shop;

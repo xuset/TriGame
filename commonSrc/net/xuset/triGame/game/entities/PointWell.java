@@ -1,8 +1,8 @@
 package net.xuset.triGame.game.entities;
 
-import net.xuset.objectIO.connections.ConnectionI;
-import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetVar;
+import net.xuset.objectIO.netObj.NetVarListener;
 import net.xuset.tSquare.game.entity.Entity;
 import net.xuset.tSquare.game.entity.EntityKey;
 import net.xuset.tSquare.game.particles.ParticleController;
@@ -26,7 +26,7 @@ public class PointWell extends Entity {
 		int count = getParticleCount();
 		if (particleCount.get() != count) {
 			particleCount.set(count);
-			sendUpdates();
+			updateParticleEntities();
 		}
 		return !isEmpty();
 	}
@@ -44,30 +44,36 @@ public class PointWell extends Entity {
 	}
 	
 	@Override
-	protected void setNetObjects(NetObjUpdater objClass) {
-		particleCount = new NetVar.nInt(maxParticles, "pcount", objClass);
-		particleCount.setEvent(true, new NetVar.OnChange<Integer>() {
+	protected void setNetObjects(NetClass objClass) {
+		particleCount = new NetVar.nInt("pcount", maxParticles);
+		objClass.addObj(particleCount);
+		particleCount.setListener(new NetVarListener<Integer>() {
 			@Override
-			public void onChange(NetVar<Integer> var, ConnectionI c) {
-				int count = var.get();
-				if (particles == null)
-					return;
-				
-				for (int i = particles.length - 1; i >= count && i >= 0; i--) {
-					if (particles[i] == null)
-						continue;
-					particles[i].setExpired();
-					particles[i] = null;
-				}
-				
-				int est = estimateMaxPoints(count + 1);
-				if (pointsLeft > est)
-					pointsLeft = est;
-				if (count <= 0)
-					pointsLeft = 0;
-				
+			public void onVarChange(Integer newValue) {
+				updateParticleEntities();
 			}
 		});
+	}
+	
+	private void updateParticleEntities() {
+		System.out.println("new count = " + particleCount.get());
+		int count = particleCount.get();
+		if (particles == null)
+			return;
+		
+		for (int i = particles.length - 1; i >= count && i >= 0; i--) {
+			if (particles[i] == null)
+				continue;
+			particles[i].setExpired();
+			particles[i] = null;
+		}
+		
+		int est = estimateMaxPoints(count + 1);
+		if (pointsLeft > est)
+			pointsLeft = est;
+		if (count <= 0)
+			pointsLeft = 0;
+		
 	}
 	
 	private int estimateMaxPoints(int particleCount) {

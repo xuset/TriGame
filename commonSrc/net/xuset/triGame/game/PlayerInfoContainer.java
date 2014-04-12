@@ -2,13 +2,11 @@ package net.xuset.triGame.game;
 
 import java.util.ArrayList;
 
-import net.xuset.objectIO.connections.Connection;
-import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.markupMsg.MarkupMsg;
 import net.xuset.objectIO.markupMsg.MsgAttribute;
-import net.xuset.objectIO.netObject.NetFunction;
-import net.xuset.objectIO.netObject.NetFunctionEvent;
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetFunc;
+import net.xuset.objectIO.netObj.NetFuncListener;
 
 public class PlayerInfoContainer {
 	private static final String ID_ATTRIBUTE = "id";
@@ -16,15 +14,15 @@ public class PlayerInfoContainer {
 	private static final String ACTION_CREATE = "cre";
 	private static final String ACTION_REMOVE = "rem";
 	
-	private final NetObjUpdater objController;
+	private final NetClass objController;
 	private final ArrayList<PlayerInfo> playerInfos = new ArrayList<PlayerInfo>();
-	private final NetFunction funcCreate;
+	private final NetFunc funcCreate;
 	private final PlayerInfo myPlayer;
 	
-	public PlayerInfoContainer(NetObjUpdater objController, long playerId) {
+	public PlayerInfoContainer(NetClass objController, long playerId) {
 		this.objController = objController;
-		funcCreate = new NetFunction(objController, "playerInfoCreate",
-				new PlayerCreate());
+		funcCreate = new NetFunc("playerInfoCreate", new PlayerCreate());
+		objController.addObj(funcCreate);
 		myPlayer = createPlayerOnNetwork(playerId);
 		playerInfos.add(myPlayer);
 	}
@@ -51,7 +49,7 @@ public class PlayerInfoContainer {
 		PlayerInfo pi = getById(id);
 		if (pi != null) {
 			MarkupMsg msg = craftRemoveMsg(id);
-			funcCreate.sendCall(msg, Connection.BROADCAST_CONNECTION);
+			funcCreate.sendCall(msg);
 			return playerInfos.remove(pi);
 			
 		}
@@ -61,7 +59,7 @@ public class PlayerInfoContainer {
 	private PlayerInfo createPlayerOnNetwork(long id) {
 		PlayerInfo pInfo = new PlayerInfo(objController, id);
 		MarkupMsg msg = craftCreateMsg(id);
-		funcCreate.sendCall(msg, Connection.BROADCAST_CONNECTION);
+		funcCreate.sendCall(msg);
 		return pInfo;
 	}
 	
@@ -90,10 +88,10 @@ public class PlayerInfoContainer {
 		return msg;
 	}
 	
-	private class PlayerCreate implements NetFunctionEvent {
+	private class PlayerCreate implements NetFuncListener {
 
 		@Override
-		public MarkupMsg calledFunc(MarkupMsg args, ConnectionI c) {
+		public MarkupMsg funcCalled(MarkupMsg args) {
 			MsgAttribute actionAttrib = args.getAttribute(ACTION_ATTRIBUTE);
 			MsgAttribute idAttrib = args.getAttribute(ID_ATTRIBUTE);
 			long id = idAttrib.getLong();
@@ -110,7 +108,7 @@ public class PlayerInfoContainer {
 		}
 
 		@Override
-		public void returnedFunc(MarkupMsg args, ConnectionI c) {
+		public void funcReturned(MarkupMsg args) {
 			//Do nothing
 		}
 		
