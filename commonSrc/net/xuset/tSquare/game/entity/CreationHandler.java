@@ -2,12 +2,10 @@ package net.xuset.tSquare.game.entity;
 
 import java.util.HashMap;
 
-import net.xuset.objectIO.connections.Connection;
-import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.markupMsg.MarkupMsg;
-import net.xuset.objectIO.netObject.NetFunction;
-import net.xuset.objectIO.netObject.NetFunctionEvent;
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetFunc;
+import net.xuset.objectIO.netObj.NetFuncListener;
 import net.xuset.tSquare.util.HashMapKeyCollision;
 
 
@@ -15,16 +13,18 @@ import net.xuset.tSquare.util.HashMapKeyCollision;
 public final class CreationHandler {
 	public final HashMap<String, Creator<?>> creators = new HashMap<String, Creator<?>>();
 	private final ManagerController managerController;
-	private final NetFunction createFunc;
-	private final NetFunction removeFunc;
+	private final NetFunc createFunc;
+	private final NetFunc removeFunc;
 	
-	final NetObjUpdater objController;
+	final NetClass objController;
 	
-	public CreationHandler(NetObjUpdater objController, ManagerController managerController) {
+	public CreationHandler(NetClass objController, ManagerController managerController) {
 		this.objController = objController;
 		this.managerController = managerController;
-		createFunc = new NetFunction(objController, "createEntity", createEvent);
-		removeFunc = new NetFunction(objController, "removeEntity", removeEvent);
+		createFunc = new NetFunc("createEntity", createEvent);
+		removeFunc = new NetFunc("removeEntity", removeEvent);
+		objController.addObj(createFunc);
+		objController.addObj(removeFunc);
 	}
 	
 	void activateCreator(Creator<?> c) {
@@ -42,23 +42,23 @@ public final class CreationHandler {
 		msg.addAttribute("manager", managerKey);
 		msg.addAttribute("allowUpdates", e.isUpdatesAllowed());
 		
-		MarkupMsg initialValues = e.createToMsg();
+		MarkupMsg initialValues = e.serializeToMsg();
 		if (initialValues != null)
 			msg.addNested(initialValues);
 		
-		createFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
+		createFunc.sendCall(msg);
 	}
 	
 	void removeOnNetwork(Entity e, Manager<?> m) {
 		MarkupMsg msg = new MarkupMsg();
 		msg.addAttribute("manager", m.getHashMapKey());
 		msg.addAttribute("id", e.id);
-		removeFunc.sendCall(msg, Connection.BROADCAST_CONNECTION);
+		removeFunc.sendCall(msg);
 	}
 	
-	private NetFunctionEvent createEvent = new NetFunctionEvent() {
+	private NetFuncListener createEvent = new NetFuncListener() {
 		@Override
-		public MarkupMsg calledFunc(MarkupMsg msg, ConnectionI c) {
+		public MarkupMsg funcCalled(MarkupMsg msg) {
 			String managerKey = msg.getAttribute("manager").getString();
 			String creatorKey = msg.getAttribute("creator").getString();
 			Creator<?> creator = creators.get(creatorKey);
@@ -71,16 +71,16 @@ public final class CreationHandler {
 			creator.createFromMsg(key, managerController.getManager(managerKey));
 			return null;
 		}
-		
-		@Override
-		public void returnedFunc(MarkupMsg msg, ConnectionI c) {
 
+		@Override
+		public void funcReturned(MarkupMsg msg) {
+			
 		}
 	};
 	
-	private NetFunctionEvent removeEvent = new NetFunctionEvent() {
+	private NetFuncListener removeEvent = new NetFuncListener() {
 		@Override
-		public MarkupMsg calledFunc(MarkupMsg msg, ConnectionI c) {
+		public MarkupMsg funcCalled(MarkupMsg msg) {
 			long entityId = msg.getAttribute("id").getLong();
 			String managerKey = msg.getAttribute("manager").getString();
 			Manager<?> m = managerController.getManager(managerKey);
@@ -91,7 +91,7 @@ public final class CreationHandler {
 		}
 		
 		@Override
-		public void returnedFunc(MarkupMsg msg, ConnectionI c) {
+		public void funcReturned(MarkupMsg msg) {
 			
 		}
 	};

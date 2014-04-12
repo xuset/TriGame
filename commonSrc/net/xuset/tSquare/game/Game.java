@@ -2,6 +2,8 @@ package net.xuset.tSquare.game;
 
 import java.io.IOException;
 
+import net.xuset.objectIO.connections.Connection;
+import net.xuset.objectIO.markupMsg.MarkupMsg;
 import net.xuset.tSquare.events.EventHandler;
 import net.xuset.tSquare.game.entity.ManagerController;
 import net.xuset.tSquare.game.particles.ParticleController;
@@ -59,12 +61,13 @@ public abstract class Game implements Runnable {
 		delta = skipTime / milliToNano;
 		while(stopGame == false) {
 			skipTime = 1000/targetFps * milliToNano;
-			
+
+			distributeReceivedUpdates();
 			if (pauseGame == false) {
 				logicLoop();
 				eventHandler.handleEvents();
 			}
-			network.objController.distributeAllUpdates();
+			sendUpdates();
 			network.flush();
 			displayLoop();
 			
@@ -115,5 +118,23 @@ public abstract class Game implements Runnable {
 	
 	public void stopGame() {
 		stopGame = true;
+	}
+	
+	protected void sendUpdates() {
+		if (network.objController.hasUpdates()) {
+			MarkupMsg msg = network.objController.serializeUpdates();
+			network.hub.broadcastMsg(msg);
+		}
+	}
+	
+	protected void distributeReceivedUpdates() {
+		for (int i = 0; i < network.hub.getConnectionCount(); i++) {
+			Connection con = network.hub.getConnectionByIndex(i);
+			while (con.isMsgAvailable()) {
+				MarkupMsg msg = con.pollNextMsg();
+				if (network.objController.getId().equals(msg.getName()))
+					network.objController.deserializeMsg(msg);
+			}
+		}
 	}
 }

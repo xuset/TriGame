@@ -4,11 +4,11 @@ package net.xuset.tSquare.game.entity;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.xuset.objectIO.connections.ConnectionI;
 import net.xuset.objectIO.markupMsg.MarkupMsg;
-import net.xuset.objectIO.netObject.NetClass;
-import net.xuset.objectIO.netObject.NetVar;
-import net.xuset.objectIO.netObject.NetObjUpdater;
+import net.xuset.objectIO.netObj.ArrayNetClass;
+import net.xuset.objectIO.netObj.NetClass;
+import net.xuset.objectIO.netObj.NetVar;
+import net.xuset.objectIO.netObj.NetVarListener;
 import net.xuset.tSquare.game.GameIntegratable;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.Sprite;
@@ -22,6 +22,7 @@ import net.xuset.tSquare.math.rect.IRectangleR;
 
 
 public class Entity implements GameIntegratable{
+	private boolean updatesAllowed = false;
 	private boolean removed = false;
 	private boolean createdOnNetwork = false;
 	private final boolean owned;
@@ -38,7 +39,6 @@ public class Entity implements GameIntegratable{
 
 	public final long id;
 	public CollisionBox hitbox;
-	public CollisionBox attackbox;
 	public boolean visible = true;
 	public boolean collidable = true;
 	
@@ -49,23 +49,30 @@ public class Entity implements GameIntegratable{
 		this.owned = owned;
 		createdOnNetwork = !owned;
 		
-		objClass = new NetClass(null, "" + id, 17);
+		objClass = new ArrayNetClass("" + id);
 		
 		sprite = Sprite.get(sSpriteId);
-		x = new NetVar.nDouble(startX, "x", objClass);
-		y = new NetVar.nDouble(startY, "y", objClass);
-		angle = new NetVar.nDouble(Math.PI/2, "a", objClass);
-		scaleX = new NetVar.nDouble(1.0, "scaleX", objClass);
-		scaleY = new NetVar.nDouble(1.0, "scaleY", objClass);
-		spriteId = new NetVar.nString(sSpriteId, "spriteId", objClass);
-		health = new NetVar.nDouble(100.0, "hlth", objClass);
-		hitbox = new CollisionBox(CollisionBox.Type.Hitbox, this, objClass);
-		attackbox = new CollisionBox(CollisionBox.Type.AttackBox, this, objClass);
-		spriteId.setEvent(true, new OnSpriteIdChange());
+		x = new NetVar.nDouble("x", startX);
+		y = new NetVar.nDouble("y", startY);
+		angle = new NetVar.nDouble("a", Math.PI/2);
+		scaleX = new NetVar.nDouble("scaleX", 1.0);
+		scaleY = new NetVar.nDouble("scaleY", 1.0);
+		spriteId = new NetVar.nString("spriteId", sSpriteId);
+		health = new NetVar.nDouble("hlth", 100.0);
+		objClass.addObj(x);
+		objClass.addObj(y);
+		objClass.addObj(angle);
+		objClass.addObj(scaleX);
+		objClass.addObj(scaleY);
+		objClass.addObj(spriteId);
+		objClass.addObj(health);
+		
+		hitbox = new CollisionBox(this);
+		spriteId.setListener(new OnSpriteIdChange());
 		
 		setNetObjects(objClass);
 		if (initialValues != null)
-			objClass.setValue(initialValues);
+			objClass.deserializeMsg(initialValues);
 	}
 	
 	public Entity(String sSpriteId, double startX, double startY, EntityKey key) {
@@ -84,11 +91,11 @@ public class Entity implements GameIntegratable{
 	}
 	
 	@SuppressWarnings("unused")
-	protected void setNetObjects(NetObjUpdater objClass) {
+	protected void setNetObjects(NetClass objClass) {
 		
 	}
 	
-	public final boolean isUpdatesAllowed() { return objClass.hasUpdater(); }
+	public final boolean isUpdatesAllowed() { return updatesAllowed; }
 	public final boolean isCreatedOnNetwork() { return createdOnNetwork; }
 	public final String getSpriteId() { return spriteId.get(); }
 	public final double getX() { return x.get(); }
@@ -111,12 +118,14 @@ public class Entity implements GameIntegratable{
 	
 	public void setSprite(String spriteId) {
 		this.spriteId.set(spriteId);
+		sprite = Sprite.add(spriteId);
 	}
 	
-	private class OnSpriteIdChange implements NetVar.OnChange<String> {
+	private class OnSpriteIdChange implements NetVarListener<String> {
 		@Override
-		public void onChange(NetVar<String> var, ConnectionI c) {
-			sprite = Sprite.add(var.get());
+		public void onVarChange(String newValue) {
+			sprite = Sprite.add(newValue);
+			
 		}
 	}
 	
@@ -172,8 +181,6 @@ public class Entity implements GameIntegratable{
 		if (!visible || !isOnScreen(g.getView()))
 			return;
 		
-		//float x = (float) (this.x.get() - g.getView().getX());
-		//float y = (float) (this.y.get() - g.getView().getY());
 		float x = (float) ((double) this.x.get());
 		float y = (float) ((double) this.y.get());
 		float w = getWidth();
@@ -258,33 +265,23 @@ public class Entity implements GameIntegratable{
 	@Override
 	public void update(int frameDelta) { }
 	
-	protected void sendUpdates() {
-		objClass.update();
-	}
-	
-	final MarkupMsg createToMsg() {
-		MarkupMsg msg = toMarkupMsg();
-		objClass.clearUpdateBuffer();
-		createdOnNetwork = true;
-		return msg;
+	final MarkupMsg serializeToMsg() {
+		return objClass.serializeToMsg();
 	}
 	
 	protected void onRemoved() { }
-	
-	public MarkupMsg toMarkupMsg() {
-		return objClass.getValue();
-	}
 	
 	public void remove() {
 		removed = true;
 	}
 
-	final void handleRemove() {
-		objClass.removeUpdater();
+	final void handleRemove(NetClass objController) {
+		objController.removeObj(objClass);
 		onRemoved();
 	}
 	
-	final void syncWithController(NetObjUpdater updater) {
-		objClass.setUpdater(updater);
+	final void addToObjController(NetClass objController) {
+		updatesAllowed = true;
+		objController.addObj(objClass);
 	}
 }

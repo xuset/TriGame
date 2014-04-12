@@ -8,15 +8,15 @@ import net.xuset.objectIO.connections.sockets.InetHub;
 import net.xuset.objectIO.connections.sockets.OfflineHub;
 import net.xuset.objectIO.connections.sockets.groupNet.client.GroupClientHub;
 import net.xuset.objectIO.connections.sockets.groupNet.server.GroupNetServer;
-import net.xuset.objectIO.netObject.StandardObjUpdater;
-import net.xuset.objectIO.netObject.NetObjUpdater;
-import net.xuset.objectIO.netObject.OfflineObjController;
+import net.xuset.objectIO.netObj.DummyNetClass;
+import net.xuset.objectIO.netObj.HashNetClass;
+import net.xuset.objectIO.netObj.NetClass;
 
 
 
 public class Network {
 	public final InetHub<? extends InetCon> hub;
-	public final NetObjUpdater objController;
+	public final NetClass objController;
 	public final long userId;
 	public final boolean isServer;
 	
@@ -30,12 +30,12 @@ public class Network {
 		isServer = true;
 		userId = 3l;
 		hub = new OfflineHub(userId);
-		objController = new OfflineObjController();
+		objController = new DummyNetClass("");
 	}
 	
 	private Network(InetHub<? extends InetCon> hub, long userId, boolean isServer) {
 		this.hub = hub;
-		objController = new StandardObjUpdater(hub);
+		objController = new HashNetClass("main");
 		this.userId = userId;
 		this.isServer = isServer;
 	}

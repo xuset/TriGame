@@ -49,7 +49,7 @@ public class Manager<T extends Entity> implements GameIntegratable{
 	public final boolean add(T t) {
 		boolean r = list.add(t);
 		if (updatesAllowed)
-			t.syncWithController(creationHandler.objController);
+			t.addToObjController(creationHandler.objController);
 		onAdd(t);
 		return r;
 	}
@@ -63,7 +63,6 @@ public class Manager<T extends Entity> implements GameIntegratable{
 				handleRemove(e);
 			} else {
 				e.update(frameDelta);
-				e.sendUpdates();
 			}
 		}
 	}
@@ -81,15 +80,13 @@ public class Manager<T extends Entity> implements GameIntegratable{
 			if (e.removeRequested()) {
 				it.remove();
 				handleRemove(e);
-			} else {
-				e.sendUpdates();
 			}
 		}
 	}
 	
 	private final void handleRemove(Entity e) {
 		creationHandler.removeOnNetwork(e, this);
-		e.handleRemove();
+		e.handleRemove(creationHandler.objController);
 		onRemove(e);
 	}
 }
