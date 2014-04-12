@@ -9,18 +9,17 @@ import java.net.URLEncoder;
 import net.xuset.triGame.Params;
 
 public class ErrorReport {
-	private final String report;
+	private final String environment;
+	private final String stackTrace;
 	
 	public ErrorReport(Exception ex) {
-		report = createReport(ex);
+		environment = createEnviromentReport();
+		stackTrace = createStackTraceReport(ex);
 	}
 	
-	private String createReport(Exception ex) {
+	private String createEnviromentReport() {
 		StringBuilder builder = new StringBuilder();
 		
-		builder.append("Erorr class: " + ex.toString() + "\n");
-		builder.append("Error message: " + ex.getMessage() + "\n");
-		builder.append("Local message: " + ex.getLocalizedMessage() + "\n");
 		builder.append("PolyDefense version: " + Params.VERSION + "\n");
 		builder.append("OS: " + System.getProperty("os.name") + "\n");
 		builder.append("OS version: " + System.getProperty("os.version") + "\n");
@@ -28,16 +27,20 @@ public class ErrorReport {
 		builder.append("Java version: " + System.getProperty("java.runtime.version") + "\n");
 		builder.append("OpenGL: " + System.getProperty("sun.java2d.opengl") + "\n");
 		builder.append("D3D: " + System.getProperty("sun.java2d.d3d") + "\n");
-		builder.append("Stacktrace:\n");
-		
-		for (StackTraceElement element : ex.getStackTrace()) {
-			builder.append("      at " + element.toString() + "\n");
-		}
 		
 		return builder.toString();
 	}
 	
-	public String getReport() { return report; }
+	private String createStackTraceReport(Exception ex) {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("Stacktrace: "  + ex.toString());
+		for (StackTraceElement element : ex.getStackTrace()) {
+			builder.append(" - at " + element.toString() + "\n");
+		}
+		
+		return builder.toString();
+	}
 	
 	public boolean postReport(String strUrl) {
 		try {
@@ -48,7 +51,8 @@ public class ErrorReport {
 			
 			con.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes("data=" + URLEncoder.encode(report, "UTF-8"));
+			wr.writeBytes("environment=" + URLEncoder.encode(environment, "UTF-8"));
+			wr.writeBytes("&stackTrace=" + URLEncoder.encode(stackTrace, "UTF-8"));
 			wr.flush();
 			wr.close();
 			
