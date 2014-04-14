@@ -13,13 +13,16 @@ import net.xuset.tSquare.system.Network;
 
 public abstract class Game implements Runnable {
 	private static final int milliToNano = 1000000;
-	
 	private boolean stopGame = false;
 	private boolean pauseGame = false;
 	private int delta = 0;
 	private int currentFps = 0;
-
+	private long lastNetUpdate = 0L;
+	
 	protected int targetFps = 100;
+	
+	//The minimum amount of time to wait to send a new network update in milliseconds
+	protected int deltaNetUpdate = 33;
 
 	protected final long userId;
 	protected final Network network;
@@ -67,8 +70,11 @@ public abstract class Game implements Runnable {
 				logicLoop();
 				eventHandler.handleEvents();
 			}
-			sendUpdates();
-			network.flush();
+			if (lastNetUpdate + deltaNetUpdate < System.currentTimeMillis()) {
+				sendUpdates();
+				network.flush();
+				lastNetUpdate = System.currentTimeMillis();
+			}
 			displayLoop();
 			
 			pause = nextDisplayTime - System.nanoTime();
