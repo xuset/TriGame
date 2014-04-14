@@ -44,6 +44,7 @@ public class Zombie extends Entity {
 	
 	Entity getTarget() { return target; }
 	public boolean isAlive() { return getHealth() > 0; }
+	public double getDamage() { return damage; }
 	
 	Zombie(ManagerService managers, ShopManager shop, EntityKey key) { //for clients
 		super(key);
@@ -166,10 +167,9 @@ public class Zombie extends Entity {
 			turn(target.getCenterX(), target.getCenterY());
 			moveForward(distance);
 		}
-		if (!inflictDamage(managers.person, frameDelta)) {
-			if (isHittingBuilding())
-				inflictDamage(managers.building, frameDelta);
-		}
+		
+		if (isHittingBuilding())
+			inflictDamage(managers.building, frameDelta, distance);
 	}
 	
 	private boolean isHittingBuilding() {
@@ -181,11 +181,11 @@ public class Zombie extends Entity {
 		return true;
 	}
 	
-	private boolean inflictDamage(Manager<?> manager, int frameDelta) {
+	private boolean inflictDamage(Manager<?> manager, int frameDelta, double distance) {
 		Entity e = collidedWithFirst(manager.list);
 		if (e != null && e.getHealth() > 0) {
 			e.modifyHealth(damage * frameDelta / 1000.0);
-			moveForward(-speed * frameDelta / 1000.0);
+			moveForward(-distance);
 			return true;
 		}
 		return false;

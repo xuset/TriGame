@@ -14,6 +14,7 @@ import net.xuset.triGame.game.ManagerService;
 import net.xuset.triGame.game.SafeBoard;
 import net.xuset.triGame.game.entities.buildings.Building;
 import net.xuset.triGame.game.entities.dropPacks.DropPack;
+import net.xuset.triGame.game.entities.zombies.Zombie;
 import net.xuset.triGame.game.ui.gameInput.IPlayerInput;
 
 
@@ -96,6 +97,7 @@ public class Person extends Entity implements GameIntegratable{
 			}
 			
 			move(frameDelta);
+			checkZombieCollision(frameDelta);
 			pickupDropPacks();
 		}
 	}
@@ -185,40 +187,15 @@ public class Person extends Entity implements GameIntegratable{
 		super.moveForward(8 * frameDelta / 1000.0);
 	}
 	
-	/*private void move(int frameDelta) {
-		up = keyboard.isUpPressed();
-		down = keyboard.isDownPressed();
-		left = keyboard.isLeftPressed();
-		right = keyboard.isRightPressed();
-		if (up) {
-			if (left)
-				setAngle(135);
-			if (right)
-				setAngle(45);
-			if (!left && !right)
-				setAngle(90);
-		} else if (down) {
-			if (left)
-				setAngle(225);
-			if (right)
-				setAngle(315);
-			if (!left && !right)
-				setAngle(270);
-		} else if (left && !right) {
-			setAngle(180);
-		} else if (right && !left) {
-			setAngle(0);
+	private void checkZombieCollision(int frameDelta) {
+		Zombie z = collidedWithFirst(managers.zombie.list);
+		if (z != null) {
+			double d = z.getDamage();
+			modifyHealth(d * frameDelta / 1000.0);
 		}
-		
-		if (up || down || left || right) {
-			moved = true; //moved is reset to false every tick. 
-			moveForward(realSpeed * frameDelta / 1000.0);
-		}
-		realSpeed = speed;
-	}*/
+	}
 	
 	private void move(int frameDelta) {
-		//TODO maybe be concerned about the constant setting and changing of player's angle
 		setAngle(playerInput.getMoveAngle());
 		moveForward(frameDelta * playerInput.getMoveCoEfficient() * realSpeed / 1000.0);
 		realSpeed = speed;
