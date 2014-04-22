@@ -114,7 +114,7 @@ public class ZombieManager extends Manager<Zombie> {
 		if (z.getSpriteId().equals(BossZombie.SPRITE_ID)) {
 			for (int i = 0; i < 10; i++) {
 				IPointW var = new Point(z.getCenterX(), z.getCenterY());
-				var.translate(Math.random() * 50 - 25, Math.random() * 50 - 25);
+				var.translate(Math.random() * 1 - 0.5, Math.random() * 1 - 0.5);
 				int time = (int) (Math.random() * 400 + 500);
 				PointParticle p = new PointParticle.Floating(var.getX(), var.getY(), time);
 				particles.addParticle(p);
