@@ -3,8 +3,8 @@ package net.xuset.triGame.intro;
 import java.io.IOException;
 import java.net.InetAddress;
 
+import net.xuset.objectIO.connections.sockets.InetCon;
 import net.xuset.objectIO.connections.sockets.ServerEventListener;
-import net.xuset.objectIO.connections.sockets.groupNet.server.GroupServerCon;
 import net.xuset.objectIO.util.broadcast.BroadcastServer;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.Network;
@@ -143,15 +143,15 @@ class IntroHost implements IntroForm {
 		}
 	}
 	
-	private class ServerConnectionEvent implements ServerEventListener<GroupServerCon> {
+	private class ServerConnectionEvent implements ServerEventListener {
 
 		@Override
-		public void onRemove(GroupServerCon con) {
+		public void onRemove(InetCon con) {
 			update();
 		}
 
 		@Override
-		public void onAdd(GroupServerCon con) {
+		public void onAdd(InetCon con) {
 			update();
 		}
 		

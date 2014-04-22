@@ -1,7 +1,7 @@
 package net.xuset.triGame.game;
 
+import net.xuset.objectIO.connections.sockets.InetCon;
 import net.xuset.objectIO.connections.sockets.ServerEventListener;
-import net.xuset.objectIO.connections.sockets.groupNet.client.GroupClientCon;
 import net.xuset.objectIO.netObj.NetVar;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.game.Game;
@@ -103,7 +103,7 @@ public class TriGame extends Game{
 			gameMode.createMap(settings.wallGenCoefficient);
 		}
 		if (gameInfo.getNetworkType() != NetworkType.SOLO)
-			network.getClientInstance().watchEvents(new GameConnectionEvent());
+			network.hub.watchEvents(new GameConnectionEvent());
 		
 		if (network.isServer) {
 			startGame.set(true);
@@ -206,10 +206,10 @@ public class TriGame extends Game{
 		network.disconnect();
 	}
 	
-	private class GameConnectionEvent implements ServerEventListener<GroupClientCon> {
+	private class GameConnectionEvent implements ServerEventListener {
 
 		@Override
-		public void onRemove(GroupClientCon con) {
+		public void onRemove(InetCon con) {
 			if (network.isServer) {
 				Person p = managerService.person.getByUserId(con.getId());
 				playerContainer.removeOnNetwork(con.getId());
@@ -219,7 +219,7 @@ public class TriGame extends Game{
 		}
 
 		@Override
-		public void onAdd(GroupClientCon con) {
+		public void onAdd(InetCon con) {
 			//Do nothing
 		}
 

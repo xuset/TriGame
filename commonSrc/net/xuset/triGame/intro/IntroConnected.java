@@ -1,7 +1,7 @@
 package net.xuset.triGame.intro;
 
+import net.xuset.objectIO.connections.sockets.InetCon;
 import net.xuset.objectIO.connections.sockets.ServerEventListener;
-import net.xuset.objectIO.connections.sockets.groupNet.client.GroupClientCon;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.system.Network;
 import net.xuset.tSquare.ui.Alignment;
@@ -39,7 +39,7 @@ public class IntroConnected implements IntroForm{
 		setStatus(false, connectedText);
 		disconnectNetwork();
 		this.network = network;
-		network.getClientInstance().watchEvents(listener);
+		network.hub.watchEvents(listener);
 		gameStarter = new NetworkGameStarter(network.hub, network.objController);
 		updatePlayerCount();
 	}
@@ -89,7 +89,7 @@ public class IntroConnected implements IntroForm{
 	
 	private void disconnectNetwork() {
 		if (network != null) {
-			network.getClientInstance().unwatchEvents(listener);
+			network.hub.unwatchEvents(listener);
 			network.disconnect();
 		}
 		network = null;
@@ -103,15 +103,15 @@ public class IntroConnected implements IntroForm{
 			lblPlayers.setText("");
 	}
 	
-	private class ConnectionListener implements ServerEventListener<GroupClientCon> {
+	private class ConnectionListener implements ServerEventListener {
 
 		@Override
-		public void onRemove(GroupClientCon con) {
+		public void onRemove(InetCon con) {
 			updatePlayerCount();
 		}
 
 		@Override
-		public void onAdd(GroupClientCon con) {
+		public void onAdd(InetCon con) {
 			updatePlayerCount();
 		}
 
