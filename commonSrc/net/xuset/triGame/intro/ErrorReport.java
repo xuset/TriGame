@@ -34,7 +34,7 @@ public class ErrorReport {
 	private String createStackTraceReport(Exception ex) {
 		StringBuilder builder = new StringBuilder();
 		
-		builder.append("Stacktrace: "  + ex.toString());
+		builder.append("Stacktrace: "  + ex.toString() + "\n");
 		for (StackTraceElement element : ex.getStackTrace()) {
 			builder.append(" - at " + element.toString() + "\n");
 		}
