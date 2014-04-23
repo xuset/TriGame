@@ -8,14 +8,15 @@ import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 public class UiCheckBox extends UiComponent{
 	public static interface UiCheckChange { void onChange(boolean newVal); }
 	
-	private final float gutter = 2.0f;
+	private final float gutter = 4.0f;
 	
 	private boolean isChecked = false;
 	private UiCheckChange listener = null;
 	
 	public UiCheckBox() {
-		super(0, 0, 10, 10);
+		super(0, 0, 25, 25);
 		setForeground(new TsColor(0, 220, 220));
+		setBackground(TsColor.darkGray);
 	}
 	
 	public boolean isChecked() { return isChecked; }
@@ -29,7 +30,7 @@ public class UiCheckBox extends UiComponent{
 		super.draw(g);
 		if (!isVisible())
 			return;
-		g.setColor(getBackground().shade(-30));
+		g.setColor(getBackground().shade(50));
 		g.fillRect(getX(), getY(), getWidth(), getHeight());
 		if (isChecked())
 			g.setColor(getForeground());

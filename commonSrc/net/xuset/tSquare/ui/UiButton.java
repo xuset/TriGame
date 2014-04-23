@@ -8,7 +8,7 @@ import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 
 public class UiButton extends UiComponent {
 	private String text = "";
-	private TsFont font = new TsFont("Arial", 15);
+	private TsFont font = new TsFont("Arial", 20);
 	private boolean isEnabled = true;
 	private int borderSize = 4;
 	private long clickTime = 0;

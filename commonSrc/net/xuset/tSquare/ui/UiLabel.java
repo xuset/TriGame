@@ -7,7 +7,7 @@ import net.xuset.tSquare.imaging.TsFont;
 
 public class UiLabel extends UiComponent {
 	private String text = "";
-	private TsFont font = new TsFont("Arial", 15);
+	private TsFont font = new TsFont("Arial", 20);
 	private IImage image = null;
 	private boolean drawShadow = false;
 	private TsColor shadowColor = TsColor.black;

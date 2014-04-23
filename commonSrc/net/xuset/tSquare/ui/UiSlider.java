@@ -8,7 +8,7 @@ public class UiSlider extends UiProgressBar {
 	private SliderChange listener = null;
 
 	public UiSlider() {
-		super(100, 15);
+		super(100, 20);
 	}
 	
 	public void setSliderListener(SliderChange listener) { this.listener = listener; }
