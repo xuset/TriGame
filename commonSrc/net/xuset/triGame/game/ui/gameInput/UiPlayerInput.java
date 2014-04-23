@@ -106,8 +106,9 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 		int x = (int) (uiMoveCenter.getX() - uiMoveRadius);
 		int y = (int) (uiMoveCenter.getY() - uiMoveRadius);
 		int diam = uiMoveRadius * 2;
-		
-		g.setColor(TsColor.rgba(64, 64, 64, 128));
+
+		g.setColor(TsColor.gray);
+		//g.setColor(TsColor.rgba(64, 64, 64, 128));
 		g.fillOval(x, y, diam, diam);
 		g.setColor(TsColor.white);
 		g.drawOval(x, y, diam, diam);

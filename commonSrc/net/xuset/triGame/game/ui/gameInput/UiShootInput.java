@@ -50,8 +50,9 @@ public class UiShootInput extends UiComponent implements IGunInput{
 			g.setColor(TsColor.orange);
 			g.fillOval(getX(), getY(), buttonRadius * 2, buttonRadius * 2);
 		}
-		
-		g.setColor(TsColor.rgba(64, 64, 64, 128));
+
+		g.setColor(TsColor.gray);
+		//g.setColor(TsColor.rgba(64, 64, 64, 128));
 		g.fillOval(getX() + 1, getY() + 1, (buttonRadius - 1) * 2, (buttonRadius - 1) * 2);
 		g.setColor(TsColor.orange);
 		g.drawOval(getX(), getY(), buttonRadius * 2, buttonRadius * 2);
