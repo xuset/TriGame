@@ -21,7 +21,7 @@ public class UiRoundInput extends UiLabel implements IRoundInput{
 	
 	public UiRoundInput() {
 		super();
-		setFont(new TsFont("Arial", 30, TsTypeFace.BOLD));
+		setFont(new TsFont("Arial", 35, TsTypeFace.BOLD));
 		setDrawShadow(true);
 		setForeground(TsColor.lightGray);
 	}

@@ -69,12 +69,12 @@ public final class Draw {
 		g.drawText(x, y, text);
 	}
 
-	private static final IFont statFont = new TsFont("Arial", 12/50.0f, TsTypeFace.BOLD);
+	private static final IFont statFont = new TsFont("Arial", 15/50.0f, TsTypeFace.BOLD);
 	private static final TsColor statBackGround = new TsColor(30, 30, 30, 150);
 	public static void drawStats(int points, int round, int killed, int fps, IGraphics g) {
 		final float gutter = 1/5.0f;
 		final String[] strings = new String[] {
-				"  " + points,
+				"  $" + points,
 				"Round " + round,
 				"Killed " + killed + " zombies",
 				fps + "FPS",
