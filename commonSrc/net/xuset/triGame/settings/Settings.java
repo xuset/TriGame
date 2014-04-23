@@ -7,13 +7,5 @@ public class Settings {
 	public boolean enableSound = true;
 	public double wallGenCoefficient = 1.0;
 	public float uiZoom = 1.0f;
-	
-	
-	public Settings createCopy() {
-		Settings s = new Settings();
-		s.drawUiTouch = drawUiTouch;
-		s.blockSize = blockSize;
-		s.defaultBlockSize = defaultBlockSize;
-		return s;
-	}
+	public float initUiZoom = 1.0f;
 }

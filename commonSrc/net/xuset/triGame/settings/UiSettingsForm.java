@@ -33,10 +33,10 @@ public class UiSettingsForm {
 
 					@Override
 					public void onChange(double newPosition) {
-						settings.uiZoom = (float) ((settings.blockSize / 50.0f) * newPosition);
+						settings.uiZoom = (float) (newPosition * settings.initUiZoom);
 					}
 			
-		}, settings.uiZoom);
+		}, settings.uiZoom / settings.initUiZoom);
 	}
 	
 	private UiSettingsZoom createGameZoom(final Settings settings) {

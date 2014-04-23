@@ -60,6 +60,8 @@ public class MainActivity extends Activity {
 			Settings s = new Settings();
 			s.blockSize = initBlockSize;
 			s.defaultBlockSize = initBlockSize;
+			s.uiZoom = initBlockSize / 50.0f;
+			s.initUiZoom = initBlockSize / 50.0f;
 			s.drawUiTouch = true;
 			s.enableSound = true;
 			return s;
