@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
 			Settings settings = createDefaultSettings();
 			IpGetterIFace ipGetter = new WifiIpGetter(context);
 			new MainStartup(drawBoard, fileFactory, settings, ipGetter,
-					new AndroidBrowserOpener());
+					new AndroidBrowserOpener(context));
 		}
 		
 		private Settings createDefaultSettings() {
