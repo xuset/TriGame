@@ -11,13 +11,13 @@ import net.xuset.triGame.game.entities.PointParticle;
 
 
 public class ShopDrawer {
+	private static final int particlesPerSecond = 100;
 	private static final int particlesPerPoints = 1;
-	private static final int particleSpawnDelay = 10;
 	private static final double drawX = 2/5.0f, drawY = 2/5.0f, drawR = 2.0;
 	
 	private final ArrayList<Particle> particles = new ArrayList<Particle>(50);
 	
-	private long nextParticleSpawn = 0;
+	private long nextParticleSpawn = System.currentTimeMillis();
 	
 	private int particleGains = 0, particleLoss = 0, lastPointCount = 0;
 	
@@ -40,7 +40,8 @@ public class ShopDrawer {
 	}
 	
 	public void draw(int frameDelta, IGraphics g) {
-		createNew();
+		while (nextParticleSpawn < System.currentTimeMillis())
+			createNew();
 		
 		for (Iterator<Particle> it = particles.iterator(); it.hasNext(); ) {
 			Particle p = it.next();
@@ -52,16 +53,11 @@ public class ShopDrawer {
 	}
 	
 	private void createNew() {
-		if (nextParticleSpawn < System.currentTimeMillis()) {
 			if (particleGains > 0)
 				createIncoming();
 			if (particleLoss > 0)
 				createOutgoing();
-			nextParticleSpawn = System.currentTimeMillis() + particleSpawnDelay;
-		}
-		
-		if (particleGains > 50 || particleLoss > 50)
-			nextParticleSpawn = 0L;
+			nextParticleSpawn += 1000/particlesPerSecond;
 	}
 	
 	private void createOutgoing() {
