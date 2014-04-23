@@ -9,6 +9,7 @@ import net.xuset.tSquare.ui.Axis;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.UiLabel;
 import net.xuset.tSquare.util.Observer.Change;
+import net.xuset.triGame.Params;
 import net.xuset.triGame.game.entities.LocManCreator;
 import net.xuset.triGame.game.shopping.ShopItem;
 import net.xuset.triGame.game.shopping.ShopManager;
@@ -64,7 +65,7 @@ public class BuildingPanel extends UiForm {
 		}
 		
 		if (canPurchase && e.action == MouseAction.PRESS) {
-			boolean stayAttached =
+			boolean stayAttached = Params.ALLOW_DOUBLE_CLICK &&
 					System.currentTimeMillis() - lastClickTime < doubleClickDelta;
 			
 			attacher.attach(shopItem, creator, img, viewRadius, e.pointer, stayAttached);

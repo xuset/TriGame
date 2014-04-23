@@ -12,7 +12,7 @@ public class Params {
 	 *   - It is crucial that UNUSED remain null!
 	 */
 	
-	public static boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = true;
 	public static final String WEBSITE_URL = "http://wwww.xuset.net";
 	public static final String GITHUB_URL = "https://github.com/xuset/triGame";
 	public static final String GAME_NAME = "PolyDefense";
@@ -25,4 +25,5 @@ public class Params {
 	public static final Level LOG_LEVEL = Level.WARNING;
 	public static final String ERROR_REPORT_URL =
 			"http://www.xuset.net/polyDefense/bugs/submit.php";
+	public static final boolean ALLOW_DOUBLE_CLICK = true;
 }
