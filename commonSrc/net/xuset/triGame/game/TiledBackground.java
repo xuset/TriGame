@@ -10,6 +10,8 @@ import net.xuset.tSquare.math.rect.IRectangleR;
 
 
 public class TiledBackground implements GameDrawable{
+	private static final int groupSize = 2;
+	
 	private IImageFactory imgFactory;
 	private double drawX = 0;
 	private double drawY = 0;
@@ -32,12 +34,18 @@ public class TiledBackground implements GameDrawable{
 	
 	private void resizeTileImage() {
 		final float gutter = (float) (5 / 50.0f);
-		tileImage = imgFactory.createEmpty(1, 1);
+		tileImage = imgFactory.createEmpty(groupSize, groupSize);
 		IGraphics g = tileImage.getGraphics();
 		g.setColor(TsColor.darkGray);
-		g.fillRect(0, 0, 1, 1);
+		g.fillRect(0, 0, groupSize, groupSize);
 		g.setColor(225, 225, 225);
-		g.fillRect(gutter, gutter, 1 - 2 * gutter, 1 - 2 * gutter);
+		for (int x = 0; x < groupSize; x++) {
+			for (int y = 0; y < groupSize; y++) {
+				g.fillRect(x + gutter, y + gutter,
+						1 - 2 * gutter, 1 - 2 * gutter);
+			}
+		}
+		
 		g.dispose();
 	}
 	
@@ -62,8 +70,8 @@ public class TiledBackground implements GameDrawable{
 		
 		double tileWidth = tileImage.getWidth(g);
 		double tileHeight = tileImage.getHeight(g);
-		double widthBlocks = g.getView().getWidth() / tileWidth + 1;
-		double heightBlocks = g.getView().getHeight() / tileHeight + 1;
+		double widthBlocks = g.getView().getWidth() + 1;
+		double heightBlocks = g.getView().getHeight() + 1;
 		
 		for (double x = drawX; x < drawX + widthBlocks; x += tileWidth) {
 			for (double y = drawY; y < drawY + heightBlocks; y += tileHeight) {
