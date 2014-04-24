@@ -129,9 +129,9 @@ public class Person extends Entity implements GameIntegratable{
 						direction = 1;
 					else
 						direction = -1;
-					setY(getY() + distance * direction);
+					setY(getY() + distance * direction * 0.5);
 					if (this.numberOfCollisions(managers.building.list, 1) > 0 || this.getCenterY() > gameGrid.getGridHeight() || this.getCenterY() < 0 || safeBoard.insideSafeArea(getCenterX(), getCenterY()) == false)
-						setY(getY() + distance * -direction);
+						setY(getY() + distance * -direction * 0.5);
 				}
 			}
 		}
@@ -148,9 +148,9 @@ public class Person extends Entity implements GameIntegratable{
 						direction = 1;
 					else
 						direction = -1;
-					setX(getX() + distance * direction);
+					setX(getX() + distance * direction * 0.5);
 					if (this.numberOfCollisions(managers.building.list, 1) > 0 || this.getCenterX() > gameGrid.getGridWidth() || this.getCenterX() < 0 || safeBoard.insideSafeArea(getCenterX(), getCenterY()) == false)
-						setX(getX() + distance * -direction);
+						setX(getX() + distance * -direction * 0.5);
 				}
 			}
 		}
