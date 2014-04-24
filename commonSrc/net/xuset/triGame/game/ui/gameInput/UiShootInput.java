@@ -13,6 +13,7 @@ import net.xuset.triGame.game.guns.GunType;
 public class UiShootInput extends UiComponent implements IGunInput{
 	private static final int initSize = 125;
 	
+	private final RingDrawer ringDrawer = new RingDrawer(5, TsColor.orange);
 	private final IPointW buttonCenter = new Point();
 	private int buttonRadius = 0;
 	private boolean shootRequested = false;
@@ -47,17 +48,21 @@ public class UiShootInput extends UiComponent implements IGunInput{
 		buttonCenter.setTo(getX() + buttonRadius, getY() + buttonRadius);
 		
 		if (shootRequested) {
-			g.setColor(TsColor.orange);
-			g.fillOval(getX(), getY(), buttonRadius * 2, buttonRadius * 2);
+			drawPressed(g);
+		} else {
+			ringDrawer.setCenterAndRadius(buttonCenter, buttonRadius);
+			ringDrawer.draw(g);
 		}
-
-		g.setColor(TsColor.gray);
-		//g.setColor(TsColor.rgba(64, 64, 64, 128));
-		g.fillOval(getX() + 1, getY() + 1, (buttonRadius - 1) * 2, (buttonRadius - 1) * 2);
-		g.setColor(TsColor.orange);
-		g.drawOval(getX(), getY(), buttonRadius * 2, buttonRadius * 2);
 		
 		g.setAntiAlias(savedAntiAlias);
+	}
+	
+	private void drawPressed(IGraphics g) {
+		final int gutter = 5;
+		g.setColor(TsColor.orange);
+		g.fillOval(getX(), getY(), buttonRadius * 2, buttonRadius * 2);
+		g.setColor(TsColor.darkGray);
+		g.fillOval(getX() + gutter, getY() + gutter, (buttonRadius - gutter) * 2, (buttonRadius - gutter) * 2);
 	}
 
 	@Override

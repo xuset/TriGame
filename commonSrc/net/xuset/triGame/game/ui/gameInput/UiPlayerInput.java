@@ -10,10 +10,10 @@ import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiComponent;
 
 public class UiPlayerInput extends UiComponent implements IPlayerInput{
+	private static final int initSize = 250;
+	private static final double movementThreshold = 0.1;
 	
-	private final static float initSize = 250;
-	private final double movementThreshold = 0.1;
-	
+	private final RingDrawer ringDrawer = new RingDrawer(10, TsColor.lightGray, TsColor.white);
 	private final IPointW uiMoveCenter = new Point(0, 0);
 	private int uiMoveRadius = 0;
 	
@@ -103,19 +103,13 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 	}
 
 	private void drawUiMove(IGraphics g) {
-		int x = (int) (uiMoveCenter.getX() - uiMoveRadius);
-		int y = (int) (uiMoveCenter.getY() - uiMoveRadius);
-		int diam = uiMoveRadius * 2;
-
-		g.setColor(TsColor.gray);
-		//g.setColor(TsColor.rgba(64, 64, 64, 128));
-		g.fillOval(x, y, diam, diam);
-		g.setColor(TsColor.white);
-		g.drawOval(x, y, diam, diam);
+		ringDrawer.setCenterAndRadius(uiMoveCenter, uiMoveRadius);
+		ringDrawer.draw(g);
 	}
 	
 	private void drawUiFinger(IGraphics g) {
 		double moveCoEfficient = getMoveCoEfficient();
+		int gutter = moveCoEfficient > movementThreshold ? 3 : 1;
 		double fingerDist = moveCoEfficient * uiMoveRadius;
 		int x = (int) (uiMoveCenter.getX() + Math.cos(moveAngle) * fingerDist);
 		int y = (int) (uiMoveCenter.getY() - Math.sin(moveAngle) * fingerDist);
@@ -124,13 +118,11 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 		x -= radius;
 		y -= radius;
 		
-		if (moveCoEfficient > movementThreshold) {
-			g.setColor(TsColor.white);
-			g.fillOval(x, y, radius * 2, radius * 2);
-		}
+		g.setColor(TsColor.white);
+		g.fillOval(x, y, radius * 2, radius * 2);
 		
 		g.setColor(TsColor.darkGray);
-		g.fillOval(x + 2, y + 2, (radius - 2) * 2, (radius - 2) * 2);
+		g.fillOval(x + gutter, y + gutter, (radius - gutter) * 2, (radius - gutter) * 2);
 		
 	}
 }
