@@ -6,7 +6,6 @@ import net.xuset.objectIO.netObj.NetVar;
 import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.game.Game;
 import net.xuset.tSquare.imaging.IGraphics;
-import net.xuset.tSquare.imaging.IImageFactory;
 import net.xuset.tSquare.imaging.ScaledGraphics;
 import net.xuset.tSquare.imaging.ScaledImageFactory;
 import net.xuset.tSquare.imaging.TransformedGraphics;
@@ -68,9 +67,8 @@ public class TriGame extends Game{
 		this.drawBoard = drawBoard;
 		shop = new ShopManager(300);
 		shopDrawer = new ShopDrawer(shop.observer());
-		IImageFactory scaledFactory = new ScaledImageFactory(blockSize);
 		gameGrid = new GameGrid(100, 100);
-		background = new TiledBackground(scaledFactory);
+		background = new TiledBackground(new ScaledImageFactory(blockSize));
 		playerContainer = new PlayerInfoContainer(network.objController, userId);
 		
 		NetVar.nLong gameId = new NetVar.nLong("gameId", 0L);
@@ -84,7 +82,7 @@ public class TriGame extends Game{
 	
 		gameMode = GameMode.factoryCreator(gameInfo.getGameType(),
 				shop, gameGrid, network.objController, network.isServer,
-				gameInput.getRoundInput(), scaledFactory, playerContainer, ui);
+				gameInput.getRoundInput(), playerContainer, ui);
 		
 		managerService = new ManagerService(managerController, gameInput.getPlayerInput(),
 				shop, gameGrid, particleController, network.isServer, userId, gameMode,

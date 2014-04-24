@@ -1,7 +1,6 @@
 package net.xuset.triGame.game.survival;
 
 import net.xuset.objectIO.netObj.NetClass;
-import net.xuset.tSquare.imaging.IImageFactory;
 import net.xuset.tSquare.util.Observer;
 import net.xuset.triGame.game.GameGrid;
 import net.xuset.triGame.game.GameMode;
@@ -30,12 +29,12 @@ public class SurvivalGameMode extends GameMode {
 
 	public SurvivalGameMode(ShopManager shop, boolean isServer, GameGrid gameGrid,
 			NetClass objController, IRoundInput roundInput,
-			IImageFactory imageFactory, PlayerInfoContainer playerContainer) {
+			PlayerInfoContainer playerContainer) {
 		
 		this.shop = shop;
 		this.gameGrid = gameGrid;
 		safeBoard = new SurvivalSafeBoard(gameGrid.getGridWidth() / 2.0 + 0.5,
-				gameGrid.getGridHeight() / 2.0 + 0.5, imageFactory);
+				gameGrid.getGridHeight() / 2.0 + 0.5);
 		zombieTargeter = new ZombieTargeter();
 		gameRound = new SurvivalRound(objController, isServer, roundInput, 
 				isGameOver, playerContainer);

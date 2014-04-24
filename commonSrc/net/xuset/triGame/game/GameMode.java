@@ -3,7 +3,6 @@ package net.xuset.triGame.game;
 import net.xuset.objectIO.netObj.NetClass;
 import net.xuset.tSquare.game.GameIntegratable;
 import net.xuset.tSquare.imaging.IGraphics;
-import net.xuset.tSquare.imaging.IImageFactory;
 import net.xuset.triGame.game.entities.Person;
 import net.xuset.triGame.game.entities.zombies.ZombieHandler;
 import net.xuset.triGame.game.entities.zombies.ZombieTargeter;
@@ -26,13 +25,13 @@ public abstract class GameMode implements GameIntegratable {
 	
 	public static GameMode factoryCreator(GameType gameType, ShopManager shop,
 			GameGrid gameGrid, NetClass objc, boolean isServer,
-			IRoundInput roundInput, IImageFactory imageFactory,
-			PlayerInfoContainer playerContainer, UserInterface ui) {
+			IRoundInput roundInput, PlayerInfoContainer playerContainer,
+			UserInterface ui) {
 		
 		switch (gameType) {
 		case SURVIVAL:
 			return new SurvivalGameMode(shop, isServer, gameGrid, objc, roundInput,
-					imageFactory, playerContainer);
+					playerContainer);
 		case VERSUS:
 			return new VersusGameMode(shop, isServer, objc, roundInput, playerContainer,
 					ui);
