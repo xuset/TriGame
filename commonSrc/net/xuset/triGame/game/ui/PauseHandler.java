@@ -96,7 +96,7 @@ public class PauseHandler {
 	private class PauseForm extends UiForm {
 		private final UiForm innerForm = new UiForm();
 		private final UiComponent settingsComponent;
-		private final UiButton btnExit = new UiButton("END GAME");
+		private final BtnExit btnExit = new BtnExit();
 		private final UiLabel lblGameOver = new UiLabel("GAME  OVER!");
 		private final UiLabel lblRoundsSurvived = new UiLabel("");
 		private final UiButton btnScores = new UiButton("Post to leader board");
@@ -115,9 +115,6 @@ public class PauseHandler {
 			innerForm.getLayout().setOrientation(Axis.Y_AXIS);
 			innerForm.getLayout().setAlignment(Axis.X_AXIS, Alignment.CENTER);
 			
-			btnExit.setFont(new TsFont("Arial", 20, TsTypeFace.BOLD));
-			btnExit.addMouseListener(new BtnExitAction());
-			
 			btnScores.addMouseListener(new BtnScoreAction(browserOpener));
 			
 			lblGameOver.setFont(new TsFont("Arial", 70, TsTypeFace.BOLD));
@@ -134,6 +131,7 @@ public class PauseHandler {
 		}
 		
 		public void setOptions(boolean showSettings, boolean showGameOver) {
+			btnExit.reset();
 			innerForm.getLayout().clearComponents();
 			getLayout().clearComponents();
 			
@@ -207,12 +205,37 @@ public class PauseHandler {
 		}
 	}
 	
-	private class BtnExitAction implements Change<TsMouseEvent> {
-		@Override
-		public void observeChange(TsMouseEvent t) {
-			if (t.action == MouseAction.RELEASE)
-				requestExitGame = true;
+	private class BtnExit extends UiButton {
+		private static final String endGameText = "END GAME";
+		private static final String areYouSure = "Are you sure you want to exit?";
+		
+		public BtnExit() {
+			super(endGameText);
+			setFont(new TsFont("Arial", 20, TsTypeFace.BOLD));
 		}
+		
+		public void reset() {
+			setText(endGameText);
+			setForeground(TsColor.black);
+		}
+
+		@Override
+		public void recieveMouseEvent(TsMouseEvent e, float x, float y) {
+			super.recieveMouseEvent(e, x, y);
+			if (e.action == MouseAction.RELEASE) {
+				if (getText().equals(endGameText))
+					setAckText();
+				else
+					requestExitGame = true;
+			}
+		}
+		
+		private void setAckText() {
+			setText(areYouSure);
+			setForeground(TsColor.red);
+		}
+		
+		
 	}
 	
 	private class BtnScoreAction implements Change<TsMouseEvent> {
