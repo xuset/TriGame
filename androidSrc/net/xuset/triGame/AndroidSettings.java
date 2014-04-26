@@ -44,7 +44,7 @@ public class AndroidSettings extends Settings {
 		ed.putBoolean(firstTimeLoadKey, true);
 		ed.putFloat(uiZoomKey, uiZoom);
 		ed.putBoolean(enableSoundKey, enableSound);
-		ed.putFloat(gameZoomKey, (float) uiZoom);
+		ed.putFloat(gameZoomKey, (float) gameZoom);
 		
 		ed.commit();
 	}
