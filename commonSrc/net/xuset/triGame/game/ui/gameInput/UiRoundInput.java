@@ -44,7 +44,7 @@ public class UiRoundInput extends UiLabel implements IRoundInput{
 	protected void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
 		
-		if (shouldRespondToMouse && e.action == MouseAction.PRESS)
+		if (shouldRespondToMouse && e.action == MouseAction.RELEASE)
 			timeMouseClick = System.currentTimeMillis();
 			
 	}
