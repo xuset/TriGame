@@ -19,7 +19,7 @@ public class Zombie extends Entity {
 	public static final int MAX_ZOMBIES = 100;
 	private static final double hitBackDistance = 1 / 5.0;
 	private static final int ticksPerFindPath = 5;
-	private static final long maxTimeAlive = 25 * 1000L;
+	private static final long maxTimeAlive = 30 * 1000L;
 	
 	protected final int additionalBuildingG;//higher value, less likely to break through building.
 
