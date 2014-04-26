@@ -7,7 +7,7 @@ import net.xuset.tSquare.files.AssetFile;
 
 public class AndroidSound implements ISound {
 	private static final int maxSounds = 10;
-	private static final SoundPool soundPool = new SoundPool(maxSounds, AudioManager.STREAM_MUSIC, 0);
+	private static SoundPool soundPool = createPool();
 	
 	private final int soundId;
 	
@@ -36,6 +36,21 @@ public class AndroidSound implements ISound {
 	@Override
 	public void close() {
 		soundPool.release();
+	}
+	
+	public static void releaseResources() {
+		if (soundPool != null)
+			soundPool.release();
+		soundPool = null;
+	}
+	
+	public static void resetPool() {
+		releaseResources();
+		soundPool = createPool();
+	}
+	
+	private static SoundPool createPool() {
+		return new SoundPool(maxSounds, AudioManager.STREAM_MUSIC, 0);
 	}
 
 }
