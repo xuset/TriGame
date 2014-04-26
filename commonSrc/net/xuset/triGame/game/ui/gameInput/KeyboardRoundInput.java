@@ -6,6 +6,7 @@ import net.xuset.tSquare.system.input.keyboard.TsKeyEvent;
 import net.xuset.tSquare.util.Observer;
 
 public class KeyboardRoundInput implements IRoundInput {
+	private long timeRequested = 0L;
 	private boolean roundRequested = false;
 	
 	public KeyboardRoundInput(IKeyListener keyListener) {
@@ -13,14 +14,11 @@ public class KeyboardRoundInput implements IRoundInput {
 	}
 
 	/*
-	 * TODO What if the enter key was pressed in the middle of the round.
-	 * would roundRequested still be true?
-	 * If so, that could produce undesired results.
+	 * Return true only if the enter key was pressed within the last 1000 milliseconds
 	 */
-	
 	@Override
 	public boolean newRoundRequested() {
-		return roundRequested;
+		return roundRequested && timeRequested + 1000 > System.currentTimeMillis();
 	}
 	
 	private class InputObserver implements Observer.Change<TsKeyEvent> {
@@ -29,6 +27,7 @@ public class KeyboardRoundInput implements IRoundInput {
 		public void observeChange(TsKeyEvent t) {
 			if (t.key == '\n' && t.action == KeyAction.PRESS) { //if <enter> is pressed
 				roundRequested = true;
+				timeRequested = System.currentTimeMillis();
 			}
 		}
 		
