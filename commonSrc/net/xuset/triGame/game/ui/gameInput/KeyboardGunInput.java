@@ -51,10 +51,13 @@ public class KeyboardGunInput implements IGunInput {
 				changeRequested = selectedGun != GunType.SUB;
 				selectedGun = GunType.SUB;
 				break;
-				
+			case '4':
+				changeRequested = selectedGun != GunType.BAZOOKA;
+				selectedGun = GunType.BAZOOKA;
+				break;
 			}
-		}
 		
+		}
 	}
 
 }
