@@ -26,12 +26,14 @@ public class SurvivalSafeBoard extends SafeBoard{
 	
 	@Override
 	public boolean insideSafeArea(double x, double y) {
+		x = Math.floor(x) + 0.5;
+		y = Math.floor(y) + 0.5;
 		return circleChart.isInsideACircle(x, y);
 	}
 	
 	@Override
 	public boolean insideSafeArea(double x, double y, double width, double height) {
-		return circleChart.isInsideACircle(x + width/2, y + height/2);
+		return insideSafeArea(x + width/2, y + height/2);
 	}
 
 	@Override
