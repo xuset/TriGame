@@ -112,7 +112,7 @@ public class DesktopStartup {
 	}
 	
 	private static final Settings createDefaultSettings() {
-		Settings settings = new Settings();
+		Settings settings = new Settings(50, 1.0f);
 		settings.drawUiTouch = false;
 		return settings;
 	}

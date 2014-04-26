@@ -45,11 +45,10 @@ public class UiSettingsForm {
 
 					@Override
 					public void onChange(double newPosition) {
-						settings.blockSize =
-								(int) (settings.defaultBlockSize * newPosition);
+						settings.gameZoom = newPosition;
 					}
 			
-		}, settings.blockSize / (0.0 + settings.defaultBlockSize));
+		}, settings.gameZoom);
 	}
 	
 	

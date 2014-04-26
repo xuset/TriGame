@@ -61,7 +61,7 @@ public class TriGame extends Game{
 		NetVar.nBool startGame = new NetVar.nBool("start", false);
 		network.objController.addObj(startGame);
 		
-		blockSize = settings.blockSize;
+		blockSize = (int) (settings.gameZoom * settings.defaultBlockSize);
 		Load.loadResources(blockSize, fileFactory);
 
 		this.drawBoard = drawBoard;

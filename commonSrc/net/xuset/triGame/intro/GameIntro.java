@@ -49,7 +49,7 @@ class GameIntro implements IntroSwitcher{
 		this.browserOpener = browserOpener;
 		
 		utilityForm = new UtilityForm((IntroSwitcher) this, updateChecker);
-		animator = new IntroAnimator(settings.blockSize);
+		animator = new IntroAnimator(settings.defaultBlockSize);
 		ui = new UiController(inputHolder.getMouse());
 		containerForm.setOpaque(true);
 		containerForm.setBackground(new TsColor(235, 235, 235));
