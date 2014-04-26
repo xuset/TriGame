@@ -159,8 +159,8 @@ public class Zombie extends Entity {
 			Node.Point step = path.peekNextStep();
 			setAngle(PointR.angle(this.getCenterX(), this.getCenterY(), step.x + 0.5, step.y + 0.5));
 			moveForward(distance);
-			if (Math.abs(this.getCenterX() - step.x - 0.5) < 3/50.0 &&
-					Math.abs(this.getCenterY() - step.y - 0.5) < 3/50.0) {
+			if (Math.abs(this.getCenterX() - step.x - 0.5) < 5/50.0 &&
+					Math.abs(this.getCenterY() - step.y - 0.5) < 5/50.0) {
 				path.pollNextStep();
 			}
 		} else {
