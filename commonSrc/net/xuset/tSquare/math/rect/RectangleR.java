@@ -35,5 +35,11 @@ public abstract class RectangleR implements IRectangleR {
 	public boolean contains(IPointR p) {
 		return contains(p.getX(), p.getY());
 	}
+	
+	@Override
+	public boolean equals(IRectangleR rect) {
+		return rect.getX() == getX() && rect.getY() == getY() &&
+				rect.getWidth() == getWidth() && rect.getHeight() == getHeight();
+	}
 
 }

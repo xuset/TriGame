@@ -15,4 +15,6 @@ public interface IRectangleR {
 	boolean isInside(IRectangleR r);
 	boolean contains(double x, double y);
 	boolean contains(IPointR p);
+	
+	boolean equals(IRectangleR rect);
 }
