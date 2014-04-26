@@ -35,7 +35,7 @@ class GameIntro implements IntroSwitcher{
 	private final IntroAnimator animator;
 	private IntroForm selectedForm = null;
 	private GameIntroForms newForm = null;
-	
+	private volatile boolean exitIntro = false;
 	private TriGame createdGame = null;
 	
 	public GameIntro(IDrawBoard drawBoard, IFileFactory fileFactory,
@@ -84,6 +84,10 @@ class GameIntro implements IntroSwitcher{
 		introForms[GameIntroForms.SETTINGS.ordinal()] = new IntroSettings(settings);
 	}
 	
+	public void exitIntro() {
+		exitIntro = true;
+	}
+	
 	public TriGame createGame() {
 		loop();
 		return createdGame;
@@ -100,7 +104,7 @@ class GameIntro implements IntroSwitcher{
 	private void loop() {
 		final int targetFPS = 60;
 		long timeStart = System.currentTimeMillis();
-		while (createdGame == null) {
+		while (!exitIntro && createdGame == null) {
 			IGraphics g = drawBoard.getGraphics();
 			if (g == null) {
 				try { Thread.sleep(10); } catch (InterruptedException ex) { }
@@ -126,6 +130,9 @@ class GameIntro implements IntroSwitcher{
 			timeStart = System.currentTimeMillis();
 			
 		}
+		
+		if (createdGame == null && selectedForm != null)
+			selectedForm.onFocusLost();
 	}
 	
 	private void checkAndSwitchForms() {

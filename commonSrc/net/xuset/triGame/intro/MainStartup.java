@@ -22,6 +22,11 @@ public class MainStartup {
 	private final IBrowserOpener browserOpener;
 	private final UpdateChecker updateChecker = new UpdateChecker();
 	
+	private volatile Thread thread;
+	private volatile TriGame game = null;
+	private volatile GameIntro intro = null;
+	private volatile boolean exitGame = false;
+	
 	public MainStartup(IDrawBoard drawBoard, IFileFactory fileFactory,
 			Settings settings, IpGetterIFace ipGetter, IBrowserOpener browserOpener) {
 		
@@ -33,7 +38,60 @@ public class MainStartup {
 		this.inputHolder = drawBoard.createInputListener();
 		
 		setLogLevel(Params.LOG_LEVEL);
-		
+		thread = new Looper();
+	}
+	
+	public boolean isGameOnGoing() {
+		return game != null;
+	}
+	
+	public boolean isAlive() {
+		return thread.isAlive();
+	}
+	
+	public synchronized void suspendGame() {
+		exitGame = true;
+		closeGame();
+		closeIntro();
+		joinThread();
+	}
+	
+	public synchronized void resumeGame() {
+		if (!thread.isAlive())
+			thread = new Looper();
+	}
+	
+	private void closeGame() {
+		TriGame tGame = game;
+		if (tGame != null) {
+			if (tGame.isMultiplayer()) {
+				tGame.shutdown();
+				game = null;
+			} else {
+				game.stopGame();
+			}
+		}
+	}
+	
+	private void closeIntro() {
+		GameIntro gIntro = intro;
+		if (gIntro != null) {
+			gIntro.exitIntro();
+			intro = null;
+		}
+	}
+	
+	private void joinThread() {
+		try {
+			thread.join(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			if (thread.isAlive())
+				thread.interrupt();
+		}
+	}
+	
+	private void determineAndLoop() {
 		if (Params.DEBUG_MODE)
 			runLoop();
 		else
@@ -52,11 +110,20 @@ public class MainStartup {
 	}
 	
 	private void runLoop() {
-		while (true) {
-			resetInputHolder();
-			TriGame game = createGame();
+		while (!exitGame) {
+			if (game == null) {
+				resetInputHolder();
+				game = createGame();
+				if (game == null)
+					return;
+			}
+			
 			game.startGame();
-			game.shutdown();
+			if (!exitGame) {
+				game.shutdown();
+				game = null;
+				resetInputHolder();
+			}
 		}
 	}
 	
@@ -66,10 +133,12 @@ public class MainStartup {
 	}
 	
 	private TriGame createGame() {
-		GameIntro intro = new GameIntro(drawBoard, fileFactory,
+		intro = new GameIntro(drawBoard, fileFactory,
 				inputHolder, settings, ipGetter, updateChecker, browserOpener);
 		
-		return intro.createGame();
+		TriGame game = intro.createGame();
+		intro = null;//gc intro
+		return game;
 	}
 	
 	private void setLogLevel(Level level) {
@@ -79,5 +148,18 @@ public class MainStartup {
 	        	handler.setLevel(level);
 	        }
 	    }
+	}
+	
+	private class Looper extends Thread{
+		Looper() {
+			exitGame = false;
+			setName("GameLoop");
+			start();
+		}
+		
+		@Override
+		public void run() {
+			determineAndLoop();
+		}
 	}
 }

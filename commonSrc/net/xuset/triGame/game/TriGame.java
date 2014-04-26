@@ -34,6 +34,7 @@ import net.xuset.triGame.settings.Settings;
 
 
 public class TriGame extends Game{
+	private final boolean isMultiplayer;
 	private final IDrawBoard drawBoard;
 	private final ShopManager shop;
 	private final ShopDrawer shopDrawer;
@@ -58,6 +59,7 @@ public class TriGame extends Game{
 		
 		super(gameInfo.getNetwork());
 		this.settings = settings;
+		isMultiplayer = gameInfo.getNetworkType() != NetworkType.SOLO;
 		NetVar.nBool startGame = new NetVar.nBool("start", false);
 		network.objController.addObj(startGame);
 		
@@ -111,6 +113,10 @@ public class TriGame extends Game{
 			try { Thread.sleep(10); } catch (Exception ex) { }
 		}
 		gameMode.onGameStart();
+	}
+	
+	public boolean isMultiplayer() {
+		return isMultiplayer;
 	}
 
 	@Override

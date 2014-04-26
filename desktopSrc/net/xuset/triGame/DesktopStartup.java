@@ -5,24 +5,16 @@ import java.awt.Canvas;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.Enumeration;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
-import net.xuset.tSquare.demo.Demo;
 import net.xuset.tSquare.files.FileFactory;
 import net.xuset.tSquare.system.DrawBoard;
 import net.xuset.tSquare.system.IDrawBoard;
-import net.xuset.triGame.game.DevStart;
 import net.xuset.triGame.game.GameMode.GameType;
 import net.xuset.triGame.intro.IpGetterIFace;
 import net.xuset.triGame.intro.MainStartup;
-import net.xuset.triGame.intro.UpdateChecker;
 import net.xuset.triGame.settings.Settings;
 
 
@@ -39,56 +31,24 @@ public class DesktopStartup {
 	private static void devStartup() {
 		Settings settings = createDefaultSettings();
 		IDrawBoard db1 = createWindow(Params.GAME_NAME);
-		//IDrawBoard db2 = createWindow("TriGame Dev - client");
 		
-		DevStart.startSolo(GameType.SURVIVAL, db1, new FileFactory(), settings);
-		//DevStart.startLocalMultiplayer(GameType.SURVIVAL, db1, db2, new FileFactory(), settings);
-		
-		//Demo demo = new Demo(db1);
-		//demo.start();
+		net.xuset.triGame.game.DevStart.startSolo(
+				GameType.SURVIVAL, db1, new FileFactory(), settings);
+//		net.xuset.triGame.game.DevStart.startLocalMultiplayer(
+//				GameType.SURVIVAL, db1, createWindow(Params.GAME_NAME + " - client"),
+//				new FileFactory(), settings);
+//		
+//		new net.xuset.tSquare.demo.Demo(db1).start();
 	}
 	
 	private static void mainStartup() {
-		JFrame frame = new JFrame();
-		IDrawBoard drawBoard = createWindow(frame, Params.GAME_NAME);
-		
-		if (Params.DEBUG_MODE)
-			createGame(drawBoard);
-		else
-			catchAllAndCreateGame(frame, drawBoard);
-	}
-	
-	private static void catchAllAndCreateGame(JFrame frame, IDrawBoard drawBoard) {
-		try {
-			createGame(drawBoard);
-		} catch (Exception ex) {
-			System.err.println("Error while handling another error");
-			ex.printStackTrace();
-			JFrame errorFrame = new JFrame();
-			errorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			JOptionPane.showMessageDialog(errorFrame,
-					createStackTrace(ex),
-					Params.GAME_NAME + " : An eror has occured.",
-					JOptionPane.ERROR_MESSAGE);
-			errorFrame.dispose();
-			frame.dispose();
-		}
+		IDrawBoard drawBoard = createWindow(Params.GAME_NAME);
+		createGame(drawBoard);
 	}
 	
 	private static void createGame(IDrawBoard drawBoard) {
-		new MainStartup(drawBoard, new FileFactory(), createDefaultSettings(),
-				new IpGetter(), new DesktopBrowserOpener());
-	}
-	
-	private static String createStackTrace(Exception ex) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("An error has occured and the game has ended.\r\n");
-		builder.append("Sorry about this. Below is a description of the error.\r\n\r\n");
-		builder.append(ex.toString()).append("\r\n");
-		for (StackTraceElement e : ex.getStackTrace()) {
-			builder.append("     at ").append(e.toString()).append("\r\n");
-		}
-		return builder.toString();
+		new MainStartup(drawBoard, new FileFactory(),
+				createDefaultSettings(), new IpGetter(), new DesktopBrowserOpener());
 	}
 	
 	private static IDrawBoard createWindow(JFrame frame, String title) {
