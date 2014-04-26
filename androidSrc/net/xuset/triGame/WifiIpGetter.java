@@ -10,30 +10,17 @@ import android.net.wifi.WifiManager;
 import net.xuset.triGame.intro.IpGetterIFace;
 
 public class WifiIpGetter implements IpGetterIFace {
+	private final WifiManager wifiManager;
+	
 	private InetAddress ipAddress;
 	
+	
 	public WifiIpGetter(Context context) {
-		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		int ip = wifiInfo.getIpAddress();
+		wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		
-		if (ip == 0) {
+		ipAddress = determineIpFromWifi();
+		if (ipAddress == null)
 			fallbackOnError();
-			return;
-		}
-		
-		String ipString = String.format(
-				   "%d.%d.%d.%d",
-				   (ip & 0xff),
-				   (ip >> 8 & 0xff),
-				   (ip >> 16 & 0xff),
-				   (ip >> 24 & 0xff));
-		
-		try {
-			ipAddress = InetAddress.getByName(ipString);
-		} catch (UnknownHostException e) {
-			fallbackOnError();
-		}
 	}
 	
 	private void fallbackOnError() {
@@ -46,7 +33,37 @@ public class WifiIpGetter implements IpGetterIFace {
 			System.err.println("Failed to resolve local host address. using loop back");
 			ipAddress = null;
 			e.printStackTrace();
+		} catch (RuntimeException ex) {
+			System.err.println("An unknown error occured while trying to determine the local ip");
+			ex.printStackTrace();
+			ipAddress = null;
 		}
+	}
+	
+	private InetAddress determineIpFromWifi() {
+		if (!wifiManager.isWifiEnabled())
+			return null;
+		
+		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+		int ip = wifiInfo.getIpAddress();
+		
+		if (ip == 0)
+			return null;
+		
+		String ipString = String.format(
+				   "%d.%d.%d.%d",
+				   (ip & 0xff),
+				   (ip >> 8 & 0xff),
+				   (ip >> 16 & 0xff),
+				   (ip >> 24 & 0xff));
+		
+		try {
+			return InetAddress.getByName(ipString);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 
