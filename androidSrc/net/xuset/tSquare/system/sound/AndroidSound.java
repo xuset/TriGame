@@ -35,7 +35,7 @@ public class AndroidSound implements ISound {
 
 	@Override
 	public void close() {
-		soundPool.release();
+		soundPool.unload(soundId);
 	}
 	
 	public static void releaseResources() {
