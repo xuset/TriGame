@@ -64,22 +64,25 @@ public class ObjectGrid{
 	}
 	
 	public boolean turnOnRectange(IRectangleR r) {
-		return setRectangleValue((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight(), true);
+		return setRectangleValue(r.getX(), r.getY(), r.getWidth(), r.getHeight(), true);
 	}
 	public boolean turnOnRectangle(double x, double y, double width, double height) {
-		return setRectangleValue((int) x, (int) y, (int) width, (int) height, true);
+		return setRectangleValue(x, y, width, height, true);
 	}
 	public boolean turnOnRectangle(int x, int y, int width, int height) {
 		return setRectangleValue(x, y, width, height, true);
 	}
 	public boolean turnOffRectange(IRectangleR r) {
-		return setRectangleValue((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight(), false);
+		return setRectangleValue(r.getX(), r.getY(), r.getWidth(), r.getHeight(), false);
 	}
 	public boolean turnOffRectangle(double x, double y, double width, double height) {
-		return setRectangleValue((int) x, (int) y, (int) width, (int) height, false);
+		return setRectangleValue(x, y, width, height, false);
 	}
 	public boolean turnOffRectangle(int x, int y, int width, int height) {
 		return setRectangleValue(x, y, width, height, false);
+	}
+	private boolean setRectangleValue(double x, double y, double w, double h, boolean value) {
+		return setRectangleValue((int) x, (int) y, (int) Math.ceil(w), (int) Math.ceil(h), value);
 	}
 	private boolean setRectangleValue(int x, int y, int width, int height, boolean value) {
 		int topLeftX = x;// / blockWidth;
@@ -98,10 +101,10 @@ public class ObjectGrid{
 	}
 	
 	public boolean isRectangleOpen(IRectangleR r) {
-		return isRectangleOpen((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
+		return isRectangleOpen(r.getX(), r.getY(), r.getWidth(), r.getHeight());
 	}
 	public boolean isRectangleOpen(double x, double y, double w, double h) {
-		return isRectangleOpen((int) x, (int) y, (int) w, (int) h);
+		return isRectangleOpen((int) x, (int) y, (int) Math.ceil(w), (int) Math.ceil(h));
 	}
 	
 	public boolean isRectangleOpen(int x, int y, int width, int height) {
