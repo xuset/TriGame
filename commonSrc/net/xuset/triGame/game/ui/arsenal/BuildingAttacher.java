@@ -102,6 +102,8 @@ public class BuildingAttacher implements GameDrawable{
 		updateAttachedInfo();
 
 		g.drawImage(image, gameX, gameY);
+		boolean savedAntiAlias = g.isAntiAliasOn();
+		g.setAntiAlias(true);
 
 		g.setColor(canPlace() ? TsColor.green : TsColor.red);
 		g.drawRect(gameX, gameY, image.getWidth(g), image.getHeight(g));
@@ -111,6 +113,14 @@ public class BuildingAttacher implements GameDrawable{
 					gameY + 0.5f - viewRadius,
 					viewRadius * 2, viewRadius * 2);
 		}
+		
+		float crossR = viewRadius < 3 ? 3 : viewRadius;
+		g.drawLine(gameX + 0.5f, gameY + 0.5f - crossR,
+				gameX + 0.5f, gameY + 0.5f + crossR);
+		g.drawLine(gameX + 0.5f - crossR, gameY + 0.5f,
+				gameX + 0.5f + crossR, gameY + 0.5f);
+		
+		g.setAntiAlias(savedAntiAlias);
 	}
 	
 	private void updateAttachedInfo() {
