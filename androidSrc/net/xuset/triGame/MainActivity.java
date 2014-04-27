@@ -8,6 +8,7 @@ import net.xuset.triGame.game.ui.IBrowserOpener;
 import net.xuset.triGame.intro.IpGetterIFace;
 import net.xuset.triGame.intro.MainStartup;
 
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.SurfaceView;
@@ -35,6 +36,7 @@ public class MainActivity extends Activity {
 	
 	@Override
 	public void onStart() {
+	    setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		if (!gameStarter.isAlive())
 			gameStarter.resumeGame();
 		super.onStart();
