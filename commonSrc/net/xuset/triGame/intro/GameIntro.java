@@ -131,6 +131,7 @@ class GameIntro implements IntroSwitcher{
 			
 		}
 		
+		ui.unwatchMouseEvents();
 		if (createdGame == null && selectedForm != null)
 			selectedForm.onFocusLost();
 	}

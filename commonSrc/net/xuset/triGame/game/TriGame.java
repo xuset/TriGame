@@ -44,6 +44,7 @@ public class TriGame extends Game{
 	private final int blockSize; //px
 	private final Settings settings;
 	private final PlayerInfoContainer playerContainer;
+	private final GameConnectionEvent connectionListener;
 	
 	private final ManagerService managerService;
 	private final GameMode gameMode;
@@ -102,8 +103,11 @@ public class TriGame extends Game{
 			gameId.set(IdGenerator.getNext());
 			gameMode.createMap(settings.wallGenCoefficient);
 		}
-		if (gameInfo.getNetworkType() != NetworkType.SOLO)
-			network.hub.watchEvents(new GameConnectionEvent());
+		if (gameInfo.getNetworkType() != NetworkType.SOLO) {
+			connectionListener = new GameConnectionEvent();
+			network.hub.watchEvents(connectionListener);
+		} else
+			connectionListener = null;
 		
 		if (network.isServer) {
 			startGame.set(true);
@@ -127,6 +131,9 @@ public class TriGame extends Game{
 		SoundStore.setMuteOnAll(!settings.enableSound);
 		
 		if (!isGameOver && !ui.isPaused()) {
+			//TODO bugs may be induced here if the server does not update the
+			//persons list
+			
 			managerService.person.update(frameDelta);
 			if (gameMode.isGameOver())
 				setGameOver();
@@ -207,6 +214,7 @@ public class TriGame extends Game{
 	
 	public void shutdown() {
 		stopGame();
+		network.hub.unwatchEvents(connectionListener);
 		network.disconnect();
 	}
 	

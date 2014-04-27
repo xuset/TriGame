@@ -52,9 +52,10 @@ public class IntroConnected implements IntroForm{
 	@Override
 	public GameInfo getCreatedGameInfo() {
 		if (gameStarter != null && gameStarter.hasGameStarted()) {
-			if (createOnNext)
+			if (createOnNext) {
+				network.hub.unwatchEvents(listener);
 				return new GameInfo(network, gameStarter.getGameType(), NetworkType.JOIN);
-			else {
+			} else {
 				createOnNext = true;
 				setStatus(false, "Loading game...");
 			}
