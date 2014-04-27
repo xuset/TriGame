@@ -71,6 +71,10 @@ public class UiController {
 		}
 	}
 	
+	public void unwatchMouseEvents() {
+		mouseListener.unwatchSource();
+	}
+	
 	private class MouseObserver implements Change<TsMouseEvent> {
 
 		@Override
