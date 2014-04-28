@@ -47,8 +47,11 @@ public class DesktopStartup {
 	}
 	
 	private static void createGame(IDrawBoard drawBoard) {
-		new MainStartup(drawBoard, new FileFactory(),
-				createDefaultSettings(), new IpGetter(), new DesktopBrowserOpener());
+		new MainStartup(drawBoard,
+				new FileFactory(),
+				createDefaultSettings(),
+				new DesktopIpGetter(),
+				new DesktopBrowserOpener());
 	}
 	
 	private static IDrawBoard createWindow(JFrame frame, String title) {
@@ -75,34 +78,6 @@ public class DesktopStartup {
 		Settings settings = new Settings(50, 1.0f);
 		settings.drawUiTouch = false;
 		return settings;
-	}
-	
-	private static class IpGetter implements IpGetterIFace {
-		private InetAddress address = null;
-		
-		public IpGetter() {
-			new Thread(new Worker(), "LocalIpFinder").start();
-		}
-
-		@Override
-		public InetAddress getLocalIP() {
-			return address;
-		}
-		
-		private class Worker implements Runnable {
-			
-			@Override
-			public void run() {
-				try {
-					address = InetAddress.getLocalHost();
-				} catch (UnknownHostException e) {
-					System.err.println("Error: Could not determine local IP");
-					e.printStackTrace();
-				}
-			}
-			
-		}
-		
 	}
 
 }

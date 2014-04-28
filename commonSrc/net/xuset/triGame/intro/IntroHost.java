@@ -100,7 +100,7 @@ class IntroHost implements IntroForm {
 			InetAddress group = InetAddress.getByName(MULTICAST_GROUP);
 			InetAddress local = ipGetter.getLocalIP();
 			if (local == null)
-				throw new IOException("Cannot determine local IP address.");
+				throw new IOException(ipGetter.getError());
 			broadcaster = new BroadcastServer(MULTICAST_PORT, group);
 			BroadcastMsg bMsg = new BroadcastMsg(local, port);
 			broadcaster.start(bMsg.toString());

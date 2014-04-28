@@ -10,45 +10,65 @@ import android.net.wifi.WifiManager;
 import net.xuset.triGame.intro.IpGetterIFace;
 
 public class WifiIpGetter implements IpGetterIFace {
+	private static final String errResolveMsg =
+			"Failed to resolve wifi ip address.";
+	
 	private final WifiManager wifiManager;
-	
-	private InetAddress ipAddress;
-	
+	private String errorMsg = "";
 	
 	public WifiIpGetter(Context context) {
 		wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+	}
+
+	@Override
+	public InetAddress getLocalIP() {
+		if (isWifiConnected()) {
+			InetAddress ip;
+			ip = determineIpFromWifi();
+			if (ip == null) {
+				errorMsg = errResolveMsg;
+				ip = fallbackOnError();
+			}
+			return ip;
+		} else {
+			errorMsg = "Wifi is not connected";
+		}
 		
-		ipAddress = determineIpFromWifi();
-		if (ipAddress == null)
-			fallbackOnError();
+		return null;
+			
 	}
 	
-	private void fallbackOnError() {
-		System.err.println("Failed to resolve wifi ip address.");
+	@Override
+	public String getError() {
+		return errorMsg;
+	}
+	
+	private boolean isWifiConnected() {
+		return wifiManager.isWifiEnabled() &&
+				wifiManager.getConnectionInfo().getIpAddress() != 0;
+	}
+	
+	private InetAddress fallbackOnError() {
+		System.err.println("Error: " + errResolveMsg);
+		
 		try {
-			ipAddress = InetAddress.getLocalHost();
-			if (ipAddress.isLoopbackAddress())
-				ipAddress = null;
+			InetAddress ip = InetAddress.getLocalHost();
+			if (!ip.isLoopbackAddress())
+				return ip;
 		} catch (UnknownHostException e) {
 			System.err.println("Failed to resolve local host address. using loop back");
-			ipAddress = null;
 			e.printStackTrace();
 		} catch (RuntimeException ex) {
 			System.err.println("An unknown error occured while trying to determine the local ip");
 			ex.printStackTrace();
-			ipAddress = null;
 		}
+
+		return null;
 	}
 	
 	private InetAddress determineIpFromWifi() {
-		if (!wifiManager.isWifiEnabled())
-			return null;
-		
 		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 		int ip = wifiInfo.getIpAddress();
-		
-		if (ip == 0)
-			return null;
 		
 		String ipString = String.format(
 				   "%d.%d.%d.%d",
@@ -64,12 +84,6 @@ public class WifiIpGetter implements IpGetterIFace {
 		}
 		
 		return null;
-	}
-	
-
-	@Override
-	public InetAddress getLocalIP() {
-		return ipAddress;
 	}
 
 }
