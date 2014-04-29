@@ -8,7 +8,7 @@ import net.xuset.objectIO.connections.sockets.InetHub;
 import net.xuset.objectIO.connections.sockets.OfflineHub;
 import net.xuset.objectIO.connections.sockets.groupNet.client.GroupClientHub;
 import net.xuset.objectIO.connections.sockets.groupNet.server.GroupNetServer;
-import net.xuset.objectIO.netObj.DummyNetClass;
+import net.xuset.objectIO.netObj.ArrayNetClass;
 import net.xuset.objectIO.netObj.HashNetClass;
 import net.xuset.objectIO.netObj.NetClass;
 
@@ -30,7 +30,7 @@ public class Network {
 		isServer = true;
 		userId = 3l;
 		hub = new OfflineHub(userId);
-		objController = new DummyNetClass("");
+		objController = new ArrayNetClass("");
 	}
 	
 	private Network(InetHub<? extends InetCon> hub, long userId, boolean isServer) {
