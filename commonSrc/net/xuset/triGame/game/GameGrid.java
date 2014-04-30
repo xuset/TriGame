@@ -10,4 +10,8 @@ public class GameGrid {
 		this.gridWidth = gridWidth;
 		this.gridHeight = gridHeight;
 	}
+	
+	public boolean isInside(double x, double y) {
+		return x >= 0 && y >= 0 && x < gridWidth && y < gridHeight;
+	}
 }
