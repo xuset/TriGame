@@ -7,7 +7,6 @@ import net.xuset.tSquare.files.IFileFactory;
 import net.xuset.tSquare.game.Game;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.ScaledGraphics;
-import net.xuset.tSquare.imaging.ScaledImageFactory;
 import net.xuset.tSquare.imaging.TransformedGraphics;
 import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.math.IdGenerator;
@@ -71,7 +70,7 @@ public class TriGame extends Game{
 		shop = new ShopManager(300);
 		shopDrawer = new ShopDrawer(shop.observer());
 		gameGrid = new GameGrid(50, 50);
-		background = new TiledBackground(new ScaledImageFactory(blockSize));
+		background = new TiledBackground();
 		playerContainer = new PlayerInfoContainer(network.objController, userId);
 		
 		NetVar.nLong gameId = new NetVar.nLong("gameId", 0L);
