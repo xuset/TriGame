@@ -7,6 +7,7 @@ import net.xuset.tSquare.imaging.TsColor;
 import net.xuset.tSquare.imaging.TsFont;
 import net.xuset.tSquare.imaging.TsTypeFace;
 import net.xuset.tSquare.math.rect.IRectangleR;
+import net.xuset.triGame.Params;
 import net.xuset.triGame.game.entities.PointParticle;
 
 
@@ -76,9 +77,14 @@ public final class Draw {
 		final String[] strings = new String[] {
 				"  $" + points,
 				"Round " + round,
-				"Killed " + killed + " zombies",
-				fps + "FPS",
+				killed + " kills",
+				Params.DEBUG_MODE ? fps + "FPS" : "",
+				Params.DEBUG_MODE ?
+				(Runtime.getRuntime().freeMemory() / (1024 * 1024)) + "/" +
+				(Runtime.getRuntime().totalMemory() / (1024 * 1024)) + " Mb" : ""
 		};
+		
+		
 		
 		g.setFont(statFont);
 		
@@ -93,14 +99,18 @@ public final class Draw {
 		g.setColor(statBackGround);
 		g.fillRoundedRect(gutter, gutter,
 				stringWidth + 2 * gutter,
-				stringHeight * strings.length + gutter,
+				stringHeight * (strings.length + (Params.DEBUG_MODE ? 0 : -2)) + gutter,
 				15/50.f, 15/50.f);
 		
 
 		g.setColor(TsColor.lightGray);
-		for (int i = 0; i < strings.length; i++)
-			g.drawText(2 * gutter, 2 * gutter + (stringHeight) * i + stringHeight / 2, strings[i]);
-		
+		for (int i = 0; i < strings.length; i++) {
+			if (strings[i].equals(""))
+				continue;
+			g.drawText(2 * gutter, 2 * gutter + (stringHeight) * i + stringHeight / 2,
+					strings[i]);
+		}
+			
 		Sprite pointParticle = Sprite.get(PointParticle.SPRITE_ID);
 		pointParticle.draw(2 * gutter, 2 * gutter, g);
 	}
