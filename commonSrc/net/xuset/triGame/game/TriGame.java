@@ -70,7 +70,7 @@ public class TriGame extends Game{
 		this.drawBoard = drawBoard;
 		shop = new ShopManager(300);
 		shopDrawer = new ShopDrawer(shop.observer());
-		gameGrid = new GameGrid(100, 100);
+		gameGrid = new GameGrid(50, 50);
 		background = new TiledBackground(new ScaledImageFactory(blockSize));
 		playerContainer = new PlayerInfoContainer(network.objController, userId);
 		
