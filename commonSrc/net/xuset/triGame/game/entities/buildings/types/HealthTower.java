@@ -124,6 +124,8 @@ public class HealthTower extends Building {
 					centerX, centerY,
 					b.getCenterX(), b.getCenterY());
 			
+			dist -= PointR.distance(getWidth(), getHealth(), 0, 0);
+			
 			if (dist <= range)
 				increaseEntityHealth(b, b.info.maxHealth);
 		}
