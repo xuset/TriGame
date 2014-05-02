@@ -2,7 +2,7 @@ package net.xuset.tSquare.game.entity;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import net.xuset.objectIO.markupMsg.MarkupMsg;
 import net.xuset.objectIO.netObj.ArrayNetClass;
@@ -202,13 +202,14 @@ public class Entity implements GameIntegratable{
 		}
 	}
 	
-	public <T extends Entity> ArrayList<T> collidedWith(Collection<T> searchList) {
+	public <T extends Entity> ArrayList<T> collidedWith(List<T> searchList) {
 		return collidedWith(searchList, searchList.size());
 	}
-	public <T extends Entity> ArrayList<T> collidedWith(Collection<T> searchList, int maxReturns) {
-		ArrayList<T> hitlist = new ArrayList<T>();
+	public <T extends Entity> ArrayList<T> collidedWith(List<T> searchList, int maxReturns) {
+		ArrayList<T> hitlist = new ArrayList<T>(maxReturns < 10 ? maxReturns : 10);
 		int hits = 0;
-		for (T type : searchList) {
+		for (int i = 0; i < searchList.size(); i++) {
+			T type = searchList.get(i);
 			if (hits >= maxReturns)
 				break;
 			if (!type.equals(this)) {
@@ -221,12 +222,13 @@ public class Entity implements GameIntegratable{
 		return hitlist;
 	}
 	
-	public int numberOfCollisions(Collection<? extends Entity> searchList) {
+	public int numberOfCollisions(List<? extends Entity> searchList) {
 		return numberOfCollisions(searchList, searchList.size());
 	}
-	public int numberOfCollisions(Collection<? extends Entity> searchList, int maxReturns) {
+	public int numberOfCollisions(List<? extends Entity> searchList, int maxReturns) {
 		int hits = 0;
-		for (Entity e : searchList) {
+		for (int i = 0; i < searchList.size(); i++) {
+			Entity e = searchList.get(i);
 			if (hits >= maxReturns)
 				break;
 			if (!e.equals(this)) {
@@ -238,8 +240,9 @@ public class Entity implements GameIntegratable{
 		return hits;
 	}
 	
-	public <T extends Entity> T collidedWithFirst(Collection<T> searchList) {
-		for (T type : searchList) {
+	public <T extends Entity> T collidedWithFirst(List<T> searchList) {
+		for (int i = 0; i < searchList.size(); i++) {
+			T type = searchList.get(i);
 			if (!type.equals(this)) {
 				if (type.collidable == true && type.hitbox.isInside(this.hitbox)) {
 					return type;
@@ -253,8 +256,9 @@ public class Entity implements GameIntegratable{
 		return (e.collidable && !equals(e) && hitbox.isInside(e.hitbox));
 	}
 	
-	public boolean collided(Collection<? extends Entity> searchList) {
-		for (Entity e : searchList) {
+	public boolean collided(List<? extends Entity> searchList) {
+		for (int i = 0; i < searchList.size(); i++) {
+			Entity e  = searchList.get(i);
 			if (e.collidable && !equals(e) && e.hitbox.isInside(hitbox)) {
 				return true;
 			}
