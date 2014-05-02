@@ -1,21 +1,29 @@
 package net.xuset.tSquare.imaging;
 
 import net.xuset.tSquare.math.rect.IRectangleR;
+import net.xuset.tSquare.math.rect.IRectangleW;
 import net.xuset.tSquare.math.rect.Rectangle;
 
 
 
 public class WindowGraphics implements IGraphics{
 	
-	private final IRectangleR view;
-	private final IRectangleR subView;
-	private final IGraphics g;
+	private IRectangleR view;
+	private IRectangleW subView = new Rectangle();
+	private IGraphics g;
+	
+	public WindowGraphics() {
+		
+	}
 	
 	public WindowGraphics(IRectangleR view, IGraphics g) {
-		this.view = view;
-		this.g = g;
-		subView = new Rectangle(0, 0, view.getWidth(), view.getHeight());
-		
+		reset(view, g);
+	}
+	
+	public void reset(IRectangleR newView, IGraphics newG) {
+		view = newView;
+		g = newG;
+		subView.setFrame(0, 0, newView.getWidth(), newView.getHeight());
 	}
  
 	private float transformX(float x) {

@@ -3,7 +3,7 @@ package net.xuset.tSquare.ui;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.WindowGraphics;
 import net.xuset.tSquare.math.point.IPointR;
-import net.xuset.tSquare.math.rect.IRectangleR;
+import net.xuset.tSquare.math.rect.IRectangleW;
 import net.xuset.tSquare.math.rect.Rectangle;
 import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.layout.UiLayout;
@@ -11,6 +11,8 @@ import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer.Change;
 
 public class UiForm extends UiComponent implements UiAddable {
+	private final IRectangleW subView = new Rectangle();
+	private final WindowGraphics windowGraphics = new WindowGraphics();
 	private UiLayout layout = null;
 	private Change<IPointR> sizeWatcher = null;
 
@@ -51,10 +53,10 @@ public class UiForm extends UiComponent implements UiAddable {
 		getLayout().organize();
 		super.draw(g);
 		
-		IRectangleR subView = new Rectangle(getX(), getY(), getWidth(), getHeight());
-		WindowGraphics window = new WindowGraphics(subView, g);
+		subView.setFrame(getX(), getY(), getWidth(), getHeight());
+		windowGraphics.reset(subView, g);
 		for (int i = 0; i < layout.getComponentCount(); i++)
-			layout.getComponent(i).draw(window);
+			layout.getComponent(i).draw(windowGraphics);
 		
 		//g.setColor(net.xuset.tSquare.imaging.TsColor.black);
 		//g.drawRect(getX(), getY(), getWidth(), getHeight());
