@@ -26,6 +26,7 @@ public class MainStartup {
 	private volatile TriGame game = null;
 	private volatile GameIntro intro = null;
 	private volatile boolean exitGame = false;
+	private volatile boolean errorOccured = false;
 	
 	public MainStartup(IDrawBoard drawBoard, IFileFactory fileFactory,
 			Settings settings, IpGetterIFace ipGetter, IBrowserOpener browserOpener) {
@@ -39,6 +40,10 @@ public class MainStartup {
 		
 		setLogLevel(Params.LOG_LEVEL);
 		thread = new Looper();
+	}
+	
+	public boolean didErrorOccure() {
+		return errorOccured;
 	}
 	
 	public boolean isGameOnGoing() {
@@ -102,6 +107,7 @@ public class MainStartup {
 		try {
 			runLoop();
 		} catch (Exception ex) {
+			errorOccured = true;
 			System.err.println("Encountered error. Game has ended");
 			ex.printStackTrace();
 			resetInputHolder();

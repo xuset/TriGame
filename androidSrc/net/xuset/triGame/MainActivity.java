@@ -45,6 +45,8 @@ public class MainActivity extends Activity {
 	@Override
 	public void onStop() {
 		gameStarter.suspendGame();
+		if (gameStarter.didErrorOccure())
+			finish();
 		super.onStop();
 	}
 	
