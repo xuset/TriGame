@@ -1,15 +1,15 @@
 package net.xuset.triGame.game.survival.safeArea;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import net.xuset.tSquare.game.entity.Entity;
 
 
 
 final class CircleContainer {
-	final LinkedList<Circle> circles = new LinkedList<Circle>();
+	final ArrayList<Circle> circles = new ArrayList<Circle>();
 	
 	void addCircle(double centerX, double centerY, double radius, Entity e) {
 		circles.add(new Circle(centerX, centerY, radius, e));
@@ -40,8 +40,8 @@ final class CircleContainer {
 	}
 	
 	boolean isInsideACircle(double x, double y) {
-		for (Circle c : circles) {
-			if (c.isInside(x, y))
+		for (int i = 0; i < circles.size(); i++) {
+			if (circles.get(i).isInside(x, y))
 				return true;
 		}
 		return false;
