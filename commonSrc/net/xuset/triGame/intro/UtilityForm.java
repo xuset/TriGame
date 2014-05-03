@@ -62,8 +62,7 @@ class UtilityForm extends UiForm {
 		getLayout().setAlignment(Axis.X_AXIS, Alignment.CENTER);
 		
 		getLayout().add(frmButtons);
-		getLayout().add(new UiLabel("Created by Austin Middleton. http://xuset.net"));
-		getLayout().add(new UiLabel("Licensed under the GPLv2."));
+		getLayout().add(new UiLabel("Create by Austin Middleton | http://xuset.net"));
 		getLayout().add(lblUpdates);
 		btnBack.addMouseListener(new BtnBackAction());
 		btnSettings.addMouseListener(new BtnSettingsAction());
