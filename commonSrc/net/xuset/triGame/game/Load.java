@@ -78,7 +78,7 @@ public abstract class Load {
 		float scale = blockSize / 150.0f;
 		for (String url : spriteUrlOnDisk) {
 			IImage img = loadAndScaleImage(url, scale, ff);
-			Sprite.add(new Sprite(url, img, 1.0f / blockSize));
+			Sprite.add(new Sprite(url, img, 1.0 / blockSize));
 		}
 	}
 	
@@ -153,25 +153,25 @@ public abstract class Load {
 		g.setColor(TsColor.lightGray);
 		g.fillTriangle(16, 18, 18, 18);
 		g.dispose();
-		Sprite.add(new Sprite(SpawnHole.SPRITE_ID, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(SpawnHole.SPRITE_ID, image, 1.0 / blockSize));
 	}
 	
 	private static void spritePerson(int blockSize) {
 		Sprite.add(new Sprite(Person.SPRITE_ID,
 				triangleImage(TsColor.cyan, blockSize),
-				1.0f / blockSize));
+				1.0 / blockSize));
 	}
 	
 	private static void spriteZombie(int blockSize) {
 		Sprite.add(new Sprite(Zombie.SPRITE_ID,
 				triangleImage(TsColor.red, blockSize),
-				1.0f / blockSize));
+				1.0 / blockSize));
 	}
 	
 	private static void spriteBossZombie(int blockSize) {
 		Sprite.add(new Sprite(BossZombie.SPRITE_ID,
 				triangleImage(TsColor.black, blockSize),
-				1.0f / blockSize));
+				1.0 / blockSize));
 	}
 	
 	private static void spriteBarrier(int blockSize) {
@@ -186,7 +186,7 @@ public abstract class Load {
 		g.fillRect(5, 5, 40, 40);
 		g.dispose();
 		
-		Sprite.add(new Sprite(Barrier.INFO.spriteId, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(Barrier.INFO.spriteId, image, 1.0 / blockSize));
 	}
 	
 	private static void spriteTower(int blockSize) {
@@ -199,7 +199,7 @@ public abstract class Load {
 		g.fillRect(23, 0, 4, 25);
 		g.dispose();
 		
-		Sprite.add(new Sprite(Tower.INFO.spriteId, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(Tower.INFO.spriteId, image, 1.0 / blockSize));
 	}
 	
 	private static void spriteSmallTower(int blockSize) {
@@ -212,7 +212,7 @@ public abstract class Load {
 		g.fillRect(23, 0, 4, 37);
 		g.dispose();
 		
-		Sprite.add(new Sprite(SmallTower.INFO.spriteId, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(SmallTower.INFO.spriteId, image, 1.0 / blockSize));
 		
 	}
 	
@@ -225,7 +225,7 @@ public abstract class Load {
 		g.setColor(255, 80, 0);
 		g.fillRect(0, 0, 2, 10);
 		g.dispose();
-		Sprite.add(new Sprite(Projectile.SPRITE_ID, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(Projectile.SPRITE_ID, image, 1.0 / blockSize));
 	}
 	
 	private static void spriteHQ(int blockSize) {
@@ -262,7 +262,7 @@ public abstract class Load {
 		g.drawText(size/2 - textWidth / 2, size/2 + textHeight / 3 - 1, hq);
 		
 		g.dispose();
-		Sprite.add(new Sprite(HeadQuarters.INFO.spriteId, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(HeadQuarters.INFO.spriteId, image, 1.0 / blockSize));
 	}
 	
 	private static void spritePointParticle(int blockSize) {
@@ -274,7 +274,7 @@ public abstract class Load {
 		g.fillRect(0, 2, 6, 2);
 		g.fillRect(2, 0, 2, 6);
 		g.dispose();
-		Sprite.add(new Sprite(PointParticle.SPRITE_ID, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(PointParticle.SPRITE_ID, image, 1.0 / blockSize));
 	}
 	
 	private static IImage createDropPack(TsColor background, TsColor foreground, 
@@ -297,12 +297,12 @@ public abstract class Load {
 	
 	private static void spriteHealthPack(int blockSize) {
 		IImage image = createDropPack(TsColor.white, TsColor.red, blockSize);
-		Sprite.add(new Sprite(DropPack.HealthInfo.SPRITE_ID, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(DropPack.HealthInfo.SPRITE_ID, image, 1.0 / blockSize));
 	}
 	
 	private static void spritePointPack(int blockSize) {
 		IImage image = createDropPack(TsColor.gray, TsColor.yellow, blockSize);
-		Sprite.add(new Sprite(DropPack.PointInfo.SPRITE_ID, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(DropPack.PointInfo.SPRITE_ID, image, 1.0 / blockSize));
 	}
 	
 	private static void spriteStrongWall(int blockSize) {
@@ -317,6 +317,6 @@ public abstract class Load {
 		g.fillRect(5, 5, 40, 40);
 		g.dispose();
 		
-		Sprite.add(new Sprite(StrongWall.INFO.spriteId, image, 1.0f / blockSize));
+		Sprite.add(new Sprite(StrongWall.INFO.spriteId, image, 1.0 / blockSize));
 	}
 }
