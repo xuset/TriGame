@@ -8,10 +8,10 @@ public class Sprite {
 	
 	public final IImage image;
 	public final String url;
-	public final float scaleFactor;
+	public final double scaleFactor;
 	
-	public final float getWidth() { return (image.getWidth() * scaleFactor); }
-	public final float getHeight() { return (image.getHeight() * scaleFactor); }
+	public final float getWidth() { return (float) (image.getWidth() * scaleFactor); }
+	public final float getHeight() { return (float) (image.getHeight() * scaleFactor); }
 	public final IImage createCopy() { return new ImageFactory().createCopy(image); }
 	
 	public Sprite(String url) {
@@ -20,7 +20,7 @@ public class Sprite {
 		scaleFactor = 1.0f;
 	}
 	
-	public Sprite(String url, IImage image, float scaleFactor) {
+	public Sprite(String url, IImage image, double scaleFactor) {
 		this.image = image;
 		this.url = url;
 		this.scaleFactor = scaleFactor;
