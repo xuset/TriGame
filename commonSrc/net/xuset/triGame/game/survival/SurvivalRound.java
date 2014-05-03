@@ -64,7 +64,7 @@ class SurvivalRound extends GameRound {
 		super.onRoundStart();
 		roundInput.setNewRoundRequestable(false);
 		if (getRoundNumber() % bossRoundNumber == 0)
-			zombieSpawner.startNewSpawnRound(getBossZombiesPerRound(), 3000, true);
+			zombieSpawner.startNewSpawnRound(getBossZombiesPerRound(), 2100, true);
 		else
 			zombieSpawner.startNewSpawnRound(getZombiesPerRound(),
 					getZombieSpawnDelta(), false);
@@ -83,7 +83,7 @@ class SurvivalRound extends GameRound {
 		final int players = managers.person.list.size();
 		final int number = getRoundNumber();
 		
-		return ((number * number) / 10 + number) * players;
+		return ((number * number) / 10 + number + 2) * players;
 	}
 	
 	@Override

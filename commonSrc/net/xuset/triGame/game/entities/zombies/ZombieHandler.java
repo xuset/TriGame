@@ -136,13 +136,14 @@ public class ZombieHandler implements GameIntegratable{
 	
 	protected int determineHealth() {
 		int players = managers.person.list.size();
-		int health = (int) ((roundNumber * roundNumber / 10.0)  + (players * roundNumber * 0.5) + 90.0);
+		double pow = Math.pow(roundNumber, 2.17);
+		int health = (int) ((pow / 10.0)  + (players * roundNumber * 0.4) + 80.0);
 		return health;
 	}
 	
 	protected double determineSpeed() {
 		double speed = (int) (50 + 0.25 * roundNumber * roundNumber);
-		speed = (speed > 400) ? 400 : speed;
+		speed = (speed > 370) ? 370 : speed;
 		speed /= 50.0;
 		return speed;
 	}
