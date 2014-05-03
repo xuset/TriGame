@@ -9,8 +9,8 @@ import net.xuset.tSquare.imaging.TsTypeFace;
 public class UiRadioButton extends UiComponent {
 	private boolean isSelected = false;
 	private String text;
-	private IFont font = new TsFont("Arial", 12, TsTypeFace.PLAIN);
-	private float buttonSize = 15.0f;
+	private IFont font = new TsFont("Arial", 20, TsTypeFace.PLAIN);
+	private float buttonSize = 20.0f;
 	private TsColor buttonBackgroundColor = TsColor.gray;
 	private TsColor buttonUnSelectedColor = TsColor.lightGray;
 	private TsColor buttonSelectedColor = new TsColor(0, 220, 220);
@@ -56,6 +56,8 @@ public class UiRadioButton extends UiComponent {
 	}
 	
 	private void drawButton(IGraphics g) {
+		boolean isAntiAlias = g.isAntiAliasOn();
+		g.setAntiAlias(true);
 		float gutter = 3.0f;
 		float middle = getY() + getHeight() / 2 - buttonSize / 2;
 		g.setColor(buttonBackgroundColor);
@@ -63,6 +65,7 @@ public class UiRadioButton extends UiComponent {
 		g.setColor(isSelected ? buttonSelectedColor : buttonUnSelectedColor);
 		g.fillOval(getX() + gutter, middle + gutter,
 				buttonSize - gutter * 2, buttonSize - gutter * 2);
+		g.setAntiAlias(isAntiAlias);
 	}
 	
 	private void calcSize(IGraphics g) {
