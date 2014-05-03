@@ -129,17 +129,11 @@ public class TriGame extends Game{
 		
 		SoundStore.setMuteOnAll(!settings.enableSound);
 		
-		if (!isGameOver && !ui.isPaused()) {
-			//TODO bugs may be induced here if the server does not update the
-			//persons list
-			
-			managerService.person.update(frameDelta);
-			if (gameMode.isGameOver())
+		if (!isGameOver && gameMode.isGameOver())
 				setGameOver();
-			gunManager.update(frameDelta);
-		}
 
-
+		managerService.person.update(frameDelta);
+		gunManager.update(frameDelta);
 		managerService.dropPack.update(frameDelta);
 		managerService.zombie.update(frameDelta);
 		managerService.building.update(frameDelta);
@@ -208,6 +202,7 @@ public class TriGame extends Game{
 			boolean isSurvival = gameMode instanceof SurvivalGameMode;
 			int count = isSurvival ? managerService.person.getMaxJoinedPlayers() : -1;
 			ui.setGameOver(gameMode.getRoundNumber(), count);
+			player.setGameOver(true);
 		}
 	}
 	

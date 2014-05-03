@@ -33,6 +33,7 @@ public class Person extends Entity implements GameIntegratable{
 	private NetVar.nLong ownerId;
 	private NetVar.nInt color;
 	private boolean createdSprite = false;
+	private boolean isGameOver = false;
 	
 	private double realSpeed = 0;
 	private boolean moved = false;
@@ -73,6 +74,10 @@ public class Person extends Entity implements GameIntegratable{
 		objClass.addObj(ownerId);
 		objClass.addObj(color);
 	}
+	
+	public void setGameOver(boolean val) {
+		isGameOver = val;
+	}
 
 	public void giveFullHealth() {
 		double toAdd = MAX_HEALTH - getHealth();
@@ -90,16 +95,18 @@ public class Person extends Entity implements GameIntegratable{
 			createdSprite = true;
 		}
 		moved = false;
-		if (owned() && !isDead()) {
+		if (owned() && !isDead() && !isGameOver) {
 			if (!safeBoard.insideSafeArea(getCenterX(), getCenterY())) {
 				moveToSafeArea(frameDelta);
 				return;
 			}
 			
 			move(frameDelta);
-			checkZombieCollision(frameDelta);
 			pickupDropPacks();
 		}
+		
+		if (owned() && !isDead())
+			checkZombieCollision(frameDelta);
 	}
 
 	@Override
