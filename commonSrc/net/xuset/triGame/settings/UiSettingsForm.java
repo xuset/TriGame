@@ -23,7 +23,6 @@ public class UiSettingsForm {
 		frmMain.getLayout().add(createUiZoom(settings));
 		if (showAll) {
 			frmMain.getLayout().add(createGameZoom(settings));
-			frmMain.getLayout().add(new UiSettingsWall(settings));
 		}
 	}
 	

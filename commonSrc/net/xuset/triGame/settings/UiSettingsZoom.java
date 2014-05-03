@@ -41,7 +41,7 @@ class UiSettingsZoom extends UiForm {
 	
 	private void reset() {
 		double sliderZoom = minZoom + (maxZoom - minZoom) * slider.getProgress();
-		lblZoom.setText(((int) (sliderZoom * 100)) + "%");
+		lblZoom.setText(((int) Math.ceil(sliderZoom * 100)) + "%");
 		listener.onChange(sliderZoom);
 	}
 	
