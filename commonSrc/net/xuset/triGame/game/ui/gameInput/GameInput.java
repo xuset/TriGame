@@ -152,6 +152,7 @@ public class GameInput implements IGameInput{
 	private class CombineRound implements IRoundInput {
 		private final UiRoundInput touchRound;
 		private final KeyboardRoundInput keyboardRound;
+		private boolean requestNew = false;
 		
 		private CombineRound(UiBorderLayout layout, IKeyListener keyboard) {
 			touchRound = new UiRoundInput();
@@ -168,11 +169,11 @@ public class GameInput implements IGameInput{
 		}
 		
 		private boolean wasNewRoundRequested() {
-			if (keyboardRound.newRoundRequested())
-				return true;
-			if (!isUiTouchOn())
-				return false;
-			return touchRound.newRoundRequested();
+			boolean keyboard = keyboardRound.newRoundRequested();
+			boolean touch = touchRound.newRoundRequested() && isUiTouchOn();
+			
+			requestNew = keyboard || touch;
+			return requestNew;
 		}
 		@Override
 		public void setNewRoundRequestable(boolean requestable) {

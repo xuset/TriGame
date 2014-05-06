@@ -9,12 +9,11 @@ import net.xuset.tSquare.system.input.mouse.TsMouseEvent;
 import net.xuset.tSquare.ui.UiLabel;
 
 public class UiRoundInput extends UiLabel implements IRoundInput{
-	private static final long maxClickDelay = 50;
 	private static final String touchRequestText = "Tap to start round";
 	private static final String keyboardRequestText = "\'Enter\' to start round";
 	private static final String waitText = "Waiting for other players";
 	
-	private long timeMouseClick = 0l;
+	private boolean requestNew = false;
 	private boolean newRoundRequestable = false;
 	private boolean shouldRespondToMouse = false;
 	private String roundRequestText = keyboardRequestText;
@@ -36,7 +35,6 @@ public class UiRoundInput extends UiLabel implements IRoundInput{
 		if (!isVisible() || !newRoundRequestable)
 			return;
 		
-		getBorder().setVisibility(wasLabelClicked());
 		super.draw(g);
 	}
 
@@ -44,14 +42,13 @@ public class UiRoundInput extends UiLabel implements IRoundInput{
 	protected void recieveMouseEvent(TsMouseEvent e, float x, float y) {
 		super.recieveMouseEvent(e, x, y);
 		
-		if (shouldRespondToMouse && e.action == MouseAction.RELEASE)
-			timeMouseClick = System.currentTimeMillis();
-			
+		if (shouldRespondToMouse && newRoundRequestable && e.action == MouseAction.RELEASE)
+			requestNew = true;
 	}
 
 	@Override
 	public boolean newRoundRequested() {
-		return wasLabelClicked();
+		return requestNew;
 	}
 
 	@Override
@@ -59,14 +56,12 @@ public class UiRoundInput extends UiLabel implements IRoundInput{
 		newRoundRequestable = requestable;
 		if (requestable)
 			setText(roundRequestText);
+		else
+			requestNew = false;
 	}
 	
 	public void displayWaitText() {
 		setText(waitText);
-	}
-	
-	private boolean wasLabelClicked() {
-		return timeMouseClick + maxClickDelay > System.currentTimeMillis();
 	}
 	
 	

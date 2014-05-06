@@ -6,8 +6,8 @@ import net.xuset.tSquare.system.input.keyboard.TsKeyEvent;
 import net.xuset.tSquare.util.Observer;
 
 public class KeyboardRoundInput implements IRoundInput {
-	private long timeRequested = 0L;
 	private boolean roundRequested = false;
+	private boolean requestable = false;
 	
 	public KeyboardRoundInput(IKeyListener keyListener) {
 		keyListener.watch(new InputObserver());
@@ -18,16 +18,15 @@ public class KeyboardRoundInput implements IRoundInput {
 	 */
 	@Override
 	public boolean newRoundRequested() {
-		return roundRequested && timeRequested + 1000 > System.currentTimeMillis();
+		return roundRequested;
 	}
 	
 	private class InputObserver implements Observer.Change<TsKeyEvent> {
 		
 		@Override
 		public void observeChange(TsKeyEvent t) {
-			if (t.key == '\n' && t.action == KeyAction.PRESS) { //if <enter> is pressed
+			if (t.key == '\n' && t.action == KeyAction.RELEASE && requestable) {
 				roundRequested = true;
-				timeRequested = System.currentTimeMillis();
 			}
 		}
 		
@@ -35,6 +34,7 @@ public class KeyboardRoundInput implements IRoundInput {
 
 	@Override
 	public void setNewRoundRequestable(boolean requestable) {
+		this.requestable = requestable;
 		if (!requestable)
 			roundRequested = false;
 	}
