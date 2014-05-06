@@ -7,6 +7,7 @@ import net.xuset.tSquare.ui.UiComponent;
 import net.xuset.tSquare.ui.UiForm;
 import net.xuset.tSquare.ui.layout.UiQueueLayout;
 import net.xuset.tSquare.util.Observer;
+import net.xuset.triGame.Params;
 import net.xuset.triGame.game.GameInfo;
 
 class IntroMain implements IntroForm {
@@ -20,14 +21,15 @@ class IntroMain implements IntroForm {
 		UiQueueLayout mainLayout = new UiQueueLayout(20, 5, frmMain);
 		frmMain.setLayout(mainLayout);
 		
-		btnSolo = new UiButton("Solo");
+		btnSolo = new UiButton(Params.ENABLE_MULTIPLAYER ? "Solo" : "Start game");
 		btnMulti = new UiButton("Multiplayer");
 		
 		btnSolo.addMouseListener(new BtnSoloAction());
 		btnMulti.addMouseListener(new BtnMultiAction());
 		
 		mainLayout.add(btnSolo);
-		mainLayout.add(btnMulti);
+		if (Params.ENABLE_MULTIPLAYER)
+			mainLayout.add(btnMulti);
 	}
 
 	@Override
