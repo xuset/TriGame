@@ -1,7 +1,9 @@
 package net.xuset.triGame.game.ui.gameInput;
 
+import net.xuset.tSquare.imaging.IFont;
 import net.xuset.tSquare.imaging.IGraphics;
 import net.xuset.tSquare.imaging.TsColor;
+import net.xuset.tSquare.imaging.TsFont;
 import net.xuset.tSquare.math.point.IPointW;
 import net.xuset.tSquare.math.point.Point;
 import net.xuset.tSquare.system.input.mouse.MouseAction;
@@ -12,6 +14,8 @@ import net.xuset.tSquare.ui.UiComponent;
 public class UiPlayerInput extends UiComponent implements IPlayerInput{
 	private static final int initSize = 250;
 	private static final double movementThreshold = 0.1;
+	private static final IFont font = new TsFont("Arial", 15);
+	private static final String txtMove = "MOVE";
 	
 	private final RingDrawer ringDrawer = new RingDrawer(10, TsColor.lightGray, TsColor.white);
 	private final IPointW uiMoveCenter = new Point(0, 0);
@@ -20,6 +24,7 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 	private double moveAngle = Math.PI/2;
 	private boolean isMoving = false;
 	private MousePointer pointer = null;
+	private boolean initiallyTouched = false;
 	
 	public boolean isBeingTouched() { return isMoving; }
 	
@@ -55,6 +60,7 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 		if (e.action == MouseAction.PRESS) {
 			double dist = uiMoveCenter.calcDistance(e.x, e.y);
 			if (dist < uiMoveRadius) {
+				initiallyTouched = true;
 				isMoving = true;
 				pointer = e.pointer;
 			}
@@ -99,6 +105,8 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 		g.setAntiAlias(true);
 		drawUiMove(g);
 		drawUiFinger(g);
+		if (!initiallyTouched)
+			drawText(g);
 		g.setAntiAlias(isAntiAlias);
 	}
 
@@ -124,5 +132,23 @@ public class UiPlayerInput extends UiComponent implements IPlayerInput{
 		g.setColor(TsColor.darkGray);
 		g.fillOval(x + gutter, y + gutter, (radius - gutter) * 2, (radius - gutter) * 2);
 		
+	}
+	
+	private void drawText(IGraphics g) {
+		final float gutter = 3;
+		
+		g.setColor(TsColor.darkGray);
+		g.setFont(font);
+		
+		float tw = g.getTextWidth(txtMove);
+		float th = g.getTextHeight();
+		float w = tw + 2 * gutter;
+		float h = th + 2 * gutter;
+		float cx = getX() + getWidth() / 2;
+		float cy = getY() + getHeight() / 2;
+		
+		g.fillRoundedRect(cx - w/2, cy - h/2, w, h, 5, 5);
+		g.setColor(TsColor.white);
+		g.drawText(cx - tw/2, cy + th/4, txtMove);
 	}
 }
