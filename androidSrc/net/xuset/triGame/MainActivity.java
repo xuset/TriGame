@@ -11,6 +11,7 @@ import net.xuset.triGame.intro.MainStartup;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.DisplayMetrics;
 import android.view.SurfaceView;
 import android.view.View;
 
@@ -61,8 +62,8 @@ public class MainActivity extends Activity {
 	}
 	
 	private int getBlockSize(View view) {
-		int appWidth = view.getResources().getDisplayMetrics().widthPixels;
-		return 50 * (appWidth / 650);
+		DisplayMetrics dm = view.getResources().getDisplayMetrics();
+		return (int) (50 * (dm.widthPixels / 650) * (dm.xdpi / 442.451));
 	}
 	
 	private MainStartup createGameStarter(IDrawBoard db) {
