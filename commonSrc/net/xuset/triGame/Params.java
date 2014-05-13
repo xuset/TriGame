@@ -21,7 +21,7 @@ public class Params {
 	public static final boolean ALLOW_DOUBLE_CLICK = !IS_ANDROID;
 	public static final boolean ENABLE_MULTIPLAYER = !IS_ANDROID;
 	
-	public static final Version VERSION = new Version(1, 3, 0);
+	public static final Version VERSION = new Version(1, 4, 0);
 	public static final Level LOG_LEVEL = Level.WARNING;
 	
 	public static final String GAME_NAME = "PolyDefense";
