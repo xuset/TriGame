@@ -63,7 +63,10 @@ public class MainActivity extends Activity {
 	
 	private int getBlockSize(View view) {
 		DisplayMetrics dm = view.getResources().getDisplayMetrics();
-		return (int) (50 * (dm.widthPixels / 650) * (dm.xdpi / 442.451));
+		double pxBase = 209;
+		double pxArea = dm.widthPixels * dm.heightPixels;
+		double baseBlock = Math.sqrt(pxArea / pxBase);
+		return (int) baseBlock;
 	}
 	
 	private MainStartup createGameStarter(IDrawBoard db) {

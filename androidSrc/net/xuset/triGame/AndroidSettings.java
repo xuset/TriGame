@@ -6,6 +6,8 @@ import android.content.SharedPreferences.Editor;
 import net.xuset.triGame.settings.Settings;
 
 public class AndroidSettings extends Settings {
+	private static final int resetSettingsValue = 2;
+	private static final String resetSettingsKey = "zoomReset";
 	private static final String firstTimeLoadKey = "firstTimeLoad";
 	private static final String uiZoomKey = "uiZoom";
 	private static final String enableSoundKey = "enableSound";
@@ -19,7 +21,7 @@ public class AndroidSettings extends Settings {
 		
 		resetSettings(initBlockSize);
 		
-		if (prefs.contains(firstTimeLoadKey))
+		if (prefs.contains(firstTimeLoadKey) && !shouldResetSettings())
 			loadFromSaved();
 		else
 			saveSettings();
@@ -41,12 +43,18 @@ public class AndroidSettings extends Settings {
 	public void saveSettings() {
 		Editor ed = prefs.edit();
 		
+		ed.putInt(resetSettingsKey, resetSettingsValue);
 		ed.putBoolean(firstTimeLoadKey, true);
 		ed.putFloat(uiZoomKey, uiZoom);
 		ed.putBoolean(enableSoundKey, enableSound);
 		ed.putFloat(gameZoomKey, (float) gameZoom);
 		
 		ed.commit();
+	}
+	
+	private boolean shouldResetSettings() {
+		return !prefs.contains(resetSettingsKey) ||
+				prefs.getInt(resetSettingsKey, 0) != resetSettingsValue;
 	}
 	
 }
